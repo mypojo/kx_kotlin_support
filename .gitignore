@@ -1,0 +1,38 @@
+
+### gradle ###
+.gradle
+gradle
+build/
+**/generated/**
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+.jpb
+
+
+# 그래들이 자동생성 해주는거
+gradle/
+gradlew*
+out
+gradlew
+.run
+
+# REACT
+node_modules/
+**/node_modules/
+!**/ckeditor5/build
+
+yarn.lock
+package-lock.json
+
+#### 개인 관리 ####
+**/*sin_only*
+**/연습장*.sql
+
+

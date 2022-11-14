@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+
+    <!-- 사내 로그백 디폴트 설정 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%date{"yyyy-MM-dd HH:mm:ss","Asia/Seoul"} %-5level %-35logger{5} %3L %msg %n</pattern>
+        </encoder>
+    </appender>
+    <appender name="CONSOLE_LOCAL" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%green(%date{'yyyy-MM-dd HH:mm:ss','Asia/Seoul'}) %highlight(%-5level) %cyan(%-35logger{5}) %yellow(%3L) %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="WARN">
+        <if condition='property("os.name").contains("Windows")'>
+            <then>
+                <appender-ref ref="CONSOLE_LOCAL"/>
+            </then>
+            <else>
+                <appender-ref ref="CONSOLE"/>
+            </else>
+        </if>
+    </root>
+
+    <!-- 필수 설정값들 -->
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.springframework" level="WARN"/>
+
+    <logger name="net.kotlinx" level="INFO"/>
+
+</included>
