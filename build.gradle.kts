@@ -10,16 +10,19 @@ buildscript {
     }
 }
 
+//==================================================== 변수설정 (중간에 선언해야함) ======================================================
+val awsVersion: String by extra("0.18.0-beta") //코틀린 버전 일단 사용
+val kotlinVersion: String by extra("1.7.10")
+
 plugins {
-    kotlin("jvm") version "1.7.10"
+    kotlin("jvm") version "1.7.10" //안바뀌네.. ㅠㅠ
     java
     application
     //id("com.github.johnrengelman.shadow") version "7.1.2"  이런거 없어도 팻자르 잘 됨
 }
 java.sourceCompatibility = JavaVersion.VERSION_11
 
-//==================================================== 변수설정 (중간에 선언해야함) ======================================================
-val awsVersion: String by extra("0.18.0-beta") //코틀린 버전 일단 사용
+
 
 
 allprojects {
@@ -71,6 +74,16 @@ project(":core2") {
     }
 
 }
+
+project(":module1") {
+    dependencies{
+        //==================================================== 내부 의존성 ======================================================
+        api(project(":core2")) //API로 해야 하위 프로젝트에서 사용 가능하다.
+
+        runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    }
+}
+
 
 
 /**

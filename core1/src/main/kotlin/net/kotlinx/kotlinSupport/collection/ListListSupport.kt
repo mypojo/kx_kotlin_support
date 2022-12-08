@@ -13,5 +13,8 @@ fun <T> List<List<T>>.buildMatrix():List<List<T>>{
     }
 }
 
+/** 텍스트그리드 옮기고 거기에 넣기 */
+//fun List<Array<*>>.toGrid(headers: List<String>): TextGrid = TextGrid.of(headers).datas(this)
+
 //    /** 데이터가 속해있는지? 전용 메소드  */
 //    private inline fun <T> List<List<T>>.charMatch(compare: List<T>): Boolean = this.filter { it.size > compare.size }.map { v -> v.count { it in compare } }.any { it == compare.size }

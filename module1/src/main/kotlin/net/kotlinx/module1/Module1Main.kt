@@ -1,26 +1,10 @@
-package net.kotlinx.kotlinSupport
+package net.kotlinx.module1
 
 
 fun main(){
 
-    data class Poo(
-        val name: String,
-        val group: String,
-        val age: Int,
-    )
+    println("asd")
 
-    data class PooDto(
-        val name: String,
-        val groupname: String,
-        val age: Int,
-    )
-
-    val poo = Poo("영감", "asdsad", 16)
-    println(poo)
-
-//    val map = Poo::class.members.filterIsInstance<KProperty<*>>().associateBy { it.name }
-//    println(map)
-//    println(map.get("name")!!.getter.call(poo))
 
 
 //    fun Poo.toUserViewReflection() = with(::PooDto) {

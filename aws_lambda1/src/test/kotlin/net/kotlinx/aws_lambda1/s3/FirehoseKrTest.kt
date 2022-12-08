@@ -7,7 +7,7 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import org.junitpioneer.jupiter.SetEnvironmentVariable
 
-internal class FirehoseKrTest:TesR{
+internal class FirehoseKrTest:TestRoot(){
 
     @Test
     @SetEnvironmentVariable(key = "PATH_FROM", value = "temp1")
