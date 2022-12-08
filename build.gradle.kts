@@ -80,7 +80,8 @@ project(":module1") {
         //==================================================== 내부 의존성 ======================================================
         api(project(":core2")) //API로 해야 하위 프로젝트에서 사용 가능하다.
 
-        runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+        runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}") // 리플렉션 dto 변환용
+        implementation("com.github.doyaaaaaken:kotlin-csv:1.6.0") //CSV.. 좀 신뢰가 안가는 이름이네.
     }
 }
 

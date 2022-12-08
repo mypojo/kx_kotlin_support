@@ -1,15 +1,17 @@
-package net.kotlinx.module1.dto
+package net.kotlinx.module1.reflect
 
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KProperty
 
 /**
+ * * 간단한 리플렉션 도구
  * 코틀린 리플렉션은 가능하면 사용하지 말것
  * */
 object ReflectionUtil {
 
     /**
+     * 객체간 변환을 도와준다.
      * @param to 기본 생성자가 있어야함
      * */
     fun <T : Any> convert(from: Any, to: KClass<T>): T {
