@@ -1,31 +1,18 @@
 package net.kotlinx.module1
 
+import com.zaxxer.hikari.HikariConfig
+
 
 fun main(){
 
     println("asd")
 
-
-
-//    fun Poo.toUserViewReflection() = with(::PooDto) {
-//        val propertiesByName = Poo::class.members.associateBy { it.name }
-//        val kCallable = propertiesByName["Asd"]
-//        kCallable.
-//        callBy(parameters.associate { parameter ->
-//            println(parameter)
-//            parameter to when (parameter.name) {
-//                PooDto::groupname.name -> group
-//                else -> propertiesByName[parameter.name]?. get(this@toUserViewReflection)
-//            }
-//        })
-//    }
-
-    //val dto = Poo("aa", 16).toUserViewReflection()
-
-    //println(dto)
-
-
-
+    val config = HikariConfig().apply {
+        jdbcUrl = "jdbc:mysql://localhost:3366/exposed_study?useSSL=false&serverTimezone=UTC&autoReconnect=true&rewriteBatchedStatements=true"
+        driverClassName = "com.mysql.cj.jdbc.Driver"
+        username = "root"
+        password = ""
+    }
 
 
 }

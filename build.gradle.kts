@@ -11,17 +11,18 @@ buildscript {
 }
 
 //==================================================== 변수설정 (중간에 선언해야함) ======================================================
-val awsVersion: String by extra("0.18.0-beta") //코틀린 버전 일단 사용
-val kotlinVersion: String by extra("1.7.10")
 
 plugins {
-    kotlin("jvm") version "1.7.10" //안바뀌네.. ㅠㅠ
+    kotlin("jvm") version "1.7.10" //변수지정 안됨..ㅅㅂ
     java
     application
     //id("com.github.johnrengelman.shadow") version "7.1.2"  이런거 없어도 팻자르 잘 됨
 }
 java.sourceCompatibility = JavaVersion.VERSION_11
 
+val awsVersion: String by extra("0.18.0-beta") //코틀린 버전 일단 사용
+val kotlinVersion: String by extra("1.7.10")
+val exposedVersion: String by extra("0.41.1")
 
 
 
@@ -80,8 +81,19 @@ project(":module1") {
         //==================================================== 내부 의존성 ======================================================
         api(project(":core2")) //API로 해야 하위 프로젝트에서 사용 가능하다.
 
-        runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}") // 리플렉션 dto 변환용
+        //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
+        runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion") // 리플렉션 dto 변환용
         implementation("com.github.doyaaaaaken:kotlin-csv:1.6.0") //CSV.. 좀 신뢰가 안가는 이름이네.
+
+        //젯브레인 ORM
+        implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+        implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+        implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+        implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
+
+        //==================================================== RDB ======================================================
+        implementation("com.h2database:h2:1.3.148")
+        implementation("com.zaxxer:HikariCP:5.0.0")
     }
 }
 
