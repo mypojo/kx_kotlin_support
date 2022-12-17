@@ -6,7 +6,7 @@ import kotlin.reflect.KProperty
 
 /**
  * * 간단한 리플렉션 도구
- * 코틀린 리플렉션은 가능하면 사용하지 말것
+ * 패키지 크기가 커서 의존관계 하위로 이동시킴
  * */
 object ReflectionUtil {
 

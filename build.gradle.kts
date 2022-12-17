@@ -52,9 +52,8 @@ subprojects {
     }
 }
 
-project(":core1") {
-    //아무것도 없음
-}
+/** 아무것도 없음 */
+project(":core1") {}
 
 /**
  * 최소한의 기본 코틀린 패키지 +@  사용
@@ -68,52 +67,28 @@ project(":core2") {
         //testImplementation(project(":core1").sourceSets["test"].output) //코어 테스트에 있는 공통을 사용할 수 있게 해줌 => 일단 포기.. 빡친다.
 
         //==================================================== 로깅.. 맘에 안드네 ======================================================
-        api("io.github.microutils:kotlin-logging-jvm:2.0.10") //slf4j의 래퍼. api로 선언해야 하위에서 사용 가능하다.
-        implementation("ch.qos.logback:logback-classic:1.2.3") //slf4j의 실제 구현체
-        //implementation("org.slf4j:slf4j-api:1.7.30")
+        api("io.github.microutils:kotlin-logging-jvm:2.0.10") //slf4j의 래퍼. (로거 가져올때 사용)
+        api("ch.qos.logback:logback-classic:1.2.3") //slf4j의 실제 구현체 (레벨 설정에 참조해야함)
         implementation("org.codehaus.janino:janino:3.1.0") //logback 파일롤링 표현식 필터처리에 필요함
     }
 
 }
 
-project(":module1") {
-    dependencies{
-        //==================================================== 내부 의존성 ======================================================
-        api(project(":core2")) //API로 해야 하위 프로젝트에서 사용 가능하다.
-
-        //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
-        runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion") // 리플렉션 dto 변환용
-        implementation("com.github.doyaaaaaken:kotlin-csv:1.6.0") //CSV.. 좀 신뢰가 안가는 이름이네.
-
-        //젯브레인 ORM
-        implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
-        implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
-        implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
-        implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
-
-        //==================================================== RDB ======================================================
-        implementation("com.h2database:h2:1.3.148")
-        implementation("com.zaxxer:HikariCP:5.0.0")
-    }
-}
-
-
-
 /**
  * 람다 실행 최소패키지
  *  */
-project(":aws_lambda1") {
+project(":aws1") {
     dependencies {
         //==================================================== 내부 의존성 ======================================================
-        implementation(project(":core2"))
+        api(project(":core2"))
 
         //==================================================== AWS ======================================================
-        implementation("com.amazonaws:aws-lambda-java-core:1.2.2") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함
-        implementation("com.amazonaws:aws-lambda-java-events:3.11.0")  //핸들러에 매핑되는 이벤트 객
+        api("com.amazonaws:aws-lambda-java-core:1.2.2") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함
+        api("com.amazonaws:aws-lambda-java-events:3.11.0")  //핸들러에 매핑되는 이벤트 객
 
-        implementation("aws.sdk.kotlin:s3:${awsVersion}")
-        implementation("aws.sdk.kotlin:dynamodb:${awsVersion}")
-        implementation("aws.sdk.kotlin:kinesis:${awsVersion}")
+        api("aws.sdk.kotlin:s3:${awsVersion}")
+        api("aws.sdk.kotlin:dynamodb:${awsVersion}")
+        api("aws.sdk.kotlin:kinesis:${awsVersion}")
     }
 
     /**
@@ -142,30 +117,43 @@ project(":aws_lambda1") {
                     })
                 }
             }
-
         }
-
     }
-
-
 }
 
 /**
  * 람다 실행 최소패키지
  *  */
-project(":aws_all") {
+project(":aws") {
     dependencies {
         //==================================================== 내부 의존성 ======================================================
-        implementation(project(":core2"))
+        api(project(":core2"))
+        api(project(":aws1"))
 
         //==================================================== AWS ======================================================
-        implementation("com.amazonaws:aws-lambda-java-core:1.2.2") //람다 엔드포인트 수신기. 이거만 있으도 됨
-
-        implementation("aws.sdk.kotlin:sts:${awsVersion}")
-        implementation("aws.sdk.kotlin:s3:${awsVersion}")
-        implementation("aws.sdk.kotlin:dynamodb:${awsVersion}")
-        implementation("aws.sdk.kotlin:lambda:${awsVersion}")
+        api("aws.sdk.kotlin:sts:${awsVersion}")
+        api("aws.sdk.kotlin:lambda:${awsVersion}")
     }
+}
 
 
+project(":module1") {
+    dependencies{
+        //==================================================== 내부 의존성 ======================================================
+        api(project(":core2")) //API로 해야 하위 프로젝트에서 사용 가능하다.
+
+        //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
+        runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion") // 리플렉션 dto 변환용
+        implementation("com.github.doyaaaaaken:kotlin-csv:1.6.0") //CSV.. 좀 신뢰가 안가는 이름이네.
+
+        //젯브레인 ORM
+        implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+        implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+        implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+        implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
+
+        //==================================================== RDB ======================================================
+        implementation("com.h2database:h2:1.3.148")
+        implementation("com.zaxxer:HikariCP:5.0.0")
+    }
 }
