@@ -30,9 +30,9 @@ class FirehoseKrHandler : RequestHandler<S3Event, String> {
         log.info { "[람다 초기화] 설정 : $pathFrom => $pathTo" }
     }
 
-    private val matcherbasicDate = "(?<=\\/basicDate=).*?(?=\\/)".toRegex()
-    private val matcherHh = "(?<=\\/hh=).*?(?=\\/)".toRegex()
-    private val matcherPrefix = "^.*?(?=\\/)".toRegex()
+    private val matcherbasicDate = "(?<=/basicDate=).*?(?=/)".toRegex()
+    private val matcherHh = "(?<=/hh=).*?(?=/)".toRegex()
+    private val matcherPrefix = "^.*?(?=/)".toRegex()
 
     private val aws = AwsConfig().toAwsClient()
 

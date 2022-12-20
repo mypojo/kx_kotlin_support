@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test
 
 internal class TextGridTest{
     @Test
-    fun `기본테스트`(){
+    fun 기본테스트(){
 
         listOf("메뉴명", "설명", "path").toTextGrid(
             listOf(

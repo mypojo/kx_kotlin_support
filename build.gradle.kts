@@ -24,8 +24,6 @@ val awsVersion: String by extra("0.18.0-beta") //코틀린 버전 일단 사용
 val kotlinVersion: String by extra("1.7.10")
 val exposedVersion: String by extra("0.41.1")
 
-
-
 allprojects {
     group = "net.kotlinx.kotlin_support"
     version = "1.22.1114"
@@ -68,8 +66,8 @@ project(":core2") {
 
         //==================================================== 로깅.. 맘에 안드네 ======================================================
         api("io.github.microutils:kotlin-logging-jvm:2.0.10") //slf4j의 래퍼. (로거 가져올때 사용)
-        api("ch.qos.logback:logback-classic:1.2.3") //slf4j의 실제 구현체 (레벨 설정에 참조해야함)
-        implementation("org.codehaus.janino:janino:3.1.0") //logback 파일롤링 표현식 필터처리에 필요함
+        api("ch.qos.logback:logback-classic:1.4.5") //slf4j의 실제 구현체 (레벨 설정에 참조해야함)
+        implementation("org.codehaus.janino:janino:3.1.9") //logback 파일롤링 표현식 필터처리에 필요함
     }
 
 }

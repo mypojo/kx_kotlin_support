@@ -10,7 +10,7 @@ internal class LogBackUtilTest {
     private val log = KotlinLogging.logger {}
 
     @Test
-    fun `기본테스트`() {
+    fun 기본테스트() {
 
 
         log.trace { "trace 영감님" }

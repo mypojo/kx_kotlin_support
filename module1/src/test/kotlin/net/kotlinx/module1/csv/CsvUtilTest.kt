@@ -10,7 +10,7 @@ import kotlin.io.path.useLines
 internal class CsvUtilTest {
 
     @Test
-    fun `기본테스트`() {
+    fun 기본테스트() {
 
         val rows = listOf(listOf(1, 2, 3, "영감님"), listOf(4, 5, 6, "이동식2"))
         val file1 = File("D:\\DATA\\WORK/data1.csv")

@@ -23,7 +23,7 @@ internal class ReflectionUtilTest {
     }
 
     @Test
-    fun `기본테스트`() {
+    fun 기본테스트() {
         val poo = Poo("영감", "노인", 16,34)
         val pooDto = poo.toPooDto()
 

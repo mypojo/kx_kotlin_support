@@ -15,8 +15,12 @@ import java.io.IOException
  */
 abstract class TestRoot {
 
+    private val log = KotlinLogging.logger {}
+
     /** 필요시 구현하기  */
-    fun beforeDefault() {}
+    fun beforeDefault() {
+        log.debug { "아무것도 하지않음" }
+    }
 
     @BeforeEach
     fun before(testInfo: TestInfo) {

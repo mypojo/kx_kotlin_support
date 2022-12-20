@@ -6,17 +6,16 @@ import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.joran.JoranConfigurator
 import mu.KotlinLogging
 import org.slf4j.LoggerFactory
-import org.slf4j.impl.StaticLoggerBinder
 import java.io.InputStream
 
 object LogBackUtil {
 
     private val log = KotlinLogging.logger {}
 
-    /** SLF4J 구현체 확인  */
-    fun findImplStr(): String {
-        return StaticLoggerBinder.getSingleton().loggerFactoryClassStr
-    }
+//    /** SLF4J 구현체 확인  */
+//    fun findImplStr(): String {
+//        return StaticLoggerBinder.getSingleton().loggerFactoryClassStr
+//    }
 
     /** 스프링 부트 설정을 베이스로 로드 (로컬 JUnit 등 스프링 부트가 아닌 경우)  */
     fun initSpringBoot() {

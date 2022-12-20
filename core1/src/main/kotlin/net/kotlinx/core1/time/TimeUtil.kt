@@ -24,8 +24,8 @@ object TimeUtil {
 
     private const val ASIA_SEOUL = "Asia/Seoul"
 
-    val SEOUL = ZoneId.of(ASIA_SEOUL)!!
-    private val ZONE_SEOUL = TimeZone.getTimeZone(SEOUL);
+    val SEOUL: ZoneId = ZoneId.of(ASIA_SEOUL)
+    private val ZONE_SEOUL = TimeZone.getTimeZone(SEOUL)
 
     /** 디폴트 타임존 고정  */
     fun initTimeZone(timeZone: TimeZone = ZONE_SEOUL) {

@@ -3,8 +3,9 @@ package net.kotlinx.core1.counter
 import org.junit.jupiter.api.Test
 
 internal class ActionCounterTest {
+
     @Test
-    fun `기본테스트`() {
+    fun 기본테스트() {
 
         var eventCnt = 0
         val counter = ActionCounter(3) {

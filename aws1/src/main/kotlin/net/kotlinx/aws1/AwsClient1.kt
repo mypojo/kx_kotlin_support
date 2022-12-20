@@ -1,5 +1,7 @@
 package net.kotlinx.aws1
 
+import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
+import aws.sdk.kotlin.services.kinesis.KinesisClient
 import aws.sdk.kotlin.services.s3.S3Client
 
 /**
@@ -10,6 +12,9 @@ open class AwsClient1(private val awsConfig: AwsConfig) {
 
     //==================================================== 클라이언트 설정 ======================================================
     val s3: S3Client by lazy { S3Client { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider } }
+    val kinesis: KinesisClient by lazy { KinesisClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider } }
+    val dynamo: DynamoDbClient by lazy { DynamoDbClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider } }
 }
 
+/** 간단 변환 */
 fun AwsConfig.toAwsClient():AwsClient1 = AwsClient1(this)

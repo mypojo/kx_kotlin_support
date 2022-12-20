@@ -13,7 +13,7 @@ internal class FirehoseKrHandlerTest: TestRoot(){
     @Test
     @SetEnvironmentVariable(key = "PATH_FROM", value = "temp1")
     @SetEnvironmentVariable(key = "PATH_TO", value = "temp2")
-    fun `테스트`(){
+    fun 테스트(){
 
         val firehoseKr = FirehoseKrHandler()
 
