@@ -16,6 +16,7 @@ plugins {
     kotlin("jvm") version "1.7.10" //변수지정 안됨..ㅅㅂ
     java
     application
+    `maven-publish` //메이븐 플러그인 배포
     //id("com.github.johnrengelman.shadow") version "7.1.2"  이런거 없어도 팻자르 잘 됨
 }
 java.sourceCompatibility = JavaVersion.VERSION_11
@@ -26,7 +27,7 @@ val exposedVersion: String by extra("0.41.1")
 
 allprojects {
     group = "net.kotlinx.kotlin_support"
-    version = "1.22.1114"
+    version = "1.22.1221"
     repositories { mavenCentral() }
 }
 
@@ -153,5 +154,31 @@ project(":module1") {
         //==================================================== RDB ======================================================
         implementation("com.h2database:h2:1.3.148")
         implementation("com.zaxxer:HikariCP:5.0.0")
+    }
+}
+
+//==================================================== 배포 ======================================================
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "net.kotlinx"
+            artifactId = "kotlin_support"
+            //version = "1.1"
+            //from(components["java"])
+            from(components["kotlin"])
+        }
+        //core1(MavenPublication) { doPublish(it,'core') }
+//        basic(MavenPublication) { doPublish(it,'basic') }
+//        support(MavenPublication) { doPublish(it,'support') }
+//        api(MavenPublication) { doPublish(it,'api') }
+    }
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.jetbrains.space/november/p/ost/epe-util-11")
+            credentials {
+                username = project.properties["jatbrains.space.maven.username"].toString()
+                password = project.properties["jatbrains.space.maven.password"].toString()
+            }
+        }
     }
 }

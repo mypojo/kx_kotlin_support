@@ -4,6 +4,7 @@
 gradle
 build/
 **/generated/**
+gradle.properties
 
 ### IntelliJ IDEA ###
 .idea
