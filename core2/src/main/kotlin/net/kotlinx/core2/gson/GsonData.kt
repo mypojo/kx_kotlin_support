@@ -5,13 +5,13 @@ import com.google.gson.*
 inline fun String.toGsonData() = GsonData.parse(this)
 
 /**
- * koson 은 읽기가 안됨
- * 간단 읽기 & 수정 용으로 작성
+ * koson 은 읽기가 안됨 -> 간단 읽기 & 수정 용으로 작성
+ * 편의상 불변객체 유지를 하지 않음
  *
  * kotlin의 엄격한 객체 정의와 어울리지 않음으로 로직에 가급적 사용 금지
  * 모든 이상은 예외 대신 null을 리턴함
  */
-data class GsonData(val delegate: JsonElement) {
+data class GsonData(private val delegate: JsonElement) {
 
     operator fun get(index: Int): GsonData {
         if (delegate is JsonArray) {
@@ -28,16 +28,18 @@ data class GsonData(val delegate: JsonElement) {
         return EMPTY
     }
 
+    fun put(key: String, value: String?) = (delegate as? JsonObject)?.addProperty(key, value)
+    fun put(key: String, value: Number?) = (delegate as? JsonObject)?.addProperty(key, value)
+    fun put(key: String, value: Boolean?) = (delegate as? JsonObject)?.addProperty(key, value)
+
     override fun toString(): String = delegate.toString()
 
     //==================================================== 편의용  ======================================================
 
-    /** 문자열 리턴 (확정적일경우) */
-    val str: String
-        get() = (delegate as JsonPrimitive)?.asString ?: ""
-
-    /** 문자열 리턴 (확정X) */
-    fun str(nullValue: String) = (delegate as JsonPrimitive)?.asString ?: nullValue
+    val str: String?
+        get() = (delegate as? JsonPrimitive)?.asString
+    val long: Long?
+        get() = (delegate as? JsonPrimitive)?.asLong
 
     companion object {
 
