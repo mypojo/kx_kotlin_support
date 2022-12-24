@@ -14,3 +14,24 @@ fun List<Int>.findRank(data:Int):Int{
     }
     return left
 }
+
+/**
+ * 리스트를 조건에 따라 분리해준다.
+ * */
+inline fun <reified T> List<T>.chunkedBy(isStart:(value:T)->Boolean):List<List<T>>{
+
+    val chunkedList = mutableListOf<List<T>>()
+
+    var current = mutableListOf<T>()
+    for (any in this) {
+        if(isStart.invoke(any)){
+            chunkedList += current.toList()
+            current = mutableListOf()
+            current += any
+        }else{
+            current += any
+        }
+    }
+    return chunkedList.filter { it.isNotEmpty() }.toList()
+
+}

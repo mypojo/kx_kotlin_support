@@ -2,15 +2,16 @@
 ### 코드 샘플
 ```kotlin
 val awsConfig = AwsConfig(profileName = "sin")
-val awsClient = awsConfig.toAwsClient()
-awsClient.lambda.listFunctions(ListFunctionsRequest { maxItems = 10 }).functions?.map {
+val was = awsConfig.toAwsClient()
+was.lambda.listFunctions{ maxItems = 10 }.functions?.map {
     arrayOf(
         it.functionName, it.codeSize, it.functionArn
     )
 }?.also {
     listOf("함수명", "코드사이즈", "ARN").toTextGrid(it).print()
 }
-awsClient.s3.listBuckets(ListBucketsRequest { }).buckets?.map {
+
+was.s3.listBuckets{}.buckets?.map {
     arrayOf(
         it.name, it.creationDate?.toLocalDateTime()?.toKr01()
     )

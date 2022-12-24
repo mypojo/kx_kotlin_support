@@ -13,7 +13,7 @@ buildscript {
 //==================================================== 변수설정 (중간에 선언해야함) ======================================================
 
 plugins {
-    kotlin("jvm") version "1.7.10" //변수지정 안됨..ㅅㅂ
+    kotlin("jvm") version "1.7.20" //변수지정 안됨..
     java
     application
     `maven-publish` //메이븐 플러그인 배포
@@ -27,8 +27,15 @@ val exposedVersion: String by extra("0.41.1")
 
 allprojects {
     group = "net.kotlinx.kotlin_support"
-    version = "1.22.1221"
+    version = "2022-12-26"
     repositories { mavenCentral() }
+
+    //자바 11로 타게팅 (큰 의미 없음)
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "11"
+        }
+    }
 }
 
 subprojects {
@@ -69,6 +76,12 @@ project(":core2") {
         api("io.github.microutils:kotlin-logging-jvm:2.0.10") //slf4j의 래퍼. (로거 가져올때 사용)
         api("ch.qos.logback:logback-classic:1.4.5") //slf4j의 실제 구현체 (레벨 설정에 참조해야함)
         implementation("org.codehaus.janino:janino:3.1.9") //logback 파일롤링 표현식 필터처리에 필요함
+
+        //==================================================== 코틀린 기본 ======================================================
+        api("com.lectra:koson:1.2.4") // 코틀린 json DSL
+
+        //==================================================== 기본옵션 ======================================================
+        api("com.google.code.gson:gson:2.10") // 외부 의존성 없음.. 깔끔함.  300kb 이내
     }
 
 }
@@ -88,6 +101,7 @@ project(":aws1") {
         api("aws.sdk.kotlin:s3:${awsVersion}")
         api("aws.sdk.kotlin:dynamodb:${awsVersion}")
         api("aws.sdk.kotlin:kinesis:${awsVersion}")
+        api("aws.sdk.kotlin:sqs:${awsVersion}")
     }
 
     /**
@@ -129,17 +143,30 @@ project(":aws") {
         api(project(":core2"))
         api(project(":aws1"))
 
+        //==================================================== 기본 (이정도는 괜찮겠지) ======================================================
+        api("com.google.guava:guava:31.1-jre")
+
         //==================================================== AWS ======================================================
         api("aws.sdk.kotlin:sts:${awsVersion}")
         api("aws.sdk.kotlin:lambda:${awsVersion}")
+        api("aws.sdk.kotlin:iam:${awsVersion}")
+        api("aws.sdk.kotlin:rds:${awsVersion}")
+        api("aws.sdk.kotlin:ecs:${awsVersion}")  //ec2 생략
+        api("aws.sdk.kotlin:ses:${awsVersion}")
+        api("aws.sdk.kotlin:batch:${awsVersion}")
+        api("aws.sdk.kotlin:ssm:${awsVersion}")
+        api("aws.sdk.kotlin:eventbridge:${awsVersion}")
+        api("aws.sdk.kotlin:sfn:${awsVersion}")
+        api("aws.sdk.kotlin:codedeploy:${awsVersion}")
+        api("aws.sdk.kotlin:secretsmanager:${awsVersion}")
     }
 }
 
 
 project(":module1") {
-    dependencies{
+    dependencies {
         //==================================================== 내부 의존성 ======================================================
-        api(project(":core2")) //API로 해야 하위 프로젝트에서 사용 가능하다.
+        api(project(":aws")) //API로 해야 하위 프로젝트에서 사용 가능하다.
 
         //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
         runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion") // 리플렉션 dto 변환용
@@ -152,29 +179,30 @@ project(":module1") {
         implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
 
         //==================================================== RDB ======================================================
-        implementation("com.h2database:h2:1.3.148")
+        //implementation("mysql:mysql-connector-java:8.0.17")
+        implementation("org.mariadb.jdbc:mariadb-java-client:3.1.0") //intellij 보니 AWS aurora mysql은 이거사용함
         implementation("com.zaxxer:HikariCP:5.0.0")
+
+
     }
 }
 
 //==================================================== 배포 ======================================================
 publishing {
     publications {
-        create<MavenPublication>("maven") {
-            groupId = "net.kotlinx"
-            artifactId = "kotlin_support"
-            //version = "1.1"
-            //from(components["java"])
-            from(components["kotlin"])
+        fun pub(projectName: String) {
+            create<MavenPublication>("maven-${projectName}") {
+                groupId = "net.kotlinx.kotlin_support"
+                artifactId = projectName
+                from(project(":${projectName}").components["java"])
+            }
         }
-        //core1(MavenPublication) { doPublish(it,'core') }
-//        basic(MavenPublication) { doPublish(it,'basic') }
-//        support(MavenPublication) { doPublish(it,'support') }
-//        api(MavenPublication) { doPublish(it,'api') }
+        pub("core1")
+        pub("aws")
     }
     repositories {
         maven {
-            url = uri("https://maven.pkg.jetbrains.space/november/p/ost/epe-util-11")
+            url = uri("https://maven.pkg.jetbrains.space/november/p/ost/kotlin-support")
             credentials {
                 username = project.properties["jatbrains.space.maven.username"].toString()
                 password = project.properties["jatbrains.space.maven.password"].toString()

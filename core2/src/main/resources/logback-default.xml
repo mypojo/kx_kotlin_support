@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <included>
 
+    <!-- 시작 로그 제거 -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
     <!-- 사내 로그백 디폴트 설정 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -15,16 +18,19 @@
         </encoder>
     </appender>
 
-    <root level="WARN">
-        <if condition='property("os.name").contains("Windows")'>
-            <then>
+    <if condition='property("os.name").contains("Windows")'>
+        <then>
+            <root level="WARN">
                 <appender-ref ref="CONSOLE_LOCAL"/>
-            </then>
-            <else>
+            </root>
+        </then>
+        <else>
+            <root level="WARN">
                 <appender-ref ref="CONSOLE"/>
-            </else>
-        </if>
-    </root>
+            </root>
+        </else>
+    </if>
+
 
     <!-- 필수 설정값들 -->
     <logger name="org.hibernate" level="WARN"/>

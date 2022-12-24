@@ -15,5 +15,12 @@ internal class ActionCounterTest {
         repeat(10) { counter.incrementAndGet() }
         println("eventCnt = $eventCnt")
         check(eventCnt == 3) { "이벤트 수는 3 이어야함" }
+
+        println("Kotlin Version  : ${KotlinVersion.CURRENT} ")
+
+        println("Java Version     : ${ System.getProperty("java.version") } ")
+        println("Java VM Version  : ${ System.getProperty("java.vm.version") } ")
+        println("Java VM Vendor   : ${ System.getProperty("java.vm.vendor") }  ")
+        println("Java VM Name     : ${ System.getProperty("java.vm.name")  } ")
     }
 }
