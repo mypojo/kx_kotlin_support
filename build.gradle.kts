@@ -188,25 +188,26 @@ project(":module1") {
 }
 
 //==================================================== 배포 ======================================================
-publishing {
-    publications {
-        fun pub(projectName: String) {
-            create<MavenPublication>("maven-${projectName}") {
-                groupId = "net.kotlinx.kotlin_support"
-                artifactId = projectName
-                from(project(":${projectName}").components["java"])
-            }
-        }
-        pub("core1")
-        pub("aws")
-    }
-    repositories {
-        maven {
-            url = uri("https://maven.pkg.jetbrains.space/november/p/ost/kotlin-support")
-            credentials {
-                username = project.properties["jatbrains.space.maven.username"].toString()
-                password = project.properties["jatbrains.space.maven.password"].toString()
-            }
-        }
-    }
-}
+//https://jitpack.io/#mypojo/kx_kotlin_support/-SNAPSHOT  이걸로 해도 됨
+//publishing {
+//    publications {
+//        fun pub(projectName: String) {
+//            create<MavenPublication>("maven-${projectName}") {
+//                groupId = "net.kotlinx.kotlin_support"
+//                artifactId = projectName
+//                from(project(":${projectName}").components["java"])
+//            }
+//        }
+//        pub("core1")
+//        pub("aws")
+//    }
+//    repositories {
+//        maven {
+//            url = uri("https://maven.pkg.jetbrains.space/november/p/ost/kotlin-support")
+//            credentials {
+//                username = project.properties["jatbrains.space.maven.username"].toString()
+//                password = project.properties["jatbrains.space.maven.password"].toString()
+//            }
+//        }
+//    }
+//}
