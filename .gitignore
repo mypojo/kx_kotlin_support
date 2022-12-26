@@ -1,5 +1,5 @@
 
-### gradle ###
+### gradle ###  -> jitpack 때문에 gradlew 포함해서 모두 허용
 .gradle
 build/
 **/generated/**
@@ -17,9 +17,8 @@ out/
 
 
 # 그래들이 자동생성 해주는거
-gradlew*
+gradlew.bat
 out
-gradlew
 .run
 
 # REACT
