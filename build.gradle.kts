@@ -28,7 +28,10 @@ val exposedVersion: String by extra("0.41.1")
 allprojects {
     group = "net.kotlinx.kotlin_support"
     version = "2022-12-27"
-    repositories { mavenCentral() }
+    repositories {
+        mavenCentral()
+        maven { setUrl("https://jitpack.io") }
+    }
 
     //자바 11로 타게팅 (큰 의미 없음)
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
