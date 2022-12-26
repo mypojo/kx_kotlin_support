@@ -1,5 +1,5 @@
 
-### 코드 샘플
+### AWS 샘플
 ```kotlin
 val awsConfig = AwsConfig(profileName = "sin")
 val was = awsConfig.toAwsClient()
@@ -20,7 +20,7 @@ was.s3.listBuckets{}.buckets?.map {
 }
 ```
 
-### 결과
+### AWS 결과
 ```text
 ________________________________________________________________________________________________________________________________________________________________________________________________
 | 함수명                                                          | 코드사이즈 | ARN                                                                                                           |
@@ -37,4 +37,27 @@ ________________________________________________________________________________
 | cf-templates-ohkgl1orguai-ap-northeast-2                        | 2022년05월26일(목) 14시48분42초 |
 | data-dev                                                        | 2022년11월02일(수) 13시33분34초 |
 | data-prod                                                       | 2022년10월21일(금) 11시34분20초 |
+```
+
+
+### JSON 샘플
+```kotlin
+val json = obj {
+    "type" to "normal"
+    "members" to arr[
+            obj { "name" to "A"; "age" to 10; },
+            obj { "name" to "B"; "age" to 20; },
+    ]
+}
+
+val gsonData = GsonData.parse(json)
+gsonData["members"].filter { it["name"].str == "B" }.onEach { it.put("age", 25) }
+
+val sumOfAge = gsonData["members"].sumOf { it["age"].long ?: 0L }
+println("sumOfAge : $sumOfAge")
+```
+
+### JSON 결과
+```text
+sumOfAge : 35
 ```

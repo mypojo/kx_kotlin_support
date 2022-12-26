@@ -5,36 +5,43 @@ import com.google.gson.*
 inline fun String.toGsonData() = GsonData.parse(this)
 
 /**
- * koson 은 읽기가 안됨 -> 간단 읽기 & 수정 용으로 작성
+ * koson 은 특정값 읽기가 안됨 -> 간단 읽기 & 수정 용으로 작성
  * 편의상 불변객체 유지를 하지 않음
  *
  * kotlin의 엄격한 객체 정의와 어울리지 않음으로 로직에 가급적 사용 금지
  * 모든 이상은 예외 대신 null을 리턴함
  */
-data class GsonData(private val delegate: JsonElement) {
-
-    operator fun get(index: Int): GsonData {
-        if (delegate is JsonArray) {
-            return GsonData(delegate[index] ?: JsonNull.INSTANCE)
-        }
-        return EMPTY
-    }
+data class GsonData(private val delegate: JsonElement) : Iterable<GsonData> {
 
     /** GsonVo 리턴. null을 리턴하지 않기 때문에 get().get() 식의 체인이 가능하다.  */
-    operator fun get(key: String): GsonData {
-        if (delegate is JsonObject) {
-            return GsonData(delegate[key] ?: JsonNull.INSTANCE)
-        }
-        return EMPTY
+    operator fun get(key: String): GsonData = when (delegate) {
+        is JsonObject -> GsonData(delegate[key] ?: JsonNull.INSTANCE)
+        else -> EMPTY
     }
 
+    operator fun get(index: Int): GsonData = when (delegate) {
+        is JsonArray -> GsonData(delegate[index] ?: JsonNull.INSTANCE)
+        else -> EMPTY
+    }
+
+
+    /** primitive 는 불변이라서 여기서 수정해야함. 맘에들지 않음.. */
     fun put(key: String, value: String?) = (delegate as? JsonObject)?.addProperty(key, value)
     fun put(key: String, value: Number?) = (delegate as? JsonObject)?.addProperty(key, value)
     fun put(key: String, value: Boolean?) = (delegate as? JsonObject)?.addProperty(key, value)
 
+    //==================================================== 기본 구현 ======================================================
+
+    /** 타입 세이프하지 않음 주의!! */
+    override fun iterator(): Iterator<GsonData> = when (delegate) {
+        is JsonArray -> delegate.asList().map { GsonData(it) }.iterator()
+        is JsonObject -> delegate.entrySet().map { GsonData(it.value) }.iterator()
+        else -> emptyList<GsonData>().iterator()
+    }
+
     override fun toString(): String = delegate.toString()
 
-    //==================================================== 편의용  ======================================================
+//==================================================== 편의용  ======================================================
 
     val str: String?
         get() = (delegate as? JsonPrimitive)?.asString
@@ -50,16 +57,15 @@ data class GsonData(private val delegate: JsonElement) {
         fun array(): GsonData = GsonData(JsonArray())
         fun empty(): GsonData = EMPTY
 
-        fun parse(json: String?): GsonData {
-            if (json.isNullOrEmpty()) return empty()
-            val jsonElement = JsonParser.parseString(json)
-            return GsonData(jsonElement)
+        fun parse(obj: Any?): GsonData {
+            val json = obj?.toString() ?: return EMPTY
+            return GsonData(JsonParser.parseString(json))
         }
 
     }
 
 
-    //: Iterable<GsonData>
+//: Iterable<GsonData>
 //    //============ JsonElement는 아래 셋중 하나의 상태를 가진다.==================
 //    private var jsonPrimitive: JsonPrimitive? = null
 //    private var jsonObject: JsonObject? = null
@@ -109,7 +115,7 @@ data class GsonData(private val delegate: JsonElement) {
 //    val asString: String?
 //        get() = if (jsonPrimitive == null) null else jsonPrimitive!!.asString
 
-    //======================== 기본 put ======================================
+//======================== 기본 put ======================================
 //    operator fun put(key: String, num: Number) {
 //        if (delegate is JsonObject) {
 //            jsonObject.addProperty(key, num)
@@ -195,14 +201,14 @@ data class GsonData(private val delegate: JsonElement) {
 //        jsonArray!!.addAll(data.jsonArray)
 //        return this
 //    }
-    //======================== 기본 get (GsonData 리턴. null을 리턴하지 않는다.) ======================================
+//======================== 기본 get (GsonData 리턴. null을 리턴하지 않는다.) ======================================
 
-    //	/** GsonVo 리턴 */
-    //	public GsonData get(int index){
-    //		JsonElement jsonElement = jsonArray.get(index);
-    //		if(jsonElement==null) return GsonData.empty();
-    //		return GsonData.of(jsonElement);
-    //	}
+//	/** GsonVo 리턴 */
+//	public GsonData get(int index){
+//		JsonElement jsonElement = jsonArray.get(index);
+//		if(jsonElement==null) return GsonData.empty();
+//		return GsonData.of(jsonElement);
+//	}
 //    /** 원본 객체에서 제거 & 제거된 객체 리턴한다.  */
 //    fun remove(index: Int): GsonData? {
 //        val jsonElement = jsonArray!!.remove(index) ?: return empty()
@@ -216,7 +222,7 @@ data class GsonData(private val delegate: JsonElement) {
 //        return of(jsonElement)
 //    }
 
-    //======================== 기본 get (Object의 value 리턴. 없을때는 null리턴 가능) ======================================
+//======================== 기본 get (Object의 value 리턴. 없을때는 null리턴 가능) ======================================
 //    /**  특이하게 null을 리턴한다.  */
 //    private fun getJsonPrimitive(key: String): JsonPrimitive? {
 //        if (jsonObject == null) return null

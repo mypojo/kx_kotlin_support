@@ -7,10 +7,12 @@ import com.google.common.cache.CacheBuilder
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
 
-/** 파라메터 캐시 저장소  */
+/**
+ * 파라메터 캐시 저장소
+ *  */
 class AwsSsmStore(
     private val ssmClient: SsmClient,
-    /** 캐시 구현체 */
+    /** 캐시 구현체. 디폴트로 하루 한번 */
     private val cache: Cache<String, String?> = CacheBuilder.newBuilder().expireAfterWrite(24, TimeUnit.HOURS).build(),
 ) {
 

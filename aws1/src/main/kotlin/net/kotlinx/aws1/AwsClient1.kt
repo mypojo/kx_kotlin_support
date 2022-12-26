@@ -17,4 +17,4 @@ open class AwsClient1(private val awsConfig: AwsConfig) {
 }
 
 /** 간단 변환 */
-fun AwsConfig.toAwsClient():AwsClient1 = AwsClient1(this)
+fun AwsConfig.toAwsClient(): AwsClient1 = AwsClient1(this)

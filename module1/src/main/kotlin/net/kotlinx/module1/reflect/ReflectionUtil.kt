@@ -22,10 +22,10 @@ object ReflectionUtil {
      * @param to 기본 생성자가 있어야함
      * */
     fun <T : Any> convertTo(from: Any, to: KClass<T>): T {
-        val fromMap = from::class.members.filterIsInstance<KProperty<*>>().associateBy { it.name }
-        val newInstance = to.constructors.firstOrNull { it.parameters.isEmpty() }?.call() ?: throw IllegalArgumentException("기본 생성자가 있어야 합니다 : $to")
+        val fromMap: Map<String, KProperty<*>> = from::class.members.filterIsInstance<KProperty<*>>().associateBy { it.name }
+        val newInstance: T = to.constructors.firstOrNull { it.parameters.isEmpty() }?.call() ?: throw IllegalArgumentException("기본 생성자가 있어야 합니다 : $to")
         to.members.filterIsInstance<KMutableProperty<*>>().forEach { toField ->
-            val value = fromMap[toField.name]?.getter?.call(from)
+            val value: Any? = fromMap[toField.name]?.getter?.call(from)
             value?.let { toField.setter.call(newInstance, it) }
         }
         return newInstance
@@ -79,40 +79,46 @@ object ReflectionUtil {
      * @return 입력된 문자열을 지정된 타입의 값으로 변경해준다.
      * */
     private fun convertTo(type: KType, value: String, name: String?): Comparable<Nothing>? {
-        val kClazz = type.classifier as KClass<*>
-        val nullMarker = run {
-            if (value.isNotEmpty()) return@run NONE
-            if (type.isMarkedNullable) NULL else EMPTY
+        val kClazz: KClass<*> = type.classifier as KClass<*>  //타입을 클래스로 변환 가능 (실패할 수 있음)
+        val nullMarker: DataNullMark = when {
+            value.isNotEmpty() -> NONE
+            type.isMarkedNullable -> NULL
+            else -> EMPTY
         }
-        return run {
-            if (kClazz.isSubclassOf(Int::class)) {
+        return when {
+            kClazz.isSubclassOf(Int::class) -> {
                 when (nullMarker) {
                     NULL -> null
                     EMPTY -> 0
                     NONE -> value.toInt()
                 }
-            } else if (kClazz.isSubclassOf(Long::class)) {
+            }
+
+            kClazz.isSubclassOf(Long::class) -> {
                 when (nullMarker) {
                     NULL -> null
                     EMPTY -> 0L
                     NONE -> value.toLong()
                 }
-            } else if (kClazz.isSubclassOf(LocalDateTime::class)) {
+            }
+
+            kClazz.isSubclassOf(LocalDateTime::class) -> {
                 when (nullMarker) {
                     NULL -> null
                     EMPTY -> throw IllegalStateException("$name must not be empty")
                     NONE -> value.toLocalDateTime()
                 }
-            } else if (kClazz.java.isEnum) {
+            }
+
+            kClazz.java.isEnum -> {
                 when (nullMarker) {
                     NULL -> null
                     EMPTY -> throw IllegalStateException("$name must not be empty")
                     NONE -> kClazz.java.enumConstants.filterIsInstance<Enum<*>>().first { it.name == value }
                 }
-            } else {
-                value
             }
 
+            else -> value
         }
     }
 }
@@ -128,7 +134,7 @@ enum class DataNullMark {
     /** 정상 */
     NONE,
 
-    /** 비어있으며 널 허용 안함 */
+    /** 비어있으며 널 허용 안함 = 디폴트값 넣어줘야함 */
     EMPTY,
 
     /** 비어있으며 널 허용 */

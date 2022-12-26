@@ -27,7 +27,7 @@ internal class ExposedClientTest {
 
         val aws = AwsConfig(profileName = "sin").toAwsClient()
         val password = runBlocking {
-            aws.sm.getSecretValue { this.secretId = "sin-rds_secret-dev" }.secretString!!.toGsonData()["password"].str
+            aws.sm.getSecretValue { this.secretId = "sin-rds_secret-dev" }.secretString!!.toGsonData()["password"].str!!
         }
 
 //        HikariConfig().apply {
