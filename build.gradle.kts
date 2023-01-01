@@ -27,10 +27,10 @@ val exposedVersion: String by extra("0.41.1")
 
 allprojects {
     group = "net.kotlinx.kotlin_support"
-    version = "2022-12-27"
+    version = "2022-12-34"
     repositories {
         mavenCentral()
-        maven { setUrl("https://jitpack.io") }
+        //maven { setUrl("https://jitpack.io") }
     }
 
     //자바 11로 타게팅 (큰 의미 없음)
@@ -58,11 +58,20 @@ subprojects {
 
     tasks.getByName<Test>("test") {
         useJUnitPlatform()
+        filter {
+            useJUnitPlatform {
+                includeTags("build") //이 태그가 있어야 빌드시 테스트 실행
+            }
+        }
     }
 }
 
 /** 아무것도 없음 */
-project(":core1") {}
+project(":core1") {
+    dependencies {
+        api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4") //이미 AWS 때문에 코투틴이 로드 되어야함
+    }
+}
 
 /**
  * 최소한의 기본 코틀린 패키지 +@  사용
@@ -75,6 +84,9 @@ project(":core2") {
         api(project(":core1")) //API로 해야 하위 프로젝트에서 사용 가능하다.
         //testImplementation(project(":core1").sourceSets["test"].output) //코어 테스트에 있는 공통을 사용할 수 있게 해줌 => 일단 포기.. 빡친다.
 
+        //==================================================== javax ======================================================
+        api("javax.validation:validation-api:2.0.1.Final")
+
         //==================================================== 로깅.. 맘에 안드네 ======================================================
         api("io.github.microutils:kotlin-logging-jvm:2.0.10") //slf4j의 래퍼. (로거 가져올때 사용)
         api("ch.qos.logback:logback-classic:1.4.5") //slf4j의 실제 구현체 (레벨 설정에 참조해야함)
@@ -82,6 +94,9 @@ project(":core2") {
 
         //==================================================== 코틀린 기본 ======================================================
         api("com.lectra:koson:1.2.4") // 코틀린 json DSL
+        api("com.github.doyaaaaaken:kotlin-csv:1.6.0") //CSV.. 좀 신뢰가 안가는 이름이네. 87kb 로 매우 가벼움
+        api("org.jetbrains.kotlinx:kotlinx-html:0.8.0")
+        api("org.jetbrains.kotlinx:kotlinx-html-jvm:0.8.0") //간단 HTML 구성
 
         //==================================================== 기본옵션 ======================================================
         api("com.google.code.gson:gson:2.10") // 외부 의존성 없음.. 깔끔함.  300kb 이내
@@ -104,6 +119,7 @@ project(":aws1") {
         api("aws.sdk.kotlin:s3:${awsVersion}")
         api("aws.sdk.kotlin:dynamodb:${awsVersion}")
         api("aws.sdk.kotlin:kinesis:${awsVersion}")
+        api("aws.sdk.kotlin:firehose:${awsVersion}")
         api("aws.sdk.kotlin:sqs:${awsVersion}")
     }
 
@@ -150,6 +166,7 @@ project(":aws") {
         api("com.google.guava:guava:31.1-jre")
 
         //==================================================== AWS ======================================================
+        api("aws.sdk.kotlin:athena:${awsVersion}")
         api("aws.sdk.kotlin:sts:${awsVersion}")
         api("aws.sdk.kotlin:lambda:${awsVersion}")
         api("aws.sdk.kotlin:iam:${awsVersion}")
@@ -173,7 +190,6 @@ project(":module1") {
 
         //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
         runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion") // 리플렉션 dto 변환용
-        implementation("com.github.doyaaaaaken:kotlin-csv:1.6.0") //CSV.. 좀 신뢰가 안가는 이름이네.
 
         //젯브레인 ORM
         implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
@@ -191,26 +207,30 @@ project(":module1") {
 }
 
 //==================================================== 배포 ======================================================
-//https://jitpack.io/#mypojo/kx_kotlin_support/-SNAPSHOT  이걸로 해도 됨
-//publishing {
-//    publications {
-//        fun pub(projectName: String) {
-//            create<MavenPublication>("maven-${projectName}") {
-//                groupId = "net.kotlinx.kotlin_support"
-//                artifactId = projectName
-//                from(project(":${projectName}").components["java"])
-//            }
-//        }
-//        pub("core1")
-//        pub("aws")
-//    }
-//    repositories {
-//        maven {
-//            url = uri("https://maven.pkg.jetbrains.space/november/p/ost/kotlin-support")
-//            credentials {
-//                username = project.properties["jatbrains.space.maven.username"].toString()
-//                password = project.properties["jatbrains.space.maven.password"].toString()
-//            }
-//        }
-//    }
-//}
+//https://jitpack.io/#mypojo/kx_kotlin_support/-SNAPSHOT  이걸로 해도 됨 (직접 배포하는게 더 좋은듯)
+publishing {
+    publications {
+        fun pub(projectName: String) {
+            create<MavenPublication>("maven-${projectName}") {
+                groupId = "net.kotlinx.kotlin_support"
+                artifactId = projectName
+                from(project(":${projectName}").components["java"])
+            }
+        }
+        //모든 의존성이 순서대로 다 있어야함
+        pub("core1")
+        pub("core2")
+        pub("aws1")
+        pub("aws")
+        pub("module1")
+    }
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.jetbrains.space/november/p/ost/kotlin-support")
+            credentials {
+                username = project.properties["jatbrains.space.maven.username"].toString()
+                password = project.properties["jatbrains.space.maven.password"].toString()
+            }
+        }
+    }
+}

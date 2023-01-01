@@ -1,5 +1,7 @@
 package net.kotlinx.core1.string
 
+import java.net.URLDecoder
+import java.net.URLEncoder
 import java.util.*
 
 val camelRegex = "(?<=[a-zA-Z])[A-Z]".toRegex()
@@ -13,3 +15,10 @@ fun String.toCamelFromSnake(): String = snakeRegex.replace(this) { it.value.repl
 
 /** 단어수 줄이기 (간이 출력용) */
 fun String.abbr(size: Int, suff: String = ".."): String = if (this.length <= size) this else "${this.substring(0, kotlin.math.min(this.length, size))}$suff"
+
+
+/** URL 인코딩 */
+fun String.encodeUrl(): String = URLEncoder.encode(this, "UTF-8")
+
+/** URL 디코딩 */
+fun String.decodeUrl(): String = URLDecoder.decode(this, "UTF-8")

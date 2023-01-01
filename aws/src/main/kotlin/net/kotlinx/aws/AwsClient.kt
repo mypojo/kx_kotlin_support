@@ -1,11 +1,12 @@
 package net.kotlinx.aws
 
+import aws.sdk.kotlin.services.athena.AthenaClient
 import aws.sdk.kotlin.services.iam.IamClient
 import aws.sdk.kotlin.services.lambda.LambdaClient
 import aws.sdk.kotlin.services.secretsmanager.SecretsManagerClient
 import aws.sdk.kotlin.services.ssm.SsmClient
-import net.kotlinx.aws.module.AwsIamModule
-import net.kotlinx.aws.module.AwsSsmStore
+import net.kotlinx.aws.iam.IamSecretUpdateModule
+import net.kotlinx.aws.ssm.SsmStore
 import net.kotlinx.aws1.AwsClient1
 import net.kotlinx.aws1.AwsConfig
 
@@ -16,12 +17,13 @@ class AwsClient(private val awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     val iam: IamClient by lazy { IamClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider } }
     val ssm: SsmClient by lazy { SsmClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider } }
     val sm: SecretsManagerClient by lazy { SecretsManagerClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider } }
+    val athena: AthenaClient by lazy { AthenaClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider } }
 
     //==================================================== 모듈 설정 ======================================================
-    val iamModule: AwsIamModule by lazy { AwsIamModule(iam) }
+    val iamSecretUpdateModule: IamSecretUpdateModule by lazy { IamSecretUpdateModule(iam) }
 
     //==================================================== 기타 ======================================================
-    val ssmStore: AwsSsmStore by lazy { AwsSsmStore(ssm) }
+    val ssmStore: SsmStore by lazy { SsmStore(ssm) }
 
 }
 

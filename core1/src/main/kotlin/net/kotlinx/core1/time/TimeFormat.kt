@@ -16,7 +16,8 @@ enum class TimeFormat(
 ) {
 
     /** 표준 변환이다!  다이나모 DB 등에서 기본으로 사용  */
-    ISO(DateTimeFormatter.ISO_DATE_TIME),  //=================================================== 밀리초까지 나오는 풀 시간. 거의 사용되지 않음 ===================================================
+    ISO(DateTimeFormatter.ISO_DATE_TIME),
+    ISO_OFFSET(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
     YMDHMSS("yyyyMMddHHmmssSSS"), YMDHMSS_K01("yyyy년MM월dd일(EEE) HH시mm분ss초(SSS)"),  //=================================================== 초까지 나오는 기본 시간  ===================================================
     YMDHMS("yyyyMMddHHmmss"), YMDHMS_F01("yyyy-MM-dd HH:mm:ss"),
 

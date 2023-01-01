@@ -79,7 +79,7 @@ object ReflectionUtil {
      * @return 입력된 문자열을 지정된 타입의 값으로 변경해준다.
      * */
     private fun convertTo(type: KType, value: String, name: String?): Comparable<Nothing>? {
-        val kClazz: KClass<*> = type.classifier as KClass<*>  //타입을 클래스로 변환 가능 (실패할 수 있음)
+        val kClazz: KClass<*> = type.classifier as? KClass<*> ?: throw IllegalStateException("안되는거! $type") //타입을 클래스로 변환 가능 (실패할 수 있음)
         val nullMarker: DataNullMark = when {
             value.isNotEmpty() -> NONE
             type.isMarkedNullable -> NULL

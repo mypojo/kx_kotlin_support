@@ -12,9 +12,10 @@ import org.junit.jupiter.api.Test
 
 internal class AwsClientTest {
 
+    val aws = AwsConfig(profileName = "sin").toAwsClient()
+
     @Test
     fun `일반-조회`() = runBlocking {
-        val aws = AwsConfig(profileName = "sin").toAwsClient()
 
         aws.lambda.listFunctions { maxItems = 10 }.functions?.map {
             arrayOf(
