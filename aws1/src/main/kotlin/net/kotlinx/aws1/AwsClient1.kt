@@ -12,10 +12,10 @@ import aws.sdk.kotlin.services.s3.S3Client
 open class AwsClient1(private val awsConfig: AwsConfig) {
 
     //==================================================== 클라이언트 설정 ======================================================
-    val s3: S3Client by lazy { S3Client { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider } }
-    val kinesis: KinesisClient by lazy { KinesisClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider } }
-    val firehose: FirehoseClient by lazy { FirehoseClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider } }
-    val dynamo: DynamoDbClient by lazy { DynamoDbClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider } }
+    val s3: S3Client by lazy { S3Client { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine =  awsConfig.httpClientEngine; } }
+    val kinesis: KinesisClient by lazy { KinesisClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
+    val firehose: FirehoseClient by lazy { FirehoseClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
+    val dynamo: DynamoDbClient by lazy { DynamoDbClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
 }
 
 /** 간단 변환 */

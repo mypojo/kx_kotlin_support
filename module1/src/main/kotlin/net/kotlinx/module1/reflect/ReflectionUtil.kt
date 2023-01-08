@@ -62,14 +62,10 @@ object ReflectionUtil {
     }
 
     /** 간단 로그 출력용 */
-    fun dataToLine(from: Any): List<String> {
+    fun dataToLine(from: Any): List<Any> {
         val fromMap = from::class.members.filterIsInstance<KProperty<*>>().associateBy { it.name }
         //가장 긴 파라메터로 사용
-        return from::class.constructors.maxWith(compareBy { it.parameters.size }).parameters.map { p ->
-            val field = fromMap[p.name]
-            val value = field?.getter?.call(from)
-            value?.toString() ?: ""
-        }
+        return from::class.constructors.maxWith(compareBy { it.parameters.size }).parameters.map { p -> fromMap[p.name]?.getter?.call(from) ?: "" }
     }
 
     /** 간단 로그 출력용 */

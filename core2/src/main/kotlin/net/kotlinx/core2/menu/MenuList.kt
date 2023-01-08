@@ -16,5 +16,4 @@ open class MenuList(
         menus.add(menu)
     }
 
-
 }

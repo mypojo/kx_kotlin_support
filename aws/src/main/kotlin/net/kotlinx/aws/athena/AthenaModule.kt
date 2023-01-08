@@ -14,7 +14,7 @@ import net.kotlinx.aws1.AwsInstanceTypeUtil
 import net.kotlinx.aws1.s3.S3Data
 import net.kotlinx.aws1.s3.getObjectDownload
 import net.kotlinx.aws1.s3.getObjectLines
-import net.kotlinx.core1.thread.CoroutineSleepTool
+import net.kotlinx.core2.concurrent.CoroutineSleepTool
 import java.io.File
 import java.util.concurrent.TimeUnit
 

@@ -3,6 +3,7 @@ package net.kotlinx.core1.string
 import org.junit.jupiter.api.Test
 
 internal class TextGridTest{
+
     @Test
     fun 기본테스트(){
 

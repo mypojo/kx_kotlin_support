@@ -1,5 +1,8 @@
 package net.kotlinx.core1.string
 
+import net.kotlinx.core1.time.toKr01
+import java.time.LocalDateTime
+
 /**
  * 헤더 기준으로 그리드 출력
  * 체인에 조금 부적합해 보이더라도 헤더가 먼저 오는게 적합해 보인다.
@@ -23,10 +26,11 @@ class TextGrid(
             array.map {
                 when (it) {
                     is Number -> it.toString() //닷 붙이기
+                    is LocalDateTime -> it.toKr01()
                     is Collection<*> -> it.joinToString(",")
                     else -> it.toString()
                 }
-            }.take(headers.size) //헤더길이로 맞춘다.
+            }.take(headers.size) //헤더보다 길면 제거
         }
         //헤더 포함 세로 베이스로 가장 큰 숫자를 구함
         val maxOfGridColumns = listOf(headers, *convertedDatas.toTypedArray()).let { datas ->

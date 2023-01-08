@@ -13,4 +13,15 @@ internal class Base62Test : TestRoot(){
         val value2 = Base62.fromBase62(text)
         assert(value1 == value2)
     }
+
+    @Test
+    fun `스트링_숫자`(){
+
+        val t1 = "12345"
+        val t2 = "123.45"
+
+        println("$t1 isNumeric : ${t1.isNumeric()}")
+        println("$t2 isNumeric : ${t2.isNumeric()}")
+
+    }
 }

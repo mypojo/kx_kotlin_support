@@ -21,13 +21,13 @@ plugins {
 }
 java.sourceCompatibility = JavaVersion.VERSION_11
 
-val awsVersion: String by extra("0.18.0-beta") //코틀린 버전 일단 사용
+val awsVersion: String by extra("0.19.2-beta") //코틀린 버전 일단 사용
 val kotlinVersion: String by extra("1.7.10")
 val exposedVersion: String by extra("0.41.1")
 
 allprojects {
     group = "net.kotlinx.kotlin_support"
-    version = "2022-12-34"
+    version = "2023-01-03"
     repositories {
         mavenCentral()
         //maven { setUrl("https://jitpack.io") }
@@ -50,9 +50,12 @@ subprojects {
     dependencies {
         implementation(kotlin("stdlib"))
 
+        //==================================================== 테스트 ======================================================
         testImplementation("org.junit-pioneer:junit-pioneer:1.9.1")  //환경변수 테스트용 (실서버 job 실행 등)
         testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.1") //최신버전
         testImplementation("io.mockk:mockk:1.13.3") //코틀린 모킹
+        testImplementation("io.kotest:kotest-runner-junit5:5.5.4")
+        testImplementation("io.kotest:kotest-assertions-core:5.5.4")
 
     }
 
@@ -111,6 +114,10 @@ project(":aws1") {
     dependencies {
         //==================================================== 내부 의존성 ======================================================
         api(project(":core2"))
+
+        //==================================================== 기본 http 클라이언트 ======================================================
+        implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.10")
+        implementation("aws.smithy.kotlin:http-client-engine-okhttp-jvm:0.14.2") //http 설정에 필요
 
         //==================================================== AWS ======================================================
         api("com.amazonaws:aws-lambda-java-core:1.2.2") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함
@@ -198,11 +205,8 @@ project(":module1") {
         implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
 
         //==================================================== RDB ======================================================
-        //implementation("mysql:mysql-connector-java:8.0.17")
-        implementation("org.mariadb.jdbc:mariadb-java-client:3.1.0") //intellij 보니 AWS aurora mysql은 이거사용함
-        implementation("com.zaxxer:HikariCP:5.0.0")
-
-
+        implementation("software.aws.rds:aws-mysql-jdbc:1.1.2") //aws 장애조치기능이 담긴 mysql 드라이버 & 모든 mysql과 호환가능. https://github.com/awslabs/aws-mysql-jdbc
+        implementation("com.zaxxer:HikariCP:5.0.1")
     }
 }
 

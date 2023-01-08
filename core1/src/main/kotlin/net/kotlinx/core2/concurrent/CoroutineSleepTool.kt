@@ -1,4 +1,4 @@
-package net.kotlinx.core1.thread
+package net.kotlinx.core2.concurrent
 
 import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicLong

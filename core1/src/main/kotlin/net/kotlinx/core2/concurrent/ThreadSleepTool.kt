@@ -1,4 +1,4 @@
-package net.kotlinx.core1.thread
+package net.kotlinx.core2.concurrent
 
 /**
  * 단일 스래드에서 일정 주기만큼 주기적으로 슬립할때 사용

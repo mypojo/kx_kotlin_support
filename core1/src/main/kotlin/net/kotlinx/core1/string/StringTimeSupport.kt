@@ -1,5 +1,6 @@
 package net.kotlinx.core1.string
 
+import net.kotlinx.core1.regex.RegexSet
 import net.kotlinx.core1.time.TimeFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -11,7 +12,7 @@ inline fun String.toLocalDateTime():LocalDateTime{
     if(this.contains('T')){
         return TimeFormat.ISO.toLocalDateTime(this) //이경우 존 정보는 버린다.
     }
-    val value = this.retain("\\d".toRegex())
+    val value = this.retainFrom(RegexSet.NUMERIC)
     return when(value.length){
         6 -> TimeFormat.YM.toLocalDateTime(value)
         8 -> TimeFormat.YMD.toLocalDateTime(value)
@@ -24,6 +25,6 @@ inline fun String.toLocalDateTime():LocalDateTime{
 }
 
 /** 공용 날짜 변환 : 로그 확인용 */
-inline fun String.toLocalDate():LocalDate = TimeFormat.YMD.toLocalDate(this.retain("\\d".toRegex()))
+inline fun String.toLocalDate():LocalDate = TimeFormat.YMD.toLocalDate(this.retainFrom(RegexSet.NUMERIC))
 /** 공용 날짜 변환 : 로그 확인용 */
-inline fun String.toLocalTime(): LocalTime = TimeFormat.HMS.toLocalTime(this.retain("\\d".toRegex()))
+inline fun String.toLocalTime(): LocalTime = TimeFormat.HMS.toLocalTime(this.retainFrom(RegexSet.NUMERIC))

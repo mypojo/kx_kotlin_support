@@ -32,7 +32,7 @@ internal class ExposedClientTest {
 
 //        HikariConfig().apply {
 //            jdbcUrl = "jdbc:mariadb://localhost:33061/sin_dev"
-//            driverClassName = "org.mariadb.jdbc.Driver"
+//            driverClassName = "org.mariadb.jdbc.Driver"n
 //            username = "admin"
 //            this.password = password
 //        }.also {
