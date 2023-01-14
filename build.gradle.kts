@@ -22,12 +22,12 @@ plugins {
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 val awsVersion: String by extra("0.19.2-beta") //코틀린 버전 일단 사용
-val kotlinVersion: String by extra("1.7.10")
+val kotlinVersion: String by extra("1.7.20")
 val exposedVersion: String by extra("0.41.1")
 
 allprojects {
     group = "net.kotlinx.kotlin_support"
-    version = "2023-01-03"
+    version = "2023-01-08"
     repositories {
         mavenCentral()
         //maven { setUrl("https://jitpack.io") }

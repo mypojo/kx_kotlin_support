@@ -20,7 +20,7 @@ internal class ChannelTest : DescribeSpec({
             it("코루틴 취소되면 예외 던져짐") {
                 shouldThrow<CancellationException> {
                     coroutineScope {
-                        assert(isActive)
+                        check(isActive)
                         launch {
                             log.debug { "병렬1..." }
                             delay(1000)
@@ -28,11 +28,11 @@ internal class ChannelTest : DescribeSpec({
                         }
                         delay(100)
                         cancel()
-                        assert(!isActive)
+                        check(!isActive)
                         val channel = Channel<String>(DEFAULT_BUFFER_SIZE)
                         channel.close()
-                        assert(channel.isClosedForSend)
-                        assert(channel.isClosedForReceive)
+                        check(channel.isClosedForSend)
+                        check(channel.isClosedForReceive)
                         log.debug { "여기까지 정상 작동 (suspend를 만나야 취소됨)" }
                         delay(10)
                         log.warn { "여기는 실행 안됨" }
@@ -53,8 +53,8 @@ internal class ChannelTest : DescribeSpec({
                     channel.send("last one")
                     channel.close()
                     log.info("입력 종료")
-                    assert(channel.isClosedForSend) { "센드는 바로 닫힘" }
-                    assert(!channel.isClosedForReceive) { "리시브는 데이터가 남아있기때문에 바로 닫히지 않음" }
+                    check(channel.isClosedForSend) { "센드는 바로 닫힘" }
+                    check(!channel.isClosedForReceive) { "리시브는 데이터가 남아있기때문에 바로 닫히지 않음" }
                 }
                 launch {
                     while (!channel.isClosedForReceive) {

@@ -19,28 +19,32 @@ fun TABLE.write(headers: List<String>, datas: List<Array<*>>, nullString: String
             tr {
                 line.forEach { data ->
                     td {
-                        when (data) {
-                            is List<*> -> {
-                                data.forEach {
-                                    +(it?.toString() ?: nullString)
-                                    br
-                                }
-                            }
-
-                            is HtmlLink -> {
-                                a {
-                                    href = data.href
-                                    target = "_blank" //새창열기
-                                    +data.name //값이 제일 뒤에 와야한다.
-                                }
-                            }
-
-                            else -> +(data?.toString() ?: nullString)
-                        }
+                        insert(data, nullString)
                     }
                 }
             }
         }
+    }
+}
+
+private fun TD.insert(data: Any?, nullString: String) {
+    when (data) {
+        is List<*> -> {
+            data.forEach { each ->
+                insert(each, nullString)
+                br
+            }
+        }
+
+        is HtmlLink -> {
+            a {
+                href = data.href
+                target = "_blank" //새창열기
+                +data.name //값이 제일 뒤에 와야한다.
+            }
+        }
+
+        else -> +(data?.toString() ?: nullString)
     }
 }
 

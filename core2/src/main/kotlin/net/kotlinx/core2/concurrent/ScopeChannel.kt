@@ -1,13 +1,10 @@
 package net.kotlinx.core2.concurrent
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
-import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -39,12 +36,12 @@ suspend fun <E> ReceiveChannel<E>.receiveAvailable(): List<E> {
 }
 
 /**
- * 시간당 최대 처리수를 제한하는 채널
- * 크롤링 차단을 회피하기 위해서 만들어짐
+ * 소스코드 참고용 채널
+ * ex) 크롤링 서버 (동시 실행제한 & 횟수 제한으로 IP블록 회피)
  * Channel 위임 안함
  * 예외 발생시 채널의 데이터는 다 소실된다.
  *  */
-class DelayChannel(
+class ScopeChannel(
     /** 기본 스코프. 예외 발생시 이 단위로 다 중지 */
     private val scope: CoroutineScope,
     /** 채널 capacity */
@@ -55,8 +52,14 @@ class DelayChannel(
     private val maxConcurrency: Int = 1000,
     /** 처리당 기본 타임아웃 */
     private val timeout: Long = TimeUnit.SECONDS.toMillis(20),
-    /** 개별 로직의 예외 처리 콜백 */
-    private val exCallback: suspend (Throwable) -> Unit = { throw it }
+    /** 타임아웃 콜백. throw 해봐야 반응 안함(전체를 취소시키지 않음). 알람 or 큐처리 할것 */
+    private val timeoutCallback: suspend (TimeoutCancellationException, data: Any) -> Unit = { e, data -> println("$e / input = $data") },
+    /**
+     * 개별 로직의 예외 처리 콜백
+     * JobCancellationException
+     * TimeoutCancellationException : 던져져도 반응 안함.
+     *  */
+    private val exCallback: suspend (Throwable, data: Any) -> Unit = { e, _ -> throw e },
 ) {
 
     private val log = KotlinLogging.logger {}
@@ -121,38 +124,22 @@ class DelayChannel(
     }
 
     private suspend fun <T> executeLaunch(doCallback: suspend (T) -> Unit, data: T) {
-        try {
-            scope.launch(context) {
-                try {
-                    withTimeout(timeout) {
-                        try {
-                            doCallback.invoke(data)
-                        } finally {
-                            semaphore.release()
-                            _queueCnt.decrementAndGet()
-                        }
+        scope.launch(context) {
+            try {
+                withTimeout(timeout) {
+                    try {
+                        doCallback.invoke(data)
+                    } finally {
+                        semaphore.release()
+                        _queueCnt.decrementAndGet()
                     }
-                } catch (e: Exception) {
-                    println("ㄸㄸㄸㄸㄸㄸㄸㄸㄸ $e")
                 }
+            } catch (e: TimeoutCancellationException) {
+                timeoutCallback.invoke(e, data as Any)
+            } catch (e: Throwable) {
+                exCallback.invoke(e, data as Any)
             }
-        } catch (e: Throwable) {
-            exCallback.invoke(e)
         }
-//        try {
-//            withTimeout(timeout) {
-//                scope.launch(context) {
-//                    try {
-//                        doCallback.invoke(datas)
-//                    } finally {
-//                        semaphore.release()
-//                        _queueCnt.decrementAndGet()
-//                    }
-//                }
-//            }
-//        } catch (e: Throwable) {
-//            exCallback.invoke(e)
-//        }
     }
 
     suspend fun send(element: String) {

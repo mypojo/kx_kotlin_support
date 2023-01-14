@@ -3,7 +3,6 @@ package net.kotlinx.module1.reflect
 import net.kotlinx.core1.string.TextGrid
 import net.kotlinx.core1.string.toLocalDateTime
 import net.kotlinx.core1.string.toTextGrid
-import net.kotlinx.module1.reflect.DataNullMark.*
 import java.time.LocalDateTime
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty
@@ -38,7 +37,7 @@ object ReflectionUtil {
      * 한정된 용도로만 사용하자
      * @see Serializable 확인
      * */
-    fun <T : Any> lineToData(from: Array<String>, to: KClass<T>): T {
+    fun <T : Any> lineToData(from: Array<String?>, to: KClass<T>): T {
         val constructor = to.constructors.firstOrNull { it.parameters.size == from.size }
         checkNotNull(constructor) { "클래스 [${to.simpleName}] 에 입력인자 길이 ${from.size} 와 일치하는 생성자가 존재하지 않습니다. " }
 
@@ -74,43 +73,43 @@ object ReflectionUtil {
     /**
      * @return 입력된 문자열을 지정된 타입의 값으로 변경해준다.
      * */
-    private fun convertTo(type: KType, value: String, name: String?): Comparable<Nothing>? {
+    private fun convertTo(type: KType, value: String?, name: String?): Comparable<Nothing>? {
         val kClazz: KClass<*> = type.classifier as? KClass<*> ?: throw IllegalStateException("안되는거! $type") //타입을 클래스로 변환 가능 (실패할 수 있음)
         val nullMarker: DataNullMark = when {
-            value.isNotEmpty() -> NONE
-            type.isMarkedNullable -> NULL
-            else -> EMPTY
+            !value.isNullOrEmpty() -> DataNullMark.NONE
+            type.isMarkedNullable -> DataNullMark.NULL
+            else -> DataNullMark.EMPTY
         }
         return when {
             kClazz.isSubclassOf(Int::class) -> {
                 when (nullMarker) {
-                    NULL -> null
-                    EMPTY -> 0
-                    NONE -> value.toInt()
+                    DataNullMark.NULL -> null
+                    DataNullMark.EMPTY -> 0
+                    DataNullMark.NONE -> value!!.toInt()
                 }
             }
 
             kClazz.isSubclassOf(Long::class) -> {
                 when (nullMarker) {
-                    NULL -> null
-                    EMPTY -> 0L
-                    NONE -> value.toLong()
+                    DataNullMark.NULL -> null
+                    DataNullMark.EMPTY -> 0L
+                    DataNullMark.NONE -> value!!.toLong()
                 }
             }
 
             kClazz.isSubclassOf(LocalDateTime::class) -> {
                 when (nullMarker) {
-                    NULL -> null
-                    EMPTY -> throw IllegalStateException("$name must not be empty")
-                    NONE -> value.toLocalDateTime()
+                    DataNullMark.NULL -> null
+                    DataNullMark.EMPTY -> throw IllegalStateException("$name must not be empty")
+                    DataNullMark.NONE -> value!!.toLocalDateTime()
                 }
             }
 
             kClazz.java.isEnum -> {
                 when (nullMarker) {
-                    NULL -> null
-                    EMPTY -> throw IllegalStateException("$name must not be empty")
-                    NONE -> kClazz.java.enumConstants.filterIsInstance<Enum<*>>().first { it.name == value }
+                    DataNullMark.NULL -> null
+                    DataNullMark.EMPTY -> throw IllegalStateException("$name must not be empty")
+                    DataNullMark.NONE -> kClazz.java.enumConstants.filterIsInstance<Enum<*>>().first { it.name == value }
                 }
             }
 

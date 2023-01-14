@@ -34,7 +34,7 @@ internal class AwsClientTest {
         }
 
         val secretValue = aws.sm.getSecretValue { this.secretId = "sin-rds_secret-dev" }
-        assert(secretValue != null)
+        check(secretValue != null)
 
     }
 

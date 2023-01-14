@@ -11,7 +11,7 @@ internal class Base62Test : TestRoot(){
         val value1 = 1231298123791823L
         val text = Base62.toBase62(value1)
         val value2 = Base62.fromBase62(text)
-        assert(value1 == value2)
+        check(value1 == value2)
     }
 
     @Test
