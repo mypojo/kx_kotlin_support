@@ -12,6 +12,7 @@ import mu.KotlinLogging
  * 미리 테이블이 만들어져있어야 한다.
  * @see net.kotlinx.core1.id.IdGenerator
  */
+
 class DynamoIdSource(
     /**  client */
     private val dynamoDbClient: DynamoDbClient,

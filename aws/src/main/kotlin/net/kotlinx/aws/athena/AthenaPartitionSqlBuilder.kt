@@ -3,6 +3,13 @@ package net.kotlinx.aws.athena
 import java.time.LocalDate
 
 /**
+ * 문법상 limit는 없는듯 하지만 쿼리가 너무 길어지면 오류가 나기때문에 1000개 이하로 추천
+ * 샘플 : 파티션 7500개 생성에 1분 56초 걸림
+ * 경고!! 기본map 이어야함
+ *  */
+private const val PARTITION_ADD_LIMIT = 1000
+
+/**
  * Athena 파티션 sql 생성 도우미
  * 미리 파티션에 입력될 값을 알고 있어야 한다.
  * 파티션 정보를 모르는경우 S3 스캔해서 확인
@@ -20,11 +27,14 @@ class AthenaPartitionSqlBuilder(
 
     //==================================================== 쿼리 생성 ======================================================
 
-    /** 파티셔닝 추가 SQL 생성  -> 3일치 생성 가능 */
-    fun generateAddSql(tableName: String, datas: List<LinkedHashMap<String, String>>): String {
+    /** 파티셔닝 추가 SQL 생성 */
+    fun generateAddSql(tableName: String, datas: List<Map<String, String>>): String {
         val tablePath = tableName.replace(Regex(".*\\."), "") //스키마 제거
         val s3Path = "s3://${bucketName}/${prefix}/${tablePath}"
         val append = datas.joinToString("\n") { dataMap ->
+            if (dataMap.size >= 2) {
+                check(dataMap is LinkedHashMap) { "순서가 있는 맵 이어야함" }
+            }
             val pData = dataMap.entries.joinToString(",") { "${it.key}='${it.value}'" }
             val pPath = dataMap.entries.joinToString("/") { "${it.key}=${it.value}" }
             "PARTITION (${pData}) LOCATION '${s3Path}/${pPath}/'"
@@ -32,8 +42,11 @@ class AthenaPartitionSqlBuilder(
         return "ALTER TABLE $tableName ADD IF NOT EXISTS\n${append}"
     }
 
+    /** 대량의 경우 limit로 분리해서 만들어줌 */
+    fun generateAddSqlBatch(tableName: String, datas: List<Map<String, String>>): List<String> = datas.chunked(PARTITION_ADD_LIMIT).map { generateAddSql(tableName, it) }
+
     /** 파티셔닝 삭제 SQL 생성 -> 2일치 삭제 불가능. 나눠서 할것 */
-    fun generateDropSql(tableName: String, datas: List<LinkedHashMap<String, String>>): String {
+    fun generateDropSql(tableName: String, datas: List<Map<String, String>>): String {
         val append = datas.joinToString(",\n") { dataMap ->
             val pData = dataMap.entries.joinToString(",") { "${it.key}='${it.value}'" }
             "PARTITION (${pData})"

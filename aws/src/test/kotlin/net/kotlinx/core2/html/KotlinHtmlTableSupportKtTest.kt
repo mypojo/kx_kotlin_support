@@ -12,9 +12,11 @@ class KotlinHtmlTableSupportKtTest : TestRoot() {
     fun test() {
 
         val html = createHTML().html {
+            setDefault("test")
             body {
                 div {
                     table {
+
                         write(
                             listOf("ID", "이름"),
                             listOf(
@@ -22,6 +24,13 @@ class KotlinHtmlTableSupportKtTest : TestRoot() {
                                 arrayOf(
                                     "111",
                                     listOf(HtmlLink("1", "2"), "bbbb")
+                                ),
+                                arrayOf(
+                                    "111",
+                                    listOf(
+                                        HtmlStyle("빨간").ok(false),
+                                        HtmlStyle("파란").ok(true),
+                                    ),
                                 ),
                             )
                         )

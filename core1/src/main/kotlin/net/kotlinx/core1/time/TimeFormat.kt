@@ -18,24 +18,42 @@ enum class TimeFormat(
     /** 표준 변환이다!  다이나모 DB 등에서 기본으로 사용  */
     ISO(DateTimeFormatter.ISO_DATE_TIME),
     ISO_OFFSET(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-    YMDHMSS("yyyyMMddHHmmssSSS"), YMDHMSS_K01("yyyy년MM월dd일(EEE) HH시mm분ss초(SSS)"),  //=================================================== 초까지 나오는 기본 시간  ===================================================
-    YMDHMS("yyyyMMddHHmmss"), YMDHMS_F01("yyyy-MM-dd HH:mm:ss"),
+    YMDHMSS("yyyyMMddHHmmssSSS"),
+    YMDHMSS_K01("yyyy년MM월dd일(EEE) HH시mm분ss초(SSS)"),
+
+    //=================================================== 초까지 나오는 기본 시간  ===================================================
+    YMDHMS("yyyyMMddHHmmss"),
+    YMDHMS_F01("yyyy-MM-dd HH:mm:ss"),
 
     /** mysql 기본형. 2022-07-07 03:12:52.0  */
     YMDHMS_MYSQL("yyyy-MM-dd HH:mm:ss.S"),
 
     /** 파일 이름에 사용 금지인 : 제거  */
-    YMDHMS_F02("yyyy-MM-dd_HH-mm-ss"), YMDHMS_K01("yyyy년MM월dd일(EEE) HH시mm분ss초"),  //=================================================== 분까지 나오는 시간  ===================================================
-    YMDHM("yyyyMMddHHmm"), YMDHM_F01("yyyy-MM-dd HH:mm"),
+    YMDHMS_F02("yyyy-MM-dd_HH-mm-ss"),
+    YMDHMS_K01("yyyy년MM월dd일(EEE) HH시mm분ss초"),
+
+    //=================================================== 분까지 나오는 시간  ===================================================
+    YMDHM("yyyyMMddHHmm"),
+    YMDHM_F01("yyyy-MM-dd HH:mm"),
 
     /** 파일 이름에 사용 금지인 : 제거  */
-    YMDHM_F02("yyyy-MM-dd_HH-mm"), YMDHM_K01("yyyy년MM월dd일(EEE) HH시mm분"),  //=================================================== 시간 나오는 시간  ===================================================
+    YMDHM_F02("yyyy-MM-dd_HH-mm"),
+    YMDHM_K01("yyyy년MM월dd일(EEE) HH시mm분"),
+
+    //=================================================== 시간 나오는 시간  ===================================================
     YMDH("yyyyMMddHH"),  //AWS 파이어호스 기본
 
     //=================================================== 날짜  ===================================================
-    YMD("yyyyMMdd"), YMD_F01("yyyy-MM-dd"), YMD_F02("yyyy.MM.dd"), YMD_K01("yyyy년MM월dd일(EEE)"), Y2MD("yyMMdd"), Y2MDHMS("yyMMddMMddHHmmss"), Y2MD_F01("yy-MM-dd"), Y2MD_K01("yy년MM월dd일(EEE)"), YM("yyyyMM"), YM_F01(
-        "yyyy-MM"
-    ),
+    YMD("yyyyMMdd"),
+    YMD_F01("yyyy-MM-dd"),
+    YMD_F02("yyyy.MM.dd"),
+    YMD_K01("yyyy년MM월dd일(EEE)"),
+    Y2MD("yyMMdd"),
+    Y2MDHMS("yyMMddMMddHHmmss"),
+    Y2MD_F01("yy-MM-dd"),
+    Y2MD_K01("yy년MM월dd일(EEE)"),
+    YM("yyyyMM"),
+    YM_F01("yyyy-MM"),
     Y("yyyy"),
 
     /** 날짜 2자리  */

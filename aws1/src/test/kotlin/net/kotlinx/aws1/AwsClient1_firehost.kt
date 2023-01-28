@@ -35,8 +35,8 @@ internal class AwsClient1_firehost {
         /** 현재 순위 */
         var nowRank: Int = 0
 
-
     }
+
 
     @Test
     fun run() = runBlocking {
@@ -63,7 +63,7 @@ internal class AwsClient1_firehost {
     }
 
     private suspend fun putRecord(json: String) {
-        aws.firehose.putRecord("autobid_rank",json)
+        aws.firehose.putRecord("autobid_rank", json)
     }
 
 }

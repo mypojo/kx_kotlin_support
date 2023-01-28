@@ -41,7 +41,7 @@ internal class AthenaModuleTest : TestRoot() {
                 file.toPath().deleteExisting()
             },
         )
-        val athenaModule = AthenaModule(aws)
+        val athenaModule = AthenaModule(aws, workGroup = "workgroup-dev")
         athenaModule.startAndWaitAndExecute(executions)
 
     }

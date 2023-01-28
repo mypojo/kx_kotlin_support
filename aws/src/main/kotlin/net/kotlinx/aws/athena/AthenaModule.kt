@@ -2,6 +2,7 @@ package net.kotlinx.aws.athena
 
 import aws.sdk.kotlin.services.athena.getQueryExecution
 import aws.sdk.kotlin.services.athena.model.QueryExecution
+import aws.sdk.kotlin.services.athena.model.QueryExecutionContext
 import aws.sdk.kotlin.services.athena.model.QueryExecutionState
 import aws.sdk.kotlin.services.athena.model.QueryExecutionState.*
 import aws.sdk.kotlin.services.athena.startQueryExecution
@@ -25,6 +26,8 @@ import java.util.concurrent.TimeUnit
  *  */
 class AthenaModule(
     private val aws: AwsClient,
+    /** 데이터베이스 명 (기본스키마) */
+    private val database: String = "",
     /** 워크그룹 (쿼리 결과 위치 있어야함) */
     private val workGroup: String = "primary",
     /** 쿼리 종료되었는지 체크를 시도하는 간격 */
@@ -35,8 +38,11 @@ class AthenaModule(
 
     private val log = KotlinLogging.logger {}
 
+    /** 고정 실행 컨텍스트 미리 생성. (스키마 미 지정시 디폴트 스키마) */
+    private val _queryExecutionContext = QueryExecutionContext { this.database = this@AthenaModule.database }
+
     /** 코루틴 기반 아테나 쿼리 실행 래퍼 */
-    inner class AthenaExecution(private val athenaQuery: AthenaQuery) {
+    private inner class AthenaExecution(private val athenaQuery: AthenaQuery) {
 
         private val sleepTool = CoroutineSleepTool(checkIntervalMills)
 
@@ -51,7 +57,8 @@ class AthenaModule(
             sleepTool.checkAndSleep() //첫 슬립 무시
             startExecutionId = aws.athena.startQueryExecution {
                 this.queryString = athenaQuery.query
-                this.workGroup = workGroup
+                this.workGroup = this@AthenaModule.workGroup
+                this.queryExecutionContext = _queryExecutionContext
             }.queryExecutionId!!
         }
 
@@ -119,20 +126,23 @@ class AthenaModule(
 
     /** 모든 쿼리 로직을 동시에 처리 (동시 실행 제한수 주의) */
     fun startAndWaitAndExecute(querys: List<AthenaQuery>): List<AthenaQuery> {
+        runBlocking { startExecute(querys) }
+        return querys
+    }
+
+    /** suspend 용 */
+    suspend fun startExecute(querys: List<AthenaQuery>) {
         val list = querys.map { AthenaExecution(it) }
-        runBlocking {
-            withTimeout(checkTimeout){
-                for (execution in list) {
-                    launch {
-                        execution.start()
-                        while (true) {
-                            val ok = execution.checkAndExecute()
-                            if (ok) break
-                        }
+        withTimeout(checkTimeout) {
+            for (execution in list) {
+                launch {
+                    execution.start()
+                    while (true) {
+                        val ok = execution.checkAndExecute()
+                        if (ok) break
                     }
                 }
             }
         }
-        return querys
     }
 }

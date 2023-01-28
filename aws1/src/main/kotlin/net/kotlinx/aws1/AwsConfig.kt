@@ -19,15 +19,14 @@ data class AwsConfig(
     /** http client의 타임아웃 */
     val httpConnectTimeout: Duration = 4.seconds, //디폴트 2초
 
-
-    ) {
+) {
     /**
-     * 우선순위 : 프로파일 -> 환경변수(체인 기본순서)
+     * 체인 기본순서 : 환경변수 -> 프로파일
      * */
     val credentialsProvider: CredentialsProvider? = profileName?.let { DefaultChainCredentialsProvider(profileName = profileName) }
 
     /** SDK 기본 클라이언트는 버려진듯. 근데 이러면 클라이언트가 어려개 생기지 않는지? */
-    val httpClientEngine:HttpClientEngine = OkHttpEngine {
+    val httpClientEngine: HttpClientEngine = OkHttpEngine {
         this.maxConnections = httpMaxConnections.toUInt()
         this.connectTimeout = httpConnectTimeout
     }
