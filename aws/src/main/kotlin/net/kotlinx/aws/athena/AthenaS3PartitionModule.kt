@@ -57,6 +57,7 @@ class AthenaS3PartitionModule(
 
         val upkeep: MutableList<Map<String, String>> = mutableListOf()
         listDir(prefixs.toList(), upkeep)
+        log.debug { " -> 파티션 ${upkeep.size}건 조회됨" }
         val sqls = builder.generateAddSqlBatch(tableName, upkeep)
         if (log.isTraceEnabled) {
             sqls.forEachIndexed { i, it -> log.trace { " -> sql[$i]\n$it" } }

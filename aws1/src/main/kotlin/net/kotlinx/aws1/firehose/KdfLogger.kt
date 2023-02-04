@@ -1,9 +1,7 @@
 package net.kotlinx.aws1.firehose
-import aws.sdk.kotlin.services.firehose.FirehoseClient
 
+import aws.sdk.kotlin.services.firehose.FirehoseClient
 import com.google.gson.Gson
-import net.kotlinx.aws1.s3.putRecord
-import net.kotlinx.aws1.s3.putRecordBatch
 import net.kotlinx.core2.gson.GsonSet
 
 /**

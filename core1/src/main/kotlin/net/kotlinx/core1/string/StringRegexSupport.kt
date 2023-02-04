@@ -7,7 +7,6 @@ package net.kotlinx.core1.string
  *  */
 inline fun String.retainFrom(regex: Regex): String = regex.findAll(this).joinToString("") { it.value }
 
-
 /**
  * 해당 매칭을 제거한다.
  *  */

@@ -55,11 +55,16 @@ class AthenaModule(
         /** 쿼리 실행 */
         suspend fun start() {
             sleepTool.checkAndSleep() //첫 슬립 무시
-            startExecutionId = aws.athena.startQueryExecution {
-                this.queryString = athenaQuery.query
-                this.workGroup = this@AthenaModule.workGroup
-                this.queryExecutionContext = _queryExecutionContext
-            }.queryExecutionId!!
+            try {
+                startExecutionId = aws.athena.startQueryExecution {
+                    this.queryString = athenaQuery.query
+                    this.workGroup = this@AthenaModule.workGroup
+                    this.queryExecutionContext = _queryExecutionContext
+                }.queryExecutionId!!
+            } catch (e: Exception) {
+                log.warn { "쿼리 오류 : ${athenaQuery.query}" }
+                throw e
+            }
         }
 
         /**
@@ -85,7 +90,7 @@ class AthenaModule(
             //편의성 콜백 정의
             when (athenaQuery) {
                 is AthenaExecute -> {
-                    athenaQuery?.callback?.invoke(currentQueryExecution!!) //콜백이 없으면 작동 안함.
+                    athenaQuery.callback?.invoke(currentQueryExecution!!) //콜백이 없으면 작동 안함.
                 }
 
                 is AthenaReadAll -> {

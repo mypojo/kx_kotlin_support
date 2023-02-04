@@ -16,18 +16,18 @@ internal class AthenaModuleTest : TestRoot() {
         val executions = listOf(
             AthenaReadAll(
                 """
-                    SELECT basic_date "날짜",kwd_name,date_format(event_time AT TIME ZONE 'Asia/Seoul', '%Y-%m-%d %H') "시간",COUNT(1)+1 CNT 
-                    FROM nb.autobid_rank
+                    SELECT basic_date "날짜",kwd_name,date_format(event_time AT TIME ZONE 'Asia/Seoul', '%Y-%m-%d %H') "시간",COUNT(1) CNT 
+                    FROM autobid_rank
                     group by  basic_date,kwd_name,date_format(event_time AT TIME ZONE 'Asia/Seoul', '%Y-%m-%d %H')
                     order by basic_date,date_format(event_time AT TIME ZONE 'Asia/Seoul', '%Y-%m-%d %H')
                 """
             ) { lines ->
-                lines.forEach { println(it) }
+                println(lines.size)
             },
             AthenaDownload(
                 """
                     SELECT basic_date "날짜",kwd_name,date_format(event_time AT TIME ZONE 'Asia/Seoul', '%Y-%m-%d %H') "시간",COUNT(1)+1 CNT 
-                    FROM nb.autobid_rank
+                    FROM autobid_rank
                     group by  basic_date,kwd_name,date_format(event_time AT TIME ZONE 'Asia/Seoul', '%Y-%m-%d %H')
                     order by basic_date,date_format(event_time AT TIME ZONE 'Asia/Seoul', '%Y-%m-%d %H')
                 """
@@ -41,7 +41,7 @@ internal class AthenaModuleTest : TestRoot() {
                 file.toPath().deleteExisting()
             },
         )
-        val athenaModule = AthenaModule(aws, workGroup = "workgroup-dev")
+        val athenaModule = AthenaModule(aws, workGroup = "workgroup-prod",database = "p")
         athenaModule.startAndWaitAndExecute(executions)
 
     }

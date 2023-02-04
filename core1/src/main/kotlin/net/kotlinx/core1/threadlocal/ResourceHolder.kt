@@ -26,7 +26,7 @@ object ResourceHolder {
     }
 
     /** 주로 사용된느 워크스페이스  */
-    fun getWorkspace(): File? {
+    fun getWorkspace(): File {
         val localWorkspace: String = System.getenv().getOrDefault("LOCAL_WORKSPACE", "D:/DATA/WORK")
         val dir = File(localWorkspace)
         dir.mkdirs()

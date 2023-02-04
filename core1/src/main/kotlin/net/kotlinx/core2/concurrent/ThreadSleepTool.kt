@@ -20,7 +20,7 @@ class ThreadSleepTool(
     fun checkAndSleep() {
         if (before != 0L) {
             val interval = System.currentTimeMillis() - before
-            var currentInterval = minInterval
+            val currentInterval = minInterval
             val sleep = currentInterval - interval
             if (sleep > 0) Thread.sleep(sleep)
         }

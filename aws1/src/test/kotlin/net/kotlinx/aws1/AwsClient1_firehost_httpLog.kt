@@ -24,14 +24,15 @@ internal class AwsClient1_firehost_httpLog {
             val httpLog = HttpLog(
                 basicDate = now.toLocalDate().minusDays(1).toYmd(),
                 name = "test",
+                eventId = "",
                 reqTime = now,
                 reqUri = "https://aa.com",
+                reqMethod = "post",
                 respCode = 200,
                 respBody = resp.toString()
             )
             logger.putRecord(httpLog)
         }
-
     }
 
 

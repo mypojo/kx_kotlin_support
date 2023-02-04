@@ -27,7 +27,7 @@ val exposedVersion: String by extra("0.41.1")
 
 allprojects {
     group = "net.kotlinx.kotlin_support"
-    version = "2023-01-14"
+    version = "2023-01-22"
     repositories {
         mavenCentral()
         //maven { setUrl("https://jitpack.io") }
@@ -116,7 +116,7 @@ project(":aws1") {
         api(project(":core2"))
 
         //==================================================== 기본 http 클라이언트 ======================================================
-        implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.10")
+        api("com.squareup.okhttp3:okhttp:5.0.0-alpha.10")
         implementation("aws.smithy.kotlin:http-client-engine-okhttp-jvm:0.14.2") //http 설정에 필요
 
         //==================================================== AWS ======================================================

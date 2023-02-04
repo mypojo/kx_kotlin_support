@@ -1,4 +1,4 @@
-package net.kotlinx.aws1.s3
+package net.kotlinx.aws1.firehose
 
 import aws.sdk.kotlin.services.firehose.FirehoseClient
 import aws.sdk.kotlin.services.firehose.model.PutRecordBatchResponse
