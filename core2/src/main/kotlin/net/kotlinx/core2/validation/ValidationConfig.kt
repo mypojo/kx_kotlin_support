@@ -79,7 +79,9 @@ data class ValidationResult(
     }
 }
 
-/** 스래드풀로 전환. */
+/**
+ * 내부 로직에 선언적 트랜잭션이 자주 사용되기 때문에 스래드풀을 사용해서 실행함
+ *  */
 fun List<ValidationConfig>.check(threadCnt: Int = Runtime.getRuntime().availableProcessors()): List<ValidationResult> {
 
     val workerPool: ExecutorService = Executors.newFixedThreadPool(threadCnt)

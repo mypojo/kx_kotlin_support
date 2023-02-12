@@ -27,7 +27,7 @@ val exposedVersion: String by extra("0.41.1")
 
 allprojects {
     group = "net.kotlinx.kotlin_support"
-    version = "2023-01-22"
+    version = "2023-01-30"
     repositories {
         mavenCentral()
         //maven { setUrl("https://jitpack.io") }
@@ -67,6 +67,11 @@ subprojects {
             }
         }
     }
+
+    java {
+        withSourcesJar() //소스코드 포함해서 배포
+    }
+
 }
 
 /** 아무것도 없음 */

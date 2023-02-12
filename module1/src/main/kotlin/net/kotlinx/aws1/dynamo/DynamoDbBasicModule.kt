@@ -30,15 +30,21 @@ class DynamoDbBasicModule<T : DynamoDbBasic>(
         }
     }
 
-    suspend fun getItem(data: DynamoDbBasic): T {
-        val resultMap = dynamo.getItem {
+    /**
+     * 리플렉션이 아닌 임시로 json 사용 -> 이때문에 숫자/문자만 사용 가능함
+     *  */
+    suspend fun getItem(data: DynamoDbBasic): T? {
+        val item = dynamo.getItem {
             this.tableName = this@DynamoDbBasicModule.tableName
             this.consistentRead = false
             this.key = mapOf(
                 DynamoDbBasic.pk to S(data.pk),
                 DynamoDbBasic.sk to S(data.sk),
             )
-        }.item!!.map { it.key to (it.value.asSOrNull() ?: it.value.asN()) }.toMap()
+        }.item ?: return null
+        val resultMap = item.map {
+            it.key to (it.value.asSOrNull() ?: it.value.asNOrNull())
+        }.toMap()
         val json = GsonSet.TABLE_UTC.toJson(resultMap)
         return GsonSet.TABLE_UTC.fromJson(json, clazz.java)
     }

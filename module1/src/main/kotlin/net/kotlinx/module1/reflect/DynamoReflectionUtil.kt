@@ -5,6 +5,7 @@ import net.kotlinx.core1.string.toSnakeFromCamel
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.memberProperties
+import kotlin.reflect.full.primaryConstructor
 
 /**
  * DDB 간단한 리플렉션 도구
@@ -17,7 +18,13 @@ object DynamoReflectionUtil {
      * json 으로 중간단계 변환하는 방법은 사용하지 않는다.
      *  */
     fun <T : Any> toAttributeMap(obj: T, snakeFromCamel: Boolean = true): Map<String, AttributeValue> {
-        return (obj::class as KClass<T>).memberProperties.map { prop ->
+
+        val kClass = (obj::class as KClass<T>)
+        //data 클래스로 간주하며, 생성자에 없다면 포함시키지 않는다.
+        val constructors = kClass.primaryConstructor!!.parameters.map { it.name }.toSet()
+
+        return kClass.memberProperties.map { prop ->
+            if(prop.name !in constructors)  return@map null
             val key = if (snakeFromCamel) prop.name.toSnakeFromCamel() else prop.name
             val value = prop.get(obj)
             if (key == null) return@map null
@@ -26,7 +33,8 @@ object DynamoReflectionUtil {
             val attr = when {
                 kClazz.isSubclassOf(String::class) -> AttributeValue.S(value.toString())
                 kClazz.isSubclassOf(Number::class) -> AttributeValue.N(value.toString())
-                kClazz.isData -> throw IllegalArgumentException("데이터 클래스 미지원")
+                kClazz.isSubclassOf(Boolean::class) -> AttributeValue.Bool(value as Boolean)
+                kClazz.isData -> throw IllegalArgumentException("내장 데이터 클래스 미지원")
                 else -> throw IllegalArgumentException("$kClazz 클래스 미지원")
             }
             key to attr

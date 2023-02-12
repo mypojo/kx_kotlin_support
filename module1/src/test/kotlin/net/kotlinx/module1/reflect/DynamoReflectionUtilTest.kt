@@ -1,6 +1,6 @@
 package net.kotlinx.module1.reflect
 
-import io.kotest.common.runBlocking
+import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.toAwsClient
 import net.kotlinx.aws1.AwsConfig
 import net.kotlinx.aws1.dynamo.DynamoDbBasic
@@ -21,7 +21,13 @@ internal class DynamoReflectionUtilTest {
             override val sk: String,
             val expireTime: Long,
             val demoPageCnt: Long,
-        ) : DynamoDbBasic
+        ) : DynamoDbBasic {
+            val doNotInsert: Boolean
+                get() {
+                    return true
+                }
+
+        }
 
         val k1 = Koo("aa", "c1", LocalDateTime.now().plusHours(1).toLong(), 555)
         val k2 = Koo("aa", "c2", LocalDateTime.now().plusHours(1).toLong(), 555)
@@ -36,12 +42,13 @@ internal class DynamoReflectionUtilTest {
             ddb.putItem(k2)
 
             val getData = ddb.getItem(k1)
+            checkNotNull(getData) { "널 데이터" }
             check(getData.sk == k1.sk)
 
-            ddb.querykeyEqualTo(search ).forEach {
+            ddb.querykeyEqualTo(search).forEach {
                 check(it.sk.startsWith(search.sk))
             }
-            ddb.querySortBeginsWith(search ).forEach {
+            ddb.querySortBeginsWith(search).forEach {
                 check(it.sk.startsWith(search.sk))
             }
         }

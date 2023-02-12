@@ -46,7 +46,7 @@ internal class ValidationConfigKtTest{
         )
 
         log.info { "테스트 시작.." }
-        rptValidations.check(2).printAndThrow()
+        rptValidations.check(8).printAndThrow()
         log.info { "테스트 종료" }
 
 

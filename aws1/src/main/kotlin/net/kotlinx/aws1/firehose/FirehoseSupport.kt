@@ -15,7 +15,11 @@ suspend inline fun FirehoseClient.putRecord(StreamName: String, json: String): P
 
 /**
  * 단축 입력 인라인
- * 출당 최대 500개의 레코드 또는 호출당 4MiB 제한 있음
+ * API 리미트 : 출당 최대 500개의 레코드 또는 호출당 4MiB 제한 있음
+ *
+ * 참고로 각 계정은 리전당 최대 50개의 Kinesis Data Firehose 전송 스트림 보유 가능.
+ * 스트림당 소프트 리미트 : 초당 레코드 100,000개, 초당 요청 1,000개, 초당 1MiB.
+ * 요금 : 5KB(5120바이트) 단위로 반올림한 값을 기반
  * */
 suspend inline fun FirehoseClient.putRecordBatch(StreamName: String, jsons: List<String>): List<PutRecordBatchResponse> {
     return jsons.chunked(500).map { splited ->
