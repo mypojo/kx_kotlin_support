@@ -14,7 +14,7 @@ internal class DynamoReflectionUtilTest {
     val aws = AwsConfig(profileName = "sin").toAwsClient()
 
     @Test
-    fun `기본테스트`() {
+    fun 기본테스트() {
 
         data class Koo(
             override val pk: String,
@@ -26,7 +26,6 @@ internal class DynamoReflectionUtilTest {
                 get() {
                     return true
                 }
-
         }
 
         val k1 = Koo("aa", "c1", LocalDateTime.now().plusHours(1).toLong(), 555)

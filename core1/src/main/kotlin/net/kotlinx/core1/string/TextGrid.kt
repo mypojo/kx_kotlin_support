@@ -20,8 +20,21 @@ class TextGrid(
     private val lineSeparator: String = "\n",
 ) {
 
+    enum class TextGridType {
+        TEXT, NUM, ;
+    }
+
     /** 실제 출력물 텍스트 */
     val text: String by lazy {
+
+        //컬럼별 타입을 지정해줌
+        val columnType = datas.first().mapIndexed { index, any ->
+            index to when (any) {
+                is Number -> TextGridType.NUM
+                else -> TextGridType.TEXT
+            }
+        }.toMap()
+
         val convertedDatas = datas.map { array ->
             array.map {
                 when (it) {
@@ -44,7 +57,11 @@ class TextGrid(
                 val size: Int = org.space()
                 val maxSize: Int = maxOfGridColumns[index]!!
                 val interval = (maxSize - size).coerceAtLeast(0)
-                org + " ".repeat(interval)
+                // 문자는 촤측 정렬, 숫자는 우측 정렬
+                when(columnType[index]){
+                    TextGridType.NUM -> " ".repeat(interval) + org
+                    else -> org + " ".repeat(interval)
+                }
             }
             return "| ${resized.joinToString(" | ")} |"
         }

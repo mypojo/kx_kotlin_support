@@ -114,6 +114,7 @@ class AthenaModule(
         }
 
         /** wait를 끝내고 데이터를 읽어도 되는 상태인지 */
+        @Suppress("BooleanMethodIsAlwaysInverted") //프로파일 버그인듯..
         fun isCompleted(): Boolean = currentQueryExecution?.status?.state in setOf(Succeeded, Cancelled, Failed)
 
         /** 정상 완료 상태인지 */
