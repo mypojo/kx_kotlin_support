@@ -27,7 +27,7 @@ val exposedVersion: String by extra("0.41.1")
 
 allprojects {
     group = "net.kotlinx.kotlin_support"
-    version = "2023-01-31"
+    version = "2023-02-01"
     repositories {
         mavenCentral()
         //maven { setUrl("https://jitpack.io") }

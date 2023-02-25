@@ -38,7 +38,14 @@ data class TimeString(
         } else {
             "${millis}밀리초"
         }
-
     }
+}
 
+data class TimeStart(
+    private val start: Long = System.currentTimeMillis(),
+) {
+    override fun toString(): String {
+        val interval: Long = System.currentTimeMillis() - start
+        return TimeString(interval).toString()
+    }
 }

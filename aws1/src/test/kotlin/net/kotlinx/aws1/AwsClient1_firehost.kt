@@ -1,7 +1,7 @@
 package net.kotlinx.aws1
 
 import kotlinx.coroutines.runBlocking
-import net.kotlinx.aws1.s3.putRecord
+import net.kotlinx.aws1.firehose.putRecord
 import net.kotlinx.core1.time.TimeUtil
 import net.kotlinx.core1.time.toYmd
 import net.kotlinx.core2.gson.GsonSet
