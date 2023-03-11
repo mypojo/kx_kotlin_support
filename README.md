@@ -27,7 +27,7 @@ S3Data.parse("s3://sin/athena/3eefab99-5ca7-447f-80c8-93ab1860e25a.csv").let {
 
 ```
 
-### AWS client 결과
+## AWS client 결과
 ```text
 ________________________________________________________________________________________________________________________________________________________________________________________________
 | 함수명                                                          | 코드사이즈 | ARN                                                                                                           |
@@ -48,6 +48,22 @@ ________________________________________________________________________________
 프리사인 다운로드 url = https://...
 ```
 
+### CDK 작성 참고용 샘플코드
+```kotlin
+val project = CdkProject("aws-id-123456..", "myProject")
+val vpc = CdkVpc(project = project, deploymentType = DeploymentType.dev, vpcCidr = "10.111.0.0/16", cidrMask = 24)
+vpc.create(this)
+vpc.nacl(
+    this, PUBLIC, mapOf(
+        NaclUtil.portOpen(100, PortUtil.WEB_80),
+        NaclUtil.portOpen(101, PortUtil.WEB_443),
+        NaclUtil.portOpen(200, PortUtil.WEB_8080, CommonConfig.LOCAL_IP),
+        NaclUtil.DEFAULT_IN_TEMP,
+        NaclUtil.DEFAULT_OUT,
+    )
+)
+```
+
 
 ### JSON 샘플
 ```kotlin
@@ -66,7 +82,7 @@ val sumOfAge = gsonData["members"].sumOf { it["age"].long ?: 0L }
 println("sumOfAge : $sumOfAge")
 ```
 
-### JSON 결과
+## JSON 결과
 ```text
 sumOfAge : 35
 ```

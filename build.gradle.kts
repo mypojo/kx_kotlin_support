@@ -27,7 +27,7 @@ val exposedVersion: String by extra("0.41.1")
 
 allprojects {
     group = "net.kotlinx.kotlin_support"
-    version = "2023-02-01"
+    version = "2023-02-05"
     repositories {
         mavenCentral()
         //maven { setUrl("https://jitpack.io") }
@@ -194,6 +194,18 @@ project(":aws") {
     }
 }
 
+/** AWS_CDK 의존 패키지 */
+project(":aws_cdk") {
+    dependencies {
+        //==================================================== 내부 의존성 ======================================================
+        api(project(":core2"))
+
+        //==================================================== AWS ======================================================
+        api("software.amazon.awscdk:aws-cdk-lib:2.65.0")
+        api("software.constructs:constructs:10.0.0") //CDK 추가 빌딩블럭
+    }
+}
+
 
 project(":module1") {
     dependencies {
@@ -229,6 +241,7 @@ publishing {
         //모든 의존성이 순서대로 다 있어야함
         pub("core1")
         pub("core2")
+        pub("aws_cdk")
         pub("aws1")
         pub("aws")
         pub("module1")

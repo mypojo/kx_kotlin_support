@@ -119,7 +119,7 @@ fun List<ValidationResult>.toDetailGrid(): TextGrid = listOf("그룹", "코드",
 fun List<ValidationResult>.andThrow(lineSeparator: String = "\n") {
     val invalidResults = this.filter { it.success.not() }
     if (invalidResults.isEmpty()) return
-    invalidResults.flatMap { it.msgs }.joinToString(lineSeparator).also { throw ValidationException(it) }
+    invalidResults.flatMap { it.msgs }.joinToString(lineSeparator) { "#$it" }.also { throw ValidationException(it) }
 }
 
 fun List<ValidationResult>.printAndThrow() {

@@ -5,6 +5,7 @@ include(
     "core2",
     "aws1",
     "aws",
+    "aws_cdk",
     "module1",
     "kopring",
 )
