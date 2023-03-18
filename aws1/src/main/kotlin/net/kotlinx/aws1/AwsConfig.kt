@@ -7,12 +7,15 @@ import aws.smithy.kotlin.runtime.http.engine.okhttp.OkHttpEngine
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
+
 /** AWS 설정정보 */
 data class AwsConfig(
     /** 프로필 없으면 환경변서(체인 순서대로) 적용 */
     val profileName: String? = null,
+    /** AWS ID. API에 따라 필요한 경우가 있음 */
+    val awsId: String? = null,
     /** 기본으로 서울 */
-    val region: String = "ap-northeast-2",
+    val region: String = SEOUL,
 
     /** http client의 커넥션 */
     val httpMaxConnections: Int = 16, //디폴투 그대로
@@ -29,5 +32,9 @@ data class AwsConfig(
     val httpClientEngine: HttpClientEngine = OkHttpEngine {
         this.maxConnections = httpMaxConnections.toUInt()
         this.connectTimeout = httpConnectTimeout
+    }
+
+    companion object {
+        const val SEOUL = "ap-northeast-2"
     }
 }

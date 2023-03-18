@@ -21,7 +21,10 @@ class CdkIamRole(
     /** 인라인 액션들. ADMIN 역할이 아니라면 다 지정할것 */
     val actions: List<String>,
 
-    /** ADMIN 역할이 아니라면 다 지정할것 */
+    /**
+     * ADMIN 역할이 아니라면 다 지정할것
+     * ex) ManagedPolicy.fromAwsManagedPolicyName("AWSCodeCommitPowerUser")
+     * */
     val fixedManagedPolicies: List<IManagedPolicy>,
 
     ) {

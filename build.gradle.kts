@@ -13,7 +13,7 @@ buildscript {
 //==================================================== 변수설정 (중간에 선언해야함) ======================================================
 
 plugins {
-    kotlin("jvm") version "1.7.20" //변수지정 안됨..
+    kotlin("jvm") version "1.8.10" //변수지정 안됨..
     java
     application
     `maven-publish` //메이븐 플러그인 배포
@@ -21,13 +21,13 @@ plugins {
 }
 java.sourceCompatibility = JavaVersion.VERSION_11
 
-val awsVersion: String by extra("0.19.2-beta") //코틀린 버전 일단 사용
-val kotlinVersion: String by extra("1.7.20")
+val awsVersion: String by extra("0.21.2-beta") //코틀린 버전 일단 사용. https://mvnrepository.com/artifact/aws.sdk.kotlin/aws-core-jvm
+val kotlinVersion: String by extra("1.8.10")
 val exposedVersion: String by extra("0.41.1")
 
 allprojects {
     group = "net.kotlinx.kotlin_support"
-    version = "2023-02-05"
+    version = "2023-02-14"
     repositories {
         mavenCentral()
         //maven { setUrl("https://jitpack.io") }
@@ -121,8 +121,9 @@ project(":aws1") {
         api(project(":core2"))
 
         //==================================================== 기본 http 클라이언트 ======================================================
-        api("com.squareup.okhttp3:okhttp:5.0.0-alpha.10")
-        implementation("aws.smithy.kotlin:http-client-engine-okhttp-jvm:0.14.2") //http 설정에 필요
+        api("com.squareup.okhttp3:okhttp:5.0.0-alpha.11") //https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+
+        implementation("aws.smithy.kotlin:http-client-engine-okhttp-jvm:0.16.3") //http 설정에 필요  https://mvnrepository.com/artifact/aws.smithy.kotlin/http-client-engine-okhttp-jvm
 
         //==================================================== AWS ======================================================
         api("com.amazonaws:aws-lambda-java-core:1.2.2") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함
@@ -191,6 +192,7 @@ project(":aws") {
         api("aws.sdk.kotlin:sfn:${awsVersion}")
         api("aws.sdk.kotlin:codedeploy:${awsVersion}")
         api("aws.sdk.kotlin:secretsmanager:${awsVersion}")
+        api("aws.sdk.kotlin:ec2:${awsVersion}")
     }
 }
 
@@ -201,8 +203,8 @@ project(":aws_cdk") {
         api(project(":core2"))
 
         //==================================================== AWS ======================================================
-        api("software.amazon.awscdk:aws-cdk-lib:2.65.0")
-        api("software.constructs:constructs:10.0.0") //CDK 추가 빌딩블럭
+        api("software.amazon.awscdk:aws-cdk-lib:2.69.0")   //https://mvnrepository.com/artifact/software.amazon.awscdk/aws-cdk-lib
+        //api("software.constructs:constructs:10.1.278") //CDK 추가 빌딩블럭
     }
 }
 
@@ -224,6 +226,18 @@ project(":module1") {
         //==================================================== RDB ======================================================
         implementation("software.aws.rds:aws-mysql-jdbc:1.1.2") //aws 장애조치기능이 담긴 mysql 드라이버 & 모든 mysql과 호환가능. https://github.com/awslabs/aws-mysql-jdbc
         implementation("com.zaxxer:HikariCP:5.0.1")
+
+
+    }
+}
+
+project(":multiplatform") {
+    dependencies {
+        //==================================================== 내부 의존성 ======================================================
+        api(project(":core2")) //API로 해야 하위 프로젝트에서 사용 가능하다.
+
+        implementation("org.jetbrains.kotlinx:kotlinx-serialization-json")
+        implementation("org.jetbrains.kotlinx:kotlinx-datetime")
     }
 }
 

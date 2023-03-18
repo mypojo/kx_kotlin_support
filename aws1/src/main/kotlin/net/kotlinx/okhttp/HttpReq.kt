@@ -1,4 +1,4 @@
-package net.kotlinx.http
+package net.kotlinx.okhttp
 
 /**
  * 구현체와 상관없이 HTTP 요청을 래핑하는 객체

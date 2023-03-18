@@ -1,6 +1,6 @@
-package net.kotlinx.http.okhttp
+package net.kotlinx.okhttp.okhttp
 
-import net.kotlinx.http.HttpReq
+import net.kotlinx.okhttp.HttpReq
 import okhttp3.Request
 
 //https://square.github.io/okhttp/recipes/

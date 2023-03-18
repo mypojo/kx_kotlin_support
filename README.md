@@ -1,5 +1,5 @@
 
-### AWS client 샘플
+## AWS client 샘플
 
 ```kotlin
 val awsConfig = AwsConfig(profileName = "sin")
@@ -27,7 +27,7 @@ S3Data.parse("s3://sin/athena/3eefab99-5ca7-447f-80c8-93ab1860e25a.csv").let {
 
 ```
 
-## AWS client 결과
+### AWS client 결과
 ```text
 ________________________________________________________________________________________________________________________________________________________________________________________________
 | 함수명                                                          | 코드사이즈 | ARN                                                                                                           |
@@ -48,7 +48,7 @@ ________________________________________________________________________________
 프리사인 다운로드 url = https://...
 ```
 
-### CDK 작성 참고용 샘플코드
+## CDK 작성 참고용 샘플코드
 ```kotlin
 val project = CdkProject("aws-id-123456..", "myProject")
 val vpc = CdkVpc(project = project, deploymentType = DeploymentType.dev, vpcCidr = "10.111.0.0/16", cidrMask = 24)
@@ -65,7 +65,7 @@ vpc.nacl(
 ```
 
 
-### JSON 샘플
+## JSON 샘플
 ```kotlin
 val json = obj {
     "type" to "normal"
@@ -82,12 +82,12 @@ val sumOfAge = gsonData["members"].sumOf { it["age"].long ?: 0L }
 println("sumOfAge : $sumOfAge")
 ```
 
-## JSON 결과
+### JSON 결과
 ```text
 sumOfAge : 35
 ```
 
-### AWS athena 샘플
+## AWS athena 샘플
 ```kotlin
 
 val executions = listOf(
@@ -121,3 +121,6 @@ val athenaModule = AthenaModule(aws)
 //모든 쿼리 로직을 동시에 처리 (동시 실행 제한수 주의)
 athenaModule.startAndWaitAndExecute(executions)
 ```
+
+## 의존관계
+![img.png](img.png)

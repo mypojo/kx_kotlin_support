@@ -34,8 +34,3 @@ data class AthenaDownload(
     /** 결과 */
     var file: File? = null
 }
-
-
-///** AthenaQuery 설정 DSL */
-//inline fun athenaQuery(block: AthenaQuery.() -> Unit): AthenaQuery = AthenaQuery().apply(block).also {
-//    check(it.query.isNotEmpty()) { "쿼리는 필수 입력값입니다" }
