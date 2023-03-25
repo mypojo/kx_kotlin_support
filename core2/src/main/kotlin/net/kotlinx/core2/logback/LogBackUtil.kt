@@ -34,14 +34,14 @@ object LogBackUtil {
         init("logback-app-test.xml")
     }
 
-    private fun init(configName: String) {
+    fun init(configName: String) {
         val loggerContext = LoggerFactory.getILoggerFactory() as LoggerContext
         loggerContext.reset()
         val configurator = JoranConfigurator()
         val configStream: InputStream = LogBackUtil::class.java.classLoader.getResourceAsStream(configName)!!
         configurator.context = loggerContext
         configurator.doConfigure(configStream) // loads logback file
-        log.info("강제로 특정 로그백 설정({})이 로드됩니다.", configName)
+        log.info { "강제로 특정 로그백 설정(${configName})이 로드됩니다." }
     }
 
     /** 런타임에 레벨 조절  */

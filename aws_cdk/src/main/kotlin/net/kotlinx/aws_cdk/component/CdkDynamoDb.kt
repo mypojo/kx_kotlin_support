@@ -21,16 +21,16 @@ class CdkDynamoDb(
     var billingMode = BillingMode.PAY_PER_REQUEST
     var removalPolicy = RemovalPolicy.RETAIN
 
-    var pk: Attribute = "pk".cdkDynamoAttS()!!
+    var pk: Attribute = "pk".cdkDynamoAttS()
     var sk: Attribute? = "sk".cdkDynamoAttS()
     var ttl = "ttl"
     var pointInTimeRecovery = true
 
-    var table: Table? = null
+    lateinit var iTable: Table
 
     /** 아직 삭제 보호 모드 설정이 안된다. */
     fun create(stack: Stack): CdkDynamoDb {
-        table = Table(
+        iTable = Table(
             stack, "ddb-$logicalName", TableProps.builder()
                 .tableName(logicalName)
                 .billingMode(billingMode)
@@ -47,19 +47,19 @@ class CdkDynamoDb(
 
     /** 로컬 기본은 키값만 */
     fun addLocalSecondaryIndex(sk: Attribute, projectionType: ProjectionType = ProjectionType.KEYS_ONLY) {
-        table!!.addLocalSecondaryIndex(
+        iTable.addLocalSecondaryIndex(
             LocalSecondaryIndexProps.builder()
                 .indexName("lidx-${sk.name}")
                 .projectionType(projectionType)
                 .sortKey(sk)
                 .build()
         )
-        TagUtil.tag(table!!, deploymentType)
+        TagUtil.tag(iTable!!, deploymentType)
     }
 
     /** 글로벌 기본은 키값만 */
     fun addGlobalSecondaryIndex(pk: Attribute, sk: Attribute, projectionType: ProjectionType = ProjectionType.KEYS_ONLY) {
-        table!!.addGlobalSecondaryIndex(
+        iTable.addGlobalSecondaryIndex(
             GlobalSecondaryIndexProps.builder()
                 .indexName("gidx-${pk.name}-${sk.name}")
                 .projectionType(projectionType)

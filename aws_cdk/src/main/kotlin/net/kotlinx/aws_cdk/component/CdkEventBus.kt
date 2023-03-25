@@ -16,7 +16,7 @@ class CdkEventBus(
     val deploymentType: DeploymentType,
 ) {
 
-    var iEventBus: IEventBus? = null
+    lateinit var iEventBus: IEventBus
 
     fun create(stack: Stack) {
         val eventBusName = "${project.projectName}-eventbus-${deploymentType}"

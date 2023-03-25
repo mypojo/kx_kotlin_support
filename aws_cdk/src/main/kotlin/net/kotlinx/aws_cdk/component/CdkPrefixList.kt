@@ -22,7 +22,7 @@ class CdkPrefixList(
         get() = "${project.projectName}-prefix_${name}-${deploymentType}"
 
 
-    var prefixList: CfnPrefixList? = null
+    lateinit var prefixList: CfnPrefixList
 
     val feer: IPeer
         get() = Peer.prefixList(prefixList!!.attrPrefixListId)

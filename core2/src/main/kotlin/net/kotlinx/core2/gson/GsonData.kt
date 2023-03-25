@@ -41,12 +41,28 @@ data class GsonData(private val delegate: JsonElement) : Iterable<GsonData> {
 
     override fun toString(): String = delegate.toString()
 
-//==================================================== 편의용  ======================================================
-
+    //==================================================== 편의용  ======================================================
     val str: String?
         get() = (delegate as? JsonPrimitive)?.asString
     val long: Long?
         get() = (delegate as? JsonPrimitive)?.asLong
+
+    val empty: Boolean
+        get() = when (delegate) {
+            is JsonObject -> delegate.size() == 0
+            is JsonArray -> delegate.size() == 0
+            is JsonPrimitive -> false
+            is JsonNull -> true
+            else -> throw IllegalStateException("${delegate::class.simpleName} is not required")
+        }
+
+    val size: Int = when (delegate) {
+        is JsonObject -> delegate.size()
+        is JsonArray -> delegate.size()
+        is JsonPrimitive -> 1
+        is JsonNull -> 0
+        else -> throw IllegalStateException("${delegate::class.simpleName} is not required")
+    }
 
     companion object {
 

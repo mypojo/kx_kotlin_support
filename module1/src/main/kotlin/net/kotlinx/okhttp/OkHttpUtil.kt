@@ -1,6 +1,8 @@
 package net.kotlinx.okhttp
 
+import net.kotlinx.core1.regex.RegexSet
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
 
 object OkHttpUtil {
 
@@ -17,5 +19,11 @@ object OkHttpUtil {
 
     const val HRADER_LAST_MODIFIED = "Last-Modified"
     const val HRADER_IF_MODIFIED = "If-Modified-Since"
+
+    /** 아웃바운드 IP를 간단히 리턴해준다.  */
+    fun findOutboundIp(client: OkHttpClient = OkHttpClient()): String {
+        val resp: String = OkHttpReq("https://www.findip.kr/").synchExe(client).respText!!
+        return RegexSet.between("(IP Address): ", "</h2>").find(resp)!!.value
+    }
 
 }

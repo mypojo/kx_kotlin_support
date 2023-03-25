@@ -6,7 +6,7 @@ import software.amazon.awscdk.services.iam.*
 /**
  * 자주 사용되는 IAM 정의해서 하드코딩 방지
  * */
-class CdkIamRole(
+open class CdkIamRole(
     /**
      * 대분류는 -, 소분류는 _ 로 분리
      * ex) app-admin-ecs_task
@@ -26,14 +26,13 @@ class CdkIamRole(
      * ex) ManagedPolicy.fromAwsManagedPolicyName("AWSCodeCommitPowerUser")
      * */
     val fixedManagedPolicies: List<IManagedPolicy>,
+) {
 
-    ) {
-
-    var irole: IRole? = null
+    lateinit var iRole: IRole
 
     /** 권한 가져옴 (다른 스택에서) */
     fun load(stack: Stack): CdkIamRole {
-        irole = Role.fromRoleName(stack, this.roleName, this.roleName)
+        iRole = Role.fromRoleName(stack, this.roleName, this.roleName)
         return this
     }
 
@@ -64,7 +63,7 @@ class CdkIamRole(
                 )
             }
         }
-        irole = Role(
+        iRole = Role(
             stack, this.roleName, RoleProps.builder()
                 .roleName(roleName)
                 .assumedBy(

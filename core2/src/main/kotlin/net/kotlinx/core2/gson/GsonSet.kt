@@ -12,6 +12,14 @@ import java.time.LocalDateTime
  */
 object GsonSet {
 
+    /** 디폴트 변환용*/
+    val GSON by lazy {
+        GsonBuilder().apply {
+            setExclusionStrategies(NotExposeStrategy())
+        }.create()!!
+    }
+
+
     /** AWS kinesis 등에 연동할 데이터 변환용 */
     val TABLE_UTC by lazy {
         GsonBuilder().apply {

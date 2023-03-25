@@ -16,7 +16,7 @@ class CdkSecurityGroup(
     override val logicalName: String
         get() = "${project.projectName}-sg_${sgName}-${deploymentType}"
 
-    var iSecurityGroup: ISecurityGroup? = null
+    lateinit var iSecurityGroup: ISecurityGroup
 
     val feer: IPeer
         get() = Peer.securityGroupId(iSecurityGroup!!.securityGroupId)

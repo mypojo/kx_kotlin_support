@@ -1,5 +1,7 @@
 package net.kotlinx.core1.regex
 
+import java.util.regex.Pattern
+
 /**
  * 자주 사용되는 정규식 모음
  * 확장함수가 가능해셔서 enum으로 만들지 않음
@@ -49,7 +51,17 @@ object RegexSet {
 
     //==================================================== 함수 ======================================================
 
+    private val regexEscaper = Pattern.compile("[.\\\\+*?\\[^\\]$(){}=!<>|:\\-]")!!
+    fun escape(input: String): String {
+        var input = input
+        val matcher = regexEscaper.matcher(input)
+        while (matcher.find()) {
+            input = matcher.replaceAll("\\\\$0")
+        }
+        return input
+    }
+
     /** 두 패턴 사이의 값을 찾는 정규식 (이스케이핑 후 값을 입력할것) */
-    fun between(pref: String, suff: String): Regex = "(?<=$pref).*?(?=${suff})".toRegex()
+    fun between(pref: String, suff: String): Regex = "(?<=${escape(pref)}).*?(?=${escape(suff)})".toRegex()
 
 }

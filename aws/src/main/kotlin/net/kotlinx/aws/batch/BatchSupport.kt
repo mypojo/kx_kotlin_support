@@ -12,6 +12,11 @@ import net.kotlinx.core2.concurrent.CoroutineSleepTool
 import net.kotlinx.core2.gson.GsonData
 import java.util.concurrent.TimeUnit.SECONDS
 
+private val log = KotlinLogging.logger {}
+
+/** 준비중인 상태인지 (로그스트림 아직 없음) */
+fun JobStatus.isReady(): Boolean = this in setOf(JobStatus.Submitted, JobStatus.Pending, JobStatus.Runnable)
+
 /** 단건 조회 */
 suspend fun BatchClient.describeJob(jobId: String): JobDetail? = this.describeJobs { this.jobs = listOf(jobId) }.jobs!!.firstOrNull()
 
@@ -31,10 +36,6 @@ suspend fun BatchClient.submitJob(jobQueueName: String, jobPk: String, json: Gso
     return resp.jobId!!
 }
 
-/** 준비중인 상태인지 (로그스트림 아직 없음) */
-fun JobStatus.isReady(): Boolean = this in setOf(JobStatus.Submitted, JobStatus.Pending, JobStatus.Runnable)
-
-private val log = KotlinLogging.logger {}
 
 /** 파게이트를 할당받을때까지 기다린다. (로그스트림 네임을 얻기 위함)  */
 suspend fun BatchClient.submitJobAndWaitStarting(jobQueueName: String, jobPk: String, config: GsonData, limit: Int = 99): JobDetail {

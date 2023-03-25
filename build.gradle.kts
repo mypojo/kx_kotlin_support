@@ -10,14 +10,47 @@ buildscript {
     }
 }
 
+gradle.beforeProject {
+    project.ext.set("pointer", "xyz") //파라메터 입력 가능
+}
+gradle.afterProject {
+    try {
+        println("#afterProject =  ${project.ext.get("pointer")}")
+    } catch (e: Exception) {
+        println("#오류 ${e::class.java.simpleName}")
+    }
+}
+
+//==================================================== task 등록 ======================================================
+tasks.register("ready") { //처음에는 register 로 등록
+    println("## task[$name] configure")
+}
+tasks.named("ready") { //두번째부터는 이렇게 로드
+    group = "_admin"
+    doLast {
+        println("## task[$name] doLast")
+    }
+}
+tasks.register("myTest") {
+    group = "_admin"
+    dependsOn("ready")
+    println("## task[$name] configure")
+    doLast {
+        println("## task[$name] doLast")
+    }
+}
+
 //==================================================== 변수설정 (중간에 선언해야함) ======================================================
 
+//여기 한먼만 하면 별도 apply 필요없음
 plugins {
+    //코어 플러그인
     kotlin("jvm") version "1.8.10" //변수지정 안됨..
     java
     application
     `maven-publish` //메이븐 플러그인 배포
-    //id("com.github.johnrengelman.shadow") version "7.1.2"  이런거 없어도 팻자르 잘 됨
+    //커뮤니티 플러그인
+    //...
 }
 java.sourceCompatibility = JavaVersion.VERSION_11
 
@@ -26,8 +59,10 @@ val kotlinVersion: String by extra("1.8.10")
 val exposedVersion: String by extra("0.41.1")
 
 allprojects {
+
     group = "net.kotlinx.kotlin_support"
-    version = "2023-02-14"
+    version = "2023-02-29"
+
     repositories {
         mavenCentral()
         //maven { setUrl("https://jitpack.io") }
@@ -42,6 +77,8 @@ allprojects {
 }
 
 subprojects {
+    //테스트 로깅
+    println("[$name] buildDir = $buildDir")  //https://docs.gradle.org/current/userguide/writing_build_scripts.html
 
     apply {
         plugin("org.jetbrains.kotlin.jvm")
@@ -56,7 +93,6 @@ subprojects {
         testImplementation("io.mockk:mockk:1.13.3") //코틀린 모킹
         testImplementation("io.kotest:kotest-runner-junit5:5.5.4")
         testImplementation("io.kotest:kotest-assertions-core:5.5.4")
-
     }
 
     tasks.getByName<Test>("test") {
@@ -193,6 +229,7 @@ project(":aws") {
         api("aws.sdk.kotlin:codedeploy:${awsVersion}")
         api("aws.sdk.kotlin:secretsmanager:${awsVersion}")
         api("aws.sdk.kotlin:ec2:${awsVersion}")
+        api("aws.sdk.kotlin:ecr:${awsVersion}")
     }
 }
 

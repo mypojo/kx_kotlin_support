@@ -30,7 +30,7 @@ open class CdkVpc(
     open override val logicalName: String
         get() = "${project.projectName}_vpc_${deploymentType}"
 
-    var iVpc: IVpc? = null
+    lateinit var iVpc: IVpc
 
     val feer: IPeer
         get() = Peer.ipv4(iVpc!!.vpcCidrBlock)
