@@ -1,7 +1,7 @@
 import net.kotlinx.aws_cdk.CdkInterface
 import net.kotlinx.aws_cdk.CdkProject
-import net.kotlinx.aws_cdk.DeploymentType
 import net.kotlinx.aws_cdk.util.TagUtil
+import net.kotlinx.core1.DeploymentType
 import net.kotlinx.core1.regex.RegexSet
 import net.kotlinx.core1.string.retainFrom
 import software.amazon.awscdk.Stack

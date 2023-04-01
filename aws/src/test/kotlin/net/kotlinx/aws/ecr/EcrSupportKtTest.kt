@@ -15,6 +15,7 @@ internal class EcrSupportKtTest : TestRoot() {
 
         runBlocking {
 
+            aws.ecr.findAndUpdateTag("sin-job", "prod-2023-03-29_16-56", "prod")
 
         }
 

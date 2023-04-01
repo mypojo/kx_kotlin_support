@@ -61,7 +61,7 @@ val exposedVersion: String by extra("0.41.1")
 allprojects {
 
     group = "net.kotlinx.kotlin_support"
-    version = "2023-02-29"
+    version = "2023-02-43"
 
     repositories {
         mavenCentral()
@@ -77,6 +77,7 @@ allprojects {
 }
 
 subprojects {
+
     //테스트 로깅
     println("[$name] buildDir = $buildDir")  //https://docs.gradle.org/current/userguide/writing_build_scripts.html
 
@@ -188,6 +189,7 @@ project(":aws1") {
 
             runBlocking {
                 val jarFile = File(project.buildDir, "libs/${archiveFileName.get()}")
+                //아래 코드보다는 미리 준비된거 사용
                 aws.sdk.kotlin.services.lambda.LambdaClient {
                     region = "ap-northeast-2"
                     credentialsProvider = aws.sdk.kotlin.runtime.auth.credentials.DefaultChainCredentialsProvider(profileName = "wabiz")
@@ -264,6 +266,10 @@ project(":module1") {
         implementation("software.aws.rds:aws-mysql-jdbc:1.1.2") //aws 장애조치기능이 담긴 mysql 드라이버 & 모든 mysql과 호환가능. https://github.com/awslabs/aws-mysql-jdbc
         implementation("com.zaxxer:HikariCP:5.0.1")
 
+
+        //==================================================== 기본 의존 ======================================================
+        api("com.google.guava:guava:31.1-jre")  //AWS에도 동일의존 있음
+        implementation("com.slack.api:bolt-jetty:1.28.1")     // 기본  API 및 bolt-servlet 등을 포함한다
 
     }
 }

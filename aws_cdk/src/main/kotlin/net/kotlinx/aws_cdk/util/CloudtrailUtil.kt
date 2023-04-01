@@ -1,6 +1,6 @@
 package net.kotlinx.aws_cdk.util
 
-import net.kotlinx.aws_cdk.DeploymentType
+import net.kotlinx.core1.DeploymentType
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.cloudtrail.ReadWriteType
 import software.amazon.awscdk.services.cloudtrail.Trail

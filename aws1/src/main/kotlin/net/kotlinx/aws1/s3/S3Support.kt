@@ -4,6 +4,8 @@ import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.listObjectsV2
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
 import aws.sdk.kotlin.services.s3.model.Object
+import aws.sdk.kotlin.services.s3.putObject
+import aws.smithy.kotlin.runtime.content.asByteStream
 import aws.smithy.kotlin.runtime.content.decodeToString
 import aws.smithy.kotlin.runtime.content.writeToFile
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
@@ -19,14 +21,16 @@ suspend inline fun S3Client.getObjectDownload(bucket: String, key: String, file:
     it.body?.writeToFile(file)
 }
 
-/** 간단 읽기 (소용량) */
-suspend inline fun S3Client.getObjectLines(bucket: String, key: String): List<List<String>> = this.getObject(
-    GetObjectRequest {
+/**
+ * 간단 업로드
+ * @param key 업로드 디렉토리 path
+ *  */
+suspend inline fun S3Client.putObject(bucket: String, key: String, file: File) {
+    this.putObject {
         this.bucket = bucket
         this.key = key
+        this.body = file.asByteStream()
     }
-) {
-    csvReader().readAll(it.body!!.decodeToString())
 }
 
 /**
@@ -45,3 +49,16 @@ suspend inline fun S3Client.listFiles(bucket: String, prefix: String): List<Obje
     this.prefix = prefix
 }.contents ?: emptyList()
 
+//==================================================== CSV 확장 ======================================================
+/**
+ * 간단 읽기 (소용량)
+ * 간단 쓰기는 없음 (스트리핑 put은 안됨) -> 먼저 파일로 쓴 다음 업로드 할것!!
+ *  */
+suspend inline fun S3Client.getObjectLines(bucket: String, key: String): List<List<String>> = this.getObject(
+    GetObjectRequest {
+        this.bucket = bucket
+        this.key = key
+    }
+) {
+    csvReader().readAll(it.body!!.decodeToString())
+}

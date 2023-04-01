@@ -1,8 +1,8 @@
 package net.kotlinx.aws_cdk.component
 
 import net.kotlinx.aws_cdk.CdkInterface
-import net.kotlinx.aws_cdk.DeploymentType
 import net.kotlinx.aws_cdk.util.TagUtil
+import net.kotlinx.core1.DeploymentType
 import software.amazon.awscdk.RemovalPolicy
 import software.amazon.awscdk.RemovalPolicy.RETAIN
 import software.amazon.awscdk.Stack

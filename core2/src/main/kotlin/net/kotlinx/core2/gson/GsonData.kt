@@ -11,7 +11,7 @@ inline fun String.toGsonData() = GsonData.parse(this)
  * kotlin의 엄격한 객체 정의와 어울리지 않음으로 로직에 가급적 사용 금지
  * 모든 이상은 예외 대신 null을 리턴함
  */
-data class GsonData(private val delegate: JsonElement) : Iterable<GsonData> {
+data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 
     /** GsonVo 리턴. null을 리턴하지 않기 때문에 get().get() 식의 체인이 가능하다.  */
     operator fun get(key: String): GsonData = when (delegate) {
@@ -63,6 +63,9 @@ data class GsonData(private val delegate: JsonElement) : Iterable<GsonData> {
         is JsonNull -> 0
         else -> throw IllegalStateException("${delegate::class.simpleName} is not required")
     }
+
+    /** 간단버전 */
+    inline fun <reified T> fromJson(gson: Gson = GsonSet.GSON): T = gson.fromJson(delegate, T::class.java)
 
     companion object {
 

@@ -1,7 +1,7 @@
 package net.kotlinx.aws_cdk.module
 
 import net.kotlinx.aws_cdk.CdkProject
-import net.kotlinx.aws_cdk.DeploymentType
+import net.kotlinx.core1.DeploymentType
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.iam.IRole
 import software.amazon.awscdk.services.kinesisfirehose.CfnDeliveryStream

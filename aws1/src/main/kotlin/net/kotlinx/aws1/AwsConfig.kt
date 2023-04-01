@@ -25,6 +25,9 @@ data class AwsConfig(
 ) {
     /**
      * 체인 기본순서 : 환경변수 -> 프로파일
+     * https://docs.aws.amazon.com/sdkref/latest/guide/settings-reference.html 에서 설정 확인
+     * https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html
+     *  -> DurationSeconds : 900초(15분) ~ 최대값 43200 ?? -> duration_seconds = 43200
      * */
     val credentialsProvider: CredentialsProvider? = profileName?.let { DefaultChainCredentialsProvider(profileName = profileName) }
 

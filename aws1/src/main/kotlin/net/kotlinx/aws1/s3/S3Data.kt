@@ -3,7 +3,7 @@ package net.kotlinx.aws1.s3
 import net.kotlinx.core1.string.encodeUrl
 
 /**
- * S3 패스가 다양하게 사용됨
+ * S3 패스가 다양하게 사용됨. 이를 명시적으로 합쳐서 다루기 위한 객체.
  * 풀 네임 사용할때도 있고, 버킷과 키를 따로 사용할때도 있다. 이것을 하나로 관리
  */
 data class S3Data(
@@ -17,6 +17,7 @@ data class S3Data(
      */
     fun toFullPath(): String = arrayOf(PROTO, bucket, key).joinToString("/")
 
+    /** 프로토콜이 없는 일반 path */
     fun toPath(): String = arrayOf(bucket, key).joinToString("/")
 
     /**

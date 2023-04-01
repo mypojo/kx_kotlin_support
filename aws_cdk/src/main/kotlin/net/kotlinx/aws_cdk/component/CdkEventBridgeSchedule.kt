@@ -1,8 +1,8 @@
 package net.kotlinx.aws_cdk.component
 
 import net.kotlinx.aws_cdk.CdkProject
-import net.kotlinx.aws_cdk.DeploymentType
 import net.kotlinx.aws_cdk.util.TagUtil
+import net.kotlinx.core1.DeploymentType
 import net.kotlinx.core2.gson.GsonSet
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.events.*
@@ -10,9 +10,9 @@ import software.amazon.awscdk.services.events.*
 /** 한국시간 입력기 */
 data class CronKrOptions(
     /** 한국 날짜 등록 */
-    val krDay: Int? = null,
+    var krDay: Int? = null,
     /** 한국시간 등록 */
-    val krHour: Int? = null,
+    var krHour: Int? = null,
 
     var year: String? = null,
     var month: String? = null,
@@ -40,19 +40,23 @@ data class CronKrOptions(
     }
 
     /** 한국 시간을 UTC로 변경해준다. */
-    fun toUtc(offsetHour: Int = OFFSET_HOUR): CronKrOptions {
+    fun updateToUtc(offsetHour: Int = OFFSET_HOUR): CronKrOptions {
         if (krHour == null) return this
 
-        val hourKr = krHour - offsetHour
+        val hourKr = krHour!! - offsetHour
         val isYesterday = hourKr < 0;
         hour = "${hourKr + (if (isYesterday) 24 else 0)}" //시간은 24시간 더하고
         day = krDay?.let { "${it + (if (isYesterday) -1 else 0)}" } ?: null //날짜는 하루 당겨줘야함
         return this
     }
 
+    /** 간편생성은 만들지 않음..바리에이션이 너무 많다. */
     companion object {
         /** 시차 */
         const val OFFSET_HOUR: Int = 9
+
+        /** 특정 시간들을 UTC로 변환 */
+        fun hourToUtc(vararg krHours: Int): String = krHours.map { CronKrOptions(krHour = it).updateToUtc().hour }.joinToString(",")
     }
 }
 
@@ -71,14 +75,13 @@ class CdkEventBridgeSchedule(
     /** 스케쥴을 등록함 */
     fun addSchedule(jobName: String, enabled: Boolean, config: CronKrOptions): Rule {
         val ruleName = "${project.projectName}-${jobName}-${this.deploymentType}"
-
         val comment = GsonSet.TABLE_UTC.toJson(config) //변환 전으로 해야함
         val rule = Rule(
             this.stack, ruleName, RuleProps.builder()
                 .enabled(enabled)
                 .ruleName(ruleName)
                 .description(comment)
-                .schedule(config.toUtc().toSchedule())
+                .schedule(config.updateToUtc().toSchedule())
                 .build()
         )
         rule.addTarget(this.ruleTarget);

@@ -2,16 +2,16 @@ package net.kotlinx.aws_cdk.component
 
 import net.kotlinx.aws_cdk.CdkInterface
 import net.kotlinx.aws_cdk.CdkProject
-import net.kotlinx.aws_cdk.DeploymentType
-import net.kotlinx.aws_cdk.DeploymentType.dev
 import net.kotlinx.aws_cdk.util.TagUtil
-import net.kotlinx.core1.number.tuHour
+import net.kotlinx.core1.DeploymentType
+import net.kotlinx.core1.DeploymentType.dev
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.batch.CfnJobDefinition
 import software.amazon.awscdk.services.batch.CfnJobDefinition.*
 import software.amazon.awscdk.services.batch.CfnJobDefinitionProps
 import software.amazon.awscdk.services.ecs.EcrImage
 import software.amazon.awscdk.services.iam.IRole
+import kotlin.time.Duration.Companion.hours
 
 open class CdkBatchJobDefinition(
     val project: CdkProject,
@@ -41,6 +41,9 @@ open class CdkBatchJobDefinition(
     lateinit var executionRole: IRole
     lateinit var logGroupPath: String
 
+    /** 디폴트로 12시간. 프로젝트에 따라 조절할거시 */
+    var attemptDurationSeconds: Long = 12.hours.inWholeSeconds
+
     /**
      * 긴단한 VPC 생성 props
      * 이름 중복으로 작업 진행이 안되는경우
@@ -52,14 +55,14 @@ open class CdkBatchJobDefinition(
         .platformCapabilities(listOf("FARGATE")) //파게이트만
         .type("Container")
         //.retryStrategy(RetryStrategyProperty.builder().attempts(1).build()) //자체 재시도 하지 않음. 최소 1~10 까지 지정
-        .timeout(TimeoutProperty.builder().attemptDurationSeconds(12L.tuHour().sec).build()) //12시간
+        .timeout(TimeoutProperty.builder().attemptDurationSeconds(attemptDurationSeconds).build())
         .containerProperties(
             ContainerPropertiesProperty.builder()
                 .fargatePlatformConfiguration(FargatePlatformConfigurationProperty.builder().platformVersion("1.4.0").build())
                 .command(listOf("Ref::JOB_CONFIG")) //job submit 할때의 파라메터와 일치해아함 (BatchUtil 참고)
                 .environment(
                     listOf(
-                        "DeploymentType" to deploymentType.name
+                        EnvironmentProperty.builder().name(DeploymentType::class.simpleName).value(deploymentType.name).build(),
                     )
                 )
                 .image(ecrImage.imageName)

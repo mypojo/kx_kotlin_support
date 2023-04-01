@@ -42,12 +42,12 @@ suspend fun DynamoDbClient.updateItem(data: DynamoData, updateKeys: List<String>
     }
 }
 
-suspend fun <T : DynamoData> DynamoDbClient.getItem(data: T): T {
+suspend fun <T : DynamoData> DynamoDbClient.getItem(data: T): T? {
     val map: Map<String, AttributeValue> = this.getItem {
         this.tableName = data.tableName
         this.consistentRead = false
         this.key = data.toKeyMap()
-    }.item!!
+    }.item ?: return null
     return data.fromAttributeMap(map)
 }
 
