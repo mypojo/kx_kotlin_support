@@ -1,4 +1,4 @@
-package net.kotlinx.module1.reflect
+package net.kotlinx.core1.lang
 
 import kotlin.reflect.KProperty
 
@@ -7,3 +7,6 @@ import kotlin.reflect.KProperty
  * 프로퍼티에  ? 줘야지 널 허용하는거도 가능해진다.
  *  */
 inline fun <reified T : Enum<T>> KProperty<Enum<T>?>.valueOf(value: String): T? = enumValues<T>().firstOrNull { it.name == value }
+
+
+

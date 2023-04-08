@@ -52,6 +52,7 @@ suspend inline fun S3Client.listFiles(bucket: String, prefix: String): List<Obje
 //==================================================== CSV 확장 ======================================================
 /**
  * 간단 읽기 (소용량)
+ * AWS kotlin에서 아직 스트림 읽기는 안되는거 같음. ByteStream 을 일반 스트림으로 어케 바꾸지?? -> 일단 java SDK2를 사용할것
  * 간단 쓰기는 없음 (스트리핑 put은 안됨) -> 먼저 파일로 쓴 다음 업로드 할것!!
  *  */
 suspend inline fun S3Client.getObjectLines(bucket: String, key: String): List<List<String>> = this.getObject(

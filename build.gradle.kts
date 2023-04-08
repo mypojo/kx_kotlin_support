@@ -61,7 +61,7 @@ val exposedVersion: String by extra("0.41.1")
 allprojects {
 
     group = "net.kotlinx.kotlin_support"
-    version = "2023-02-43"
+    version = "2023-02-45"
 
     repositories {
         mavenCentral()

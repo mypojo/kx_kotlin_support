@@ -7,6 +7,7 @@ fun <T> Map<T, Long>.toMapNum() = MapNum(this)
  * 정산 시스템 등에 사용되는 불변 map 계산기
  * ex) reduce { acc, mapNum -> acc + mapNum }
  * */
+@Deprecated("무슨생각으로 이런걸??")
 class MapNum<T>(
     private val delegate: Map<T, Long> = emptyMap()
 ) : Map<T, Long> by delegate {

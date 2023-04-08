@@ -22,8 +22,10 @@ object ReflectionUtil {
      * @param to 기본 생성자가 있어야함
      * */
     fun <T : Any> convertTo(from: Any, to: KClass<T>): T {
-        val fromMap: Map<String, KProperty<*>> = from::class.members.filterIsInstance<KProperty<*>>().associateBy { it.name }
-        val newInstance: T = to.constructors.firstOrNull { it.parameters.isEmpty() }?.call() ?: throw IllegalArgumentException("기본 생성자가 있어야 합니다 : $to")
+        val fromMap: Map<String, KProperty<*>> =
+            from::class.members.filterIsInstance<KProperty<*>>().associateBy { it.name }
+        val newInstance: T = to.constructors.firstOrNull { it.parameters.isEmpty() }?.call()
+            ?: throw IllegalArgumentException("기본 생성자가 있어야 합니다 : $to")
         to.members.filterIsInstance<KMutableProperty<*>>().forEach { toField ->
             val value: Any? = fromMap[toField.name]?.getter?.call(from)
             value?.let { toField.setter.call(newInstance, it) }
@@ -65,11 +67,16 @@ object ReflectionUtil {
     fun dataToLine(from: Any): List<Any> {
         val fromMap = from::class.members.filterIsInstance<KProperty<*>>().associateBy { it.name }
         //가장 긴 파라메터로 사용
-        return from::class.constructors.maxWith(compareBy { it.parameters.size }).parameters.map { p -> fromMap[p.name]?.getter?.call(from) ?: "" }
+        return from::class.constructors.maxWith(compareBy { it.parameters.size }).parameters.map { p ->
+            fromMap[p.name]?.getter?.call(
+                from
+            ) ?: ""
+        }
     }
 
     /** 간단 로그 출력용 */
-    fun dataToHeader(clazz: KClass<*>): List<String> = clazz.constructors.maxWith(compareBy { it.parameters.size }).parameters.map { it.name ?: "-" }
+    fun dataToHeader(clazz: KClass<*>): List<String> =
+        clazz.constructors.maxWith(compareBy { it.parameters.size }).parameters.map { it.name ?: "-" }
 
     /**
      * @return 입력된 문자열을 지정된 타입의 값으로 변경해준다.
@@ -110,7 +117,8 @@ object ReflectionUtil {
                 when (nullMarker) {
                     DataNullMark.NULL -> null
                     DataNullMark.EMPTY -> throw IllegalStateException("$nameForPrint must not be empty")
-                    DataNullMark.NONE -> kClazz.java.enumConstants.filterIsInstance<Enum<*>>().first { it.name == value }
+                    DataNullMark.NONE -> kClazz.java.enumConstants.filterIsInstance<Enum<*>>()
+                        .first { it.name == value }
                 }
             }
             //데이터 클래스인경우
@@ -118,7 +126,7 @@ object ReflectionUtil {
                 when (nullMarker) {
                     DataNullMark.NULL -> null
                     DataNullMark.EMPTY -> throw IllegalStateException("$nameForPrint must not be empty")
-                    DataNullMark.NONE -> convertTo(value!!,kClazz)
+                    DataNullMark.NONE -> convertTo(value!!, kClazz)
                 }
             }
 

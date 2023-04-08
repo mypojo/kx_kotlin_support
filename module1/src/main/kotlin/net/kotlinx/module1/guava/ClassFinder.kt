@@ -1,6 +1,12 @@
 package net.kotlinx.module1.guava
 
+import KColumn
+import KTable
 import com.google.common.reflect.ClassPath
+import net.kotlinx.core1.lang.annotationsOrEmpty
+import net.kotlinx.core1.lang.findClass
+import net.kotlinx.core1.lang.props
+import net.kotlinx.core1.lang.toKClass
 import kotlin.reflect.KClass
 
 
@@ -14,13 +20,27 @@ class ClassFinder(
 ) {
 
     /** 해당 패키지의 전체 클래스 */
-    val classes: List<Class<*>> by lazy {
+    val classes: List<KClass<*>> by lazy {
         ClassPath.from(ClassLoader.getSystemClassLoader()).allClasses
             .filter { clazz -> clazz.packageName.startsWith(packageName) }
-            .map { clazz -> clazz.load() }
+            .map { clazz -> clazz.load().kotlin }
     }
 
-    /** 특정 어노테이션이 포함된 모든 클래스 */
-    fun findByAnnotation(clazz: KClass<*>): List<Class<*>> = classes.filter { c -> c.annotations.firstOrNull { clazz.isInstance(it) } != null }
+    //==================================================== 작업 샘플 ======================================================
+
+    /** JPA 출력 */
+    fun findAll(table: KClass<out Annotation>, column: KClass<out Annotation>): List<KTable> {
+        return classes.filter { it.annotationsOrEmpty.findClass(table).isNotEmpty() }.map { table ->
+            KTable(
+                table.simpleName!!,
+                table.props().filter { it.annotations.findClass(column).isNotEmpty() }.map { column ->
+                    KColumn(
+                        column.name,
+                        column.returnType.toKClass()!!
+                    )
+                }
+            )
+        }
+    }
 
 }

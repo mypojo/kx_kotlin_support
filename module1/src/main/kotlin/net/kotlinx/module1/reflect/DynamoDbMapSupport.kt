@@ -1,6 +1,7 @@
 package net.kotlinx.module1.reflect
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
+import net.kotlinx.core1.lang.valueOf
 import net.kotlinx.core1.string.toLocalDateTime
 import net.kotlinx.core2.gson.GsonSet
 import java.time.LocalDateTime

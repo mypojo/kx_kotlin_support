@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 internal class LambdaSupportKtTest : TestRoot() {
 
     val aws = AwsConfig(profileName = "sin").toAwsClient()
-    val functionName = "sin-chatgpt-dev"
+    val functionName = "sin-chatgpt-prod"
 
     @Test
     fun `기본테스트`() {
@@ -21,7 +21,7 @@ internal class LambdaSupportKtTest : TestRoot() {
     @Test
     fun `버전업&교체`() {
         runBlocking {
-            aws.lambda.publishVersionAndUpdateAlias(functionName,"service-on")
+            aws.lambda.publishVersionAndUpdateAlias(functionName, "service-on")
         }
     }
 

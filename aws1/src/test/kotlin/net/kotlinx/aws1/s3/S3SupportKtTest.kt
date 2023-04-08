@@ -11,19 +11,26 @@ internal class S3SupportKtTest {
     val aws = AwsConfig(profileName = "sin").toAwsClient1()
 
     @Test
-    fun `기본테스트`() {
-
-
+    fun `페이징읽기`() {
         runBlocking {
 
-            while (true) {
-                println(aws.s3.listBuckets {}.buckets!!.map { it.name })
+            val lines =
+                aws.s3.getObjectLines("sin-work-prod", "job_admin/daily_adspend_job/20230403/20230403_캠페인별_사용_금액.csv")
+            println(lines.size)
+            lines.forEachIndexed { index, strings ->
+                println("$index : $strings")
             }
 
-
         }
+    }
 
 
+    @Test
+    fun `기본테스트`() {
+        println("==============")
+        runBlocking {
+            println(aws.s3.listBuckets {}.buckets!!.map { it.name })
+        }
     }
 
 }
