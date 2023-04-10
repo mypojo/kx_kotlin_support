@@ -1,7 +1,6 @@
 package net.kotlinx.module1.reflect
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import net.kotlinx.core1.lang.valueOf
 import net.kotlinx.core1.string.toLocalDateTime
 import net.kotlinx.core2.gson.GsonSet
 import java.time.LocalDateTime
@@ -12,13 +11,13 @@ import kotlin.reflect.KProperty
 inline fun <T> Map<String, AttributeValue>.find(key: String, conv: (data: String) -> T?): T? = this[key]?.asSOrNull()?.let { conv.invoke(it) }
 
 //==================================================== Long ======================================================
-inline fun Map<String, AttributeValue>.find(key: KMutableProperty1<*, Long?>): Long? = this[key.name]?.asNOrNull()?.let { it.toLong() }
-inline fun Map<String, AttributeValue>.findOrThrow(key: KMutableProperty1<*, Long>): Long = this[key.name]?.asNOrNull()?.let { it.toLong() }
+inline fun Map<String, AttributeValue>.find(key: KMutableProperty1<*, Long?>): Long? = this[key.name]?.asNOrNull()?.toLong()
+inline fun Map<String, AttributeValue>.findOrThrow(key: KMutableProperty1<*, Long>): Long = this[key.name]?.asNOrNull()?.toLong()
     ?: throw IllegalArgumentException("[${key.name}] not found")
 
 //==================================================== Int ======================================================
-inline fun Map<String, AttributeValue>.find(key: KMutableProperty1<*, Int?>): Int? = this[key.name]?.asNOrNull()?.let { it.toInt() }
-inline fun Map<String, AttributeValue>.findOrThrow(key: KMutableProperty1<*, Int>): Int = this[key.name]?.asNOrNull()?.let { it.toInt() }
+inline fun Map<String, AttributeValue>.find(key: KMutableProperty1<*, Int?>): Int? = this[key.name]?.asNOrNull()?.toInt()
+inline fun Map<String, AttributeValue>.findOrThrow(key: KMutableProperty1<*, Int>): Int = this[key.name]?.asNOrNull()?.toInt()
     ?: throw IllegalArgumentException("[${key.name}] not found")
 
 //==================================================== String ======================================================

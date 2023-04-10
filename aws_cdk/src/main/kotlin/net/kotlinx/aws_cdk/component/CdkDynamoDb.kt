@@ -4,7 +4,6 @@ import net.kotlinx.aws_cdk.CdkInterface
 import net.kotlinx.aws_cdk.util.TagUtil
 import net.kotlinx.core1.DeploymentType
 import software.amazon.awscdk.RemovalPolicy
-import software.amazon.awscdk.RemovalPolicy.RETAIN
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.dynamodb.*
 
@@ -34,7 +33,7 @@ class CdkDynamoDb(
             stack, "ddb-$logicalName", TableProps.builder()
                 .tableName(logicalName)
                 .billingMode(billingMode)
-                .removalPolicy(RETAIN)
+                .removalPolicy(RemovalPolicy.RETAIN)
                 .partitionKey(pk)
                 .sortKey(sk)
                 .timeToLiveAttribute(ttl)
@@ -54,7 +53,7 @@ class CdkDynamoDb(
                 .sortKey(sk)
                 .build()
         )
-        TagUtil.tag(iTable!!, deploymentType)
+        TagUtil.tag(iTable, deploymentType)
     }
 
     /** 글로벌 기본은 키값만 */

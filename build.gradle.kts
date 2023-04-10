@@ -1,57 +1,13 @@
-import kotlinx.coroutines.runBlocking
-
-buildscript {
-    repositories { mavenCentral() }
-    dependencies {
-        //classpath("aws.smithy.kotlin:runtime-core:0.13.1") //람다 소스코드 배포용
-        //classpath("aws.smithy.kotlin:http:0.13.1") //람다 소스코드 배포용
-        //classpath("aws.smithy.kotlin:http-client-engine-okhttp:0.13.1") //람다 소스코드 배포용
-        classpath("aws.sdk.kotlin:lambda:0.18.0-beta") //람다 소스코드 배포용
-    }
-}
-
-gradle.beforeProject {
-    project.ext.set("pointer", "xyz") //파라메터 입력 가능
-}
-gradle.afterProject {
-    try {
-        println("#afterProject =  ${project.ext.get("pointer")}")
-    } catch (e: Exception) {
-        println("#오류 ${e::class.java.simpleName}")
-    }
-}
-
-//==================================================== task 등록 ======================================================
-tasks.register("ready") { //처음에는 register 로 등록
-    println("## task[$name] configure")
-}
-tasks.named("ready") { //두번째부터는 이렇게 로드
-    group = "_admin"
-    doLast {
-        println("## task[$name] doLast")
-    }
-}
-tasks.register("myTest") {
-    group = "_admin"
-    dependsOn("ready")
-    println("## task[$name] configure")
-    doLast {
-        println("## task[$name] doLast")
-    }
-}
-
-//==================================================== 변수설정 (중간에 선언해야함) ======================================================
-
 //여기 한먼만 하면 별도 apply 필요없음
 plugins {
     //코어 플러그인
-    kotlin("jvm") version "1.8.10" //변수지정 안됨..
+    kotlin("jvm") version "1.8.20" //항상 최신버전 사용. 멀티플랫폼 버전과 동일함
     java
     application
     `maven-publish` //메이븐 플러그인 배포
     //커뮤니티 플러그인
-    //...
 }
+
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 val awsVersion: String by extra("0.21.2-beta") //코틀린 버전 일단 사용. https://mvnrepository.com/artifact/aws.sdk.kotlin/aws-core-jvm
@@ -61,11 +17,10 @@ val exposedVersion: String by extra("0.41.1")
 allprojects {
 
     group = "net.kotlinx.kotlin_support"
-    version = "2023-02-45"
+    version = "2023-02-46"
 
     repositories {
         mavenCentral()
-        //maven { setUrl("https://jitpack.io") }
     }
 
     //자바 11로 타게팅 (큰 의미 없음)
@@ -172,36 +127,6 @@ project(":aws1") {
         api("aws.sdk.kotlin:firehose:${awsVersion}")
         api("aws.sdk.kotlin:sqs:${awsVersion}")
     }
-
-    /**
-     * 람다용 팻자르 빌드. 아래 실측 참고
-     * https://www.notion.so/mypojo/Lambda-908049fe58b24e968779d8513cd26433
-     *  */
-    tasks.create("fatJar", Jar::class) {
-        group = "build"
-        description = "for aws lambda"
-        manifest.attributes["Main-Class"] = "com.example.MyMainClass" //AWS 람다 등록시 필요없음
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        val dependencies = configurations.runtimeClasspath.get().map(::zipTree)
-        from(dependencies)
-        with(tasks.jar.get())
-        doLast {
-
-            runBlocking {
-                val jarFile = File(project.buildDir, "libs/${archiveFileName.get()}")
-                //아래 코드보다는 미리 준비된거 사용
-                aws.sdk.kotlin.services.lambda.LambdaClient {
-                    region = "ap-northeast-2"
-                    credentialsProvider = aws.sdk.kotlin.runtime.auth.credentials.DefaultChainCredentialsProvider(profileName = "wabiz")
-                }.use { client ->
-                    client.updateFunctionCode(aws.sdk.kotlin.services.lambda.model.UpdateFunctionCodeRequest {
-                        functionName = "firehose_kr"
-                        zipFile = jarFile.readBytes()
-                    })
-                }
-            }
-        }
-    }
 }
 
 /**
@@ -270,17 +195,6 @@ project(":module1") {
         //==================================================== 기본 의존 ======================================================
         api("com.google.guava:guava:31.1-jre")  //AWS에도 동일의존 있음
         implementation("com.slack.api:bolt-jetty:1.28.1")     // 기본  API 및 bolt-servlet 등을 포함한다
-
-    }
-}
-
-project(":multiplatform") {
-    dependencies {
-        //==================================================== 내부 의존성 ======================================================
-        api(project(":core2")) //API로 해야 하위 프로젝트에서 사용 가능하다.
-
-        implementation("org.jetbrains.kotlinx:kotlinx-serialization-json")
-        implementation("org.jetbrains.kotlinx:kotlinx-datetime")
     }
 }
 

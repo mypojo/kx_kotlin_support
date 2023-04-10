@@ -29,7 +29,7 @@ open class OkHttpReq(
     }
 
     /** 간단호출. */
-    fun synchExe(client: OkHttpClient): OkHttpResp = client.newCall(this.build()).execute().use { OkHttpResp(it, it.body?.string()) }
+    fun synchExe(client: OkHttpClient): OkHttpResp = client.newCall(this.build()).execute().use { OkHttpResp(it, it.body.string()) }
 }
 
 
@@ -53,7 +53,7 @@ class OkHttpReqFile(
         return client.newCall(this.build()).execute().use { response ->
             //파일 다운로드
             if (response.code == 200) {
-                response.body!!.let {
+                response.body.let {
                     it.byteStream().apply {
                         downloadFile.outputStream().use<FileOutputStream, Unit> { fileOut ->
                             copyTo(fileOut, OkHttpUtil.BUFFER_SIZE)

@@ -1,7 +1,6 @@
 package net.kotlinx.core2.concurrent
 
 import org.junit.jupiter.api.Test
-import parallelExecute
 import java.util.concurrent.Callable
 
 internal class ThreadSupportTest {

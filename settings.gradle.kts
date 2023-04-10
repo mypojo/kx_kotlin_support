@@ -8,5 +8,4 @@ include(
     "aws_cdk",
     "module1",
     "kopring",
-    "multiplatform",
 )

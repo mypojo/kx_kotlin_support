@@ -44,7 +44,7 @@ data class CronKrOptions(
         if (krHour == null) return this
 
         val hourKr = krHour!! - offsetHour
-        val isYesterday = hourKr < 0;
+        val isYesterday = hourKr < 0
         hour = "${hourKr + (if (isYesterday) 24 else 0)}" //시간은 24시간 더하고
         day = krDay?.let { "${it + (if (isYesterday) -1 else 0)}" } ?: null //날짜는 하루 당겨줘야함
         return this
@@ -84,8 +84,8 @@ class CdkEventBridgeSchedule(
                 .schedule(config.updateToUtc().toSchedule())
                 .build()
         )
-        rule.addTarget(this.ruleTarget);
-        TagUtil.tag(rule, deploymentType);
+        rule.addTarget(this.ruleTarget)
+        TagUtil.tag(rule, deploymentType)
         return rule
     }
 

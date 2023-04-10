@@ -50,7 +50,7 @@ class EventLogModule(
 
         val awsEventLogRuleName = "${project.projectName}-event_${eventName}-${deploymentType}"
         //CDK로 답이 없음. 오버라이드라도 하게 해주지.. 그냥 콘솔에서 \n 추가 (엔터키 누르기)
-        val message: RuleTargetInput? = RuleTargetInput.fromObject("");
+        val message: RuleTargetInput = RuleTargetInput.fromObject("")
 //        val message: RuleTargetInput = RuleTargetInput.fromObject({
 //            "id": EventField.fromPath("$.id"),
 //            "detail-type": EventField.fromPath("$.detail-type"),

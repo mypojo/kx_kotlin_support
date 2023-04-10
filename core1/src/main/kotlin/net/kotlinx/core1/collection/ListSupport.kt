@@ -2,7 +2,9 @@ package net.kotlinx.core1.collection
 
 /**
  * 리스트를 조건에 따라 분리해준다.
+ * 순서에 따라 나뉨으로 그룹바이하고는 다름.
  * */
+@Deprecated("쓸모없어보인다")
 inline fun <reified T> List<T>.chunkedBy(isStart: (value: T) -> Boolean): List<List<T>> {
 
     val chunkedList = mutableListOf<List<T>>()

@@ -4,8 +4,8 @@ package net.kotlinx.core1.lib
  * 별 필요없다..  아래 클래스들 참조해서 없는거 추가.
  *
  * Throwables.propagate(e); 요런것
- * @see ExceptionUtils
- * @see com.google.common.base.Throwables
+ * @see ..ExceptionUtils
+ * @see ..com.google.common.base.Throwables
  * @see ..ThrowableAnalyzer
  */
 object ExceptionUtil {

@@ -8,8 +8,8 @@ import aws.sdk.kotlin.services.firehose.putRecord
 import aws.sdk.kotlin.services.firehose.putRecordBatch
 
 /** 단축 입력 인라인 */
-suspend inline fun FirehoseClient.putRecord(StreamName: String, json: String): PutRecordResponse = this.putRecord {
-    this.deliveryStreamName = StreamName
+suspend inline fun FirehoseClient.putRecord(streamName: String, json: String): PutRecordResponse = this.putRecord {
+    this.deliveryStreamName = streamName
     this.record { this.data = json.toByteArray() }
 }
 
@@ -21,10 +21,10 @@ suspend inline fun FirehoseClient.putRecord(StreamName: String, json: String): P
  * 스트림당 소프트 리미트 : 초당 레코드 100,000개, 초당 요청 1,000개, 초당 1MiB.
  * 요금 : 5KB(5120바이트) 단위로 반올림한 값을 기반
  * */
-suspend inline fun FirehoseClient.putRecordBatch(StreamName: String, jsons: List<String>): List<PutRecordBatchResponse> {
+suspend inline fun FirehoseClient.putRecordBatch(streamName: String, jsons: List<String>): List<PutRecordBatchResponse> {
     return jsons.chunked(500).map { splited ->
         this.putRecordBatch {
-            this.deliveryStreamName = StreamName
+            this.deliveryStreamName = streamName
             this.records = splited.map { Record { data = it.toByteArray() } }
         }
     }

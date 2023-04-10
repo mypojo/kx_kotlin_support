@@ -2,7 +2,7 @@ package net.kotlinx.aws_cdk.component
 
 /** 어플리케이션이 실행되는 대표적인 서비스들. 런타임 권한용에 붙일것 */
 enum class CdkIamService(
-    val _name: String
+    val iamName: String
 ) {
 
     /** ECS (AWS-BATCH) 구동용 */
@@ -25,5 +25,5 @@ enum class CdkIamService(
     ;
 
     val serviceName: String
-        get()  = "${_name}.amazonaws.com"
+        get()  = "${iamName}.amazonaws.com"
 }

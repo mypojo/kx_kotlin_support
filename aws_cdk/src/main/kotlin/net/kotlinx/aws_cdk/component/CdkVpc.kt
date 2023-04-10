@@ -33,7 +33,7 @@ open class CdkVpc(
     lateinit var iVpc: IVpc
 
     val feer: IPeer
-        get() = Peer.ipv4(iVpc!!.vpcCidrBlock)
+        get() = Peer.ipv4(iVpc.vpcCidrBlock)
 
     var subnetCnt: Int = subnetTypes.size * maxAzs
 
@@ -64,11 +64,11 @@ open class CdkVpc(
         check(cidrMask == 24) { "cidrMask 24 만 지원" }
         val type = "private"
         val block = vpcCidr.split(".").take(2).joinToString(".") //앞의 2개 자리만 잘라줌
-        val subnets = iVpc!!.availabilityZones.map { az ->
+        val subnets = iVpc.availabilityZones.map { az ->
             val zoneName = az.substring(az.length - 1)
             val subnetName = "${projectName}_subnet_$type/${zoneName}_${deploymentType}"
             val subnet = PrivateSubnet.Builder.create(stack, subnetName)
-                .vpcId(iVpc!!.vpcId).availabilityZone(az).cidrBlock("${block}.${subnetCnt++}.0/${cidrMask}").build()
+                .vpcId(iVpc.vpcId).availabilityZone(az).cidrBlock("${block}.${subnetCnt++}.0/${cidrMask}").build()
             TagUtil.name(subnet, subnetName)
             subnet
         }
@@ -89,9 +89,9 @@ open class CdkVpc(
     /** VPC 내의 서브넷 네이밍 테그 강제 수정 (디폴트는 너무 길고 이상함) */
     fun subnetRename() {
         listOf(
-            "public" to iVpc!!.publicSubnets,
-            "private" to iVpc!!.privateSubnets,
-            "isolated" to iVpc!!.isolatedSubnets,
+            "public" to iVpc.publicSubnets,
+            "private" to iVpc.privateSubnets,
+            "isolated" to iVpc.isolatedSubnets,
         ).forEach { (subnetSuffix, subnets) ->
             subnets.forEach { subnet ->
                 val zoneName = subnet.availabilityZone.substring(subnet.availabilityZone.length - 1)
@@ -121,7 +121,7 @@ open class CdkVpc(
         services.forEach { service ->
             val serviceName = service.name.substringAfterLast(".")
             val endpointName = "${this.project.projectName}_${this.deploymentType}_endpoint_${serviceName}"
-            val endpoint = iVpc!!.addGatewayEndpoint(endpointName, GatewayVpcEndpointOptions.builder().service(service).build())
+            val endpoint = iVpc.addGatewayEndpoint(endpointName, GatewayVpcEndpointOptions.builder().service(service).build())
             endpoint.addToPolicy(
                 PolicyStatement.Builder.create()
                     .principals(listOf(AnyPrincipal()))

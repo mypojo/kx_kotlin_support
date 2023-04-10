@@ -1,4 +1,4 @@
-package net.kotlinx.core1.lang
+package net.kotlinx.module1.reflect
 
 import kotlin.reflect.KClass
 

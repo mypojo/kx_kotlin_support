@@ -1,3 +1,5 @@
+package net.kotlinx.module1.guava
+
 import net.kotlinx.core1.string.toTextGrid
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf

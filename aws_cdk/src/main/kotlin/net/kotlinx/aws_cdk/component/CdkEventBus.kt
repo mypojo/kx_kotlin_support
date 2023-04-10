@@ -21,7 +21,7 @@ class CdkEventBus(
     fun create(stack: Stack) {
         val eventBusName = "${project.projectName}-eventbus-${deploymentType}"
         iEventBus = EventBus(stack, eventBusName, EventBusProps.builder().eventBusName(eventBusName).build())
-        TagUtil.tag(iEventBus!!, deploymentType)
+        TagUtil.tag(iEventBus, deploymentType)
     }
 
     /**
@@ -35,7 +35,7 @@ class CdkEventBus(
                 .enabled(true)
                 .ruleName(eventDisRuleName)
                 .description("AWS(eventbus) => ${project.projectName}(eventbus) / ${this.deploymentType}")
-                .targets(listOf(software.amazon.awscdk.services.events.targets.EventBus(iEventBus!!)))
+                .targets(listOf(software.amazon.awscdk.services.events.targets.EventBus(iEventBus)))
                 .eventPattern(eventPattern)
                 .build()
         )

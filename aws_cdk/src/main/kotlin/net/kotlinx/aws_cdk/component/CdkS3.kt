@@ -23,7 +23,7 @@ open class CdkS3(
 
     fun create(stack: Stack, bucketProps: BucketProps): CdkS3 {
         iBucket = Bucket(stack, logicalName, bucketProps)
-        TagUtil.tag(iBucket!!, deploymentType)
+        TagUtil.tag(iBucket, deploymentType)
         return this
     }
 

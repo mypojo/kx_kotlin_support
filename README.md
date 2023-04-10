@@ -124,3 +124,6 @@ athenaModule.startAndWaitAndExecute(executions)
 
 ## 의존관계
 ![img.png](img.png)
+
+## 멀티플랫폼? 
+![img2.png](img2.png)
