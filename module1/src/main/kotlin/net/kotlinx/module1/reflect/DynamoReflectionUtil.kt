@@ -12,6 +12,7 @@ import kotlin.reflect.full.primaryConstructor
  * enhanced 매퍼가 없다..  레거시 호환을 위해 만듬. 임시로만 사용할것!!  val 문제 때문에 사용하기 까다롭다!!
  * json 으로 중간단계 변환하는 방법은 사용하지 않는다.
  * */
+@Deprecated("DynamoDbMapSupport.kt 를 사용할것")
 object DynamoReflectionUtil {
 
     /** 데이터 클래스 -> Attribute Map */

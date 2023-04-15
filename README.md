@@ -122,6 +122,24 @@ val athenaModule = AthenaModule(aws)
 athenaModule.startAndWaitAndExecute(executions)
 ```
 
+## CDK step function 샘플
+```kotlin
+CdkSfn(MyConfig.PROJECT, deploymentType, this, "rpt_demo").apply {
+    this.lambda = lambda
+    this.jobDefinitionArn = jobDef.arn
+    this.jobQueueArn = jobQueue.arn
+    create(
+        listOf(
+            "ready" to listOf(
+                SfnLambda("job01"),
+                SfnBatch("job02"),
+            ),
+            SfnLambda("job03")
+        )
+    )
+}    
+```
+
 ## 의존관계
 ![img.png](img.png)
 

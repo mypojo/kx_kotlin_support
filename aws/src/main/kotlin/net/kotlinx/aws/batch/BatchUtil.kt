@@ -5,10 +5,16 @@ import net.kotlinx.aws1.AwsConfig
 object BatchUtil {
 
 
+    //==================================================== args 전달값 (cdk의 JobDefinitionProps.command 와 일치) ->  ======================================================
+
+    /** job 객체필요한 json 문자열 (jobPk 등) */
+    const val BATCH_ARGS01 = "jobOption01"
+    /** 동적입력 - 잡 옵션 (sfnID 포함) */
+    const val BATCH_ARGS02 = "jobOption02"
+
     //==================================================== 내부 예약어 ======================================================
 
-    /** cdk의 JobDefinitionProps.command 와 일치해야함. 편의상 json 하나로 관리 */
-    const val MAIN_ARGS_KEY = "JOB_CONFIG"
+
 
     /** AWS_BATCH_JOB_ID  */
     const val ENV_ID = "AWS_BATCH_JOB_ID"

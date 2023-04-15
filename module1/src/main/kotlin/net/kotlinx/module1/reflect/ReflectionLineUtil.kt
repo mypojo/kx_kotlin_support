@@ -10,22 +10,20 @@ import kotlin.reflect.KProperty
 import kotlin.reflect.KType
 import kotlin.reflect.full.isSubclassOf
 
+
 /**
  * * 간단한 리플렉션 도구
  * 패키지 크기가 커서 의존관계 하위로 이동시킴
  * */
-object ReflectionUtil {
-
+object ReflectionLineUtil {
 
     /**
      * 객체간 변환을 도와준다.
      * @param to 기본 생성자가 있어야함
      * */
     fun <T : Any> convertTo(from: Any, to: KClass<T>): T {
-        val fromMap: Map<String, KProperty<*>> =
-            from::class.members.filterIsInstance<KProperty<*>>().associateBy { it.name }
-        val newInstance: T = to.constructors.firstOrNull { it.parameters.isEmpty() }?.call()
-            ?: throw IllegalArgumentException("기본 생성자가 있어야 합니다 : $to")
+        val fromMap: Map<String, KProperty<*>> = from::class.members.filterIsInstance<KProperty<*>>().associateBy { it.name }
+        val newInstance: T = to.constructors.firstOrNull { it.parameters.isEmpty() }?.call() ?: throw IllegalArgumentException("기본 생성자가 있어야 합니다 : $to")
         to.members.filterIsInstance<KMutableProperty<*>>().forEach { toField ->
             val value: Any? = fromMap[toField.name]?.getter?.call(from)
             value?.let { toField.setter.call(newInstance, it) }
@@ -138,8 +136,8 @@ object ReflectionUtil {
 /** 리플렉션으로 출력. 하나 이상의 객체가 있어야 한다. */
 fun List<Any>.toTextGrid(): TextGrid {
     val first = this.first()
-    val datas = this.map { ReflectionUtil.dataToLine(it).toTypedArray() }
-    return ReflectionUtil.dataToHeader(first::class).toTextGrid(datas)
+    val datas = this.map { ReflectionLineUtil.dataToLine(it).toTypedArray() }
+    return ReflectionLineUtil.dataToHeader(first::class).toTextGrid(datas)
 }
 
 enum class DataNullMark {

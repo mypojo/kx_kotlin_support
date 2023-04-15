@@ -26,14 +26,11 @@ object AwsInstanceTypeUtil {
     }
 
     /** instanceType 을 가져온다 */
-    @get:Synchronized
     val instanceType: AwsInstanceType by lazy { doGetInstanceType().apply { log.info("instanceType => $this") } }
 
-    @get:Synchronized
     val isAwsEcsFargate: Boolean by lazy { AWS_ECS_FARGATE == System.getenv("AWS_EXECUTION_ENV") }
 
     /** 로컬인지?  */
-    @get:Synchronized
     val isLocal: Boolean by lazy {
         System.getProperty("os.name").let {
             it.contains("Windows", true) || it.contains("Mac", true)

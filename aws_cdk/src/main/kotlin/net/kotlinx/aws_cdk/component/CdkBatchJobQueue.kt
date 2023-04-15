@@ -22,7 +22,7 @@ open class CdkBatchJobQueue(
     open override val logicalName: String
         get() = "${project.projectName}-queue_${name}-${deploymentType}"
 
-    val arn: String = "arn:aws:batch:ap-northeast-2:${this.project.awsId}:job-queue/${name}"
+    val arn: String = "arn:aws:batch:ap-northeast-2:${this.project.awsId}:job-queue/${logicalName}"
 
     lateinit var queue: CfnJobQueue
 

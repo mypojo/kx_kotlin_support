@@ -11,7 +11,7 @@ import kotlin.reflect.KProperty
 object AthenaReflectionUtil {
 
     /**
-     * 키와 타입을 리턴해준다.
+     * 키와 타입을 리턴해준다. 스키마 만들때 사용
      * */
     fun toSchema(clazz: KClass<*>): Map<String, String> {
         return clazz.members.filterIsInstance<KProperty<*>>().associate {

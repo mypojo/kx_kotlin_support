@@ -5,10 +5,10 @@ import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.toAwsClient
 import net.kotlinx.aws1.AwsConfig
 import net.kotlinx.core2.gson.toGsonData
+import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
-import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.dao.IntIdTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger

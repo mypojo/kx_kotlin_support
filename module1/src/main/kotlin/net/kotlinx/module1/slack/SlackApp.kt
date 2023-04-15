@@ -8,6 +8,8 @@ import net.kotlinx.core2.gson.GsonData
 import java.io.Closeable
 
 /**
+ * 확장함수로 해결이 불가능함
+ *
  * https://slack.dev/java-slack-sdk/guides/web-api-basics 참고
  * 볼트 프레임워크가 아닌 기본 API 사용.
  *

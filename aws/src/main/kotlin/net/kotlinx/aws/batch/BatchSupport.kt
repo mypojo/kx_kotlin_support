@@ -31,7 +31,11 @@ suspend fun BatchClient.submitJob(jobQueueName: String, jobPk: String, json: Gso
         this.jobQueue = jobQueueName
         this.jobName = "D${TimeFormat.DH_F01.get()}-${jobPk}" //단순히 콘솔에서 구분하기 위한 용도
         this.jobDefinition = jobPk
-        this.parameters = mapOf(BatchUtil.MAIN_ARGS_KEY to json.toString())  //무조건 이 형식으로만 1뎁스로 입력해야함
+        //배치는  args 로 단순 문자열만 받는다. 주의!! 무조건 1뎁스로 문자열로 입력해야함
+        this.parameters = mapOf(
+            BatchUtil.BATCH_ARGS01 to json.toString(), //여기에 디폴트 입력
+            BatchUtil.BATCH_ARGS02 to "{}", //빈 객체 (파라메터 값은 공백문자 허용안함)
+        )
     }
     return resp.jobId!!
 }

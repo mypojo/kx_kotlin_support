@@ -6,9 +6,8 @@ import net.kotlinx.aws.toAwsClient
 import net.kotlinx.aws1.AwsConfig
 import net.kotlinx.core2.gson.toGsonData
 import net.kotlinx.module1.exposed.Payments.amount
-import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.dao.LongIdTable
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal

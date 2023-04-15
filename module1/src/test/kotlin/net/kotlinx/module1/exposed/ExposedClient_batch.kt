@@ -1,10 +1,8 @@
 package net.kotlinx.module1.exposed
 
-import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.dao.LongIdTable
 import org.jetbrains.exposed.sql.batchInsert
-import org.jetbrains.exposed.sql.javatime.datetime
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
 
 object Books : LongIdTable("book") {
     val writer = reference("writer_id", Writers)
@@ -33,13 +31,13 @@ internal class ExposedClient_batch {
         Books.batchInsert(
             data,
             ignore = false,
-            shouldReturnGeneratedValues = false
+            //shouldReturnGeneratedValues = false
         ) {
-            this[Books.writer] = 1L
+            //this[Books.writer] = 23
             this[Books.title] = "$it-title"
             this[Books.price] = it.toBigDecimal()
-            this[Books.createdAt] = LocalDateTime.now()
-            this[Books.updatedAt] = LocalDateTime.now()
+//            this[Books.createdAt] = LocalDateTime.now()
+//            this[Books.updatedAt] = LocalDateTime.now()
         }
     }
 

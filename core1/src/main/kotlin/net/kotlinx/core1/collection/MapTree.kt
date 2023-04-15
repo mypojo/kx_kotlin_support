@@ -19,7 +19,7 @@ class MapTree<T>(
     //============================== method =================================
     /** 핵심 메소드  */
     @Synchronized
-    fun get(key: Any): T {
+    operator fun get(key: Any): T {
         val keyStr = key.toString()
         return delegate[keyStr] ?: supplier.get().also { delegate[keyStr] = it }
     }

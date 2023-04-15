@@ -30,6 +30,9 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
     fun put(key: String, value: Number?) = (delegate as? JsonObject)?.addProperty(key, value)
     fun put(key: String, value: Boolean?) = (delegate as? JsonObject)?.addProperty(key, value)
 
+    /** 삭제. */
+    fun remove(key: String): GsonData? = (delegate as? JsonObject)?.remove(key)?.let { GsonData(it) }
+
     //==================================================== 기본 구현 ======================================================
 
     /** 타입 세이프하지 않음 주의!! */

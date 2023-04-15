@@ -6,9 +6,9 @@ import net.kotlinx.aws.toAwsClient
 import net.kotlinx.aws1.AwsConfig
 import net.kotlinx.core2.gson.toGsonData
 import net.kotlinx.module1.exposed.Payments.amount
+import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
-import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
@@ -21,6 +21,7 @@ import java.math.BigDecimal
 /** dao */
 class Payment(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<Payment>(Payments)
+
     var amount by Payments.amount
     var orderId by Payments.orderId
 }

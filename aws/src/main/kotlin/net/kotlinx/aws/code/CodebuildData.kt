@@ -33,7 +33,7 @@ data class CodebuildData(
     fun command(command: String): List<String> = if (isWindows) listOf("cmd", "/c", command) else listOf("bash", "-c", command)
 
     /** 로컬 실행의 경우 프로파일을 추가로 입력해줘야함 */
-    private val profileCmd = if (isWindows) "--profile $profileName" else ""
+    val profileCmd = if (isWindows) "--profile $profileName" else ""
 
     //==================================================== ECR ======================================================
     /** ECR 주소 */
@@ -42,11 +42,15 @@ data class CodebuildData(
     /** ECR 로그인 주소 */
     fun ecrLoginCommand(ecrUrl: String): String = "aws ecr get-login-password --region $region $profileCmd | docker login --username AWS --password-stdin $ecrUrl"
 
-    /** 브랜치 명 (코드디플로이의 경우 환경변수에 넣어줌) */
-    val branchName = System.getenv("BRANCH_NAME") ?: deploymentType.name
+    /**
+     * 브랜치 명 (최종 벨리데이션 체크에 사용)
+     * 코드디플로이 -> 경우 환경변수에 넣어줌
+     * 로컬 ->  git branch
+     * */
+    val branchName: String? = System.getenv("BRANCH_NAME")
 
     /** 최종 태그 명 */
-    val ecrTagName = "$branchName-${DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm").withZone(ZoneId.of("Asia/Seoul")).format(LocalDateTime.now())}"
+    val ecrTagName = "$deploymentType-${DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm").withZone(ZoneId.of("Asia/Seoul")).format(LocalDateTime.now())}"
 
     //==================================================== AWS ======================================================
 

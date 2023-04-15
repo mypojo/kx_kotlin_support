@@ -1,5 +1,6 @@
 package net.kotlinx.aws_cdk.component
 
+import net.kotlinx.aws.batch.BatchUtil
 import net.kotlinx.aws_cdk.CdkInterface
 import net.kotlinx.aws_cdk.CdkProject
 import net.kotlinx.aws_cdk.util.TagUtil
@@ -41,6 +42,15 @@ open class CdkBatchJobDefinition(
     lateinit var executionRole: IRole
     lateinit var logGroupPath: String
 
+    /**
+     * args 로 사용할 인자값 매핑
+     * job submit 할때의 파라메터와 일치해아함
+     * */
+    var command: List<String> = listOf(
+        "Ref::${BatchUtil.BATCH_ARGS01}",
+        "Ref::${BatchUtil.BATCH_ARGS02}",
+    )
+
     /** 디폴트로 12시간. 프로젝트에 따라 조절할거시 */
     var attemptDurationSeconds: Long = 12.hours.inWholeSeconds
 
@@ -59,7 +69,7 @@ open class CdkBatchJobDefinition(
         .containerProperties(
             ContainerPropertiesProperty.builder()
                 .fargatePlatformConfiguration(FargatePlatformConfigurationProperty.builder().platformVersion("1.4.0").build())
-                .command(listOf("Ref::JOB_CONFIG")) //job submit 할때의 파라메터와 일치해아함 (BatchUtil 참고)
+                .command(command)
                 .environment(
                     listOf(
                         EnvironmentProperty.builder().name(DeploymentType::class.simpleName).value(deploymentType.name).build(),
