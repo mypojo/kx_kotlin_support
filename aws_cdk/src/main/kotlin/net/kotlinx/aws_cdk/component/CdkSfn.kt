@@ -27,7 +27,10 @@ sealed interface SfnChain {
 data class SfnLambda(
     override val name: String,
     override var suffix: String = ""
-) : SfnChain
+) : SfnChain {
+    /** 람다를 내부적으로 구분할때 사용하는 네이밍.  기본적으로는 job 으로 간주 */
+    var keyName = BatchUtil.JOB_PK
+}
 
 data class SfnBatch(
     override val name: String,
@@ -36,9 +39,11 @@ data class SfnBatch(
 
 data class SfnWait(
     /** 필드 이름 */
-    override val name: String = SfnUtil.jobScheduleTime,
+    override val name: String,
     override var suffix: String = ""
-) : SfnChain
+) : SfnChain {
+    var timestampPath: String = "$.${SfnUtil.jobScheduleTime}"
+}
 
 /**
  * ID 중복 최소한만 고려 (화면에 안예쁘게 나옴)
@@ -89,9 +94,13 @@ class CdkSfn(
 
         is List<*> -> {
             val list = (chain as List<Any>).map { convertAny(it) }
-            list.first().also { first ->
-                list.drop(1).forEach { (first as INextable).next(it) }
+            //순서대로 체인을 이어준다.
+            for (i in 0 until list.size - 1) {
+                val current = list[i]
+                val next = list[i + 1]
+                (current as INextable).next(next)
             }
+            list.first() //첫번째 객체를 리턴
         }
 
         is IChainable -> chain //그대로 리턴 (혹시나..)
@@ -99,6 +108,7 @@ class CdkSfn(
         else -> throw IllegalArgumentException("${chain::class} is not required")
     }
 
+    /** 정해진 형태를 State 로 변환 */
     private fun convert(chain: SfnChain): State = when (chain) {
         is SfnLambda -> {
             LambdaInvoke(
@@ -107,7 +117,7 @@ class CdkSfn(
                     .payload(
                         TaskInput.fromObject(
                             mapOf(
-                                "jobPk" to chain.name, //실행할 잡 이름 (설정과 일치해야함)
+                                chain.keyName to chain.name, //실행할 잡 이름 (설정과 일치해야함)
                                 "${SfnUtil.jobOption}.$" to "$.${SfnUtil.jobOption}",  //기준날짜 등의 커스텀 옵션 (포함된 모든 잡이 같이 사용)
                             )
                         )
@@ -135,7 +145,7 @@ class CdkSfn(
                         TaskInput.fromObject(
                             //정해진 키 값들이 args[] 로 매핑됨. -> 각 데이터는 문자열 형식만 가능함
                             mapOf(
-                                BatchUtil.BATCH_ARGS01 to obj { "jobPk" to chain.name }.toString(),
+                                BatchUtil.BATCH_ARGS01 to obj { BatchUtil.JOB_PK to chain.name }.toString(),
                                 "${BatchUtil.BATCH_ARGS02}.$" to "$.${SfnUtil.jobOption}",
                             )
                         )
@@ -156,7 +166,7 @@ class CdkSfn(
         is SfnWait -> {
             Wait(
                 stack, "${chain.name}${chain.suffix}", WaitProps.builder()
-                    .time(WaitTime.timestampPath("$.${chain.name}"))
+                    .time(WaitTime.timestampPath(chain.timestampPath))
                     .build()
             )
         }

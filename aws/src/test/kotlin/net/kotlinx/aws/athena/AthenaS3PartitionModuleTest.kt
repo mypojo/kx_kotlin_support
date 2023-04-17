@@ -1,17 +1,18 @@
 package net.kotlinx.aws.athena
 
 import ch.qos.logback.classic.Level
-import io.kotest.common.runBlocking
-import net.kotlinx.TestRoot
+import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.toAwsClient
 import net.kotlinx.aws1.AwsConfig
 import net.kotlinx.core2.logback.LogBackUtil
+import net.kotlinx.core2.test.TestRoot
 import org.junit.jupiter.api.Test
 
 internal class AthenaS3PartitionModuleTest : TestRoot() {
 
     val aws = AwsConfig(profileName = "sin").toAwsClient()
-    init{
+
+    init {
         LogBackUtil.logLevelTo("net.kotlinx.aws.athena", Level.TRACE)
     }
 

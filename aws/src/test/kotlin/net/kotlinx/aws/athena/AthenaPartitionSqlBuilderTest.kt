@@ -1,11 +1,11 @@
 package net.kotlinx.aws.athena
 
 import mu.KotlinLogging
-import net.kotlinx.TestRoot
 import net.kotlinx.aws.toAwsClient
 import net.kotlinx.aws1.AwsConfig
 import net.kotlinx.core1.number.toTimeString
 import net.kotlinx.core1.time.toYmd
+import net.kotlinx.core2.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 

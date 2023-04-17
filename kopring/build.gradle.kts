@@ -1,0 +1,36 @@
+//여기 한먼만 하면 별도 apply 필요없음
+plugins {
+    //코어 플러그인
+    kotlin("jvm") //항상 최신버전 사용. 멀티플랫폼 버전과 동일함
+    id("org.springframework.boot") apply false
+    id("io.spring.dependency-management")
+}
+
+//==================================================== 공통 ======================================================
+/** 그래들 표준 문법을 간단하게 변경해줌 */
+operator fun ProviderFactory.get(name: String): String = this.gradleProperty(name).get()
+
+//==================================================== 프로젝트별 설정 ======================================================
+
+apply(plugin = "io.spring.dependency-management")
+/** 부트전용 의존성 적용 (버전 명시 필요없어짐) */
+dependencyManagement {
+    imports {
+        mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+    }
+}
+
+dependencies {
+    //==================================================== 내부 의존성 ======================================================
+    api(project(":module1")) //API로 해야 하위 프로젝트에서 사용 가능하다.
+
+    //==================================================== 스프링 부트 시리즈 (버전x) ======================================================
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-batch")
+    implementation("org.springframework.retry:spring-retry")
+
+    //==================================================== 배치 관련 ======================================================
+    implementation("com.opencsv:opencsv:5.7.1")
+
+}

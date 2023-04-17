@@ -1,0 +1,44 @@
+//여기 한먼만 하면 별도 apply 필요없음
+plugins {
+    //코어 플러그인
+    kotlin("jvm") //항상 최신버전 사용. 멀티플랫폼 버전과 동일함
+}
+
+//==================================================== 공통 ======================================================
+/** 그래들 표준 문법을 간단하게 변경해줌 */
+operator fun ProviderFactory.get(name: String): String = this.gradleProperty(name).get()
+
+//==================================================== 프로젝트별 설정 ======================================================
+
+dependencies {
+
+    //==================================================== 내부 의존성 ======================================================
+    api(project(":aws1"))
+
+    //==================================================== 기본 (이정도는 괜찮겠지) ======================================================
+    api("com.google.guava:guava:${providers["guavaVersion"]}")
+
+    //==================================================== AWS ======================================================
+    val awsVersion: String by project
+    api("aws.sdk.kotlin:athena:$awsVersion")
+    api("aws.sdk.kotlin:sts:$awsVersion")
+    api("aws.sdk.kotlin:lambda:$awsVersion")
+    api("aws.sdk.kotlin:iam:$awsVersion")
+    api("aws.sdk.kotlin:rds:$awsVersion")
+    api("aws.sdk.kotlin:ecs:$awsVersion")  //ec2 생략
+    api("aws.sdk.kotlin:ses:$awsVersion")
+    api("aws.sdk.kotlin:batch:$awsVersion")
+    api("aws.sdk.kotlin:ssm:$awsVersion")
+    api("aws.sdk.kotlin:eventbridge:$awsVersion")
+    api("aws.sdk.kotlin:sfn:$awsVersion")
+    api("aws.sdk.kotlin:codedeploy:$awsVersion")
+    api("aws.sdk.kotlin:secretsmanager:$awsVersion")
+    api("aws.sdk.kotlin:ec2:$awsVersion")
+    api("aws.sdk.kotlin:ecr:$awsVersion")
+
+//        //==================================================== AWS 이벤트 스키마 바인딩에 필요 (안씀.. 너무 구림) ======================================================
+//        implementation("com.fasterxml.jackson.core:jackson-core:2.10.0")
+//        implementation("com.fasterxml.jackson.core:jackson-databind:2.10.0")
+//        implementation("com.fasterxml.jackson.core:jackson-annotations:2.10.0")
+
+}

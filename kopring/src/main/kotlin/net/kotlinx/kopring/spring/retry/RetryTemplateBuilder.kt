@@ -26,7 +26,18 @@ class RetryTemplateBuilder {
      * 리트라이 수행 전, 에러가 발생했을때 로깅 / 콜백 등을 설정
      * ex) 토큰 익스파이어 / 토큰 널 예외를 캐치해서 토큰을 갱신해줌
      */
-    var retryListeners: List<RetryListener> = listOf(onErrorLogging)
+    var retryListeners: List<RetryListener> = listOf(
+        /** 기본 설정으로는 간단 로깅 추가 */
+        object : RetryListener {
+            override fun <T : Any?, E : Throwable?> open(context: RetryContext?, callback: RetryCallback<T, E>?): Boolean = true
+
+            override fun <T : Any?, E : Throwable?> close(context: RetryContext?, callback: RetryCallback<T, E>?, throwable: Throwable?) {}
+
+            override fun <T, E : Throwable?> onError(context: RetryContext, callback: RetryCallback<T, E>, throwable: Throwable) {
+                log.warn { " => 재시도[${retryPolicy.canRetry(context)}] 오류 카운트 ${context.retryCount} : ${ExceptionUtil.toString(throwable)}" }
+            }
+        }
+    )
 
     //==================================================== 필수 설정값 ======================================================
 
@@ -76,22 +87,6 @@ class RetryTemplateBuilder {
     companion object {
 
         private val log = KotlinLogging.logger {}
-
-        /** 간단 로깅  */
-        val onErrorLogging: RetryListener = object : RetryListener {
-            override fun <T : Any?, E : Throwable?> open(context: RetryContext?, callback: RetryCallback<T, E>?): Boolean {
-                throw IllegalStateException("xx")
-            }
-
-            override fun <T : Any?, E : Throwable?> close(context: RetryContext?, callback: RetryCallback<T, E>?, throwable: Throwable?) {
-                throw IllegalStateException("xx")
-            }
-
-            override fun <T, E : Throwable?> onError(context: RetryContext, callback: RetryCallback<T, E>, throwable: Throwable) {
-                val exStr: String = ExceptionUtil.toString(throwable)
-                log.warn(" => 오류 카운트 {} : {}", context.retryCount, exStr)
-            }
-        }
 
     }
 }

@@ -124,24 +124,30 @@ athenaModule.startAndWaitAndExecute(executions)
 
 ## CDK step function 샘플
 ```kotlin
-CdkSfn(MyConfig.PROJECT, deploymentType, this, "rpt_demo").apply {
-    this.lambda = lambda
-    this.jobDefinitionArn = jobDef.arn
-    this.jobQueueArn = jobQueue.arn
+CdkSfn(MyConfig.PROJECT, deploymentType, this, "sfnJob").apply {
+    config()
     create(
         listOf(
-            "ready" to listOf(
-                SfnLambda("job01"),
-                SfnBatch("job02"),
+            "job01" to listOf(
+                SfnLambda("job01-1"),
+                SfnBatch("job01-2"),
+                "job01-3" to listOf(
+                    SfnLambda("job01-3-1"),
+                    SfnBatch("job01-3-2"),
+                ),
             ),
-            SfnLambda("job03")
+            SfnLambda("job02"),
+            "job03" to listOf(
+                SfnLambda("job03-1"),
+                SfnBatch("job03-2"),
+            )
         )
     )
-}    
+}
 ```
+### CDK step function 결과
+![img.png](readme/sfn.png)
+
 
 ## 의존관계
-![img.png](img.png)
-
-## 멀티플랫폼? 
-![img2.png](img2.png)
+![img.png](readme/dependencies.png)

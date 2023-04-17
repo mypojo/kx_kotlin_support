@@ -10,7 +10,6 @@ internal class CdkEventBridgeScheduleTest {
         val op = CronKrOptions(krDay = 2, krHour = 3, minute = "00").updateToUtc()
         check(op.hour == "18")
 
-
         println(CronKrOptions.hourToUtc(1,13,19))
 
     }

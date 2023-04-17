@@ -3,10 +3,10 @@ package net.kotlinx.aws1.dynamo
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws1.AwsConfig
-import net.kotlinx.aws1.TestRoot
 import net.kotlinx.aws1.dynamo.DynamoQuery.DynamoQueryKeyEqualTo
 import net.kotlinx.aws1.toAwsClient1
 import net.kotlinx.core1.time.toLong
+import net.kotlinx.core2.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 

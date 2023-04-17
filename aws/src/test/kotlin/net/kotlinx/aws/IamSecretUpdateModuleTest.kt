@@ -1,14 +1,14 @@
 package net.kotlinx.aws
 
-import net.kotlinx.TestRoot
 import net.kotlinx.aws1.AwsConfig
+import net.kotlinx.core2.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.time.Duration
 
-internal class IamSecretUpdateModuleTest:TestRoot(){
+internal class IamSecretUpdateModuleTest : TestRoot() {
 
     @Test
-    fun `시크릿키 갱신`(){
+    fun `시크릿키 갱신`() {
 
         val aws = AwsConfig(profileName = "default").toAwsClient() //디폴트로 해야 홀딩 계정으로 접근가능
 

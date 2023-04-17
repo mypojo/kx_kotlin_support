@@ -1,9 +1,9 @@
 package net.kotlinx.aws.athena
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import net.kotlinx.TestRoot
 import net.kotlinx.aws.toAwsClient
 import net.kotlinx.aws1.AwsConfig
+import net.kotlinx.core2.test.TestRoot
 import org.junit.jupiter.api.Test
 import kotlin.io.path.deleteExisting
 
@@ -41,7 +41,7 @@ internal class AthenaModuleTest : TestRoot() {
                 file.toPath().deleteExisting()
             },
         )
-        val athenaModule = AthenaModule(aws, workGroup = "workgroup-prod",database = "p")
+        val athenaModule = AthenaModule(aws, workGroup = "workgroup-prod", database = "p")
         athenaModule.startAndWaitAndExecute(executions)
 
     }
