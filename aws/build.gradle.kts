@@ -32,9 +32,19 @@ dependencies {
     api("aws.sdk.kotlin:eventbridge:$awsVersion")
     api("aws.sdk.kotlin:sfn:$awsVersion")
     api("aws.sdk.kotlin:codedeploy:$awsVersion")
+    api("aws.sdk.kotlin:codecommit:$awsVersion")
     api("aws.sdk.kotlin:secretsmanager:$awsVersion")
     api("aws.sdk.kotlin:ec2:$awsVersion")
     api("aws.sdk.kotlin:ecr:$awsVersion")
+    //덜중요한것들
+//    api("aws.sdk.kotlin:pricing:$awsVersion") //제품의 비용(고정) 확인용
+//    api("aws.sdk.kotlin:costexplorer:$awsVersion") //계정당 비용 확인용
+//    api("aws.sdk.kotlin:xray:$awsVersion")
+//    api("aws.sdk.kotlin:elasticloadbalancingv2:$awsVersion")
+//    api("aws.sdk.kotlin:quicksight:$awsVersion")
+//    api("aws.sdk.kotlin:auth:$awsVersion")
+//    api("aws.sdk.kotlin:regions:$awsVersion")
+
 
 //        //==================================================== AWS 이벤트 스키마 바인딩에 필요 (안씀.. 너무 구림) ======================================================
 //        implementation("com.fasterxml.jackson.core:jackson-core:2.10.0")

@@ -1,7 +1,9 @@
 package net.kotlinx.aws.batch
 
 import aws.sdk.kotlin.services.batch.BatchClient
+import aws.sdk.kotlin.services.batch.cancelJob
 import aws.sdk.kotlin.services.batch.describeJobs
+import aws.sdk.kotlin.services.batch.model.CancelJobResponse
 import aws.sdk.kotlin.services.batch.model.JobDetail
 import aws.sdk.kotlin.services.batch.model.JobStatus
 import aws.sdk.kotlin.services.batch.model.SubmitJobResponse
@@ -19,6 +21,12 @@ fun JobStatus.isReady(): Boolean = this in setOf(JobStatus.Submitted, JobStatus.
 
 /** 단건 조회 */
 suspend fun BatchClient.describeJob(jobId: String): JobDetail? = this.describeJobs { this.jobs = listOf(jobId) }.jobs!!.firstOrNull()
+
+/** 취소 */
+suspend fun BatchClient.describeJob(jobId: String, reason: String): CancelJobResponse = this.cancelJob {
+    this.jobId = jobId
+    this.reason = reason
+}
 
 /**
  * 통합 간단 잡 제출 (코드 참조용)

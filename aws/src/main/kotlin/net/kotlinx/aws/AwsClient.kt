@@ -2,9 +2,12 @@ package net.kotlinx.aws
 
 import aws.sdk.kotlin.services.athena.AthenaClient
 import aws.sdk.kotlin.services.batch.BatchClient
+import aws.sdk.kotlin.services.codecommit.CodeCommitClient
+import aws.sdk.kotlin.services.codedeploy.CodeDeployClient
 import aws.sdk.kotlin.services.ecr.EcrClient
 import aws.sdk.kotlin.services.iam.IamClient
 import aws.sdk.kotlin.services.lambda.LambdaClient
+import aws.sdk.kotlin.services.rds.RdsClient
 import aws.sdk.kotlin.services.secretsmanager.SecretsManagerClient
 import aws.sdk.kotlin.services.sfn.SfnClient
 import aws.sdk.kotlin.services.ssm.SsmClient
@@ -24,6 +27,10 @@ class AwsClient(val awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     val batch: BatchClient by lazy { BatchClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val sfn: SfnClient by lazy { SfnClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val ecr: EcrClient by lazy { EcrClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
+    val rds: RdsClient by lazy { RdsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
+
+    val codeDeploy: CodeDeployClient by lazy { CodeDeployClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
+    val codeCommit: CodeCommitClient by lazy { CodeCommitClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
 
     //==================================================== 모듈 설정 ======================================================
     val iamSecretUpdateModule: IamSecretUpdateModule by lazy { IamSecretUpdateModule(iam) }

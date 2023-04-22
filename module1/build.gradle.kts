@@ -27,6 +27,11 @@ dependencies {
     implementation("software.aws.rds:aws-mysql-jdbc:1.1.2") //aws 장애조치기능이 담긴 mysql 드라이버 & 모든 mysql과 호환가능. https://github.com/awslabs/aws-mysql-jdbc
     implementation("com.zaxxer:HikariCP:5.0.1")
 
+    //==================================================== RDS IAM ======================================================
+    val awsSdk2Version = "2.17.118" //사용중인거하고 맞춤
+    implementation("software.amazon.awssdk:rds:$awsSdk2Version") //AWS SDK2 버전의 IAM 데이터소스 (코틀린 버전 없음)
+    implementation("software.amazon.awssdk:sts:$awsSdk2Version") //IAM 토큰 발행시 필요
+
     //==================================================== 기타 ======================================================
     api("com.jcraft:jsch:0.1.55") //SFTP 모듈
 
