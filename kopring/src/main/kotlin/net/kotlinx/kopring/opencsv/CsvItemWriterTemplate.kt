@@ -8,6 +8,7 @@ import java.io.File
 
 /**
  * 자주 사용되는 CsvItemWriter 템플릿
+ * @see net.kotlinx.core2.file.FileZipTemplate 이거하고 같이 사용
  */
 class CsvItemWriterTemplate(
     val block: CsvItemWriterTemplate.() -> Unit
@@ -15,8 +16,9 @@ class CsvItemWriterTemplate(
 
     //==================================================== 설정 ======================================================
     /**
-     * 파일은경우  -> gzip 압축
-     * 디렉토리인경우 -> 100만건이 넘으면 분할
+     * !!!주의!!! 편의상 이걸로 구분한다
+     * 디렉토리인경우 (사전에 디렉토리 생성) -> MS949 & 100만건이 넘으면 분할 or 용량 크면 압축
+     * 파일  -> UTF8 & gzip 압축
      * */
     lateinit var file: File
 
@@ -24,10 +26,7 @@ class CsvItemWriterTemplate(
 
     private val log = KotlinLogging.logger {}
 
-    /**
-     * 빌드
-     * @see net.kotlinx.core2.file.FileZipTemplate
-     * */
+    /** 빌드 */
     fun build(): ItemWriter<Array<String>> {
         block(this)
         return when {
