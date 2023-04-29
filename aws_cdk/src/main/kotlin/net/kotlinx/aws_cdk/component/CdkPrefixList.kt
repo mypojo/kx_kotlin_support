@@ -1,6 +1,6 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkInterface
+import net.kotlinx.aws_cdk.CdkDeploymentType
 import net.kotlinx.aws_cdk.CdkProject
 import net.kotlinx.core1.DeploymentType
 import software.amazon.awscdk.Stack
@@ -12,11 +12,12 @@ import software.amazon.awscdk.services.ec2.Peer
 
 class CdkPrefixList(
     val project: CdkProject,
-    val deploymentType: DeploymentType,
     val name: String,
     val prefixDatas: Map<String, String>,
     val maxEntries: Int = 50,
-) : CdkInterface {
+) : CdkDeploymentType {
+
+    override var deploymentType: DeploymentType = DeploymentType.dev
 
     override val logicalName: String
         get() = "${project.projectName}-prefix_${name}-${deploymentType}"

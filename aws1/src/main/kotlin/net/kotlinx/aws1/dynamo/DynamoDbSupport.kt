@@ -1,11 +1,9 @@
 package net.kotlinx.aws1.dynamo
 
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
+import aws.sdk.kotlin.services.dynamodb.deleteItem
 import aws.sdk.kotlin.services.dynamodb.getItem
-import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.sdk.kotlin.services.dynamodb.model.PutItemResponse
-import aws.sdk.kotlin.services.dynamodb.model.ReturnValue
-import aws.sdk.kotlin.services.dynamodb.model.UpdateItemResponse
+import aws.sdk.kotlin.services.dynamodb.model.*
 import aws.sdk.kotlin.services.dynamodb.paginators.queryPaginated
 import aws.sdk.kotlin.services.dynamodb.putItem
 import aws.sdk.kotlin.services.dynamodb.updateItem
@@ -40,6 +38,13 @@ suspend fun DynamoDbClient.updateItem(data: DynamoData, updateKeys: List<String>
         this.expressionAttributeValues = data.toAttribute().filterKeys { it in updateKeys }.mapKeys { ":${it.key}" }
         this.returnValues = ReturnValue.AllNew
     }
+}
+
+/** 간단 삭제 */
+suspend fun DynamoDbClient.deleteItem(data: DynamoData, returnValue: ReturnValue = ReturnValue.None): DeleteItemResponse = this.deleteItem {
+    this.tableName = data.tableName
+    this.key = data.toKeyMap()
+    this.returnValues = returnValue
 }
 
 suspend fun <T : DynamoData> DynamoDbClient.getItem(data: T): T? {

@@ -13,14 +13,12 @@ operator fun ProviderFactory.get(name: String): String = this.gradleProperty(nam
 //==================================================== 프로젝트별 설정 ======================================================
 
 apply(plugin = "io.spring.dependency-management")
-/** 부트전용 의존성 적용 (버전 명시 필요없어짐) */
-dependencyManagement {
-    imports {
-        mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
-    }
-}
 
 dependencies {
+
+    /** 부트전용 의존성 적용 (버전 명시 필요없어짐) */
+    implementation(platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES))  //https://youtrack.jetbrains.com/issue/KT-53426
+
     //==================================================== 내부 의존성 ======================================================
     api(project(":module1")) //API로 해야 하위 프로젝트에서 사용 가능하다.
 
@@ -29,6 +27,13 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-batch")
     implementation("org.springframework.retry:spring-retry")
+    implementation("org.springframework.session:spring-session-core")
+
+    //==================================================== JWT 관련 ======================================================
+    val jwtVersion = "0.11.5"
+    implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtVersion")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
 
     //==================================================== 배치 관련 ======================================================
     implementation("com.opencsv:opencsv:5.7.1")

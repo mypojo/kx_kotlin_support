@@ -1,6 +1,6 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkInterface
+import net.kotlinx.aws_cdk.CdkDeploymentType
 import net.kotlinx.aws_cdk.CdkProject
 import net.kotlinx.aws_cdk.util.TagUtil
 import net.kotlinx.core1.DeploymentType
@@ -17,14 +17,15 @@ import software.amazon.awscdk.services.iam.PolicyStatement
  *  */
 open class CdkVpc(
     val project: CdkProject,
-    val deploymentType: DeploymentType,
     val vpcCidr: String = "10.1.0.0/16",
     /** 최초  */
     val cidrMask: Int = 24,
     val subnetTypes: List<SubnetType> = listOf(SubnetType.PUBLIC, SubnetType.PRIVATE_WITH_EGRESS),
     val maxAzs: Int = 2,
     val natGateways: Int = 1,
-) : CdkInterface {
+) : CdkDeploymentType {
+
+    override var deploymentType: DeploymentType = DeploymentType.dev
 
     /** VPC 이름 */
     open override val logicalName: String
@@ -72,7 +73,6 @@ open class CdkVpc(
             TagUtil.name(subnet, subnetName)
             subnet
         }
-
 
         val naclName = "${projectName}_nacl_${type}_${deploymentType}"
         val nacl = NetworkAcl.Builder.create(stack, naclName).vpc(iVpc).subnetSelection(

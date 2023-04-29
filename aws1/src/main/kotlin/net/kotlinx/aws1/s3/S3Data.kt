@@ -11,6 +11,9 @@ data class S3Data(
     var key: String,
 ) {
 
+    /** 버전이 있는경우. 주로 삭제할때 사용  */
+    var versionId: String? = null
+
     /**
      * 업로드 파일에 접근 가능한 S3 프로토콜을 리턴한다. 이 URL은 다운로드나 스파크 등  내부 API에서 사용된다.
      * https://gpdb.docs.pivotal.io/4390/admin_guide/load/topics/g-s3-protocol.html

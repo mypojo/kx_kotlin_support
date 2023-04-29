@@ -1,5 +1,7 @@
 import com.google.common.collect.Lists
 import net.kotlinx.kopring.opencsv.CsvItemReader
+import net.kotlinx.kopring.spring.toResource
+import java.io.File
 
 /** 간단읽기 */
 fun CsvItemReader.readAll(): List<Array<String>> {
@@ -31,3 +33,17 @@ fun CsvItemReader.count(): Long {
     }
     return cnt
 }
+
+/**
+ * 간단 샘플은 이정도 까지만..
+ * 시스템에서 만든 문서라면 urf8() 호출할것
+ *  */
+fun File.toCsvReader(linesToSkip: Int = 1): CsvItemReader {
+    val file = this
+    return CsvItemReader().apply {
+        setResource(file.toResource())
+        this.linesToSkip = linesToSkip
+    }
+}
+
+

@@ -22,7 +22,11 @@ object OkHttpUtil {
 
     /** 아웃바운드 IP를 간단히 리턴해준다.  */
     fun findOutboundIp(client: OkHttpClient = OkHttpClient()): String {
-        val resp: String = OkHttpReq("https://www.findip.kr/").synchExe(client).respText!!
+
+        val resp: String = client.fetch {
+            url = "https://www.findip.kr/"
+        }.respText!!
+
         return RegexSet.between("(IP Address): ", "</h2>").find(resp)!!.value
     }
 

@@ -1,6 +1,6 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkInterface
+import net.kotlinx.aws_cdk.CdkDeploymentType
 import net.kotlinx.aws_cdk.CdkProject
 import net.kotlinx.aws_cdk.util.TagUtil
 import net.kotlinx.core1.DeploymentType
@@ -11,9 +11,10 @@ import software.amazon.awscdk.services.ec2.*
 
 class CdkSecurityGroup(
     val project: CdkProject,
-    val deploymentType: DeploymentType,
     val sgName: String,
-) : CdkInterface {
+) : CdkDeploymentType {
+
+    override var deploymentType: DeploymentType = DeploymentType.dev
 
     override val logicalName: String
         get() = "${project.projectName}-sg_${sgName}-${deploymentType}"

@@ -1,6 +1,6 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkInterface
+import net.kotlinx.aws_cdk.CdkDeploymentType
 import net.kotlinx.aws_cdk.CdkProject
 import net.kotlinx.core1.DeploymentType
 import software.amazon.awscdk.Stack
@@ -11,8 +11,9 @@ import software.amazon.awscdk.services.sqs.QueueProps
 open class CdkSqs(
     val project: CdkProject,
     val name: String,
-    val deploymentType: DeploymentType,
-) : CdkInterface {
+) : CdkDeploymentType {
+
+    override var deploymentType: DeploymentType = DeploymentType.dev
 
     override val logicalName: String
         get() = "${project.projectName}-${name}-${deploymentType}"

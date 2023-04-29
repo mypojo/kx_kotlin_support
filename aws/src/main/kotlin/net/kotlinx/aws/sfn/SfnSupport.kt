@@ -54,5 +54,5 @@ suspend fun SfnClient.listExecutions(awsId: String, stateMachineName: String, ex
         this.nextToken = nextToken
         this.maxResults = MAX_RESULTS
         this.stateMachineArn = SfnUtil.buildMachineArn(awsId, stateMachineName)
-    }!!
+    }
 }

@@ -17,6 +17,7 @@ dependencies {
     //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
     api("org.jetbrains.kotlin:kotlin-reflect:${providers["kotlinVersion"]}") // 리플렉션 dto 변환용
     implementation("org.jetbrains.exposed:exposed:${providers["exposedVersion"]}")
+    api("io.insert-koin:koin-core:3.4.0") //kotlin DI 도구  <-- module 단계서부터 적용
 
     //implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
 //        implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")

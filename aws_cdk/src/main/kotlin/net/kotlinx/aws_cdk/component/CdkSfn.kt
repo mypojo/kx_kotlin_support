@@ -3,13 +3,20 @@ package net.kotlinx.aws_cdk.component
 import com.lectra.koson.obj
 import net.kotlinx.aws.batch.BatchUtil
 import net.kotlinx.aws.sfn.SfnUtil
-import net.kotlinx.aws_cdk.CdkInterface
+import net.kotlinx.aws_cdk.CdkDeploymentType
 import net.kotlinx.aws_cdk.CdkProject
 import net.kotlinx.aws_cdk.util.TagUtil
 import net.kotlinx.core1.DeploymentType
 import software.amazon.awscdk.Duration
 import software.amazon.awscdk.Stack
+import software.amazon.awscdk.services.events.EventPattern
+import software.amazon.awscdk.services.events.Rule
+import software.amazon.awscdk.services.events.RuleProps
+import software.amazon.awscdk.services.events.targets.SnsTopic
+import software.amazon.awscdk.services.events.targets.SnsTopicProps
 import software.amazon.awscdk.services.lambda.IFunction
+import software.amazon.awscdk.services.sns.ITopic
+import software.amazon.awscdk.services.sqs.IQueue
 import software.amazon.awscdk.services.stepfunctions.*
 import software.amazon.awscdk.services.stepfunctions.tasks.BatchSubmitJob
 import software.amazon.awscdk.services.stepfunctions.tasks.BatchSubmitJobProps
@@ -51,11 +58,12 @@ data class SfnWait(
  * */
 class CdkSfn(
     val project: CdkProject,
-    val deploymentType: DeploymentType,
     val stack: Stack,
     val name: String,
     val timeout: Duration = Duration.hours(8), //새벽 기준으로 출근 할때까지
-) : CdkInterface {
+) : CdkDeploymentType {
+
+    override var deploymentType: DeploymentType = DeploymentType.dev
 
     override val logicalName: String = "${project.projectName}-$name-${deploymentType.name}"
 
@@ -66,9 +74,11 @@ class CdkSfn(
     lateinit var jobDefinitionArn: String
     lateinit var jobQueueArn: String
 
-    fun create(chains: List<Any>): StateMachine {
+    lateinit var stateMachine: StateMachine
+
+    fun create(chains: List<Any>) {
         val definition = convertAny(chains)
-        val stateMachine = StateMachine(
+        stateMachine = StateMachine(
             stack, "sfn-$logicalName", StateMachineProps.builder()
                 .stateMachineName(logicalName)
                 .timeout(timeout)
@@ -76,7 +86,31 @@ class CdkSfn(
                 .build()
         )
         TagUtil.tag(stateMachine, deploymentType)
-        return stateMachine
+    }
+
+    /**  예외 처리 -> SNS */
+    fun onErrorHandle(topic: ITopic, dlq: IQueue) {
+        val ruleName = "${logicalName}-faileAlert"
+        val rule = Rule(
+            stack, ruleName, RuleProps.builder()
+                .ruleName(ruleName)
+                .description("$logicalName fail alert")
+                .targets(listOf(SnsTopic(topic, SnsTopicProps.builder().deadLetterQueue(dlq).build())))
+                .eventPattern(
+                    EventPattern.builder()
+                        .source(listOf("aws.states"))
+                        .detailType(listOf("Step Functions Execution Status Change"))
+                        .detail(
+                            mapOf(
+                                "stateMachineArn" to listOf(stateMachine.stateMachineArn),
+                                "status" to listOf("FAILED")
+                            )
+                        )
+                        .build()
+                )
+                .build()
+        )
+        TagUtil.tag(rule, deploymentType)
     }
 
     private fun convertAny(chain: Any): IChainable = when (chain) {

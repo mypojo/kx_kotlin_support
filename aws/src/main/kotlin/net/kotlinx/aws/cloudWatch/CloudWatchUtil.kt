@@ -7,8 +7,6 @@ import java.time.LocalDateTime
 
 object CloudWatchUtil {
 
-    private const val LOG_DEFAULT_PATH = "https://ap-northeast-2.console.aws.amazon.com/cloudwatch/home?region=ap-northeast-2#logsV2:log-groups/log-group/{}/log-events/{}{}"
-
     /**
      * 클라우드와치 로그 링크를 리턴
      * 이 뒤에 필터를 붙일 수 있다. (별도의 특문 없이 그대로 + 하면됨)
@@ -18,7 +16,7 @@ object CloudWatchUtil {
         val escapedStreamName = (logStreamName ?: "").encodeUrl()
         return "https://$region.console.aws.amazon.com/cloudwatch/home?region=$region#logsV2:log-groups/log-group/$escapedGroupName/log-events/$escapedStreamName"
     }
-    
+
     //==================================================== 시간 필터 ======================================================
 
     /**

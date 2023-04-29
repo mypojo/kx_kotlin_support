@@ -1,6 +1,6 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkInterface
+import net.kotlinx.aws_cdk.CdkDeploymentType
 import net.kotlinx.aws_cdk.CdkProject
 import net.kotlinx.core1.DeploymentType
 import net.kotlinx.core1.DeploymentType.dev
@@ -19,9 +19,9 @@ enum class ComputeEnvironmentType(val resourceType: String) {
 open class CdkComputeEnvironment(
     val project: CdkProject,
     val type: ComputeEnvironmentType,
-) : CdkInterface {
+) : CdkDeploymentType {
 
-    var deploymentType: DeploymentType = dev
+    override var deploymentType: DeploymentType = dev
 
     /** VPC 이름 */
     open override val logicalName: String

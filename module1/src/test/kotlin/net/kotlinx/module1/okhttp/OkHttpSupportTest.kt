@@ -15,7 +15,9 @@ internal class OkHttpSupportTest {
 
     @Test
     fun `기본테스트`() {
-        val resp = OkHttpReq("https://publicobject.com/helloworld.txt").synchExe(client)
+        val resp = client.fetch {
+            url = "https://publicobject.com/helloworld.txt"
+        }
         println(resp.respText)
     }
 
@@ -24,14 +26,19 @@ internal class OkHttpSupportTest {
 
         val file = File(AwsInstanceTypeUtil.instanceType.root, "demo.jpg")
         file.delete()
-        val url = "http://imgep.wconcept.co.kr/productimg/image/img9/29/300011929_FI57778.jpg"
+        val url = "http://imgep.xxx.co.kr/productimg/image/img9/29/300011929_FI57778.jpg"
 
-        val resp1 = OkHttpReqFile(url, file).synchDownload(client)
+        val resp1 = client.download(file) {
+            this.url = url
+        }
         val lastModified = resp1.lastModified
         log.info { "code : ${resp1.response.code} / 파일크기 : ${file.length()} / lastModified : ${resp1.lastModified}" }
 
         //Wed, 22 Aug 2018 09:07:06 GMT
-        val resp2 = OkHttpReqFile(url, file).apply { dirtyCheck(lastModified) }.synchDownload(client)
+        val resp2 = client.download(file) {
+            this.url = url
+            dirtyCheck(lastModified)
+        }
         log.info { "code : ${resp2.response.code} / 파일크기 : ${file.length()} / lastModified : ${resp2.lastModified}" }
     }
 

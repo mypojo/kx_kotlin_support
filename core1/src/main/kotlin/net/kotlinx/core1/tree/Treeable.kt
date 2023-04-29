@@ -1,10 +1,13 @@
 package net.kotlinx.core1.tree
 
+import net.kotlinx.core1.Identity
+
+
 /** 부모와 자식을 가지는 트리 구조를 표현한다.   */
-interface Treeable<ID, T : Treeable<ID, T>> {
+interface Treeable<ID, T : Treeable<ID, T>> : Identity<ID> {
 
     /** 자신 ID */
-    val id: ID
+    override val id: ID
 
     /** 부모 ID (DB내용 등으로 연결관계를 만들때 사용됨)  */
     val parentId: ID?

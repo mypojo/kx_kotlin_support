@@ -1,6 +1,6 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkInterface
+import net.kotlinx.aws_cdk.CdkDeploymentType
 import net.kotlinx.aws_cdk.util.TagUtil
 import net.kotlinx.core1.DeploymentType
 import software.amazon.awscdk.RemovalPolicy
@@ -12,10 +12,12 @@ fun String.cdkDynamoAttN(): Attribute = Attribute.builder().name(this).type(Attr
 
 class CdkDynamoDb(
     val tableName: String,
-    val deploymentType: DeploymentType,
-) : CdkInterface {
+) : CdkDeploymentType {
 
-    override val logicalName: String = "$tableName-${deploymentType.name}"
+    override var deploymentType: DeploymentType = DeploymentType.dev
+
+    override val logicalName: String
+        get() = "$tableName-${deploymentType.name}"
 
     var billingMode = BillingMode.PAY_PER_REQUEST
     var removalPolicy = RemovalPolicy.RETAIN

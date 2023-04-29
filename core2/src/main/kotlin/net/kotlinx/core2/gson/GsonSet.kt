@@ -19,6 +19,14 @@ object GsonSet {
         }.create()!!
     }
 
+    /** 이쁘게 */
+    val GSON_PRETTY by lazy {
+        GsonBuilder().apply {
+            setExclusionStrategies(NotExposeStrategy())
+            setPrettyPrinting()
+        }.create()!!
+    }
+
 
     /** AWS kinesis 등에 연동할 데이터 변환용 */
     val TABLE_UTC by lazy {

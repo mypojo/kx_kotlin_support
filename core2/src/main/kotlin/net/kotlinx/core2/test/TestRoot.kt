@@ -3,6 +3,7 @@ package net.kotlinx.core2.test
 import ch.qos.logback.classic.Level
 import mu.KotlinLogging
 import net.kotlinx.core1.CoreUtil
+import net.kotlinx.core1.time.TimeStart
 import net.kotlinx.core2.logback.LogBackUtil
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -29,12 +30,14 @@ abstract class TestRoot {
     companion object {
 
         val log = KotlinLogging.logger {}
+        lateinit var start:TimeStart
 
         //==================================================== 기본 구현 ======================================================
         @BeforeAll
         @JvmStatic
         fun beforeClass() {
             LogBackUtil.logLevelTo(CoreUtil.packageName, Level.DEBUG)
+            start = TimeStart()
         }
 
         /** 매번 테스트 종료시마다 호출된다.  */
@@ -42,7 +45,7 @@ abstract class TestRoot {
         @JvmStatic
         @Throws(IOException::class)
         fun afterClass() {
-            log.info { "테스트 종료" }
+            log.info { "테스트 종료 $start" }
         }
     }
 }

@@ -258,13 +258,13 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 //    }
 //
 //    //====== String
-//    fun getString(key: String, nullValue: String?): String? {
+//    fun get(key: String, nullValue: String?): String? {
 //        val primitive = getJsonPrimitive(key) ?: return nullValue
 //        return if (primitive.isJsonNull) nullValue else primitive.asString
 //    }
 //
-//    fun getString(key: String): String? {
-//        return getString(key, null)
+//    fun get(key: String): String? {
+//        return get(key, null)
 //    }
 //
 //    //====== Long
@@ -336,7 +336,7 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 //    //====== Enum
 //    fun <T : Enum<*>?> getEnmum(clazz: Class<T>, nullValue: T): T {
 //        val key: String = StringUtil.uncapitalize(clazz.simpleName)
-//        val value = getString(key) ?: return nullValue
+//        val value = get(key) ?: return nullValue
 //        return java.lang.Enum.valueOf(clazz, value) as T
 //    }
 //
@@ -369,7 +369,7 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 //     * 넘버 타입은 이걸로 파싱후 각자 컨버팅 할것
 //     */
 //    fun parseDecimal(key: String, nullValue: BigDecimal): BigDecimal {
-//        val value = getString(key)
+//        val value = get(key)
 //        return try {
 //            DecimalUtil.toDecimal(value)
 //        } catch (e: Exception) {

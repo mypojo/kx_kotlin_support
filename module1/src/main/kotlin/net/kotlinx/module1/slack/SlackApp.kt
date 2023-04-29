@@ -21,6 +21,7 @@ class SlackApp(
     private val token: String
 ) : Closeable {
 
+    /** 별 문제없어서 그냥 이렇게 쓴다 */
     val slack: Slack by lazy { Slack.getInstance() }
 
     private val log = KotlinLogging.logger {}

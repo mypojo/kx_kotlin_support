@@ -14,3 +14,11 @@ fun HttpServletResponse.toCsvItemWriter(): CsvItemWriter {
         setResource(OutputStreamResource2(resp.outputStream))
     }
 }
+
+
+/** 간단 쓰기 */
+fun CsvItemWriter.writeAll(items: List<Array<String>>) {
+    open()
+    write(items)
+    close()
+}

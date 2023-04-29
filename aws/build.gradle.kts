@@ -15,6 +15,9 @@ dependencies {
     //==================================================== 내부 의존성 ======================================================
     api(project(":aws1"))
 
+    //==================================================== 자바 표준 ======================================================
+    api("javax.mail:javax.mail-api:1.6.2") //이메일 전송에 필요함
+
     //==================================================== 기본 (이정도는 괜찮겠지) ======================================================
     api("com.google.guava:guava:${providers["guavaVersion"]}")
 
@@ -36,9 +39,10 @@ dependencies {
     api("aws.sdk.kotlin:secretsmanager:$awsVersion")
     api("aws.sdk.kotlin:ec2:$awsVersion")
     api("aws.sdk.kotlin:ecr:$awsVersion")
+
     //덜중요한것들
+    api("aws.sdk.kotlin:costexplorer:$awsVersion") //계정당 비용 확인용
 //    api("aws.sdk.kotlin:pricing:$awsVersion") //제품의 비용(고정) 확인용
-//    api("aws.sdk.kotlin:costexplorer:$awsVersion") //계정당 비용 확인용
 //    api("aws.sdk.kotlin:xray:$awsVersion")
 //    api("aws.sdk.kotlin:elasticloadbalancingv2:$awsVersion")
 //    api("aws.sdk.kotlin:quicksight:$awsVersion")

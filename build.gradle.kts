@@ -8,7 +8,7 @@ plugins {
 /** 그래들 표준 문법을 간단하게 변경해줌 */
 operator fun ProviderFactory.get(name: String): String = this.gradleProperty(name).get()
 
-subprojects {
+allprojects {
 
     println("[$name] buildDir = $buildDir")
 
@@ -64,6 +64,36 @@ subprojects {
 
 //==================================================== 배포 ======================================================
 //https://jitpack.io/#mypojo/kx_kotlin_support/-SNAPSHOT  이걸로 해도 됨 (직접 배포하는게 더 좋은듯)
+//publishing {
+//    publications {
+//        fun pub(projectName: String) {
+//            create<MavenPublication>("mavenCentral-${projectName}") {
+//                groupId = "net.kotlinx"
+//                artifactId = projectName
+//                from(project(":${projectName}").components["java"])
+//                pom {
+//                    name.set(projectName)
+//                    description.set("Kotlin Support Library")
+//                    url.set("https://github.com/mypojo/kx_kotlin_support")
+//                    licenses {
+//
+//                    }
+//                }
+//            }
+//        }
+//        //모든 의존성이 순서대로 다 있어야함
+//        pub("core1")
+//    }
+//    repositories {
+//        maven {
+//            url = uri("s01.oss.sonatype.org")
+//            credentials {
+//                username = providers["jatbrains.space.maven.username"]
+//                password = providers["jatbrains.space.maven.password"]
+//            }
+//        }
+//    }
+//}
 publishing {
     publications {
         fun pub(projectName: String) {

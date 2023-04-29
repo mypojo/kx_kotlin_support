@@ -24,3 +24,7 @@ val HttpServletRequest.forwardedIp: String
 /** 앞에 있는 만료된 쿠기?들은 오버라이드 된다   */
 val HttpServletRequest.cookieMap: Map<String, String>
     get() = this.cookies?.let { cookies.associate { it.name to it.value } } ?: emptyMap()
+
+/** HTML 요청인지 여부. ajax 여부를 판단할때 사용된다   */
+val HttpServletRequest.isTextHtmlReq: Boolean
+    get() = this.getHeader("Accept")?.contains("text/html") ?: false
