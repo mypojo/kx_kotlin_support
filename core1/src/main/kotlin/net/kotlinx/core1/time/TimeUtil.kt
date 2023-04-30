@@ -75,13 +75,13 @@ object TimeUtil {
     }
     //==================================================== MONTH ======================================================
     /** 샘플용 간단 메소드  */
-    fun toListMonth(format: TimeFormat, start: String?, end: String?): List<String> {
+    fun toListMonth(format: TimeFormat, start: String?, end: String): List<String> {
         val dates = toList(format.toLocalDateTime(start), Period.ofMonths(1), format.toLocalDateTime(end))
         return dates.stream().map { dateTime: LocalDateTime? -> format[dateTime] }.collect(Collectors.toList())
     }
 
     /** 샘플용 간단 메소드  */
-    fun toListMonth(start: String?, end: String?): List<String> {
+    fun toListMonth(start: String?, end: String): List<String> {
         return toListMonth(TimeFormat.YM, start, end)
     }
     //==================================================== DATE ======================================================
@@ -112,7 +112,7 @@ object TimeUtil {
     }
 
     /** 샘플용 간단 메소드  */
-    fun toListDate(start: String?, end: String?): List<String> {
+    fun toListDate(start: String?, end: String): List<String> {
         val format = TimeFormat.YMD
         val localDates = toList(format.toLocalDate(start), format.toLocalDate(end))
         return localDates.stream().map { dateTime: LocalDate -> format[dateTime] }.collect(Collectors.toList())

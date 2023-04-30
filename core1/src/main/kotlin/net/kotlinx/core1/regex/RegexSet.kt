@@ -52,6 +52,8 @@ object RegexSet {
     //==================================================== 함수 ======================================================
 
     private val regexEscaper = Pattern.compile("[.\\\\+*?\\[^\\]$(){}=!<>|:\\-]")!!
+
+    /** regex 예약어를 치환해준다. */
     fun escape(input: String): String {
         var input = input
         val matcher = regexEscaper.matcher(input)
@@ -61,7 +63,19 @@ object RegexSet {
         return input
     }
 
-    /** 두 패턴 사이의 값을 찾는 정규식 (이스케이핑 후 값을 입력할것) */
-    fun between(pref: String, suff: String): Regex = "(?<=${escape(pref)}).*?(?=${escape(suff)})".toRegex()
+    /** 두 패턴 사이의 값을 찾는 정규식. (매칭 미포함) */
+    fun extract(pref: String, suff: String): String = "(?<=${escape(pref)}).*?(?=${escape(suff)})"
+
+    /** 두 패턴 사이의 값을 찾는 정규식. (매칭 포함)  */
+    fun find(pref: String, suff: String): String = "${escape(pref)}.*?${escape(suff)}"
+
+    /** 크롤링용 기본옵션
+     * 멀티라인 & 대소문자 구분x
+     * */
+    val CRW: Set<RegexOption> = setOf(
+        RegexOption.MULTILINE,
+        RegexOption.DOT_MATCHES_ALL,
+        RegexOption.IGNORE_CASE,
+    )
 
 }
