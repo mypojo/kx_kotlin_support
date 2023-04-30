@@ -2,7 +2,7 @@ package net.kotlinx.kopring.opencsv
 
 import mu.KotlinLogging
 import net.kotlinx.kopring.spring.batch.component.MultiResourceItemWriterBuilder
-import net.kotlinx.kopring.spring.toGzipOutputStreamResource
+import net.kotlinx.kopring.spring.resource.toGzipOutputStreamResource
 import org.springframework.batch.item.ItemWriter
 import java.io.File
 

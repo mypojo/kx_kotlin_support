@@ -1,4 +1,4 @@
-package net.kotlinx.kopring.spring
+package net.kotlinx.kopring.spring.resource
 
 import org.springframework.core.io.Resource
 import org.springframework.core.io.WritableResource

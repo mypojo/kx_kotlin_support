@@ -1,4 +1,4 @@
-package net.kotlinx.kopring.spring
+package net.kotlinx.kopring.spring.resource
 
 import org.springframework.core.io.InputStreamResource
 import java.io.File

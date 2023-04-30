@@ -1,6 +1,6 @@
 import com.google.common.collect.Lists
 import net.kotlinx.kopring.opencsv.CsvItemReader
-import net.kotlinx.kopring.spring.toResource
+import net.kotlinx.kopring.spring.resource.toResource
 import java.io.File
 
 /** 간단읽기 */
