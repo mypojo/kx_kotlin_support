@@ -13,8 +13,8 @@ object MultilineFormatReaderSample {
     /** 샘플 01번.  요런형태 가끔 보임 */
     fun xml01(file: File): MultilineFormatReader<String, GsonData> {
 
-        val idPattern = RegexSet.between("<g:", ">")
-        val valuePattern = RegexSet.between(">", "<")
+        val idPattern = RegexSet.extract("<g:", ">").toRegex()
+        val valuePattern = RegexSet.extract(">", "<").toRegex()
 
         return MultilineFormatReader(
             itemReader = FlatFileItemReader<String>().apply {

@@ -27,7 +27,7 @@ object OkHttpUtil {
             url = "https://www.findip.kr/"
         }.respText!!
 
-        return RegexSet.between("(IP Address): ", "</h2>").find(resp)!!.value
+        return RegexSet.extract("(IP Address): ", "</h2>").toRegex().find(resp)!!.value
     }
 
 }
