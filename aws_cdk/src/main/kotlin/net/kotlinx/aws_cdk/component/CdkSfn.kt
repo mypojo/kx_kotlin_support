@@ -37,6 +37,9 @@ data class SfnLambda(
 ) : SfnChain {
     /** 람다를 내부적으로 구분할때 사용하는 네이밍.  기본적으로는 job 으로 간주 */
     var keyName = BatchUtil.JOB_PK
+
+    /** 기본 재시도 정책(10초 3회). 람다 특성상, 혹시 모르니 리트라이 해준다. 커스텀은 addRetry() 사용 */
+    var retry: Boolean = true
 }
 
 data class SfnBatch(
@@ -165,6 +168,7 @@ class CdkSfn(
                         )
                     )
                     .comment("${chain.name}")
+                    .retryOnServiceExceptions(chain.retry)
                     .build()
             )
         }

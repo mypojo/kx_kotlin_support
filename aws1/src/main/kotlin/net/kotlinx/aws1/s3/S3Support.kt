@@ -13,7 +13,6 @@ import aws.smithy.kotlin.runtime.content.decodeToString
 import aws.smithy.kotlin.runtime.content.writeToFile
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import net.kotlinx.core2.concurrent.coroutineExecute
-import net.kotlinx.core2.test.TestRoot.Companion.log
 import java.io.File
 
 /** 삭제, 리스트 조회 등 이게 디폴트인듯  */
@@ -82,7 +81,7 @@ suspend inline fun S3Client.deleteObjects(datas: Collection<S3Data>) {
     groupByBucket.entries.map { (bucket, list) ->
         suspend {
             list.chunked(LIMIT_PER_REQ).forEachIndexed { index, each ->
-                log.debug { "버킷 [$bucket] : [${index + 1}/${list.size}] -> ${each.size} 건 삭제" }
+                //log.debug { "버킷 [$bucket] : [${index + 1}/${list.size}] -> ${each.size} 건 삭제" }
                 this.deleteObjects {
                     this.bucket = bucket
                     this.delete {

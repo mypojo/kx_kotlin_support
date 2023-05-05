@@ -1,11 +1,10 @@
 package net.kotlinx.kopring.spring.retry
 
-import net.kotlinx.core2.test.TestRoot
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
-class RetryTemplateBuilderTest : TestRoot() {
+class RetryTemplateBuilderTest : net.kotlinx.core2.test.TestRoot() {
 
     @Test
     fun test() {

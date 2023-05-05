@@ -7,7 +7,6 @@ import aws.sdk.kotlin.services.sqs.model.Message
 import aws.sdk.kotlin.services.sqs.model.SendMessageBatchRequestEntry
 import aws.sdk.kotlin.services.sqs.receiveMessage
 import aws.sdk.kotlin.services.sqs.sendMessageBatch
-import net.kotlinx.core2.test.TestRoot.Companion.log
 
 
 /** 디폴트 최대 수. 기본설정이 1임..  */
@@ -67,7 +66,7 @@ suspend fun SqsClient.receiveMessage(queueUrl: String, maxNum: Int = MAX_NUMBER_
  * 주의!  표시 제한 시간이 0이면 무한 로드 될거임. 무한로드 방지 로직이 포함됨
  * 반드시 전체 내용이 필요한 로직 등, 제한적으로 사용해야함!!
  */
-suspend fun SqsClient.receiveMessageAll(queueUrl: String, maxRepeatCnt:Int = 20): List<Message> {
+suspend fun SqsClient.receiveMessageAll(queueUrl: String, maxRepeatCnt: Int = 20): List<Message> {
     return ArrayList<Message>().also { list ->
         val unique: MutableSet<String> = mutableSetOf()
         repeat(maxRepeatCnt) {
@@ -76,11 +75,10 @@ suspend fun SqsClient.receiveMessageAll(queueUrl: String, maxRepeatCnt:Int = 20)
 
             val duplicated = receiveMsgs.filter { unique.add(it.messageId!!) }
             if (duplicated.isNotEmpty()) {
-                log.warn { "중복 데이터가 발견되었습니다. 큐 옵션의 '표시 제한 시간' 을 늘려주세요 : $duplicated " }
+                //log.warn { "중복 데이터가 발견되었습니다. 큐 옵션의 '표시 제한 시간' 을 늘려주세요 : $duplicated " }
                 return list
             }
-
-            log.debug { "  --> 데이터 로드 ${receiveMsgs.size}건" }
+            //log.debug { "  --> 데이터 로드 ${receiveMsgs.size}건" }
             list.addAll(receiveMsgs)
         }
     }

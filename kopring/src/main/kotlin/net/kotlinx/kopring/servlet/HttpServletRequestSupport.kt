@@ -28,3 +28,16 @@ val HttpServletRequest.cookieMap: Map<String, String>
 /** HTML 요청인지 여부. ajax 여부를 판단할때 사용된다   */
 val HttpServletRequest.isTextHtmlReq: Boolean
     get() = this.getHeader("Accept")?.contains("text/html") ?: false
+
+/**
+ * 스키마가 달린 패스를 구한다.
+ * ALB를 타고 오면 원본 소스가 http 임으로, 서버일경우 무조건 https를 강제 입력해서 링크 걸어줘야 한다.
+ * ex) 특정 경로로 스키마를 유지한채 리다이렉트 할때 사용
+ */
+fun HttpServletRequest.toPath(redirectPath: String): String? {
+    val serverPort = this.serverPort
+    val validPort: Boolean = serverPort in setOf(80, 443)
+    val scheme = if (validPort) "https" else this.scheme //정규 포트이면 https로 강제 변경
+    val port = if (validPort) "" else ":$serverPort"
+    return "$scheme://${this.serverName}$port$redirectPath"
+}

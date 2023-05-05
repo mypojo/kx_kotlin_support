@@ -110,6 +110,7 @@ publishing {
         pub("aws1")
         pub("aws")
         pub("module1")
+        pub("kopring")
     }
     repositories {
         maven {

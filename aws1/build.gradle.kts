@@ -15,6 +15,7 @@ dependencies {
 
     //==================================================== 내부 의존성 ======================================================
     api(project(":core2"))
+    testApi(project(":core2").dependencyProject.sourceSets["test"].output) //코어 테스트에 있는 공통 (testRoot 등)을 사용할 수 있게 해줌
 
     //==================================================== 기본 http 클라이언트 ======================================================
     api("com.squareup.okhttp3:okhttp:5.0.0-alpha.11") //https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp

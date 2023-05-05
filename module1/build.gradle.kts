@@ -7,12 +7,17 @@ plugins {
 //==================================================== 공통 ======================================================
 /** 그래들 표준 문법을 간단하게 변경해줌 */
 operator fun ProviderFactory.get(name: String): String = this.gradleProperty(name).get()
+fun DependencyHandlerScope.parent(moduleName: String) {
+    api(project(moduleName))
+    testImplementation(project(":core2").dependencyProject.sourceSets["test"].output) //코어 테스트에 있는 공통을 사용할 수 있게 해줌
+}
 
 //==================================================== 프로젝트별 설정 ======================================================
 
 dependencies {
     //==================================================== 내부 의존성 ======================================================
-    api(project(":aws")) //API로 해야 하위 프로젝트에서 사용 가능하다.
+    api(project(":aws"))
+    testApi(project(":core2").dependencyProject.sourceSets["test"].output) //코어 테스트에 있는 공통 (testRoot 등)을 사용할 수 있게 해줌
 
     //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
     api("org.jetbrains.kotlin:kotlin-reflect:${providers["kotlinVersion"]}") // 리플렉션 dto 변환용

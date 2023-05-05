@@ -30,7 +30,7 @@ abstract class TestRoot {
     companion object {
 
         val log = KotlinLogging.logger {}
-        lateinit var start:TimeStart
+        lateinit var start: TimeStart
 
         //==================================================== 기본 구현 ======================================================
         @BeforeAll

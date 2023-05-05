@@ -17,6 +17,16 @@ fun HttpServletResponse.setFileName(fileName: String, contentType: String = Medi
     this.setHeader("Content-Transfer-Encoding", "binary")
 }
 
+/** 간단 json 쓰기 */
+fun HttpServletResponse.writeJson(json: Any, httpStatus: Int = 200) {
+    this.contentType = "application/json"
+    this.characterEncoding = "UTF-8" //이거 안하면 한글 깨짐
+    this.status = httpStatus
+    this.writer.use {
+        it.write(json.toString())
+    }
+}
+
 //==================================================== 쿠키 시리즈 ======================================================
 
 fun HttpServletResponse.addCookie(key: String, vlaue: Any, maxAge: Long = 1.days.inWholeSeconds) {

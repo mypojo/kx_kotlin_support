@@ -20,12 +20,14 @@ dependencies {
     implementation(platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES))  //https://youtrack.jetbrains.com/issue/KT-53426
 
     //==================================================== 내부 의존성 ======================================================
-    api(project(":module1")) //API로 해야 하위 프로젝트에서 사용 가능하다.
+    api(project(":module1"))
+    testApi(project(":core2").dependencyProject.sourceSets["test"].output) //코어 테스트에 있는 공통 (testRoot 등)을 사용할 수 있게 해줌
 
     //==================================================== 스프링 부트 시리즈 (버전x) ======================================================
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-batch")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.retry:spring-retry")
     implementation("org.springframework.session:spring-session-core")
 

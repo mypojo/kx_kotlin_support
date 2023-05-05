@@ -1,11 +1,10 @@
 package net.kotlinx.module1.okhttp
 
-import net.kotlinx.core2.test.TestRoot
 import net.kotlinx.core2.text.RegexParseSupport
 import okhttp3.OkHttpClient
 import org.junit.jupiter.api.Test
 
-class RegexParseSupportTest : TestRoot(), RegexParseSupport {
+class RegexParseSupportTest : net.kotlinx.core2.test.TestRoot(), RegexParseSupport {
 
 
     @Test

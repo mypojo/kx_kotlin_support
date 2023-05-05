@@ -2,14 +2,13 @@ package net.kotlinx.kopring.spring.batch.sample.csv
 
 import net.kotlinx.core1.threadlocal.ResourceHolder
 import net.kotlinx.core2.file.FileZipTemplate
-import net.kotlinx.core2.test.TestRoot
 import net.kotlinx.kopring.opencsv.CsvItemWriterTemplate
 import net.kotlinx.kopring.spring.batch.BatchExecutor
 import net.kotlinx.kopring.spring.batch.component.toItemReader
 import org.junit.jupiter.api.Test
 import java.io.File
 
-class CSV_간단쓰기_테스트 : TestRoot() {
+class CSV_간단쓰기_테스트 : net.kotlinx.core2.test.TestRoot() {
 
     @Test
     fun `csv생성&압축`() {
