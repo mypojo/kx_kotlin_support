@@ -19,7 +19,7 @@ abstract class TestRoot {
 
     /** 필요시 구현하기  */
     fun beforeDefault() {
-        log.debug { "아무것도 하지않음" }
+        log.trace { "아무것도 하지않음" }
     }
 
     @BeforeEach
@@ -30,7 +30,7 @@ abstract class TestRoot {
     companion object {
 
         val log = KotlinLogging.logger {}
-        lateinit var start: TimeStart
+        private lateinit var start: TimeStart
 
         //==================================================== 기본 구현 ======================================================
         @BeforeAll
