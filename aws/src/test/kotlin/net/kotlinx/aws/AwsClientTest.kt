@@ -9,6 +9,7 @@ import net.kotlinx.aws1.toLocalDateTime
 import net.kotlinx.core1.string.toTextGrid
 import net.kotlinx.core1.time.toKr01
 import org.junit.jupiter.api.Test
+import kotlin.concurrent.timerTask
 
 internal class AwsClientTest {
 
@@ -36,6 +37,21 @@ internal class AwsClientTest {
         val secretValue = aws.sm.getSecretValue { this.secretId = "sin-rds_secret-dev" }
         check(secretValue.secretString != null)
 
+
     }
+
+    @Test
+    fun `일반-조회2`(){
+
+
+        timerTask {
+            println("aaa")
+
+
+
+        }
+
+    }
+
 
 }
