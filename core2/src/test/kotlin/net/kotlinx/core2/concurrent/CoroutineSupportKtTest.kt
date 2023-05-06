@@ -1,9 +1,9 @@
 package net.kotlinx.core2.concurrent
 
 import kotlinx.coroutines.delay
-import net.kotlinx.core1.time.TimeStart
 import net.kotlinx.core2.test.TestRoot
 import org.junit.jupiter.api.Test
+import kotlin.time.Duration.Companion.seconds
 
 class CoroutineSupportKtTest : TestRoot() {
 
@@ -11,29 +11,16 @@ class CoroutineSupportKtTest : TestRoot() {
     @Test
     fun test() {
 
-        val list = listOf(
+        val list = listOf(2, 4, 1, 5,2).map {
             suspend {
-                log.info { "실행대기..." }
-                delay(2000)
-                log.info { "실행종료" }
-                "aaa"
-            },
-            suspend {
-                log.info { "실행대기..." }
-                delay(3000)
-                log.info { "실행종료" }
-                "bbb"
-            },
-            suspend {
-                log.info { "실행대기..." }
-                delay(4000)
-                log.info { "실행종료" }
-                "ccc"
-            },
-        )
+                log.info { "[$it] 실행대기..." }
+                delay(it.seconds.inWholeMilliseconds)
+                log.info { "[$it] 실행종료" }
+                "$it"
+            }
+        }
 
-        val start = TimeStart()
-        list.coroutineExecute().forEachIndexed { index, it ->
+        list.coroutineExecute(2).forEachIndexed { index, it ->
             log.info { "결과[$index] : $it" }
         }
 
