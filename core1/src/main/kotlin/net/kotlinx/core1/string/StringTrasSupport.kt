@@ -21,5 +21,5 @@ fun String.encodeUrl(): String = URLEncoder.encode(this, "UTF-8")
 /** URL 디코딩 */
 fun String.decodeUrl(): String = URLDecoder.decode(this, "UTF-8")
 
-/** 전체가 숫자인지 */
+/** 전체가 숫자인지? 간단 테스트 메소드 */
 inline fun String.isNumeric(): Boolean = RegexSet.NUMERIC.matches(this)

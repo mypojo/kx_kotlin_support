@@ -9,7 +9,21 @@ private val log = KotlinLogging.logger {}
 
 internal class StringRegexSupportKtTest : DescribeSpec({
 
-    log.info { "kotest run!!" }
+    listOf(
+        "1234" to RegexSet.NUMERIC,
+        "1234.56" to RegexSet.NUMERIC,
+        "1234.567" to RegexSet.NUMERIC_DOT,
+        "1234" to RegexSet.NUMERIC,
+    ).map { (text, regex) ->
+        arrayOf(
+            text, regex.pattern,
+            text.retainFrom(regex),
+            text.removeFrom(regex),
+        )
+    }.also {
+        listOf("문자열", "regex", "retainFrom", "removeFrom").toTextGrid(it).print()
+    }
+
 
     describe("StringRegexSupport.kt") {
         val text1 = "2022-12-24.7KBV"
