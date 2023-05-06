@@ -7,7 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import net.kotlinx.core1.CoreUtil
-import net.kotlinx.core1.number.toTimeString
+import net.kotlinx.core1.time.toTimeString
 import net.kotlinx.core2.logback.LogBackUtil
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong

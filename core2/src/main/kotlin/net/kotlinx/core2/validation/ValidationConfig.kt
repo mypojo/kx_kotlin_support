@@ -1,10 +1,10 @@
 package net.kotlinx.core2.validation
 
 import net.kotlinx.core1.collection.MutableListString
-import net.kotlinx.core1.number.toTimeString
 import net.kotlinx.core1.string.TextGrid
 import net.kotlinx.core1.string.abbr
 import net.kotlinx.core1.string.toTextGrid
+import net.kotlinx.core1.time.toTimeString
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import javax.validation.ValidationException

@@ -1,14 +1,16 @@
 package net.kotlinx.core1.time
 
+import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.system.measureTimeMillis
 
 /**
  * 시분초를 문자열로 바꿔준다.
  * 간단 로그 출렬용
  */
 data class TimeString(
-    private val millis: Long,
+    val millis: Long,
 ) {
 
     private val totalSecond = millis / 1000
@@ -41,6 +43,7 @@ data class TimeString(
     }
 }
 
+/** 가능하면 measureTime을 사용하자 */
 data class TimeStart(
     private val start: Long = System.currentTimeMillis(),
 ) {
@@ -49,3 +52,11 @@ data class TimeStart(
         return TimeString(interval).toString()
     }
 }
+
+/** 밀리초로 간주하고 문자로 변환 (로그 확인용) */
+inline fun Long.toTimeString(): TimeString = TimeString(this)
+
+/** suspend 지원하는 시간 측정기 */
+fun measureTime(block: suspend () -> Unit): TimeString = measureTimeMillis {
+    runBlocking { block() }
+}.toTimeString()

@@ -1,6 +1,5 @@
 package net.kotlinx.core1.time
 
-import net.kotlinx.core1.number.toTimeString
 import org.junit.jupiter.api.Test
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.milliseconds
