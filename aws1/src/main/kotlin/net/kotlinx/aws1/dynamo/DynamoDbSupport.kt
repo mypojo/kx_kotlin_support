@@ -9,6 +9,10 @@ import aws.sdk.kotlin.services.dynamodb.putItem
 import aws.sdk.kotlin.services.dynamodb.updateItem
 import kotlinx.coroutines.flow.Flow
 
+//==================================================== 트랜잭션 ======================================================
+//데이터 타입은 아래 문서 참고
+//https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes
+
 /** 해당 로우의 특정 컬럼값에 synch하게  +1 후 리턴 */
 suspend fun DynamoDbClient.increaseAndGet(incTableName: String, pkName: String, pkValue: String, columnName: String): Long {
     val resp = this.updateItem {
@@ -19,6 +23,20 @@ suspend fun DynamoDbClient.increaseAndGet(incTableName: String, pkName: String, 
         this.returnValues = ReturnValue.AllNew //새 값 리턴
     }
     return resp.attributes!![columnName]!!.asN().toLong()
+}
+
+/**
+ * 해당 로우의 특정 컬럼값에 synch하게  add 후 리턴
+ *  */
+suspend fun DynamoDbClient.addAndGet(incTableName: String, pkName: String, pkValue: String, columnName: String, vararg numbers: Number): List<String> {
+    val resp = this.updateItem {
+        this.tableName = incTableName
+        this.returnValues = ReturnValue.UpdatedNew //새 값 리턴
+        this.key = mapOf(pkName to AttributeValue.S(pkValue))
+        this.updateExpression = "set $columnName = $columnName + :val"
+        this.expressionAttributeValues = mapOf(":val" to AttributeValue.Ns(numbers.map { it.toString() }))
+    }
+    return resp.attributes!![columnName]!!.asNs()
 }
 
 //==================================================== 단일 ======================================================
