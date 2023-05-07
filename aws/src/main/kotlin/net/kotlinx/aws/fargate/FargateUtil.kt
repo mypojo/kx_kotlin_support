@@ -15,10 +15,10 @@ object FargateUtil {
 
     //==================================================== 비용 ======================================================
     /** 시간당 vCPU당  */
-    const val COST_CPU = 0.013968
+    private const val COST_CPU = 0.013968
 
     /** 시간당 GB당  */
-    const val COST_MEMORY = 0.001533
+    private const val COST_MEMORY = 0.001533
 
     /** 대략 계산  */
     fun cost(cpu: Double, memoryGb: Double, intervalMills: Long): Double {

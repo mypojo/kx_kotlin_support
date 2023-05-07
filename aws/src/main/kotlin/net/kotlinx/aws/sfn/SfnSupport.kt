@@ -38,7 +38,9 @@ suspend fun SfnClient.startExecution(awsId: String, stateMachineName: String, jo
     }
 }
 
-/** ?? */
+/**
+ * https://docs.aws.amazon.com/step-functions/latest/dg/concepts-activities.html 설명 참조.
+ *  */
 suspend fun SfnClient.listActivities(nextToken: String? = null): ListActivitiesResponse? = this.listActivities {
     this.nextToken = nextToken
     this.maxResults = MAX_RESULTS
