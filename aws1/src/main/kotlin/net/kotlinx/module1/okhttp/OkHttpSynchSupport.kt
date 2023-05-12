@@ -1,23 +1,12 @@
 package net.kotlinx.module1.okhttp
 
 import okhttp3.OkHttpClient
-import okio.GzipSource
-import okio.buffer
 import java.io.File
 import java.io.FileOutputStream
 
 
 /** 동기화 호출 (RMI) */
-fun OkHttpClient.fetch(okHttpReq: OkHttpReq): OkHttpResp = this.newCall(okHttpReq.build()).execute().use {
-    //gzip이면 풀어준다
-    println("$$$")
-    val text = if (it.header("Content-Encoding") == "gzip") {
-        GzipSource(it.body.source()).buffer().readUtf8()
-    } else {
-        it.body.string()
-    }
-    OkHttpResp(okHttpReq, it, text)
-}
+fun OkHttpClient.fetch(okHttpReq: OkHttpReq): OkHttpResp = this.newCall(okHttpReq.build()).execute().use { OkHttpResp(okHttpReq, it).load() }
 
 /** 동기화 호출 (DSL) */
 fun OkHttpClient.fetch(block: OkHttpReq.() -> Unit): OkHttpResp = this.fetch(OkHttpReq().apply(block))

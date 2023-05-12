@@ -22,8 +22,11 @@ enum class CdkIamService(
 
     /** 이벤트브릿지 이벤트 (커밋 트리거로 파이프라인 실행 등) */
     EVENT("events"),
+
+    /** SFN은 반쯤 어플리케이션으로 봐야할듯. S3,DDB 등 많은것을 다룸 */
+    SFN("states"),
     ;
 
     val serviceName: String
-        get()  = "${iamName}.amazonaws.com"
+        get() = "${iamName}.amazonaws.com"
 }

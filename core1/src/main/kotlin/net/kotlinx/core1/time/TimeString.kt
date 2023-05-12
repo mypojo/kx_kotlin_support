@@ -57,6 +57,6 @@ data class TimeStart(
 inline fun Long.toTimeString(): TimeString = TimeString(this)
 
 /** suspend 지원하는 시간 측정기 */
-fun measureTime(block: suspend () -> Unit): TimeString = measureTimeMillis {
+fun measureTimeString(block: suspend () -> Unit): TimeString = measureTimeMillis {
     runBlocking { block() }
 }.toTimeString()

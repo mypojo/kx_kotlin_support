@@ -2,6 +2,9 @@ package net.kotlinx.module1.okhttp
 
 import mu.KotlinLogging
 import net.kotlinx.aws1.AwsInstanceTypeUtil
+import net.kotlinx.core1.regex.RegexSet
+import net.kotlinx.core2.concurrent.coroutineExecute
+import net.kotlinx.core2.test.TestLevel02
 import okhttp3.OkHttpClient
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -40,6 +43,25 @@ internal class OkHttpSupportTest {
             dirtyCheck(lastModified)
         }
         log.info { "code : ${resp2.response.code} / 파일크기 : ${file.length()} / lastModified : ${resp2.lastModified}" }
+    }
+
+    /** 코루틴 & 스래드 테스트 */
+    @TestLevel02
+    fun `http 코루틴 테스트`() {
+
+        (0..5).map {
+            suspend{
+                log.debug { "작업 $it 시작.." }
+                val resp: String = client.await {
+                    url = "https://www.findip.kr/"
+                }.respText!!
+                log.info { "작업 $it 종료" }
+                RegexSet.extract("(IP Address): ", "</h2>").toRegex().find(resp)!!.value
+            }
+        }.coroutineExecute(4).map {
+            log.info { "결과 : $it" }
+        }
+
     }
 
 

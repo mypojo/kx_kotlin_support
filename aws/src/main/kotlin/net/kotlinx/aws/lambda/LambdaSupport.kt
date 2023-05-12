@@ -4,20 +4,25 @@ import aws.sdk.kotlin.services.lambda.*
 import aws.sdk.kotlin.services.lambda.model.*
 import net.kotlinx.core1.string.ResultText
 import net.kotlinx.core1.time.toKr01
-import net.kotlinx.core2.gson.GsonData
+import org.apache.commons.text.StringEscapeUtils
 import java.io.File
 import java.time.LocalDateTime
 
 
 /**  파라메터 그대로 전달  */
-suspend fun LambdaClient.invoke(functionName: String, param: GsonData, invocationType: InvocationType = InvocationType.Event): ResultText {
+suspend fun LambdaClient.invoke(functionName: String, param: Any, invocationType: InvocationType = InvocationType.Event): ResultText {
     val resp: InvokeResponse = this.invoke {
         this.functionName = functionName
         this.payload = param.toString().toByteArray()
         this.invocationType = invocationType
     }
     val ok = resp.functionError == null //이게 널이면 성공 (문서확인)
-    return ResultText(ok, resp.payload?.let { String(it) } ?: "-") //결과코드는 무조건 200라인임. payload 변환 주의!. 비동기면 결과 없음
+
+    val resultJson = resp.payload?.let {
+        val text = String(it) //원문은 이스케이핑된 텍스트 덩어리이다.
+        StringEscapeUtils.UNESCAPE_ECMASCRIPT.translate(text).trim('"') //언이스케이핑 후 " 제거
+    } ?: "{}"
+    return ResultText(ok, resultJson) //결과코드는 무조건 200라인임. payload 변환 주의!. 비동기면 결과 없음
 }
 
 //==================================================== 주로  그래들에서 사용하는거 ======================================================

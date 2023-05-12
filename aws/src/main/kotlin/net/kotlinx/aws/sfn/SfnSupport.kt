@@ -34,7 +34,7 @@ suspend fun SfnClient.startExecution(awsId: String, stateMachineName: String, jo
     return this.startExecution {
         this.input = inputJson.toString()
         this.name = uuid
-        this.stateMachineArn = SfnUtil.buildMachineArn(awsId, stateMachineName)
+        this.stateMachineArn = SfnUtil.stateMachineArn(awsId, stateMachineName)
     }
 }
 
@@ -55,6 +55,6 @@ suspend fun SfnClient.listExecutions(awsId: String, stateMachineName: String, ex
         this.statusFilter = executionStatus
         this.nextToken = nextToken
         this.maxResults = MAX_RESULTS
-        this.stateMachineArn = SfnUtil.buildMachineArn(awsId, stateMachineName)
+        this.stateMachineArn = SfnUtil.stateMachineArn(awsId, stateMachineName)
     }
 }

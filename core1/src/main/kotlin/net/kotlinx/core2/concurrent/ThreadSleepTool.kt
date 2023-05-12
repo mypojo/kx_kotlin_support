@@ -1,5 +1,7 @@
 package net.kotlinx.core2.concurrent
 
+import kotlin.time.Duration
+
 /**
  * 단일 스래드에서 일정 주기만큼 주기적으로 슬립할때 사용
  * 최소 시간을 정해놓고, 해당 최소 시간 이하로 다음 체크가 온다면 최소 시간에 맞게 슬립해준다.
@@ -8,7 +10,7 @@ package net.kotlinx.core2.concurrent
  * 첫 체크는 슬립하지않고 통과함으로 for문의 맨 앞에 놓을것.
  */
 class ThreadSleepTool(
-    private val minInterval: Long,
+    private val duration: Duration,
 ) {
 
     private var before: Long = 0
@@ -20,7 +22,7 @@ class ThreadSleepTool(
     fun checkAndSleep() {
         if (before != 0L) {
             val interval = System.currentTimeMillis() - before
-            val currentInterval = minInterval
+            val currentInterval = duration.inWholeMilliseconds
             val sleep = currentInterval - interval
             if (sleep > 0) Thread.sleep(sleep)
         }

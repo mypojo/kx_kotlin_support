@@ -22,6 +22,10 @@ data class AwsConfig(
     /** http client의 타임아웃 */
     val httpConnectTimeout: Duration = 4.seconds, //디폴트 2초
 
+    val httpSocketReadTimeout: Duration = 30.seconds, //이게 디폴트임
+
+    val httpSocketWriteTimeout: Duration = 30.seconds, //이게 디폴트임
+
 ) {
     /**
      * 체인 기본순서 : 환경변수 -> 프로파일
@@ -35,6 +39,8 @@ data class AwsConfig(
     val httpClientEngine: HttpClientEngine = OkHttpEngine {
         this.maxConnections = httpMaxConnections.toUInt()
         this.connectTimeout = httpConnectTimeout
+        this.socketReadTimeout = httpSocketReadTimeout
+        this.socketWriteTimeout = httpSocketWriteTimeout
     }
 
     companion object {

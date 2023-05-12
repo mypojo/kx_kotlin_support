@@ -37,7 +37,7 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 
     /** 타입 세이프하지 않음 주의!! */
     override fun iterator(): Iterator<GsonData> = when (delegate) {
-        is JsonArray -> delegate.asList().map { GsonData(it) }.iterator()
+        is JsonArray -> delegate.map { GsonData(it) }.iterator()
         is JsonObject -> delegate.entrySet().map { GsonData(it.value) }.iterator()
         else -> emptyList<GsonData>().iterator()
     }
@@ -80,7 +80,10 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
         fun empty(): GsonData = EMPTY
 
         fun parse(obj: Any?): GsonData {
-            val json = obj?.toString() ?: return EMPTY
+            if (obj == null) return EMPTY
+            if (obj is GsonData) return obj
+
+            val json = obj.toString()
             return GsonData(JsonParser.parseString(json))
         }
 

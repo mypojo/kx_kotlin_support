@@ -14,6 +14,7 @@ import software.amazon.awscdk.services.events.Rule
 import software.amazon.awscdk.services.events.RuleProps
 import software.amazon.awscdk.services.events.targets.SnsTopic
 import software.amazon.awscdk.services.events.targets.SnsTopicProps
+import software.amazon.awscdk.services.iam.IRole
 import software.amazon.awscdk.services.lambda.IFunction
 import software.amazon.awscdk.services.sns.ITopic
 import software.amazon.awscdk.services.sqs.IQueue
@@ -55,6 +56,18 @@ data class SfnWait(
     var timestampPath: String = "$.${SfnUtil.jobScheduleTime}"
 }
 
+/** SFN MAP 중에서 S3 list 를 베이스로 한 작업 */
+data class SfnMapForS3(
+    override val name: String,
+    override var suffix: String = ""
+) : SfnChain {
+    lateinit var lambdaName: String
+    var maxConcurrency: Int = 0
+
+    /** 네이버 크롤링=4초 */
+    var intervalSeconds: Int = 4
+}
+
 /**
  * ID 중복 최소한만 고려 (화면에 안예쁘게 나옴)
  * ex)  {"jobOption":{"sfnId":"9a25f502-588c-42e6-8be5-00955f1a60ac","basicDate":"20230414"},"jobOptionText":"{\"sfnId\":\"9a25f502-588c-42e6-8be5-00955f1a60ac\",\"basicDate\":\"20230414\"}"}
@@ -77,6 +90,9 @@ class CdkSfn(
     lateinit var jobDefinitionArn: String
     lateinit var jobQueueArn: String
 
+    /** 없으면 기본생성해주긴 하지만, 중간에 추가 권한 줘야하면 오류나니 그냥 ADMIN 권한 넣어주자.  */
+    var iRole: IRole? = null
+
     lateinit var stateMachine: StateMachine
 
     fun create(chains: List<Any>) {
@@ -86,6 +102,7 @@ class CdkSfn(
                 .stateMachineName(logicalName)
                 .timeout(timeout)
                 .definition(definition)
+                .role(iRole)
                 .build()
         )
         TagUtil.tag(stateMachine, deploymentType)
@@ -205,6 +222,61 @@ class CdkSfn(
             Wait(
                 stack, "${chain.name}${chain.suffix}", WaitProps.builder()
                     .time(WaitTime.timestampPath(chain.timestampPath))
+                    .build()
+            )
+        }
+
+        /** 별도 설정이 없어서 노가다 했음.. */
+        is SfnMapForS3 -> {
+            CustomState(
+                stack, "${chain.name}${chain.suffix}", CustomStateProps.builder()
+                    .stateJson(
+                        mapOf(
+                            "Type" to "Map",
+                            "End" to true,
+                            "Label" to "invokeEach", //이름 대충 붙여준다.
+                            "MaxConcurrency" to chain.maxConcurrency,
+                            "ItemProcessor" to mapOf(
+                                "ProcessorConfig" to mapOf(
+                                    "Mode" to "DISTRIBUTED",
+                                    "ExecutionType" to "STANDARD",
+                                ),
+                                "StartAt" to chain.lambdaName,
+                                "States" to mapOf(
+                                    chain.lambdaName to mapOf(
+                                        "Type" to "Task",
+                                        "Resource" to "arn:aws:states:::lambda:invoke",
+                                        "OutputPath" to "$.Payload",
+                                        "Parameters" to mapOf(
+                                            "FunctionName" to "arn:aws:lambda:${project.region}:${project.awsId}:function:${chain.lambdaName}",
+                                            "Payload.$" to "$"
+                                        ),
+                                        "Retry" to listOf(
+                                            mapOf(
+                                                "ErrorEquals" to listOf(
+                                                    "Lambda.ServiceException",
+                                                    "Lambda.AWSLambdaException",
+                                                    "Lambda.SdkClientException",
+                                                    "Lambda.TooManyRequestsException"
+                                                ),
+                                                "IntervalSeconds" to chain.intervalSeconds,
+                                                "BackoffRate" to 2, //기본값
+                                                "MaxAttempts" to 6, //기본값
+                                            )
+                                        ),
+                                        "End" to true,
+                                    )
+                                )
+                            ),
+                            "ItemReader" to mapOf(
+                                "Resource" to "arn:aws:states:::s3:listObjectsV2",
+                                "Parameters" to mapOf(
+                                    "Bucket.$" to "$.bucket",
+                                    "Prefix.$" to "$.key",
+                                ),
+                            )
+                        )
+                    )
                     .build()
             )
         }

@@ -1,5 +1,7 @@
 package net.kotlinx.aws.lambda
 
+import net.kotlinx.core1.string.ResultText
+import net.kotlinx.core2.gson.GsonSet
 import java.io.File
 
 /** 람다 유틸들  */
@@ -17,7 +19,28 @@ object LambdaUtil {
 
     /** 정상 결과 리턴 문자열 */
     const val Ok = "ok"
+
     /** 정상 결과 리턴 문자열 */
     const val Fail = "fail"
 
 }
+
+/** 람다 호출 실패시 json 컨버팅 가능한 객체 */
+data class LambdaFail(
+    val errorType: String,
+    val errorMessage: String,
+    val stackTrace: List<String>,
+    val cause: LambdaFail?
+) {
+
+    companion object {
+        fun from(resultText: ResultText) = GsonSet.GSON.fromJson(resultText.result, LambdaFail::class.java)!!
+    }
+
+}
+
+//val lambdaFail = GsonSet.GSON.fromJson(resp.result, LambdaFail::class.java)
+//log.warn { "실패(람다호출) : ${lambdaFail.errorType} => ${lambdaFail.errorMessage}" }
+//if (log.isDebugEnabled) {
+//    lambdaFail.stackTrace.forEach { log.debug { " -> $it" } }
+//}

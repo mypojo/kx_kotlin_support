@@ -22,6 +22,8 @@ class CsvItemWriterTemplate(
      * */
     lateinit var file: File
 
+    var limit: Int = MultiResourceItemWriterBuilder.XLS_LIMIT
+
     var header: Array<String>? = null
 
     private val log = KotlinLogging.logger {}
@@ -42,6 +44,7 @@ class CsvItemWriterTemplate(
                     }
                     this.workspace = file
                     this.name = workspace.name
+                    this.limit = this@CsvItemWriterTemplate.limit
                 }.build()
             }
 

@@ -39,3 +39,12 @@ inline fun Map<String, AttributeValue>.findOrThrow(key: KMutableProperty1<*, Loc
 inline fun <reified T> Map<String, AttributeValue>.findJson(key: KMutableProperty1<*, T?>): T? = this.find(key.name) { GsonSet.GSON.fromJson(it, T::class.java) }
 inline fun <reified T> Map<String, AttributeValue>.findJsonOrThrow(key: KMutableProperty1<*, T>): T = this.find(key.name) { GsonSet.GSON.fromJson(it, T::class.java) }
     ?: throw IllegalArgumentException("[${key.name}] not found")
+
+
+//==================================================== map ======================================================
+
+inline fun Map<String, AttributeValue>.find(key: KMutableProperty1<*, Map<String, String>?>): Map<String, String>? =
+    this[key.name]?.asM()?.entries?.associate { it.key to it.value.asS() } ?: emptyMap()
+
+inline fun Map<String, AttributeValue>.findOrThrow(key: KMutableProperty1<*, Map<String, String>>): Map<String, String> =
+    this[key.name]?.asM()?.entries?.associate { it.key to it.value.asS() } ?: throw IllegalArgumentException("[${key.name}] not found")

@@ -4,6 +4,7 @@ import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.deleteObjects
 import aws.sdk.kotlin.services.s3.listObjectsV2
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
+import aws.sdk.kotlin.services.s3.model.NoSuchKey
 import aws.sdk.kotlin.services.s3.model.Object
 import aws.sdk.kotlin.services.s3.model.ObjectIdentifier
 import aws.sdk.kotlin.services.s3.putObject
@@ -113,3 +114,22 @@ suspend inline fun S3Client.getObjectLines(bucket: String, key: String): List<Li
     csvReader().readAll(it.body!!.decodeToString())
 }
 
+/**
+ * 없으면 null을 리턴한다
+ * 데이터를 가져오는 시간은 양이 적을경우 2자리 밀리초 걸림
+ * 동시 100건 코루틴 처리도 문제없음(타임아웃 정도만 조심)
+ *  */
+suspend inline fun S3Client.getObjectText(bucket: String, key: String): String? {
+    try {
+        return this.getObject(
+            GetObjectRequest {
+                this.bucket = bucket
+                this.key = key
+            }
+        ) {
+            it.body!!.decodeToString()
+        }
+    } catch (e: NoSuchKey) {
+        return null
+    }
+}

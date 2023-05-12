@@ -11,6 +11,7 @@ import org.springframework.retry.backoff.ExponentialBackOffPolicy
 import org.springframework.retry.policy.RetryContextCache
 import org.springframework.retry.policy.SimpleRetryPolicy
 import org.springframework.retry.support.RetryTemplate
+import kotlin.time.Duration
 
 /**
  * 필요한거만 간단하게 적용한 버전
@@ -62,7 +63,8 @@ class RetryTemplateBuilder {
      * 중분 백오프
      * @param backoffMills 밀리초
      */
-    fun backoff(backoffMills: Long): RetryTemplateBuilder {
+    fun backoff(duration: Duration): RetryTemplateBuilder {
+        val backoffMills = duration.inWholeMilliseconds
         backOffPolicy = ExponentialBackOffPolicy().apply {
             maxInterval = backoffMills * 5 //최대 5배 고정
             initialInterval = backoffMills

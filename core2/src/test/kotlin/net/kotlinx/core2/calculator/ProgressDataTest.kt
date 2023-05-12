@@ -6,19 +6,18 @@ import net.kotlinx.core2.test.TestLevel01
 import net.kotlinx.core2.test.TestRoot
 import java.time.LocalDateTime
 
-class BatchEstimateTest : TestRoot() {
+class ProgressDataTest : TestRoot() {
 
     @TestLevel01
     fun test() {
 
         val now = LocalDateTime.now()
-        val startTime = now.minusMinutes(5)
         val totalCount: Long = 100
-        val estimate1 = BatchEstimate(totalCount, 13)
+        val data = ProgressData(totalCount, 13, now.minusMinutes(5))
         listOf(
-            arrayOf(0, "0%", startTime.toKr01()),
-            arrayOf(estimate1.completedCount, "${estimate1.progressRate}%", now.toKr01()),
-            arrayOf(totalCount, "100%", estimate1.estimateEndTime(startTime)),
+            arrayOf(0, "0%", data.startTime!!.toKr01()),
+            arrayOf(data.completed, "${data.progressRate}%", now.toKr01()),
+            arrayOf(totalCount, "100%", data.estimateEndTime),
         ).also {
             listOf("진행", "진행율", "시간").toTextGrid(it).print()
         }

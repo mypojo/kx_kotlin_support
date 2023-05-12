@@ -26,7 +26,7 @@ class MultiResourceItemWriterBuilder(
      * 기본값은 MS 엑셀이 읽기 가능한 최대수 1048576 기준.
      * 커밋 인터벌의 배수로 체크된다.  10으로 지정하더라도 커밋인터벌이 6이라면 12개씩 분할된다.
      */
-    var limit = XLS_LIMIT
+    var limit: Int = XLS_LIMIT
 
     /** 기본 네이밍 률  */
     var resourceSuffixCreator: ResourceSuffixCreator = ResourceSuffixCreator { i: Int -> "N${i.toString().padStart(3, '0')}.csv" }

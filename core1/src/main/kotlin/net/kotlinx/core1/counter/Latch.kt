@@ -12,9 +12,10 @@ class Latch {
     /** @return  첫 호출인지 여부
      */
     @Synchronized
-    fun check(): Boolean {
+    fun check(block: () -> Unit = {}): Boolean {
         if (isFirst) {
             isFirst = false
+            block()
             return true
         }
         return false

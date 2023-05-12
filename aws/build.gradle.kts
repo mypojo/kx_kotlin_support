@@ -50,6 +50,9 @@ dependencies {
 //    api("aws.sdk.kotlin:auth:$awsVersion")
 //    api("aws.sdk.kotlin:regions:$awsVersion")
 
+    //====================================================커먼즈 ======================================================
+    implementation("org.apache.commons:commons-text:1.10.0") // javacript 등의 이스케이핑에 사용된다. kotlin 네이티브가 없네..
+
 
 //        //==================================================== AWS 이벤트 스키마 바인딩에 필요 (안씀.. 너무 구림) ======================================================
 //        implementation("com.fasterxml.jackson.core:jackson-core:2.10.0")

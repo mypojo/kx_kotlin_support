@@ -1,7 +1,7 @@
 package net.kotlinx.core2.concurrent
 
 import kotlinx.coroutines.delay
-import net.kotlinx.core1.time.measureTime
+import net.kotlinx.core1.time.measureTimeString
 import net.kotlinx.core2.test.TestLevel02
 import net.kotlinx.core2.test.TestRoot
 import java.util.concurrent.Callable
@@ -9,7 +9,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class CoroutineSupportKtTest : TestRoot() {
 
-
+    /** 코루틴 & 스래드 테스트 */
     @TestLevel02
     fun test() {
 
@@ -28,15 +28,16 @@ class CoroutineSupportKtTest : TestRoot() {
             2 to 8.seconds,
         ).entries.map { (maxConcurrency, timeout) ->
             Callable {
-                measureTime {
+                measureTimeString {
+                    //내부는 코루틴으로 작동
                     datas.coroutineExecute(maxConcurrency).mapIndexed { index, it -> "결과 : list[$index] = $it" }.also { log.info { "결과 : $it" } }
                 }.also {
                     log.info { " => [${Thread.currentThread().name}] 걸린시간 : $it " }
                     check(it.millis <= timeout.inWholeMilliseconds + 200) { " 타임아웃 초과!!" } //버퍼 추가
                 }
             }
-        }.parallelExecute()
-
+        }.parallelExecute() //각 항목들은 스래드로 측정
     }
+
 
 }

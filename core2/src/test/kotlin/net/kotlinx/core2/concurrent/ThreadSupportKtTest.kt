@@ -1,9 +1,10 @@
 package net.kotlinx.core2.concurrent
 
+import net.kotlinx.core2.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.util.concurrent.Callable
 
-internal class ThreadSupportTest {
+class ThreadSupportKtTest : TestRoot() {
 
     @Test
     fun `기본테스트`() {

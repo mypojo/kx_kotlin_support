@@ -28,7 +28,7 @@ data class Menu(
     /** 자식 메뉴들 */
     override var children: List<Menu> = emptyList()
 
-    /** 자식메뉴 설정 DSL */
+    /** 자식메뉴 설정 DSL. 여기 설정된 메뉴는 자식으로 입력된다 */
     fun child(id: String, name: String, vararg roles: Enum<*>, block: Menu.() -> Unit = {}): Menu = Menu().apply(block).also { child ->
         child.id = id
         child.name = name
@@ -48,5 +48,8 @@ data class Menu(
 
     /** 확장 프로퍼티를 위한 저장소 */
     val extConfig: MutableMap<String, String> = mutableMapOf()
+
+    /** 매핑 */
+    var menuDatas: List<MenuData> = emptyList()
 
 }

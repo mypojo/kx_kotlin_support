@@ -3,6 +3,9 @@ package net.kotlinx.module1.okhttp
 import net.kotlinx.core1.regex.RegexSet
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
 
 object OkHttpUtil {
 
@@ -28,6 +31,15 @@ object OkHttpUtil {
         }.respText!!
 
         return RegexSet.extract("(IP Address): ", "</h2>").toRegex().find(resp)!!.value
+    }
+
+    /** 일반적으로 사용되는 클라이언트 간단 생성 */
+    fun client(timeout: Duration = 10.seconds, callTimeout: Duration = 60.seconds): OkHttpClient {
+        return OkHttpClient.Builder()
+            .connectTimeout(1.seconds.toJavaDuration()) //1초 이내로 연결 안되면 문제 있는거
+            .readTimeout(timeout.toJavaDuration()) //크롤링 경우 빠른 응답성을 위해서 2초 정도.
+            .callTimeout(callTimeout.toJavaDuration()) //람다에서는 설정 주의!! 토탈 시간을 재는거라서 람다 등에서 처리가 늦으면 예외 던져짐
+            .build()
     }
 
 }
