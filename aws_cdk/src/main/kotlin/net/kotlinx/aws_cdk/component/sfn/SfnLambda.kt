@@ -7,7 +7,7 @@ import software.amazon.awscdk.services.stepfunctions.TaskInput
 import software.amazon.awscdk.services.stepfunctions.tasks.LambdaInvoke
 import software.amazon.awscdk.services.stepfunctions.tasks.LambdaInvokeProps
 
-data class SfnLambda(
+class SfnLambda(
     override val name: String,
     override var suffix: String = ""
 ) : SfnChain {

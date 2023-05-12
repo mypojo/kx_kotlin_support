@@ -6,7 +6,7 @@ import software.amazon.awscdk.services.stepfunctions.Wait
 import software.amazon.awscdk.services.stepfunctions.WaitProps
 import software.amazon.awscdk.services.stepfunctions.WaitTime
 
-data class SfnWait(
+class SfnWait(
     /** 필드 이름 */
     override val name: String,
     override var suffix: String = ""

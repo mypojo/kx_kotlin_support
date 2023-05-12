@@ -15,7 +15,10 @@ import software.amazon.awscdk.services.iam.IRole
 import software.amazon.awscdk.services.lambda.IFunction
 import software.amazon.awscdk.services.sns.ITopic
 import software.amazon.awscdk.services.sqs.IQueue
-import software.amazon.awscdk.services.stepfunctions.*
+import software.amazon.awscdk.services.stepfunctions.IChainable
+import software.amazon.awscdk.services.stepfunctions.INextable
+import software.amazon.awscdk.services.stepfunctions.StateMachine
+import software.amazon.awscdk.services.stepfunctions.StateMachineProps
 
 /**
  * ID 중복 최소한만 고려 (화면에 안예쁘게 나옴)
@@ -44,6 +47,7 @@ class CdkSfn(
 
     lateinit var stateMachine: StateMachine
 
+    /** 일반적으로 여러 단계를 거치기 때문에 List로 받는다 */
     fun create(chains: List<Any>) {
         val definition = convertAny(chains)
         stateMachine = StateMachine(
@@ -82,18 +86,7 @@ class CdkSfn(
         TagUtil.tag(rule, deploymentType)
     }
 
-    private fun convertAny(chain: Any): IChainable = when (chain) {
-        is Pair<*, *> -> {
-            val list = (chain.second as List<Any>).map { convertAny(it) }
-            Parallel(
-                stack, "$name-${chain.first}", ParallelProps.builder()
-                    .resultPath("\$.${chain.first}-result") //resultPath 지정시 원본 +@로 리턴됨. 미지정시 해당 에리어의 모든 결과가 array로 리턴됨
-                    .comment("${chain.first}") //comment 가 있어야 순서도에서 예쁘게 보인다
-                    .build()
-            ).branch(
-                *list.toTypedArray() //동시에 개별 실행
-            )
-        }
+    fun convertAny(chain: Any): IChainable = when (chain) {
 
         is List<*> -> {
             val list = (chain as List<Any>).map { convertAny(it) }

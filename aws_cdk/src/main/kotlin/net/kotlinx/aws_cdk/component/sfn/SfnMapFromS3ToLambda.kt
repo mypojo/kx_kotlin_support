@@ -4,11 +4,12 @@ import software.amazon.awscdk.services.stepfunctions.CustomState
 import software.amazon.awscdk.services.stepfunctions.CustomStateProps
 import software.amazon.awscdk.services.stepfunctions.State
 
+
 /**
  * SFN MAP 작업 : S3 list -> lambda
  * 다수의 데이터를 대량처리할때 사용된다
  * */
-data class SfnMapFromS3ToLambda(
+class SfnMapFromS3ToLambda(
     override val name: String,
     override var suffix: String = ""
 ) : SfnChain {
@@ -67,14 +68,19 @@ data class SfnMapFromS3ToLambda(
                         "ItemReader" to mapOf(
                             "Resource" to "arn:aws:states:::s3:listObjectsV2",
                             "Parameters" to mapOf(
-                                "Bucket.$" to "$.bucket",
-                                "Prefix.$" to "$.key",
+                                "Bucket.$" to "$.${BUCKET}",
+                                "Prefix.$" to "$.${KEY}",
                             ),
                         )
                     )
                 )
                 .build()
         )
+    }
+
+    companion object {
+        const val BUCKET = "bucket"
+        const val KEY = "key"
     }
 
 }

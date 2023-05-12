@@ -103,14 +103,15 @@ publishing {
                 from(project(":${projectName}").components["java"])
             }
         }
-        //모든 의존성이 순서대로 다 있어야함
+        //모든 의존성이 순서대로 다 있어야함. 선언적 설정이라 병렬 처리는 안되는듯..
         pub("core1")
         pub("core2")
-        pub("aws_cdk")
         pub("aws1")
         pub("aws")
+        pub("aws_cdk")
         pub("module1")
         pub("kopring")
+
     }
     repositories {
         maven {

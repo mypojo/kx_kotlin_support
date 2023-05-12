@@ -8,7 +8,7 @@ import software.amazon.awscdk.services.stepfunctions.TaskInput
 import software.amazon.awscdk.services.stepfunctions.tasks.BatchSubmitJob
 import software.amazon.awscdk.services.stepfunctions.tasks.BatchSubmitJobProps
 
-data class SfnBatch(
+class SfnBatch(
     override val name: String,
     override var suffix: String = ""
 ) : SfnChain {
