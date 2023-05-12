@@ -96,7 +96,7 @@ class AthenaModule(
                 is AthenaReadAll -> {
                     val outputLocation = currentQueryExecution!!.resultConfiguration!!.outputLocation!!
                     val s3Data = S3Data.parse(outputLocation)
-                    val lines = aws.s3.getObjectLines(s3Data.bucket, s3Data.key)
+                    val lines = aws.s3.getObjectLines(s3Data.bucket, s3Data.key)!!
                     athenaQuery.lines = lines
                     athenaQuery.callback.invoke(lines)
                 }

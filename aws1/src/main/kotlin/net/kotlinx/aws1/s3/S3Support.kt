@@ -81,7 +81,7 @@ suspend inline fun S3Client.deleteObjects(datas: Collection<S3Data>) {
     val groupByBucket = datas.groupBy { it.bucket } //버킷별로 호출
     groupByBucket.entries.map { (bucket, list) ->
         suspend {
-            list.chunked(LIMIT_PER_REQ).forEachIndexed { index, each ->
+            list.chunked(LIMIT_PER_REQ).forEachIndexed { _, each ->
                 //log.debug { "버킷 [$bucket] : [${index + 1}/${list.size}] -> ${each.size} 건 삭제" }
                 this.deleteObjects {
                     this.bucket = bucket
