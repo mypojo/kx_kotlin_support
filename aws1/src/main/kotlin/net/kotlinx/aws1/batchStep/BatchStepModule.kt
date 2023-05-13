@@ -8,9 +8,11 @@ import net.kotlinx.aws1.AwsInstanceTypeUtil
 import net.kotlinx.aws1.s3.getObjectText
 import net.kotlinx.aws1.s3.putObject
 import net.kotlinx.core1.exception.KnownException
+import net.kotlinx.core1.time.toTimeString
 import net.kotlinx.core2.concurrent.coroutineExecute
 import net.kotlinx.core2.gson.GsonData
 import java.io.File
+import java.util.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -27,7 +29,12 @@ class BatchStepModule(
     val delegate: MutableMap<String, BatchStepRuntimeConfig> = mutableMapOf()
 
     private val log = KotlinLogging.logger {}
+
+    /** 로컬 작업공간 */
     private val workDir = File(AwsInstanceTypeUtil.instanceType.root, "InvokeModule").apply { mkdirs() }
+
+    /** 로깅시 유니크한 ID를 부여 */
+    private val moduleId: String = UUID.randomUUID().toString()
 
     init {
         this.apply(block)
@@ -53,8 +60,10 @@ class BatchStepModule(
         val invokeData = delegate[name] ?: throw IllegalArgumentException("$name not found")
 
         interval?.let {
-            val invokeAbleTime = invokeData.eventTimeChecker.check(interval)
-            if (!invokeAbleTime) throw KnownException.ItemRetryException("잠시 후 다시 시도하세요")
+            val result = invokeData.eventTimeChecker.check(interval)
+            if (!result.ok) {
+                throw KnownException.ItemRetryException("retry later [$moduleId] try ${result.tryCnt} / 남은시간 ${result.next.toTimeString()}")
+            }
         }
         return GsonData.parse(datas).map {
             suspend {

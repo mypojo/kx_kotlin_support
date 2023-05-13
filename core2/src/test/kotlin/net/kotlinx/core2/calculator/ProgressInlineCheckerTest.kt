@@ -16,8 +16,8 @@ class ProgressInlineCheckerTest : TestRoot() {
         val counter = ProgressInlineChecker(total, EventTimeChecker(1.seconds))
 
         for (i in 0 until total) {
-            Thread.sleep(1.seconds.inWholeMilliseconds)
             counter.check()
+            Thread.sleep(1.seconds.inWholeMilliseconds)
         }
     }
 

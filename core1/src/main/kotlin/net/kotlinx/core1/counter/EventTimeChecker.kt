@@ -15,11 +15,26 @@ class EventTimeChecker(
     private val defaultDuration: Duration = 5.seconds,
 ) : () -> Boolean {
 
-    //=================================================== 내부사용 ===================================================
-    /** 최근 이벤트 실행 시간  */
-    private var lastEvent: Long = 0L
+    data class EventTimeResult(
+        val ok:Boolean,
+        /** 지금시간 */
+        val now:Long,
+        /** 이전 이벤트 성공시간(성공했을 경우라도) */
+        val lastEvent:Long,
+        /** 시도 수. 이번시도 포함. 성공이후 리셋 */
+        val tryCnt:Int,
+    ){
+        /** 다음 hit 까지 남은시간 */
+        var next:Long = 0
+    }
 
-    override fun invoke(): Boolean = check()
+    //=================================================== 내부사용 ===================================================
+    /** 최근 이벤트 실행 시간. 0 초기화임으로 최초인경우 -> 최초 1회는 true  */
+    private var lastEvent: Long = 0L
+    /** 시도 수. 이번시도 포함. 성공이후 리셋 */
+    private var tryCnt: Int = 0
+
+    override fun invoke(): Boolean = check().ok
 
     /**
      * @return 중요(기간내 최초)  이벤트인지 여부.
@@ -27,20 +42,25 @@ class EventTimeChecker(
      * !! 동기화 풀고 AtomicLong 써도 될듯.
      */
     @Synchronized
-    fun check(currentInterval: Duration = defaultDuration): Boolean {
+    fun check(currentInterval: Duration = defaultDuration): EventTimeResult {
 
         val now = System.currentTimeMillis()
-        //최초인경우 -> 최초 1회는 true
-        if (lastEvent == 0L) {
-            lastEvent = now
-            return true
-        }
-        val interval = now - lastEvent
-        val isMain = interval >= currentInterval.inWholeMilliseconds
+        tryCnt++
+
+        val betweenDuration = now - lastEvent
+        val isMain = betweenDuration >= currentInterval.inWholeMilliseconds
+
         if (isMain) {
-            lastEvent = now
+            return EventTimeResult(true,now,lastEvent,tryCnt).also {
+                //hit 시 초기화 해줌
+                lastEvent = now
+                tryCnt = 0
+            }
+        }else{
+            return EventTimeResult(false,now,lastEvent,tryCnt).apply {
+                next = currentInterval.inWholeMilliseconds - betweenDuration
+            }
         }
-        return isMain
     }
 
     /** 메인이면 실행 */

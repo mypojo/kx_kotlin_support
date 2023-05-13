@@ -46,7 +46,7 @@ class BatchStepExecutor(
                 log.info { "S3로 업로드 start => 데이터 ${input.datas.size}건 => 걸린시간 $it" }
             }
         } else {
-            log.warn { "[${input.sfnId}] 재시도!! S3로 업로드 스킵!!" }
+            log.warn { "[${input.retrySfnId}] 재시도!! S3로 업로드 스킵!!" }
         }
 
         val sfnInput = obj {
