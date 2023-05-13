@@ -1,4 +1,4 @@
-package net.kotlinx.module1.okhttp
+package net.kotlinx.aws1.okhttp
 
 import net.kotlinx.core1.regex.RegexSet
 import okhttp3.MediaType.Companion.toMediaType
@@ -22,6 +22,18 @@ object OkHttpUtil {
 
     const val HRADER_LAST_MODIFIED = "Last-Modified"
     const val HRADER_IF_MODIFIED = "If-Modified-Since"
+
+    /** 크롤링 기본 헤더 */
+    val CRW = mapOf(
+        "accept" to "*/*",
+        "accept-Encoding" to "gzip, deflate, br",
+        "accept-Language" to "ko,en;q=0.9,ko-KR;q=0.8,en-US;q=0.7",
+        "cache-Control" to "no-cache",
+        "pragma" to "no-cache",
+        "user-agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
+        "upgrade-insecure-requests" to "1",
+    )
+
 
     /** 아웃바운드 IP를 간단히 리턴해준다.  */
     fun findOutboundIp(client: OkHttpClient = OkHttpClient()): String {

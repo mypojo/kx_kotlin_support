@@ -1,4 +1,4 @@
-package net.kotlinx.module1.okhttp
+package net.kotlinx.aws1.okhttp
 
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call

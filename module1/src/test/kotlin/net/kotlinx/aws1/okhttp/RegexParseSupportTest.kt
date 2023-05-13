@@ -1,4 +1,4 @@
-package net.kotlinx.module1.okhttp
+package net.kotlinx.aws1.okhttp
 
 import net.kotlinx.core2.text.RegexParseSupport
 import okhttp3.OkHttpClient

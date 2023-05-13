@@ -1,6 +1,6 @@
-package net.kotlinx.module1.okhttp
+package net.kotlinx.aws1.okhttp
 
-import net.kotlinx.module1.okhttp.OkHttpUtil.MEDIA_TYPE_JSON
+import net.kotlinx.aws1.okhttp.OkHttpUtil.MEDIA_TYPE_JSON
 import okhttp3.MediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody

@@ -20,8 +20,18 @@ class SfnMapFromS3ToLambda(
     /** DISTRIBUTED 모드라서 거의 무한대로 지원함 */
     var maxConcurrency: Int = 0
 
+    /** 버킷명 키 */
+    var bucket: String = SfnMapFromS3ToLambda.bucket
+
+    /** S3 경로  키 */
+    var key: String = SfnMapFromS3ToLambda.key
+
+    //==================================================== 오류 3종 ======================================================
+
     /** 네이버 크롤링=4초 */
     var retryIntervalSeconds: Int = 4
+    var backoffRate: Double = 1.02 //오류시 리트라이 증분. 크롤링이라면 적당히만 줄것
+    var maxAttempts: Int = 100
 
     /** 별도 설정이 없어서 노가다 했음.. 차라리 이게 더 나은듯.. */
     override fun convert(cdkSfn: CdkSfn): State {
@@ -54,11 +64,12 @@ class SfnMapFromS3ToLambda(
                                                 "Lambda.ServiceException",
                                                 "Lambda.AWSLambdaException",
                                                 "Lambda.SdkClientException",
-                                                "Lambda.TooManyRequestsException"
+                                                "Lambda.TooManyRequestsException",
+                                                "States.TaskFailed", //태스크가 오류난거도 리트라이 해준다.  (특정 예외 캐치 기능은 아직 없는듯.. retryException만 리트라이 하고싶다)
                                             ),
                                             "IntervalSeconds" to retryIntervalSeconds,
-                                            "BackoffRate" to 2, //기본값
-                                            "MaxAttempts" to 6, //기본값
+                                            "BackoffRate" to backoffRate, //기본값
+                                            "MaxAttempts" to maxAttempts, //기본값
                                         )
                                     ),
                                     "End" to true,
@@ -68,8 +79,8 @@ class SfnMapFromS3ToLambda(
                         "ItemReader" to mapOf(
                             "Resource" to "arn:aws:states:::s3:listObjectsV2",
                             "Parameters" to mapOf(
-                                "Bucket.$" to "$.${BUCKET}",
-                                "Prefix.$" to "$.${KEY}",
+                                "Bucket.$" to "$.${bucket}",
+                                "Prefix.$" to "$.${key}",
                             ),
                         )
                     )
@@ -79,8 +90,11 @@ class SfnMapFromS3ToLambda(
     }
 
     companion object {
-        const val BUCKET = "bucket"
-        const val KEY = "key"
+        @Deprecated("xx")
+        const val bucket = "bucket"
+
+        @Deprecated("xx")
+        const val key = "key"
     }
 
 }
