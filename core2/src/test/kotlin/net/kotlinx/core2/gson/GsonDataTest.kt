@@ -7,6 +7,7 @@ import net.kotlinx.core2.test.TestRoot
 import org.junit.jupiter.api.Test
 
 internal class GsonDataTest : TestRoot() {
+
     @Test
     fun `기본테스트`() {
 

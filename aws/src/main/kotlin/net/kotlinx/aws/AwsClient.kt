@@ -24,7 +24,7 @@ import net.kotlinx.aws1.AwsClient1
 import net.kotlinx.aws1.AwsConfig
 
 /** 선형 구조임으로 조합보다는 상속이 더 좋은 선택 */
-class AwsClient(val awsConfig: AwsConfig) : AwsClient1(awsConfig) {
+class AwsClient(awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     //==================================================== 공통 ======================================================
     val iam: IamClient by lazy { IamClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val cost: CostExplorerClient by lazy { CostExplorerClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
