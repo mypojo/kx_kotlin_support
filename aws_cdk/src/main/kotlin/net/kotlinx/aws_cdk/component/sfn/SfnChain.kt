@@ -2,7 +2,7 @@ package net.kotlinx.aws_cdk.component.sfn
 
 import software.amazon.awscdk.services.stepfunctions.State
 
-sealed interface SfnChain {
+interface SfnChain {
     /** 잡 이름 */
     val name: String
 

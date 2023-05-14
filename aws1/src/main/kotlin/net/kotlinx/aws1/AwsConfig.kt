@@ -25,8 +25,14 @@ data class AwsConfig(
     val httpSocketReadTimeout: Duration = 30.seconds, //이게 디폴트임
 
     val httpSocketWriteTimeout: Duration = 30.seconds, //이게 디폴트임
+    /**
+     * 쓰고난 커넥션을 풀에 얼마나 보관할지?
+     * 이거 기본 60초인데, 이러면 람다 코루틴 등에서 재사용시 오류남. x초 이상 연속호출 없으면 닫게 설정
+     * 서버측의 설정보다 작게 설정하면 될듯
+     * */
+    val connectionIdleTimeout: Duration = 2.seconds,
 
-) {
+    ) {
     /**
      * 체인 기본순서 : 환경변수 -> 프로파일
      * https://docs.aws.amazon.com/sdkref/latest/guide/settings-reference.html 에서 설정 확인
@@ -41,6 +47,7 @@ data class AwsConfig(
         this.connectTimeout = httpConnectTimeout
         this.socketReadTimeout = httpSocketReadTimeout
         this.socketWriteTimeout = httpSocketWriteTimeout
+        this.connectionIdleTimeout = this@AwsConfig.connectionIdleTimeout
     }
 
     companion object {

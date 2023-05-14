@@ -7,7 +7,8 @@ import software.amazon.awscdk.services.stepfunctions.State
 
 /**
  * SFN MAP 작업 : S3 list -> lambda
- * 다수의 데이터를 대량처리할때 사용된다
+ * 다수의 데이터를 상태 관리하면서 대량처리할때 사용된다
+ * 경고!! 크롤링 등의 작은 작업을 많이 처리하기에는 부적합함 (비쌈)
  * */
 class SfnMapFromS3ToLambda(
     override val name: String,

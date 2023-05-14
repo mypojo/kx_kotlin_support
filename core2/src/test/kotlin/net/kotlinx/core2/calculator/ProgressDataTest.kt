@@ -13,7 +13,7 @@ class ProgressDataTest : TestRoot() {
 
         val now = LocalDateTime.now()
         val totalCount: Long = 100
-        val data = ProgressData(totalCount, 13, now.minusMinutes(5))
+        val data = ProgressData(totalCount, 47, now.minusMinutes(5))
         listOf(
             arrayOf(0, "0%", data.startTime!!.toKr01()),
             arrayOf(data.completed, "${data.progressRate}%", now.toKr01()),

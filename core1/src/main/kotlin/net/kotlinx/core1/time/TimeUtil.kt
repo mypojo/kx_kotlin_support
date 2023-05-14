@@ -27,14 +27,6 @@ object TimeUtil {
     val SEOUL: ZoneId = ZoneId.of(ASIA_SEOUL)
     private val ZONE_SEOUL = TimeZone.getTimeZone(SEOUL)
 
-    /**
-     * UTC ISO Instant 로 포매팅 (-9시간)
-     * 벤더 디폴으로 파싱할때 사용된다.
-     * athena 조회시에는 AT TIME ZONE 'Asia/Seoul' 를 사용
-     * ex) kdf to parquet 변환시 (존 포함이나 오프셋 포함을 읽지 못함)  https://docs.aws.amazon.com/firehose/latest/dev/record-format-conversion.html
-     * */
-    val ISO_INSTANT = DateTimeFormatter.ISO_INSTANT.withZone(SEOUL)!!
-
     /** 디폴트 타임존 고정  */
     fun initTimeZone(timeZone: TimeZone = ZONE_SEOUL) {
         TimeZone.setDefault(timeZone)

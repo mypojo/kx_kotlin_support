@@ -79,6 +79,7 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
         fun array(): GsonData = GsonData(JsonArray())
         fun empty(): GsonData = EMPTY
 
+        /** json을 파싱할때 */
         fun parse(obj: Any?): GsonData {
             if (obj == null) return EMPTY
             if (obj is GsonData) return obj
@@ -86,6 +87,9 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
             val json = obj.toString()
             return GsonData(JsonParser.parseString(json))
         }
+
+        /** 객체로 파싱할때 */
+        fun fromObj(obj: Any, gson: Gson = GsonSet.GSON): GsonData = parse(gson.toJson(obj))
 
     }
 

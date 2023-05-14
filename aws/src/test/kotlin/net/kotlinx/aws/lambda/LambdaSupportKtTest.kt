@@ -3,6 +3,7 @@ package net.kotlinx.aws.lambda
 import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.toAwsClient
 import net.kotlinx.aws1.AwsConfig
+import net.kotlinx.aws1.lambda.*
 import org.junit.jupiter.api.Test
 
 internal class LambdaSupportKtTest : net.kotlinx.core2.test.TestRoot() {

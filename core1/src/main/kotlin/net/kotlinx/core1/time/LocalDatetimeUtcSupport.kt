@@ -8,7 +8,7 @@ import java.time.ZonedDateTime
 inline fun LocalDateTime.toZone(): ZonedDateTime = this.atZone(TimeUtil.SEOUL)
 
 /** ISO_INSTANT 로 변환 (ZonedDateTime 노출 xx) */
-inline fun LocalDateTime.toUtc(): String = TimeUtil.ISO_INSTANT.format(this.toZone())
+inline fun LocalDateTime.toUtc(): String = TimeFormat.ISO_INSTANT[this.toZone()]
 
 /** ISO_INSTANT 로 변환 (ZonedDateTime 노출 xx) */
-inline fun String.fromUtc(): LocalDateTime = ZonedDateTime.from(TimeUtil.ISO_INSTANT.parse(this)).toLocalDateTime()
+inline fun String.fromUtc(): LocalDateTime = TimeFormat.ISO_INSTANT.toZonedDateTime(this).toLocalDateTime()

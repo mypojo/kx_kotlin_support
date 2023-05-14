@@ -1,6 +1,7 @@
 package net.kotlinx.core2.gson
 
 import com.google.gson.*
+import net.kotlinx.core1.time.TimeFormat
 import net.kotlinx.core1.time.fromUtc
 import net.kotlinx.core1.time.toUtc
 import java.lang.reflect.Type
@@ -12,10 +13,17 @@ import java.time.LocalDateTime
  */
 object GsonSet {
 
-    /** 디폴트 변환용*/
+    /**
+     * 디폴트 변환용
+     * date 기반의 기본조건(setDateFormat) 안씀
+     *  */
     val GSON by lazy {
         GsonBuilder().apply {
             setExclusionStrategies(NotExposeStrategy())
+//            registerTypeAdapter(Long::class.java, GsonAdapterUtil.LongAdapter())
+//            registerTypeAdapter(Int::class.java, GsonAdapterUtil.IntAdapter())
+            registerTypeAdapter(Map::class.java, GsonAdapterUtil.MapAdapter()) //Lambda 기본 변환에 사용 (다른데는 쓸일 없음)
+            registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeAdapter(TimeFormat.YMDHMS)) //날짜만 변경해줌
         }.create()!!
     }
 

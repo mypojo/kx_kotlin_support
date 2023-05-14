@@ -12,11 +12,20 @@ import java.util.*
  * LocalDate 는 시분초를 찍는게 불가능함. 변환 해줄것!
  */
 enum class TimeFormat(
-    val formatter: DateTimeFormatter
+    val formatter: DateTimeFormatter,
+    val pattern: String? = null,
 ) {
 
     /** 표준 변환이다!  다이나모 DB 등에서 기본으로 사용  */
     ISO(DateTimeFormatter.ISO_DATE_TIME),
+
+    /**
+     * UTC ISO Instant 로 포매팅 (-9시간)
+     * 벤더 디폴으로 파싱할때 사용된다.
+     * athena 조회시에는 AT TIME ZONE 'Asia/Seoul' 를 사용
+     * ex) kdf to parquet 변환시 (존 포함이나 오프셋 포함을 읽지 못함)  https://docs.aws.amazon.com/firehose/latest/dev/record-format-conversion.html
+     * */
+    ISO_INSTANT(DateTimeFormatter.ISO_INSTANT.withZone(TimeUtil.SEOUL)),
     ISO_OFFSET(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
     YMDHMSS("yyyyMMddHHmmssSSS"),
     YMDHMSS_K01("yyyy년MM월dd일(EEE) HH시mm분ss초(SSS)"),
@@ -61,18 +70,20 @@ enum class TimeFormat(
 
     /** 날짜-시분. 배치 네이밍용  */
     DH_F01("dd_HH"),
+
     //=================================================== 날짜 없는버전  ===================================================
     H("HH"), //패팅 적용
     HM("HHmm"), //패팅 적용
     HMS("HHmmss"),
     HMS_F01("HH:mm:ss"),
     HMSS("HHmmssSSS"),
-    HMS_K01("HH시mm분ss초");
+    HMS_K01("HH시mm분ss초")
+    ;
 
     //=================================================== 기본 메소드 ===================================================
 
     /** 서울기준으로 포매팅 한다. */
-    constructor(pattern: String) : this(DateTimeFormatter.ofPattern(pattern).withZone(TimeUtil.SEOUL))
+    constructor(pattern: String) : this(DateTimeFormatter.ofPattern(pattern).withZone(TimeUtil.SEOUL), pattern)
 
     /** 기본 메소드  */
     fun get(): String {
@@ -86,19 +97,13 @@ enum class TimeFormat(
     }
 
     /** 기본 메소드  */
-    operator fun get(date: Date): String {
-        return this[date.time]
-    }
+    operator fun get(date: Date): String = this[date.time]
 
     /** 기본 메소드  */
-    operator fun get(dateTime: LocalDateTime?): String {
-        return if (dateTime == null) "" else formatter.format(dateTime)
-    }
+    operator fun get(dateTime: TemporalAccessor?): String = dateTime?.let { formatter.format(it) } ?: ""
 
     /** 기본 메소드  */
-    operator fun get(instant: Instant?): String {
-        return formatter.format(instant)
-    }
+    operator fun get(instant: Instant?): String = formatter.format(instant)
 
     /** 기본 메소드  */
     operator fun get(dateTime: LocalDate): String {
@@ -130,6 +135,15 @@ enum class TimeFormat(
     fun toLocalDate(dateTime: String?): LocalDate {
         val data = formatter.parse(dateTime)
         return LocalDate.from(data)
+    }
+
+    /**
+     * 캐스트업이 필요한 경우 최소값을 입력해준다.
+     * ex) 2020년 01월 => 2020년 01월 1일 00:00
+     */
+    fun toZonedDateTime(dateTime: String?): ZonedDateTime {
+        val data = formatter.parse(dateTime)
+        return ZonedDateTime.from(data)
     }
 
     /**

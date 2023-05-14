@@ -1,4 +1,4 @@
-package net.kotlinx.aws.lambda
+package net.kotlinx.aws1.lambda
 
 import net.kotlinx.core1.string.ResultText
 import net.kotlinx.core2.gson.GsonSet

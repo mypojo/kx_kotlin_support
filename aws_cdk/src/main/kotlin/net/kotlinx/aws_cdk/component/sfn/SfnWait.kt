@@ -1,6 +1,5 @@
 package net.kotlinx.aws_cdk.component.sfn
 
-import net.kotlinx.aws.sfn.SfnUtil
 import software.amazon.awscdk.services.stepfunctions.State
 import software.amazon.awscdk.services.stepfunctions.Wait
 import software.amazon.awscdk.services.stepfunctions.WaitProps
@@ -11,13 +10,25 @@ class SfnWait(
     override val name: String,
     override var suffix: String = ""
 ) : SfnChain {
-    var timestampPath: String = "$.${SfnUtil.jobScheduleTime}"
+
+    /**
+     * 언제까지 대기할지?
+     * @see net.kotlinx.aws1.AwsNaming.scheduleTime
+     *  */
+    var timestampPath: String? = null
+
+    /**
+     * 몇초 대기할지?
+     * @see net.kotlinx.aws1.AwsNaming.waitSeconds
+     * */
+    var secondsPath: String? = null
 
     override fun convert(cdk: CdkSfn): State {
-        return Wait(
-            cdk.stack, "${name}${suffix}", WaitProps.builder()
-                .time(WaitTime.timestampPath(timestampPath))
-                .build()
-        )
+        val waitTime = when {
+            timestampPath != null -> WaitTime.timestampPath("$.${timestampPath}")
+            secondsPath != null -> WaitTime.secondsPath("$.${secondsPath}")
+            else -> throw IllegalArgumentException("option is null")
+        }
+        return Wait(cdk.stack, "${name}${suffix}", WaitProps.builder().time(waitTime).build())
     }
 }

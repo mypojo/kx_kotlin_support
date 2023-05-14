@@ -2,6 +2,7 @@ package net.kotlinx.aws
 
 import aws.sdk.kotlin.services.athena.AthenaClient
 import aws.sdk.kotlin.services.batch.BatchClient
+import aws.sdk.kotlin.services.cloudwatchlogs.CloudWatchLogsClient
 import aws.sdk.kotlin.services.codecommit.CodeCommitClient
 import aws.sdk.kotlin.services.codedeploy.CodeDeployClient
 import aws.sdk.kotlin.services.costexplorer.CostExplorerClient
@@ -10,7 +11,6 @@ import aws.sdk.kotlin.services.ecr.EcrClient
 import aws.sdk.kotlin.services.ecs.EcsClient
 import aws.sdk.kotlin.services.eventbridge.EventBridgeClient
 import aws.sdk.kotlin.services.iam.IamClient
-import aws.sdk.kotlin.services.lambda.LambdaClient
 import aws.sdk.kotlin.services.rds.RdsClient
 import aws.sdk.kotlin.services.secretsmanager.SecretsManagerClient
 import aws.sdk.kotlin.services.ses.SesClient
@@ -24,11 +24,12 @@ import net.kotlinx.aws1.AwsClient1
 import net.kotlinx.aws1.AwsConfig
 
 /** 선형 구조임으로 조합보다는 상속이 더 좋은 선택 */
-class AwsClient(val awsConfig: AwsConfig) : AwsClient1(awsConfig) {
+class AwsClient(awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     //==================================================== 공통 ======================================================
     val iam: IamClient by lazy { IamClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val cost: CostExplorerClient by lazy { CostExplorerClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val ses: SesClient by lazy { SesClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
+    val logs: CloudWatchLogsClient by lazy { CloudWatchLogsClient  { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
 
     //==================================================== 저장소 ======================================================
     val rds: RdsClient by lazy { RdsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
@@ -38,7 +39,6 @@ class AwsClient(val awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     val event: EventBridgeClient by lazy { EventBridgeClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
 
     //==================================================== 컴퓨팅 인프라 ======================================================
-    val lambda: LambdaClient by lazy { LambdaClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val ec2: Ec2Client by lazy { Ec2Client { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val ecs: EcsClient by lazy { EcsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val athena: AthenaClient by lazy { AthenaClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }

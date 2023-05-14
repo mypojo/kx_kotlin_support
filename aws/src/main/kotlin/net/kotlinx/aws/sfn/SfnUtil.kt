@@ -12,9 +12,11 @@ object SfnUtil {
     const val sfnId: String = "sfnId"
 
     /** 일반적인 잡 옵션 */
+    @Deprecated("사용안함 AwsNaming")
     const val jobOption: String = "jobOption"
 
     /** 잡 스케쥴링 옵션 */
+    @Deprecated("사용안함 AwsNaming")
     const val jobScheduleTime: String = "jobScheduleTime"
 
     /** 실행 ARN  */

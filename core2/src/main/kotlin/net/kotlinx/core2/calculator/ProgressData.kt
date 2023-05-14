@@ -5,16 +5,30 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 import kotlin.time.Duration.Companion.milliseconds
 
-data class ProgressData(
+/**
+ * Number 로 계산 금지!
+ * */
+class ProgressData(
     /** 전체 수  */
-    val total: Long,
+    totalInput: Number,
     /** 완료된 수 */
-    val completed: Long = 0,
+    completedInput: Number = 0L,
     /** 작업 시작시간 */
     val startTime: LocalDateTime? = null,
     /** 이미 완료되서 스킵된 카운트 */
-    val skiped: Long = 0,
+    skipedInput: Number = 0L,
+    /** 비율 스케일 */
+    val rateScale:Int = 1,
 ) {
+
+    /** 전체 수  */
+    val total: Long = totalInput.toLong()
+
+    /** 완료된 수 */
+    val completed: Long = completedInput.toLong()
+
+    /** 이미 완료되서 스킵된 카운트 */
+    val skiped: Long = skipedInput.toLong()
 
     /** 지금시간 */
     val now: LocalDateTime by lazy { LocalDateTime.now() }
@@ -23,7 +37,7 @@ data class ProgressData(
 
     /** 진행율% */
     val progressRate: BigDecimal by lazy {
-        if (completed == 0L) BigDecimal.ZERO else completed.toBigDecimal().setScale(2) * 100.toBigDecimal() / total.toBigDecimal()
+        if (completed == 0L) BigDecimal.ZERO else completed.toBigDecimal().setScale(rateScale) * 100.toBigDecimal() / total.toBigDecimal()
     }
 
     /** 진행 시간 */

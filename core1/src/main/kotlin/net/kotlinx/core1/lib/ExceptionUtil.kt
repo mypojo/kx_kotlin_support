@@ -1,5 +1,20 @@
 package net.kotlinx.core1.lib
 
+
+/** 
+ * 전체 causes를 리턴함.
+ * ex) 전체 스택에 IoException이 있는지 체크 = cause -> cause.causes().any { it is IOException }
+ * */
+fun Throwable.causes(): List<Throwable> {
+    val list: MutableList<Throwable> = mutableListOf()
+    var current: Throwable? = this
+    while (current != null) {
+        list.add(current)
+        current = current.cause
+    }
+    return list
+}
+
 /**
  * 별 필요없다..  아래 클래스들 참조해서 없는거 추가.
  *

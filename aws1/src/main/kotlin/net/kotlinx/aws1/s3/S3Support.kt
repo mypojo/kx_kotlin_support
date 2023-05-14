@@ -5,7 +5,6 @@ import aws.sdk.kotlin.services.s3.deleteObjects
 import aws.sdk.kotlin.services.s3.listObjectsV2
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
 import aws.sdk.kotlin.services.s3.model.NoSuchKey
-import aws.sdk.kotlin.services.s3.model.Object
 import aws.sdk.kotlin.services.s3.model.ObjectIdentifier
 import aws.sdk.kotlin.services.s3.putObject
 import aws.smithy.kotlin.runtime.content.ByteStream
@@ -53,17 +52,21 @@ suspend inline fun S3Client.putObject(bucket: String, key: String, byteArray: By
  * 디렉토리를 가져온다.
  * @param prefix  디렉토리 표시인 /로 끝나면 디렉토리로 인싱한다  ex) main/data/
  * */
-suspend inline fun S3Client.listDirs(bucket: String, prefix: String): List<String> = this.listObjectsV2 {
+suspend inline fun S3Client.listDirs(bucket: String, prefix: String): List<S3Data> = this.listObjectsV2 {
     this.bucket = bucket
     delimiter = "/"
     this.prefix = prefix
-}.commonPrefixes?.map { it.prefix!! } ?: emptyList() //파일이 있더라도 디렉토리가 없다면 빈값이 올 수 있음
+}.commonPrefixes?.map { S3Data(bucket, it.prefix!!) } ?: emptyList() //파일이 있더라도 디렉토리가 없다면 빈값이 올 수 있음
 
-/** 파일(객체)들을 가져온다. */
-suspend inline fun S3Client.listFiles(bucket: String, prefix: String): List<Object> = this.listObjectsV2 {
+/**
+ * 파일(객체)들을 가져온다.
+ * 최대 1천개 가져오니 주의!!
+ * 페이징은 별도로 구현할것
+ *  */
+suspend inline fun S3Client.listFiles(bucket: String, prefix: String): List<S3Data> = this.listObjectsV2 {
     this.bucket = bucket
     this.prefix = prefix
-}.contents ?: emptyList()
+}.contents?.map { S3Data(bucket, it.key!!) } ?: emptyList()
 
 ///** 페이징 조회 */
 //fun S3Client.getObjectListPaging(s3data: AwsS3Data, pageCnt: Int = 1, pageSize: Int = 100, header: Int = 1): List<Array<String>> {
@@ -76,25 +79,30 @@ suspend inline fun S3Client.listFiles(bucket: String, prefix: String): List<Obje
 
 //==================================================== 삭제 ======================================================
 
+/** 자주 사용하는거라 등록함 */
+suspend inline fun S3Client.deleteDir(bucket: String, prefix: String): Int = this.listFiles(bucket, prefix).also { deleteAll(it) }.size
+
 /**  버킷 단위로 벌크 삭제한다. 대부분 페이징해서 호출할테니 별도의 사이즈 제한은 없음  */
-suspend inline fun S3Client.deleteObjects(datas: Collection<S3Data>) {
+suspend inline fun S3Client.deleteAll(datas: Collection<S3Data>) {
     val groupByBucket = datas.groupBy { it.bucket } //버킷별로 호출
     groupByBucket.entries.map { (bucket, list) ->
         suspend {
-            list.chunked(LIMIT_PER_REQ).forEachIndexed { _, each ->
+            list.chunked(LIMIT_PER_REQ).mapIndexed { _, each ->
                 //log.debug { "버킷 [$bucket] : [${index + 1}/${list.size}] -> ${each.size} 건 삭제" }
-                this.deleteObjects {
-                    this.bucket = bucket
-                    this.delete {
-                        this.objects = each.map {
-                            ObjectIdentifier {
-                                this.key = it.key
-                                this.versionId = it.versionId
+                suspend {
+                    this.deleteObjects {
+                        this.bucket = bucket
+                        this.delete {
+                            this.objects = each.map {
+                                ObjectIdentifier {
+                                    this.key = it.key
+                                    this.versionId = it.versionId
+                                }
                             }
                         }
                     }
                 }
-            }
+            }.coroutineExecute(8)
         }
     }.coroutineExecute() //AWS 동시호출에 어차피 제한이 있으니 일단 버킷 단위로만 동시 처리한다.
 }

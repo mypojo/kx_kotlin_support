@@ -19,8 +19,7 @@ dependencies {
 
     //==================================================== 기본 http 클라이언트 ======================================================
     api("com.squareup.okhttp3:okhttp:5.0.0-alpha.11") //https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
-
-    implementation("aws.smithy.kotlin:http-client-engine-okhttp-jvm:0.16.3") //http 설정에 필요  https://mvnrepository.com/artifact/aws.smithy.kotlin/http-client-engine-okhttp-jvm
+    implementation("aws.smithy.kotlin:http-client-engine-okhttp-jvm:0.19.0") //http 설정에 필요  https://mvnrepository.com/artifact/aws.smithy.kotlin/http-client-engine-okhttp-jvm
 
     //==================================================== AWS ======================================================
     api("com.amazonaws:aws-lambda-java-core:1.2.2") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함
@@ -32,6 +31,10 @@ dependencies {
     api("aws.sdk.kotlin:kinesis:$awsVersion")
     api("aws.sdk.kotlin:firehose:$awsVersion")
     api("aws.sdk.kotlin:sqs:$awsVersion")
+    api("aws.sdk.kotlin:lambda:$awsVersion")
+
+    //====================================================커먼즈 ======================================================
+    api("org.apache.commons:commons-text:1.10.0") // javacript 등의 이스케이핑에 사용된다. kotlin 네이티브가 없네..
 
     //==================================================== 테스트 ======================================================
     testImplementation("org.junit-pioneer:junit-pioneer:1.9.1")  //환경변수 테스트용 (실서버 job 실행 등)

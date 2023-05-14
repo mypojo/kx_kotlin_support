@@ -1,4 +1,4 @@
-package net.kotlinx.aws.lambda
+package net.kotlinx.aws1.lambda
 
 import aws.sdk.kotlin.services.lambda.*
 import aws.sdk.kotlin.services.lambda.model.*
@@ -9,12 +9,12 @@ import java.io.File
 import java.time.LocalDateTime
 
 
-/**  파라메터 그대로 전달  */
-suspend fun LambdaClient.invoke(functionName: String, param: Any, invocationType: InvocationType = InvocationType.Event): ResultText {
+/**  응답을 받을때  */
+suspend fun LambdaClient.invokeSynch(functionName: String, param: Any): ResultText {
     val resp: InvokeResponse = this.invoke {
         this.functionName = functionName
         this.payload = param.toString().toByteArray()
-        this.invocationType = invocationType
+        this.invocationType = InvocationType.RequestResponse
     }
     val ok = resp.functionError == null //이게 널이면 성공 (문서확인)
 
@@ -23,6 +23,15 @@ suspend fun LambdaClient.invoke(functionName: String, param: Any, invocationType
         StringEscapeUtils.UNESCAPE_ECMASCRIPT.translate(text).trim('"') //언이스케이핑 후 " 제거
     } ?: "{}"
     return ResultText(ok, resultJson) //결과코드는 무조건 200라인임. payload 변환 주의!. 비동기면 결과 없음
+}
+
+/** 실행만 */
+suspend fun LambdaClient.invokeAsynch(functionName: String, param: Any) {
+    this.invoke {
+        this.functionName = functionName
+        this.payload = param.toString().toByteArray()
+        this.invocationType = InvocationType.Event
+    }
 }
 
 //==================================================== 주로  그래들에서 사용하는거 ======================================================

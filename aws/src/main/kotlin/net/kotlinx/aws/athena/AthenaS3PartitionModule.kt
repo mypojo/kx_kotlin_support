@@ -33,7 +33,7 @@ class AthenaS3PartitionModule(
         val dirPrefix = "${prefixList.joinToString("/")}/"
         log.debug { "버킷[$bucketName] 조회 : $dirPrefix" }
         s3Client.listDirs(bucketName, dirPrefix).forEach { dir ->
-            val suffixs = dir.substring(dirPrefix.length).split("/").filter { it.isNotEmpty() }
+            val suffixs = dir.key.substring(dirPrefix.length).split("/").filter { it.isNotEmpty() }
             check(suffixs.isNotEmpty()) { "데이터가 반드시 있어야함" }
             val (k, v) = suffixs.first().split("=")
             val isLastNode = prefixs.size + 1 == partitionKeys.size
