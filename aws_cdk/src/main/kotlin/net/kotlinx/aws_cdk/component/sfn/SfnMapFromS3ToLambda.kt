@@ -29,8 +29,8 @@ class SfnMapFromS3ToLambda(
     //==================================================== 오류 3종 ======================================================
 
     /** 네이버 크롤링=4초 */
-    var retryIntervalSeconds: Int = 4
-    var backoffRate: Double = 1.02 //오류시 리트라이 증분. 크롤링이라면 적당히만 줄것
+    var retryIntervalSeconds: Int = 4 // 적게 주어야 더 빠르게 작동할듯
+    var backoffRate: Double = 1.00 //오류시 리트라이 증분. IP 블록 우회하는 크롤링이라면 동시에 실행되어야 람다가 다르게 실생되서 분산된다.
     var maxAttempts: Int = 100
 
     /** 별도 설정이 없어서 노가다 했음.. 차라리 이게 더 나은듯.. */
