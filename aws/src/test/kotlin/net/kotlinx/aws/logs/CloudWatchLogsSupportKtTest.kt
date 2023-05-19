@@ -14,7 +14,7 @@ class CloudWatchLogsSupportKtTest : TestRoot() {
     fun test() {
 
         runBlocking {
-            aws.logs.cleanLogStream("/aws/lambda/nhnad-batchFunction-dev")
+            aws.logs.cleanLogStream("/aws/lambda/sin-batchFunction-dev")
         }
 
     }

@@ -45,7 +45,7 @@ internal class AwsClient1_s3:TestRoot() {
     @Test
     fun `남은시간`() {
         val paginated = aws.s3.listObjectsV2Paginated {
-            this.bucket = "nhnad-work-dev"
+            this.bucket = "sin-work-dev"
             this.prefix = "upload/sfnBatchModuleOutput/"
         }
         //[1000, 1000, 505]

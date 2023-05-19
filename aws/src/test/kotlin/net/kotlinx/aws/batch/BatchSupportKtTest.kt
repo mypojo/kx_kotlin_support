@@ -17,7 +17,7 @@ class BatchSupportKtTest : TestRoot() {
 
         runBlocking {
             aws.batch.listJobs {
-                this.jobQueue = "nhnad-queue_spot-prod"
+                this.jobQueue = "sin-queue_spot-prod"
                 this.jobStatus = JobStatus.Running
             }.jobSummaryList!!.forEach {
                 println(it)

@@ -22,7 +22,7 @@ suspend fun CloudWatchLogsClient.cleanLogStream(logGroupName: String) {
         //Rate exceeded 가 빨리뜬다. 하나씩 지우자
         logStreams.forEach {
             this.deleteLogStream {
-                this.logGroupName = "/aws/lambda/nhnad-batchFunction-dev"
+                this.logGroupName = logGroupName
                 this.logStreamName = it.logStreamName!!
             }
         }
