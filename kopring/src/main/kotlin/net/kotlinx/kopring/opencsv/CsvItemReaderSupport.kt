@@ -1,5 +1,6 @@
+package net.kotlinx.kopring.opencsv
+
 import com.google.common.collect.Lists
-import net.kotlinx.kopring.opencsv.CsvItemReader
 import net.kotlinx.kopring.spring.resource.toResource
 import java.io.File
 
@@ -19,7 +20,7 @@ fun CsvItemReader.readAll(): List<Array<String>> {
 
 /**
  * 메모리에 누적하지 않고 숫자만 셀때
- * ex) CsvItemReader.of(readFile).utf8().open().count()
+ * ex) CsvItemReader.of(readFile).utf8().open().net.kotlinx.kopring.opencsv.count()
  */
 fun CsvItemReader.count(): Long {
     var cnt: Long = 0

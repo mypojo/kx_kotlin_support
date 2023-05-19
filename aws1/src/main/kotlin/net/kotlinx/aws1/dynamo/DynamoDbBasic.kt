@@ -86,8 +86,8 @@ abstract class DynamoQuery {
 /** 쿼리 샘플 모음 */
 object DynamoQuerySet {
     /** PK 일치*/
-    object keyEqualTo : DynamoQueryKeyEqualTo()
+    object KeyEqualTo : DynamoQueryKeyEqualTo()
 
     /** PK 일치 &  SK 접두어 조회  */
-    object sortBeginsWith : DynamoQuerySortBeginsWith()
+    object SortBeginsWith : DynamoQuerySortBeginsWith()
 }

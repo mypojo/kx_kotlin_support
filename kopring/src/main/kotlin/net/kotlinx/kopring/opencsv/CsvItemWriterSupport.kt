@@ -1,4 +1,5 @@
-import net.kotlinx.kopring.opencsv.CsvItemWriter
+package net.kotlinx.kopring.opencsv
+
 import net.kotlinx.kopring.spring.resource.OutputStreamResource2
 import javax.servlet.http.HttpServletResponse
 

@@ -19,7 +19,7 @@ open class CdkBatchJobQueue(
     override var deploymentType: DeploymentType = dev
 
     /** VPC 이름 */
-    override val logicalName: String
+    final override val logicalName: String
         get() = "${project.projectName}-queue_${name}-${deploymentType}"
 
     val arn: String = "arn:aws:batch:ap-northeast-2:${this.project.awsId}:job-queue/${logicalName}"

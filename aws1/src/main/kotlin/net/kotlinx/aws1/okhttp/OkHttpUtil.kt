@@ -40,7 +40,7 @@ object OkHttpUtil {
 
         val resp: String = client.fetch {
             url = "https://www.findip.kr/"
-        }.respText!!
+        }.respText
 
         return RegexSet.extract("(IP Address): ", "</h2>").toRegex().find(resp)!!.value
     }

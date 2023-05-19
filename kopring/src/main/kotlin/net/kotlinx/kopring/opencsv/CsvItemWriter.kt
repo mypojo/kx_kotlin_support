@@ -93,7 +93,7 @@ class CsvItemWriter : ResourceAwareItemWriterItemStream<Array<String>>, ItemWrit
         writer = run {
             check(resource is WritableResource) { "WritableResource is required" }
             val writableResource = resource as WritableResource
-            val out = if (append) FileOutputStream((writableResource as FileSystemResource?)!!.file, append) else writableResource!!.outputStream
+            val out = if (append) FileOutputStream((writableResource as FileSystemResource?)!!.file, append) else writableResource.outputStream
             val w = OutputStreamWriter(out, encoding)
             val ww = BufferedWriter(w, bufferSize) //디폴트가 8192 일듯
             val escaper = if (escape) CSVParser.DEFAULT_ESCAPE_CHARACTER else CSVWriter.DEFAULT_ESCAPE_CHARACTER
@@ -124,7 +124,7 @@ class CsvItemWriter : ResourceAwareItemWriterItemStream<Array<String>>, ItemWrit
         try {
             for (item in items) {
                 lineCount++
-                writer!!.writeNext(item)
+                writer.writeNext(item)
             }
         } finally {
             mutex.unlock()
@@ -132,6 +132,6 @@ class CsvItemWriter : ResourceAwareItemWriterItemStream<Array<String>>, ItemWrit
     }
 
     companion object {
-        const val WRITE_COUNT = "write.count"
+        const val WRITE_COUNT = "write.net.kotlinx.kopring.opencsv.count"
     }
 }

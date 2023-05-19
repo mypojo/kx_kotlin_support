@@ -39,7 +39,7 @@ class DynamoDBSessionRepository(
 
     override fun createSession(): DynamoDbSession {
         val dynamoDBSession = DynamoDbSession(UUID.randomUUID().toString(), maxInactiveIntervalInSeconds.toLong())
-        log.debug("createSession {}", dynamoDBSession.id)
+        log.debug { "createSession ${dynamoDBSession.id}" }
         return dynamoDBSession
     }
 
@@ -48,10 +48,9 @@ class DynamoDBSessionRepository(
         val cached = sessionCache.getIfPresent(session.id)
         val currentHashCode = session.hashCode()
         val existHashCode = if (cached == null) 0 else cached.key
-        log.trace("현재 세션 : [{}] || 캐시된 세션 : 키[{}] 해시[{}]", currentHashCode, existHashCode, cached?.value?.hashCode() ?: 0)
         val equals = currentHashCode == existHashCode
         if (equals) {
-            log.trace("[{}/{}] sessionCache EQ", existHashCode, currentHashCode)
+            log.trace { "[${existHashCode}/${currentHashCode}] sessionCache EQ" }
             hitCounter.incrementAndGet()
             return
         }
@@ -59,50 +58,46 @@ class DynamoDBSessionRepository(
         runBlocking { dynamo.putItem(item) }
 
         sessionCache.put(session.id, Pair.of(currentHashCode, session))
-        if (cached == null) {
-            log.info("[캐시초기화] DDB session 저장 : [hitCounter] {} : {}", existHashCode, currentHashCode, hitCounter.get(), session.id)
-        } else {
-            log.debug("[{}/{}] DDB session 저장 : [hitCounter] {} : {}", existHashCode, currentHashCode, hitCounter.get(), session.id)
-        }
+        log.debug { "[${existHashCode}/${currentHashCode}] DDB session 저장 : [hitCounter] ${hitCounter.get()} : ${session.id}" }
     }
 
     @Synchronized
     override fun findById(id: String): DynamoDbSession? {
         val cached = sessionCache.getIfPresent(id)
         if (cached != null) {
-            log.trace("sessionCache 히트 {}", id)
+            log.trace { "sessionCache 히트 $id" }
             hitCounter.incrementAndGet()
             return cached.value
         }
         return try {
             val sessionItem: DynamoDbSessionItem? = runBlocking { dynamo.getItem(DynamoDbSessionItem(id)) }
             if (sessionItem == null) {
-                log.trace("findById {} -> null", id)
+                log.trace { "findById $id -> null" }
                 return null
             }
             val session = toSession(sessionItem)
             if (session.isExpired) {
-                log.info("Session: '{}' has expired. It will be deleted.", id)
+                log.info { "Session: '${id}' has expired. It will be deleted." }
                 deleteById(id)
-                log.trace("findById {} -> null", id)
+                log.trace { "findById $id -> null" }
                 return null
             }
             session.lastAccessedTime = Instant.now()
             log.trace("findById {} -> {}", id, session.attributeNames)
             session
         } catch (e: InvalidClassException) {
-            log.warn("DDB와 소스코드의 시리얼 불일치 -> 해당 데이터를 무시합니다.")
+            log.warn { "DDB와 소스코드의 시리얼 불일치 -> 해당 데이터를 무시합니다." }
             deleteById(id)
             null
         } catch (e: ClassNotFoundException) {
-            log.warn("DDB와 소스코드의 시리얼 불일치 -> 해당 데이터를 무시합니다.")
+            log.warn { "DDB와 소스코드의 시리얼 불일치 -> 해당 데이터를 무시합니다." }
             deleteById(id)
             null
         }
     }
 
     override fun deleteById(id: String) {
-        log.warn("[로그아웃!] DDB 삭제됩니다.")
+        log.warn { "[로그아웃!] DDB 삭제됩니다." }
         runBlocking { dynamo.deleteItem(DynamoDbSessionItem(id)) }
         sessionCache.invalidate(id)
     }

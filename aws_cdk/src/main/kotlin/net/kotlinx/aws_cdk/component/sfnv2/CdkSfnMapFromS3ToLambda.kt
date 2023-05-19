@@ -1,4 +1,4 @@
-package net.kotlinx.aws_cdk.component.sfn
+package net.kotlinx.aws_cdk.component.sfnv2
 
 import software.amazon.awscdk.services.stepfunctions.CustomState
 import software.amazon.awscdk.services.stepfunctions.CustomStateProps
@@ -10,10 +10,12 @@ import software.amazon.awscdk.services.stepfunctions.State
  * 다수의 데이터를 상태 관리하면서 대량처리할때 사용된다
  * 경고!! 크롤링 등의 작은 작업을 많이 처리하기에는 부적합함 (비쌈)
  * */
-class SfnMapFromS3ToLambda(
+class CdkSfnMapFromS3ToLambda(
+    override val cdkSfn: CdkSfn,
     override val name: String,
+) : CdkSfnChain {
+
     override var suffix: String = ""
-) : SfnChain {
 
     /** 실행할 람다 이름 */
     lateinit var lambdaName: String
@@ -22,10 +24,10 @@ class SfnMapFromS3ToLambda(
     var maxConcurrency: Int = 0
 
     /** 버킷명 키 */
-    var bucket: String = SfnMapFromS3ToLambda.bucket
+    var bucket: String = CdkSfnMapFromS3ToLambda.bucket
 
     /** S3 경로  키 */
-    var key: String = SfnMapFromS3ToLambda.key
+    var key: String = CdkSfnMapFromS3ToLambda.key
 
     //==================================================== 오류 3종 ======================================================
 
@@ -35,7 +37,7 @@ class SfnMapFromS3ToLambda(
     var maxAttempts: Int = 100
 
     /** 별도 설정이 없어서 노가다 했음.. 차라리 이게 더 나은듯.. */
-    override fun convert(cdkSfn: CdkSfn): State {
+    override fun convert(): State {
         return CustomState(
             cdkSfn.stack, "${name}${suffix}", CustomStateProps.builder()
                 .stateJson(

@@ -95,6 +95,6 @@ class CsvItemReader : ResourceAwareItemReaderItemStream<Array<String>>, ItemRead
     }
 
     companion object {
-        const val READ_COUNT = "read.count"
+        const val READ_COUNT = "read.net.kotlinx.kopring.opencsv.count"
     }
 }

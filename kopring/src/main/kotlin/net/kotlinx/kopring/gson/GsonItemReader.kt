@@ -27,7 +27,7 @@ class GsonItemReader<T>(
     private var readCnt: Long = 0
 
     override fun open(context: ExecutionContext) {
-        reader = JsonReader(InputStreamReader(resource!!.inputStream, encoding))
+        reader = JsonReader(InputStreamReader(resource.inputStream, encoding))
         reader.beginArray()
     }
 

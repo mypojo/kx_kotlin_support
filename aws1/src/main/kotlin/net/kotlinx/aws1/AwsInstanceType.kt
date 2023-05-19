@@ -8,6 +8,7 @@ import java.io.File
  * 환경변수 리스트
  * https://docs.aws.amazon.com/batch/latest/userguide/job_env_vars.html
  * https://docs.aws.amazon.com/ko_kr/lambda/latest/dg/configuration-envvars.html
+ * 대문자로 했어야 하는데.. 일단 그냥 둠
  */
 enum class AwsInstanceType(val root: File?) {
 
