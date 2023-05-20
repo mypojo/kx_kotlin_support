@@ -24,6 +24,7 @@ dependencies {
     //==================================================== AWS ======================================================
     api("com.amazonaws:aws-lambda-java-core:1.2.2") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함
     api("com.amazonaws:aws-lambda-java-events:3.11.0")  //핸들러에 매핑되는 이벤트 객
+    api("io.github.crac:org-crac:0.1.3")  //스냅스타트 후크 (클래스 로딩용)
 
     val awsVersion: String by project
     api("aws.sdk.kotlin:s3:$awsVersion")
