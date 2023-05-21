@@ -25,6 +25,8 @@ object LambdaUtil {
 
     /** 스냅스타트용 예약어 */
     const val beforeCheckpoint = "beforeCheckpoint"
+    /** 실 서비스를 나타내는 람다 Alias 예약어 */
+    const val serviceOn = "serviceOn"
 
 }
 
