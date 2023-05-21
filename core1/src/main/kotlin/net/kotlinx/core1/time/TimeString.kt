@@ -47,9 +47,12 @@ data class TimeString(
 data class TimeStart(
     private val start: Long = System.currentTimeMillis(),
 ) {
+
+    /** 지금 기준 시작과의  차이 */
+    fun interval(): Long = System.currentTimeMillis() - start
+
     override fun toString(): String {
-        val interval: Long = System.currentTimeMillis() - start
-        return TimeString(interval).toString()
+        return TimeString(interval()).toString()
     }
 }
 

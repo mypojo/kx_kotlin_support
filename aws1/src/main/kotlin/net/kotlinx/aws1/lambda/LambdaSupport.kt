@@ -2,7 +2,9 @@ package net.kotlinx.aws1.lambda
 
 import aws.sdk.kotlin.services.lambda.*
 import aws.sdk.kotlin.services.lambda.model.*
+import aws.sdk.kotlin.services.lambda.waiters.waitUntilPublishedVersionActive
 import net.kotlinx.core1.string.ResultText
+import net.kotlinx.core1.time.TimeStart
 import net.kotlinx.core1.time.toKr01
 import org.apache.commons.text.StringEscapeUtils
 import java.io.File
@@ -68,10 +70,21 @@ suspend fun LambdaClient.updateFunctionCode(functionName: String, jarFile: File)
 
 /**
  * alias 는  CDK에서 이미 만들어져있어야 하기 때문에 아마 없을리는 없지만 혹시나 해서 세트로 제작
+ * 대부분 로컬에서 돌릴것임으로 로그를 println 로 남긴다.
  * */
 suspend fun LambdaClient.publishVersionAndUpdateAlias(functionName: String, alias: String) {
     val versionResponse = publishVersion(functionName)
     val version = versionResponse.version!!
+
+    //기다려야 한다. 스냅스타트의 경우 2~5분 정도 걸리는듯
+    val timeStart = TimeStart()
+    println(" -> lambda [${functionName}:${version}] 스냅스타트 퍼블리싱 중입니다...")
+    this.waitUntilPublishedVersionActive {
+        this.functionName = functionName
+        this.qualifier = version
+    }
+    println(" -> lambda [${functionName}:${version}] 스냅스타트 퍼블리싱 종료. $timeStart => alias [$alias] 갱신")
+
     try {
         updateAlias(functionName, version, alias)
     } catch (e: ResourceNotFoundException) {

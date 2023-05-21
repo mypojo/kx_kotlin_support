@@ -21,7 +21,7 @@ internal class LambdaSupportKtTest : net.kotlinx.core2.test.TestRoot() {
     @Test
     fun `버전업&교체`() {
         runBlocking {
-            aws.lambda.publishVersionAndUpdateAlias(functionName, "service-on")
+            aws.lambda.publishVersionAndUpdateAlias("nhnad-batchFunction-dev", LambdaUtil.serviceOn)
         }
     }
 
