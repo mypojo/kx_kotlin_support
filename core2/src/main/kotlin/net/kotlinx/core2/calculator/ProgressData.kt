@@ -1,8 +1,10 @@
 package net.kotlinx.core2.calculator
 
 import net.kotlinx.core1.time.TimeUtil
+import net.kotlinx.core1.time.toTimeString
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import kotlin.math.abs
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
@@ -18,7 +20,7 @@ class ProgressData(
     /** 이미 완료되서 스킵된 카운트 */
     skipedInput: Number = 0L,
     /** 비율 스케일 */
-    val rateScale:Int = 1,
+    private val rateScale: Int = 1,
 ) {
 
     /** 전체 수  */
@@ -47,9 +49,14 @@ class ProgressData(
     val totalTime: Long = if (completed == 0L) 0L else progressTime * total / completed
 
     /** 남은 시간 */
-    val remainTime: Long = totalTime - progressTime
+    val remainTime: Long = abs(totalTime - progressTime)
 
-    /** 예상 종료 시간 */
+    override fun toString(): String {
+        val remainTimeStr = if (progressRate <= 0.1.toBigDecimal()) "unknown" else remainTime.toTimeString()
+        return "${completed.toString().padStart(total.toString().length)}/${total} (${progressRate.toString().padStart(3)}%) => 남은시간 $remainTimeStr"
+    }
+
+    /** 예상 종료 시간 (잘 안씀) */
     val estimateEndTime: LocalDateTime? by lazy {
         if (completed == 0L) null else now.plusSeconds(remainTime.milliseconds.inWholeSeconds)
     }

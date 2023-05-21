@@ -118,7 +118,7 @@ object FileZipUtil {
     }
 
     private fun doUnzip(dir: File, buffer: ByteArray, zipStream: ZipInputStream, outputFileNm: String) {
-        var entryFile = File(dir, outputFileNm)
+        val entryFile = File(dir, outputFileNm)
 
         // 압축을 폴더 안에다 한 경우 폴더를 생성해 준다.
         val parent = entryFile.parentFile

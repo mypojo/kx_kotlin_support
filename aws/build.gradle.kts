@@ -24,7 +24,6 @@ dependencies {
 
     //==================================================== AWS ======================================================
     val awsVersion: String by project
-    api("aws.sdk.kotlin:athena:$awsVersion")
     api("aws.sdk.kotlin:sts:$awsVersion")
     api("aws.sdk.kotlin:iam:$awsVersion")
     api("aws.sdk.kotlin:rds:$awsVersion")
@@ -33,7 +32,6 @@ dependencies {
     api("aws.sdk.kotlin:batch:$awsVersion")
     api("aws.sdk.kotlin:ssm:$awsVersion")
     api("aws.sdk.kotlin:eventbridge:$awsVersion")
-    api("aws.sdk.kotlin:sfn:$awsVersion")
     api("aws.sdk.kotlin:codedeploy:$awsVersion")
     api("aws.sdk.kotlin:codecommit:$awsVersion")
     api("aws.sdk.kotlin:secretsmanager:$awsVersion")

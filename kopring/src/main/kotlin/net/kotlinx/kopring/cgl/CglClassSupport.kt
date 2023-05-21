@@ -1,3 +1,5 @@
+@file:Suppress("RecursivePropertyAccessor")
+
 package net.kotlinx.kopring.cgl
 
 import org.springframework.util.ClassUtils

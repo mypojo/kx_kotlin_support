@@ -13,14 +13,14 @@ import software.amazon.awssdk.services.rds.model.GenerateAuthenticationTokenRequ
  */
 class AwsSdk2HikariDataSource(
     /** DB 계정 명 */
-    private val _username: String,
+    private val inputUsername: String,
     /** JDBC 주소 */
-    private val _jdbcUrl: String,
+    inputJdbcUrl: String,
     /**
      * 프록시 호스트가 아닌 실제 RDS의 내부 주소
      * ex) xxx.cluster-yyy.ap-northeast-2.rds.amazonaws.com
      */
-    private var _hostname: String,
+    private val inputHostname: String,
     private val profile: String? = null,
     /** 실제 DB의 포트  */
     private val port: Int = 3306,
@@ -29,8 +29,8 @@ class AwsSdk2HikariDataSource(
     private val log = KotlinLogging.logger {}
 
     init {
-        jdbcUrl = _jdbcUrl
-        username = _username
+        jdbcUrl = inputJdbcUrl
+        username = inputUsername
     }
 
     val rdsClient: RdsClient by lazy {
@@ -46,8 +46,8 @@ class AwsSdk2HikariDataSource(
         log.info { "RDS 데이터소스 password 생성" }
         val rdsUtilities = rdsClient.utilities()
         val request = GenerateAuthenticationTokenRequest.builder()
-            .username(_username)
-            .hostname(_hostname)
+            .username(inputUsername)
+            .hostname(inputHostname)
             .port(port)
             .build()
         return rdsUtilities.generateAuthenticationToken(request)

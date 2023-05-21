@@ -1,6 +1,5 @@
 package net.kotlinx.aws
 
-import aws.sdk.kotlin.services.athena.AthenaClient
 import aws.sdk.kotlin.services.batch.BatchClient
 import aws.sdk.kotlin.services.cloudwatchlogs.CloudWatchLogsClient
 import aws.sdk.kotlin.services.codecommit.CodeCommitClient
@@ -14,7 +13,6 @@ import aws.sdk.kotlin.services.iam.IamClient
 import aws.sdk.kotlin.services.rds.RdsClient
 import aws.sdk.kotlin.services.secretsmanager.SecretsManagerClient
 import aws.sdk.kotlin.services.ses.SesClient
-import aws.sdk.kotlin.services.sfn.SfnClient
 import aws.sdk.kotlin.services.sqs.SqsClient
 import aws.sdk.kotlin.services.ssm.SsmClient
 import net.kotlinx.aws.iam.IamSecretUpdateModule
@@ -41,9 +39,7 @@ class AwsClient(awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     //==================================================== 컴퓨팅 인프라 ======================================================
     val ec2: Ec2Client by lazy { Ec2Client { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val ecs: EcsClient by lazy { EcsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
-    val athena: AthenaClient by lazy { AthenaClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val batch: BatchClient by lazy { BatchClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
-    val sfn: SfnClient by lazy { SfnClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
 
     //==================================================== 코드 시리즈 ======================================================
     val codeDeploy: CodeDeployClient by lazy { CodeDeployClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }

@@ -43,7 +43,7 @@ inline fun <reified T> Map<String, AttributeValue>.findJsonOrThrow(key: KMutable
 
 //==================================================== map ======================================================
 
-inline fun Map<String, AttributeValue>.find(key: KMutableProperty1<*, Map<String, String>?>): Map<String, String>? =
+inline fun Map<String, AttributeValue>.find(key: KMutableProperty1<*, Map<String, String>?>): Map<String, String> =
     this[key.name]?.asM()?.entries?.associate { it.key to it.value.asS() } ?: emptyMap()
 
 inline fun Map<String, AttributeValue>.findOrThrow(key: KMutableProperty1<*, Map<String, String>>): Map<String, String> =

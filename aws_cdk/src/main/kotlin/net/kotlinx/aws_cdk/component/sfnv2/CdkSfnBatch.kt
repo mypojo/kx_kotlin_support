@@ -40,7 +40,7 @@ class CdkSfnBatch(
                         "StatusReason.$" to "$.StatusReason", //배치 잡의 경우 여러가지 상태가 필요함.
                     )
                 )
-                .comment("$name")
+                .comment(name)
                 .build()
         )
     }

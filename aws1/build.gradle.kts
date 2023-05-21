@@ -33,6 +33,8 @@ dependencies {
     api("aws.sdk.kotlin:firehose:$awsVersion")
     api("aws.sdk.kotlin:sqs:$awsVersion")
     api("aws.sdk.kotlin:lambda:$awsVersion")
+    api("aws.sdk.kotlin:sfn:$awsVersion")
+    api("aws.sdk.kotlin:athena:$awsVersion")
 
     //====================================================커먼즈 ======================================================
     api("org.apache.commons:commons-text:1.10.0") // javacript 등의 이스케이핑에 사용된다. kotlin 네이티브가 없네..

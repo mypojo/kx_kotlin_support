@@ -1,8 +1,4 @@
 package net.kotlinx.kopring.spring.validation
 
 
-object ValidationUtil {
-
-
-
-}
+object ValidationUtil

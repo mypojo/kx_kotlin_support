@@ -61,7 +61,6 @@ class RetryTemplateBuilder {
 
     /**
      * 중분 백오프
-     * @param backoffMills 밀리초
      */
     fun backoff(duration: Duration): RetryTemplateBuilder {
         val backoffMills = duration.inWholeMilliseconds

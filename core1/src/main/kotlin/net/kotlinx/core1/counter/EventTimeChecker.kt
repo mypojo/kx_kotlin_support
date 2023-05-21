@@ -50,14 +50,14 @@ class EventTimeChecker(
         val betweenDuration = now - lastEvent
         val isMain = betweenDuration >= currentInterval.inWholeMilliseconds
 
-        if (isMain) {
-            return EventTimeResult(true,now,lastEvent,tryCnt).also {
+        return if (isMain) {
+            EventTimeResult(true,now,lastEvent,tryCnt).also {
                 //hit 시 초기화 해줌
                 lastEvent = now
                 tryCnt = 0
             }
         }else{
-            return EventTimeResult(false,now,lastEvent,tryCnt).apply {
+            EventTimeResult(false,now,lastEvent,tryCnt).apply {
                 next = currentInterval.inWholeMilliseconds - betweenDuration
             }
         }

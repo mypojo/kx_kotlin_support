@@ -39,7 +39,7 @@ class CdkSfnLambda(
                         "body.$" to "$.Payload", //실무에서는 이거만 씀. 혹시 모르니 뎁스 구조는 남겨놓음
                     )
                 )
-                .comment("$name")
+                .comment(name)
                 .retryOnServiceExceptions(retry)
                 .build()
         )

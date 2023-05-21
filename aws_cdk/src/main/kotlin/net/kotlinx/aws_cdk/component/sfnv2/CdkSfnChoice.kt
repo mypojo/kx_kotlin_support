@@ -19,12 +19,17 @@ class CdkSfnChoice(
 }
 
 /**
- * 자주 사용되는 패턴. eq 도 같이 쓸수 있어서 stringMatches 를 기본으로 둔다.
- * 보통 접두어로 많이 사용됨
+ * 옵션 결과 body 매핑
  * @param name $.aa.bb  <-- 일반 옵션의 body를 읽는다.
  * @param pattern retry-*
  * */
-fun Choice.whenMatches(name: String, pattern: String, vararg states: IChainable): Choice {
+fun Choice.whenMatchesBody(name: String, pattern: String, vararg states: IChainable): Choice {
     this.`when`(Condition.stringMatches("$.${AwsNaming.option}.${name}.${AwsNaming.body}.${"state"}", pattern), states.toList().join())
+    return this
+}
+
+/** 옵션에 직접 매핑 */
+fun Choice.whenMatches(name: String, pattern: String, vararg states: IChainable): Choice {
+    this.`when`(Condition.stringMatches("$.${AwsNaming.option}.${name}", pattern), states.toList().join())
     return this
 }

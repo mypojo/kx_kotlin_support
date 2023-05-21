@@ -46,12 +46,12 @@ class CsvItemSplitWriter(
     private val writerMap: LinkedHashMap<String, CsvItemWriter> = LinkedHashMap()
 
     /** 작업 도중 limit을 넘어서 닫은 파일 수 */
-    private var closeFileCnt: Long = 0
-        get() = closeFileCnt
+    var closeFileCnt: Long = 0
+        private set
 
     /** 처리한 아이템 수 */
-    private var totalItemCnt: Long = 0
-        get() = totalItemCnt
+    var totalItemCnt: Long = 0
+        private set
 
 
     /**
@@ -59,7 +59,7 @@ class CsvItemSplitWriter(
      */
     fun getOrMakeWriter(id: String): CsvItemWriter {
         synchronized(writerMap) {
-            var writer: CsvItemWriter = writerMap[id] ?: run {
+            val writer: CsvItemWriter = writerMap[id] ?: run {
                 val currentFile = File(workDir, "$id.csv")
                 csvItemWriterFactory(currentFile).apply {
                     writerMap[id] = this

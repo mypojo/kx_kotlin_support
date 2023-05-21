@@ -1,8 +1,9 @@
 package net.kotlinx.module1.aws.rds
 
+import net.kotlinx.core2.test.TestRoot
 import org.junit.jupiter.api.Test
 
-class AwsSdk2HikariDataSourceTest : net.kotlinx.core2.test.TestRoot() {
+class AwsSdk2HikariDataSourceTest : TestRoot() {
 
     @Test
     fun test() {

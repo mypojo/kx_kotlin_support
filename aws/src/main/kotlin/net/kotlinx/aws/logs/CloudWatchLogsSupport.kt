@@ -4,8 +4,6 @@ import aws.sdk.kotlin.services.cloudwatchlogs.CloudWatchLogsClient
 import aws.sdk.kotlin.services.cloudwatchlogs.deleteLogStream
 import aws.sdk.kotlin.services.cloudwatchlogs.describeLogStreams
 import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.seconds
-
 
 /**
  * 로그 스르팀을 다 삭제한다.
@@ -17,17 +15,18 @@ suspend fun CloudWatchLogsClient.cleanLogStream(logGroupName: String) {
             this.logGroupName = logGroupName
         }.logStreams!!
         if (logStreams.isEmpty()) return@repeat
+        delay(500) // 여기서도 한번 쉬어야함
 
-        println("deleteLogStream.. ${logStreams.size}")
+        println(" -> deleteLogStream ${logStreams.size} .. ")
         //Rate exceeded 가 빨리뜬다. 하나씩 지우자
         logStreams.forEach {
             this.deleteLogStream {
                 this.logGroupName = logGroupName
                 this.logStreamName = it.logStreamName!!
             }
+            delay(200) //  100이면 exceed 오류남. 넉넉하게 200
         }
         if (logStreams.size < 50) return@repeat
-        delay(10.seconds)
     }
     println("deleteLogStream completed")
 }

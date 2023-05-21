@@ -13,9 +13,7 @@ import javax.servlet.http.HttpServletRequest
  */
 val HttpServletRequest.forwardedIp: String
     get() {
-        val remoteIp: String = this.getHeader("x-forwarded-for")?.let {
-            it.split(",").first()
-        } ?: this.remoteHost
+        val remoteIp: String = this.getHeader("x-forwarded-for")?.split(",")?.first() ?: this.remoteHost
         check(remoteIp.isNotEmpty()) { "Remote IP is empty" }
         return remoteIp
     }
@@ -34,7 +32,7 @@ val HttpServletRequest.isTextHtmlReq: Boolean
  * ALB를 타고 오면 원본 소스가 http 임으로, 서버일경우 무조건 https를 강제 입력해서 링크 걸어줘야 한다.
  * ex) 특정 경로로 스키마를 유지한채 리다이렉트 할때 사용
  */
-fun HttpServletRequest.toPath(redirectPath: String): String? {
+fun HttpServletRequest.toPath(redirectPath: String): String {
     val serverPort = this.serverPort
     val validPort: Boolean = serverPort in setOf(80, 443)
     val scheme = if (validPort) "https" else this.scheme //정규 포트이면 https로 강제 변경

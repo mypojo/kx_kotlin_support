@@ -1,10 +1,12 @@
 package net.kotlinx.aws1
 
+import aws.sdk.kotlin.services.athena.AthenaClient
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import aws.sdk.kotlin.services.firehose.FirehoseClient
 import aws.sdk.kotlin.services.kinesis.KinesisClient
 import aws.sdk.kotlin.services.lambda.LambdaClient
 import aws.sdk.kotlin.services.s3.S3Client
+import aws.sdk.kotlin.services.sfn.SfnClient
 
 /**
  * 기본 AWS 설정
@@ -19,4 +21,7 @@ open class AwsClient1(val awsConfig: AwsConfig) {
     val firehose: FirehoseClient by lazy { FirehoseClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val dynamo: DynamoDbClient by lazy { DynamoDbClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val lambda: LambdaClient by lazy { LambdaClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
+
+    val sfn: SfnClient by lazy { SfnClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
+    val athena: AthenaClient by lazy { AthenaClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
 }

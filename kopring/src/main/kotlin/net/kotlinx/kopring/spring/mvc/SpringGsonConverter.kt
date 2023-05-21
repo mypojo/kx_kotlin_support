@@ -19,7 +19,7 @@ class SpringGsonConverter(
 
     /** 그대로 변환 */
     override fun readInternal(resolvedType: Type, reader: Reader): Any {
-        return gson.fromJson<Any>(reader, resolvedType)
+        return gson.fromJson(reader, resolvedType)
     }
 
     /** 템플릿으로 한번 감싸서 리턴한다 */

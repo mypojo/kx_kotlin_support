@@ -6,7 +6,7 @@ import org.springframework.batch.item.file.FlatFileItemWriter
  * null이나 공백일경우 스킵하는 라이터
  * 기본 FlatFileItemWriter 에는 write 스킵이 없다.
  */
-open class FlatFileItemWriter2<T> : FlatFileItemWriter<T>() {
+class FlatFileItemWriter2<T> : FlatFileItemWriter<T>() {
 
     init {
         setEncoding("UTF-8")

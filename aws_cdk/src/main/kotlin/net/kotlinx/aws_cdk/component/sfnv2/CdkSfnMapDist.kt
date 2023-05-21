@@ -9,8 +9,11 @@ import software.amazon.awscdk.services.stepfunctions.State
  * SFN MAP 작업 : S3 list -> lambda
  * 다수의 데이터를 상태 관리하면서 대량처리할때 사용된다
  * 경고!! 크롤링 등의 작은 작업을 많이 처리하기에는 부적합함 (비쌈)
+ *
+ * !! 일단 사용금지!!
  * */
-class CdkSfnMapFromS3ToLambda(
+@Suppress("DuplicatedCode")
+class CdkSfnMapDist(
     override val cdkSfn: CdkSfn,
     override val name: String,
 ) : CdkSfnChain {
@@ -18,23 +21,23 @@ class CdkSfnMapFromS3ToLambda(
     override var suffix: String = ""
 
     /** 실행할 람다 이름 */
-    lateinit var lambdaName: String
+    var lambdaName: String = cdkSfn.lambda.functionName
 
-    /** DISTRIBUTED 모드라서 거의 무한대로 지원함 */
-    var maxConcurrency: Int = 0
+    /** DISTRIBUTED 모드는 람다 리밋까지 지원 */
+    var maxConcurrency: Int = 40
 
     /** 버킷명 키 */
-    var bucket: String = CdkSfnMapFromS3ToLambda.bucket
+    var bucket: String = CdkSfnMapDist.bucket
 
     /** S3 경로  키 */
-    var key: String = CdkSfnMapFromS3ToLambda.key
+    var key: String = CdkSfnMapDist.key
 
     //==================================================== 오류 3종 ======================================================
 
     /** 네이버 크롤링=4초 */
-    var retryIntervalSeconds: Int = 4 // 적게 주어야 더 빠르게 작동할듯
-    var backoffRate: Double = 1.00 //오류시 리트라이 증분. IP 블록 우회하는 크롤링이라면 동시에 실행되어야 람다가 다르게 실생되서 분산된다.
-    var maxAttempts: Int = 100
+    var retryIntervalSeconds: Int = 5 // 적게 주어야 더 빠르게 작동할듯
+    var backoffRate: Double = 1.2 //오류시 리트라이 증분. IP 블록 우회하는 크롤링이라면 동시에 실행되어야 람다가 다르게 실생되서 분산된다.
+    var maxAttempts: Int = 4
 
     /** 별도 설정이 없어서 노가다 했음.. 차라리 이게 더 나은듯.. */
     override fun convert(): State {
@@ -44,7 +47,7 @@ class CdkSfnMapFromS3ToLambda(
                     mapOf(
                         "Type" to "Map",
                         "End" to true,
-                        "Label" to "invokeEach", //이름 대충 붙여준다.
+                        "Label" to name,
                         "MaxConcurrency" to maxConcurrency,
                         "ItemProcessor" to mapOf(
                             "ProcessorConfig" to mapOf(

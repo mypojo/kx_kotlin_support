@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws1.AwsClient1
 import net.kotlinx.aws1.AwsInstanceTypeUtil
 import net.kotlinx.aws1.s3.S3Data
 import net.kotlinx.aws1.s3.getObjectDownload
@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit
  * 아테나 쿼리 실행후 기다렸다 결과를 리턴해주는 편의용 모듈
  *  */
 class AthenaModule(
-    private val aws: AwsClient,
+    private val aws: AwsClient1,
     /** 데이터베이스 명 (기본스키마) */
     private val database: String = "",
     /** 워크그룹 (쿼리 결과 위치 있어야함) */

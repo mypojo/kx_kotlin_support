@@ -114,8 +114,8 @@ suspend inline fun S3Client.deleteAll(datas: Collection<S3Data>) {
  * 간단 쓰기는 없음 (스트리핑 put은 안됨) -> 먼저 파일로 쓴 다음 업로드 할것!!
  *  */
 suspend inline fun S3Client.getObjectLines(bucket: String, key: String): List<List<String>>? {
-    try {
-        return this.getObject(
+    return try {
+        this.getObject(
             GetObjectRequest {
                 this.bucket = bucket
                 this.key = key
@@ -124,7 +124,7 @@ suspend inline fun S3Client.getObjectLines(bucket: String, key: String): List<Li
             csvReader().readAll(it.body!!.decodeToString())
         }
     } catch (e: NoSuchKey) {
-        return null
+        null
     }
 }
 
@@ -134,8 +134,8 @@ suspend inline fun S3Client.getObjectLines(bucket: String, key: String): List<Li
  * 동시 100건 코루틴 처리도 문제없음(타임아웃 정도만 조심)
  *  */
 suspend inline fun S3Client.getObjectText(bucket: String, key: String): String? {
-    try {
-        return this.getObject(
+    return try {
+        this.getObject(
             GetObjectRequest {
                 this.bucket = bucket
                 this.key = key
@@ -144,6 +144,6 @@ suspend inline fun S3Client.getObjectText(bucket: String, key: String): String? 
             it.body!!.decodeToString()
         }
     } catch (e: NoSuchKey) {
-        return null
+        null
     }
 }

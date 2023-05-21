@@ -1,9 +1,36 @@
 package net.kotlinx.core2.calculator
 
 import io.kotest.matchers.shouldBe
+import net.kotlinx.core2.gson.GsonData
+import net.kotlinx.core2.gson.GsonSet
 import org.junit.jupiter.api.Test
 
 class BatchChunkTest {
+
+    data class Qq(
+        val name:String
+    ){
+        lateinit var aa:String
+
+    }
+
+    @Test
+    fun poo() {
+
+        //val qq = Qq("aa").apply { aa = "123" }
+        val qq = Qq("aa")
+        println(qq)
+
+        val json = GsonSet.GSON.toJson(qq)
+        println(json)
+
+        val q2 = GsonData.parse(json).fromJson<Qq>()
+        println(q2)
+        println(q2.aa)
+
+
+
+    }
 
     @Test
     fun getPageCnt() {

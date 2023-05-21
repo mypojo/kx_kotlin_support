@@ -38,6 +38,6 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
 
     //==================================================== 배치 관련 ======================================================
-    implementation("com.opencsv:opencsv:5.7.1")
+    implementation("com.opencsv:opencsv:5.7.1") //의존성 문제 보고됨
 
 }

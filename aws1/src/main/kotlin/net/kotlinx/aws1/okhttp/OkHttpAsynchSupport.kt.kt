@@ -15,7 +15,7 @@ import kotlin.coroutines.resume
  * 리트라이는 각 벤더사 제품 쓸것. ex) AWS SFN
  */
 suspend fun Call.await(): Response {
-    return suspendCancellableCoroutine<Response> { continuation ->
+    return suspendCancellableCoroutine { continuation ->
 
         enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {

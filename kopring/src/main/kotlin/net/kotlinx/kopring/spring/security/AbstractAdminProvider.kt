@@ -29,7 +29,7 @@ abstract class AbstractAdminProvider : AuthenticationProvider {
             //ID와 패스워드를 매칭
             if (authentication.credentials == null) throw BadCredentialsException("is not required login") //이상한 세팅이 있어서 추가
             val password: String = authentication.credentials.toString()
-            if (password.isNullOrEmpty()) throw BadCredentialsException("pass is required")
+            if (password.isEmpty()) throw BadCredentialsException("pass is required")
 
             val detail: WebAuthenticationDetails = authentication.details as WebAuthenticationDetails
 

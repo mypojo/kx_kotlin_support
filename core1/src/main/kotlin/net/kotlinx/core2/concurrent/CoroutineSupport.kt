@@ -14,7 +14,7 @@ import kotlinx.coroutines.sync.withPermit
  *
  * 경고!! CoroutineScope를 따로 전달받지 않고, 새로 열어준다
  * */
-fun <T> List<suspend () -> T?>.coroutineExecute(maxConcurrency: Int = Int.MAX_VALUE): List<T?> {
+fun <T> List<suspend () -> T>.coroutineExecute(maxConcurrency: Int = Int.MAX_VALUE): List<T> {
     val gate = Semaphore(maxConcurrency)
     val list = this
 

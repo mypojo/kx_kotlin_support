@@ -14,7 +14,7 @@ class DynamoDbSessionItem(
     lateinit var data: ByteArray
 
     override val tableName: String
-        get() = tableName
+        get() = sessionTableName
 
     override fun toAttribute(): Map<String, AttributeValue> {
         return mutableMapOf<String, AttributeValue>().apply {
@@ -30,12 +30,10 @@ class DynamoDbSessionItem(
         data = map[DynamoDbSessionItem::data.name]!!.asB()
     } as T
 
-    override val pk: String
-        get() = pk
+    override val pk: String = DynamoDbBasic.pk
 
     companion object {
-        lateinit var pk: String
-        lateinit var tableName: String
+        lateinit var sessionTableName: String
     }
 
 }

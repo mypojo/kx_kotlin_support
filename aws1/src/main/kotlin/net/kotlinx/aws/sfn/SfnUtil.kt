@@ -30,7 +30,8 @@ object SfnUtil {
     }
 
     /** 콘솔 링크 */
-    fun consoleLink(executionArn:String,region: String = AwsConfig.SEOUL):String{
+    fun consoleLink(awsId: String, stateMachineName: String, uuid: String,region: String = AwsConfig.SEOUL):String{
+        val executionArn = executionArn(awsId, stateMachineName, uuid, region)
         return "https://$region.console.aws.amazon.com/states/home?region=$region#/v2/executions/details/$executionArn"
     }
 

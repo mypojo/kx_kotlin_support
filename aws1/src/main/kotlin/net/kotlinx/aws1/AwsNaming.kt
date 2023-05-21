@@ -14,6 +14,9 @@ object AwsNaming {
      *  */
     const val method = "method"
 
+    /** 모드 */
+    const val mode = "mode"
+
     /**
      * json 옵션값의 키값
      * * ex) 공용 람다 사용시 입력 옵션 json

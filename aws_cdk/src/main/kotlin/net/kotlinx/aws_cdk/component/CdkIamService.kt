@@ -1,6 +1,11 @@
 package net.kotlinx.aws_cdk.component
 
-/** 어플리케이션이 실행되는 대표적인 서비스들. 런타임 권한용에 붙일것 */
+/** 
+ * 어플리케이션이 실행되는 대표적인 서비스들. 런타임 권한용에 붙일것
+ * ## 그외 ##
+ *  cloudtrail - 클라우드 트레일
+ *  logdelivery.elasticloadbalancing ALB 로깅
+ *  */
 enum class CdkIamService(
     val iamName: String
 ) {

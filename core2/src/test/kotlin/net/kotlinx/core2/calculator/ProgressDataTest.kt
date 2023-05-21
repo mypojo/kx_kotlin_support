@@ -3,6 +3,7 @@ package net.kotlinx.core2.calculator
 import net.kotlinx.core1.string.toTextGrid
 import net.kotlinx.core1.time.toKr01
 import net.kotlinx.core2.test.TestLevel01
+import net.kotlinx.core2.test.TestLevel02
 import net.kotlinx.core2.test.TestRoot
 import java.time.LocalDateTime
 
@@ -10,7 +11,6 @@ class ProgressDataTest : TestRoot() {
 
     @TestLevel01
     fun test() {
-
         val now = LocalDateTime.now()
         val totalCount: Long = 100
         val data = ProgressData(totalCount, 47, now.minusMinutes(5))
@@ -21,8 +21,17 @@ class ProgressDataTest : TestRoot() {
         ).also {
             listOf("진행", "진행율", "시간").toTextGrid(it).print()
         }
+    }
 
-
+    @TestLevel02
+    fun run() {
+        val now = LocalDateTime.now()
+        val totalCount: Long = 24
+        (0 .. totalCount).forEach {
+            val data = ProgressData(totalCount, it, now)
+            log.info { " -> $data" }
+            Thread.sleep(700)
+        }
     }
 
 }

@@ -22,7 +22,7 @@ class CdkAthena(
         val dbName = deploymentType.name.substring(0, 1)
         val database = CfnDatabase(
             stack, "glue_db_${dbName}-${deploymentType}", CfnDatabaseProps.builder()
-                .catalogId("${project.awsId}") //계정 ID임
+                .catalogId(project.awsId) //계정 ID임
                 .databaseInput(
                     CfnDatabase.DatabaseInputProperty.builder()
                         .name(dbName)

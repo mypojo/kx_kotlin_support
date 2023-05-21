@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong
  * 설정할게 많음으로 fluent하게 만들지 않는다.
  */
 class BatchExecutor(
-    val block: BatchExecutor.() -> Unit
+    block: BatchExecutor.() -> Unit
 ) {
 
     private val log = KotlinLogging.logger {}

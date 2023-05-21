@@ -10,7 +10,7 @@ import java.util.*
  * window에서 zip 이미지 볼때 셔플 시켜줌
  * 1뎁스만 지원
  *  */
-public class FileRandomShuffleUtil(
+class FileRandomShuffleUtil(
     private val uuidSeparator: String = "#",
     private val pathSeparator: String = "@",
     private val exts: Set<String> = setOf("rar", "zip"),
