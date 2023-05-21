@@ -23,6 +23,9 @@ object LambdaUtil {
     /** 정상 결과 리턴 문자열 */
     const val Fail = "fail"
 
+    /** 스냅스타트용 예약어 */
+    const val beforeCheckpoint = "beforeCheckpoint"
+
 }
 
 /** 람다 호출 실패시 json 컨버팅 가능한 객체 */

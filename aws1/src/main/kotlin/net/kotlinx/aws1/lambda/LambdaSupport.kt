@@ -34,6 +34,14 @@ suspend fun LambdaClient.invokeAsynch(functionName: String, param: Any) {
     }
 }
 
+/** 최신버전 함수명 리턴 간단버전 */
+suspend fun LambdaClient.latestVersion(functionName: String): String {
+    val latest = this.listVersionsByFunction {
+        this.functionName = functionName
+    }.versions!!.maxBy { it.version!!.toIntOrNull() ?: 0 }
+    return "${latest.functionName}:${latest.version}"
+}
+
 //==================================================== 주로  그래들에서 사용하는거 ======================================================
 
 /** ECR 배포 후 이거 실행해주면 반영됨 */
