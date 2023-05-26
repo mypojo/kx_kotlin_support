@@ -1,7 +1,7 @@
 package net.kotlinx.kopring.spring
 
 import mu.KotlinLogging
-import net.kotlinx.core1.time.TimeStart
+import net.kotlinx.core.time.TimeStart
 import org.springframework.boot.WebApplicationType
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.ApplicationContext

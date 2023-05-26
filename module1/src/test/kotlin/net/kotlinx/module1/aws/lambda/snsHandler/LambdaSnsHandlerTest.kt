@@ -2,8 +2,8 @@ package net.kotlinx.module1.aws.lambda.snsHandler
 
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
-import net.kotlinx.core2.gson.GsonData
-import net.kotlinx.core2.test.TestRoot
+import net.kotlinx.core.gson.GsonData
+import net.kotlinx.core.test.TestRoot
 import org.junit.jupiter.api.Test
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin

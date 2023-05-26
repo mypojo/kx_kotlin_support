@@ -27,7 +27,7 @@ dependencies {
     //==================================================== javax ======================================================
     api("javax.validation:validation-api:2.0.1.Final")
     api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0") //자주 쓰니까 일단 넣음
-    api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0") //LocalDatetime 등.. 상당히 별로임.. 맘에안듬.
+    //api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0") //LocalDatetime 등.. 상당히 별로임.. 일단 disable
 
     //==================================================== 로깅.. 맘에 안드네 ======================================================
     api("io.github.microutils:kotlin-logging-jvm:2.0.10") //slf4j의 래퍼. (로거 가져올때 사용)

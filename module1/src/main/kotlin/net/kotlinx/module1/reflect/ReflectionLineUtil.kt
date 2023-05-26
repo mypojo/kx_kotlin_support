@@ -1,8 +1,8 @@
 package net.kotlinx.module1.reflect
 
-import net.kotlinx.core1.string.TextGrid
-import net.kotlinx.core1.string.toLocalDateTime
-import net.kotlinx.core1.string.toTextGrid
+import net.kotlinx.core.string.TextGrid
+import net.kotlinx.core.string.toLocalDateTime
+import net.kotlinx.core.string.toTextGrid
 import java.time.LocalDateTime
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty

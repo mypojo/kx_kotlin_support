@@ -1,7 +1,7 @@
 package net.kotlinx.kopring.spring.mvc
 
 import mu.KotlinLogging
-import net.kotlinx.core2.menu.MenuData
+import net.kotlinx.core.menu.MenuData
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
 
 

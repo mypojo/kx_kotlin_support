@@ -1,10 +1,11 @@
 package net.kotlinx.kopring.spring.batch
 
+import net.kotlinx.core.test.TestRoot
 import net.kotlinx.kopring.spring.batch.component.toItemReader
 import org.junit.jupiter.api.Test
 import org.springframework.batch.item.ItemWriter
 
-class BatchExecutorTest : net.kotlinx.core2.test.TestRoot() {
+class BatchExecutorTest : TestRoot() {
 
     @Test
     fun `싱글스래드 테스트`() {

@@ -1,7 +1,7 @@
 package net.kotlinx.aws.module.batchStep
 
-import net.kotlinx.aws1.AwsNaming
-import net.kotlinx.core2.gson.GsonData
+import net.kotlinx.aws.AwsNaming
+import net.kotlinx.core.gson.GsonData
 import kotlin.reflect.KClass
 
 /**

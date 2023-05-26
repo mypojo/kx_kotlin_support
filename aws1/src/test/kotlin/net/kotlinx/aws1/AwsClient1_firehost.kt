@@ -1,10 +1,12 @@
 package net.kotlinx.aws1
 
 import kotlinx.coroutines.runBlocking
-import net.kotlinx.aws1.firehose.putRecord
-import net.kotlinx.core1.time.TimeUtil
-import net.kotlinx.core1.time.toYmd
-import net.kotlinx.core2.gson.GsonSet
+import net.kotlinx.aws.AwsConfig
+import net.kotlinx.aws.firehose.putRecord
+import net.kotlinx.aws.toAwsClient1
+import net.kotlinx.core.gson.GsonSet
+import net.kotlinx.core.time.TimeUtil
+import net.kotlinx.core.time.toYmd
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 

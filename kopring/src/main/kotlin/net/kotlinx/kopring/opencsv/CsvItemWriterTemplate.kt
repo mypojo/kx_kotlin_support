@@ -8,7 +8,7 @@ import java.io.File
 
 /**
  * 자주 사용되는 CsvItemWriter 템플릿
- * @see net.kotlinx.core2.file.FileZipTemplate 이거하고 같이 사용
+ * @see net.kotlinx.core.file.FileZipTemplate 이거하고 같이 사용
  */
 class CsvItemWriterTemplate(
     val block: CsvItemWriterTemplate.() -> Unit

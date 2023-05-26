@@ -3,10 +3,10 @@ package net.kotlinx.aws.batch
 import aws.sdk.kotlin.services.batch.listJobs
 import aws.sdk.kotlin.services.batch.model.JobStatus
 import kotlinx.coroutines.runBlocking
+import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.toAwsClient
-import net.kotlinx.aws1.AwsConfig
-import net.kotlinx.core2.test.TestLevel03
-import net.kotlinx.core2.test.TestRoot
+import net.kotlinx.core.test.TestLevel03
+import net.kotlinx.core.test.TestRoot
 
 class BatchSupportKtTest : TestRoot() {
 

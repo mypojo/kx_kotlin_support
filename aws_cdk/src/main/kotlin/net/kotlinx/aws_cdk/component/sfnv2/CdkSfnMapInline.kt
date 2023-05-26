@@ -1,7 +1,7 @@
 package net.kotlinx.aws_cdk.component.sfnv2
 
-import net.kotlinx.aws1.AwsNaming
-import net.kotlinx.aws1.lambda.LambdaUtil
+import net.kotlinx.aws.AwsNaming
+import net.kotlinx.aws.lambda.LambdaUtil
 import software.amazon.awscdk.services.stepfunctions.CustomState
 import software.amazon.awscdk.services.stepfunctions.CustomStateProps
 import software.amazon.awscdk.services.stepfunctions.State

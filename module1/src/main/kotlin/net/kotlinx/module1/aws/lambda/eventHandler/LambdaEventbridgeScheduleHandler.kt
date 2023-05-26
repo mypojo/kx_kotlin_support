@@ -2,8 +2,8 @@ package net.kotlinx.module1.aws.lambda.eventHandler
 
 import com.google.common.eventbus.EventBus
 import mu.KotlinLogging
-import net.kotlinx.aws1.lambda.LambdaUtil
-import net.kotlinx.core2.gson.GsonData
+import net.kotlinx.aws.lambda.LambdaUtil
+import net.kotlinx.core.gson.GsonData
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

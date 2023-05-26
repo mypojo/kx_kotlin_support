@@ -1,15 +1,15 @@
 package net.kotlinx.aws.module.batchStep
 
 import mu.KotlinLogging
+import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.athena.AthenaModule
 import net.kotlinx.aws.module.batchStep.step.StepLogicRuntime
+import net.kotlinx.aws.s3.putObject
 import net.kotlinx.aws.sfn.SfnUtil
-import net.kotlinx.aws1.AwsClient1
-import net.kotlinx.aws1.AwsInstanceTypeUtil
-import net.kotlinx.aws1.s3.putObject
-import net.kotlinx.core1.time.measureTimeString
-import net.kotlinx.core2.calculator.ProgressInlineChecker
-import net.kotlinx.core2.concurrent.coroutineExecute
+import net.kotlinx.core.calculator.ProgressInlineChecker
+import net.kotlinx.core.concurrent.coroutineExecute
+import net.kotlinx.core.time.measureTimeString
 import java.io.File
 
 /**

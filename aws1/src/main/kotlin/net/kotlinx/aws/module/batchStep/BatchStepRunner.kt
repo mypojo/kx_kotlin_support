@@ -2,9 +2,9 @@ package net.kotlinx.aws.module.batchStep
 
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import net.kotlinx.aws.AwsNaming
+import net.kotlinx.aws.lambda.LambdaHandlerUtil
 import net.kotlinx.aws.module.batchStep.step.*
-import net.kotlinx.aws1.AwsNaming
-import net.kotlinx.aws1.lambda.LambdaHandlerUtil
 
 /**
  * S3 베이스의 설정파일

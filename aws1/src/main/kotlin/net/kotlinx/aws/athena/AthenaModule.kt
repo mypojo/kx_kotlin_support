@@ -10,12 +10,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
-import net.kotlinx.aws1.AwsClient1
-import net.kotlinx.aws1.AwsInstanceTypeUtil
-import net.kotlinx.aws1.s3.S3Data
-import net.kotlinx.aws1.s3.getObjectDownload
-import net.kotlinx.aws1.s3.getObjectLines
-import net.kotlinx.core2.concurrent.CoroutineSleepTool
+import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsInstanceTypeUtil
+import net.kotlinx.aws.s3.S3Data
+import net.kotlinx.aws.s3.getObjectDownload
+import net.kotlinx.aws.s3.getObjectLines
+import net.kotlinx.core.concurrent.CoroutineSleepTool
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -137,7 +137,7 @@ class AthenaModule(
     }
 
     /** suspend 용 */
-    suspend fun startExecute(querys: List<AthenaQuery>) {
+    suspend fun startExecute(querys: List<AthenaQuery>): List<AthenaQuery> {
         val list = querys.map { AthenaExecution(it) }
         withTimeout(checkTimeout) {
             for (execution in list) {
@@ -150,5 +150,6 @@ class AthenaModule(
                 }
             }
         }
+        return querys
     }
 }

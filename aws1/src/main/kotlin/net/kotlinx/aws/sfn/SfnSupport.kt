@@ -10,7 +10,7 @@ import aws.sdk.kotlin.services.sfn.model.StartExecutionResponse
 import aws.sdk.kotlin.services.sfn.startExecution
 import com.lectra.koson.Koson
 import com.lectra.koson.obj
-import net.kotlinx.core2.gson.GsonData
+import net.kotlinx.core.gson.GsonData
 import java.util.*
 
 /** 결과 리턴 최대치 */

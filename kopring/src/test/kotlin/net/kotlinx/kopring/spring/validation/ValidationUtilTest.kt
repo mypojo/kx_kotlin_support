@@ -1,9 +1,10 @@
 package net.kotlinx.kopring.spring.validation
 
+import net.kotlinx.core.test.TestRoot
 import java.time.LocalDate
 import javax.validation.constraints.NotNull
 
-class ValidationUtilTest : net.kotlinx.core2.test.TestRoot() {
+class ValidationUtilTest : TestRoot() {
 
     data class ValidRequestDto(
         @field:NotNull(message = "value는 필수 입력값입니다.")

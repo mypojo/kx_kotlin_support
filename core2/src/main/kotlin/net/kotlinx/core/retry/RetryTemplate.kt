@@ -2,9 +2,9 @@ package net.kotlinx.core.retry
 
 import kotlinx.coroutines.delay
 import mu.KotlinLogging
-import net.kotlinx.core1.exception.KnownException
-import net.kotlinx.core1.lib.ExceptionUtil
-import net.kotlinx.core1.lib.causes
+import net.kotlinx.core.exception.KnownException
+import net.kotlinx.core.lib.ExceptionUtil
+import net.kotlinx.core.lib.causes
 import java.io.IOException
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds

@@ -1,6 +1,6 @@
 package net.kotlinx.aws_cdk.component.sfnv2
 
-import net.kotlinx.aws1.AwsNaming
+import net.kotlinx.aws.AwsNaming
 import software.amazon.awscdk.services.stepfunctions.Choice
 import software.amazon.awscdk.services.stepfunctions.Condition
 import software.amazon.awscdk.services.stepfunctions.IChainable

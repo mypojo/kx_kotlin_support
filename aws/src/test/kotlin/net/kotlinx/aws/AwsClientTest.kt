@@ -4,10 +4,8 @@ import aws.sdk.kotlin.services.lambda.listFunctions
 import aws.sdk.kotlin.services.s3.listBuckets
 import aws.sdk.kotlin.services.secretsmanager.getSecretValue
 import kotlinx.coroutines.runBlocking
-import net.kotlinx.aws1.AwsConfig
-import net.kotlinx.aws1.toLocalDateTime
-import net.kotlinx.core1.string.toTextGrid
-import net.kotlinx.core1.time.toKr01
+import net.kotlinx.core.string.toTextGrid
+import net.kotlinx.core.time.toKr01
 import org.junit.jupiter.api.Test
 import kotlin.concurrent.timerTask
 

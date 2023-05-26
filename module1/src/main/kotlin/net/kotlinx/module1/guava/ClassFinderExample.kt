@@ -1,8 +1,8 @@
 package net.kotlinx.module1.guava
 
 import mu.KotlinLogging
-import net.kotlinx.core1.string.toSnakeFromCamel
-import net.kotlinx.core1.string.toTextGrid
+import net.kotlinx.core.string.toSnakeFromCamel
+import net.kotlinx.core.string.toTextGrid
 import net.kotlinx.module1.reflect.annotationsOrEmpty
 import net.kotlinx.module1.reflect.findClass
 import net.kotlinx.module1.reflect.props

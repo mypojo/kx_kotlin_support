@@ -1,7 +1,7 @@
 package net.kotlinx.aws_cdk.component
 
 import net.kotlinx.aws_cdk.CdkProject
-import net.kotlinx.core1.DeploymentType
+import net.kotlinx.core.DeploymentType
 import org.junit.jupiter.api.Test
 
 class CdkBatchJobDefinitionTest {

@@ -3,13 +3,15 @@ package net.kotlinx.aws1
 import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import net.kotlinx.aws1.s3.*
-import net.kotlinx.core2.concurrent.collectToList
-import net.kotlinx.core2.test.TestRoot
+import net.kotlinx.aws.AwsConfig
+import net.kotlinx.aws.s3.*
+import net.kotlinx.aws.toAwsClient1
+import net.kotlinx.core.concurrent.collectToList
+import net.kotlinx.core.test.TestRoot
 import org.junit.jupiter.api.Test
 import kotlin.time.Duration.Companion.seconds
 
-internal class AwsClient1_s3:TestRoot() {
+internal class AwsClient1_s3 : TestRoot() {
 
     val aws = AwsConfig(profileName = "sin").toAwsClient1()
 

@@ -2,9 +2,11 @@ package net.kotlinx.aws1
 
 import com.lectra.koson.obj
 import kotlinx.coroutines.runBlocking
-import net.kotlinx.aws1.firehose.HttpLog
-import net.kotlinx.aws1.firehose.KdfLogger
-import net.kotlinx.core1.time.toYmd
+import net.kotlinx.aws.AwsConfig
+import net.kotlinx.aws.firehose.HttpLog
+import net.kotlinx.aws.firehose.KdfLogger
+import net.kotlinx.aws.toAwsClient1
+import net.kotlinx.core.time.toYmd
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 

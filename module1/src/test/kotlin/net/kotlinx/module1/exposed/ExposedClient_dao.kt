@@ -2,9 +2,9 @@ package net.kotlinx.module1.exposed
 
 import aws.sdk.kotlin.services.secretsmanager.getSecretValue
 import kotlinx.coroutines.runBlocking
+import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.toAwsClient
-import net.kotlinx.aws1.AwsConfig
-import net.kotlinx.core2.gson.toGsonData
+import net.kotlinx.core.gson.toGsonData
 import net.kotlinx.module1.exposed.Payments.amount
 import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.dao.LongEntity

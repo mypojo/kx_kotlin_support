@@ -1,6 +1,6 @@
 package net.kotlinx.aws_cdk
 
-import net.kotlinx.core1.DeploymentType
+import net.kotlinx.core.DeploymentType
 
 
 /** 배포 환경 별로 리소스가 생성되는것 */

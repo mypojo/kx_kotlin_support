@@ -3,17 +3,17 @@ package net.kotlinx.aws.module.batchStep.step
 import aws.sdk.kotlin.services.s3.listObjectsV2
 import com.lectra.koson.obj
 import mu.KotlinLogging
+import net.kotlinx.aws.AwsNaming
+import net.kotlinx.aws.lambda.LambdaUtil
+import net.kotlinx.aws.lambda.invokeAsynch
 import net.kotlinx.aws.module.batchStep.BatchStepConfig
 import net.kotlinx.aws.module.batchStep.BatchStepContext
-import net.kotlinx.aws1.AwsNaming
-import net.kotlinx.aws1.lambda.LambdaUtil
-import net.kotlinx.aws1.lambda.invokeAsynch
-import net.kotlinx.aws1.with
-import net.kotlinx.core1.regex.RegexSet
-import net.kotlinx.core1.string.retainFrom
-import net.kotlinx.core1.time.TimeStart
-import net.kotlinx.core2.calculator.ProgressData
-import net.kotlinx.core2.concurrent.coroutineExecute
+import net.kotlinx.aws.with
+import net.kotlinx.core.calculator.ProgressData
+import net.kotlinx.core.concurrent.coroutineExecute
+import net.kotlinx.core.regex.RegexSet
+import net.kotlinx.core.string.retainFrom
+import net.kotlinx.core.time.TimeStart
 
 /**
  * S3 리스팅후 동시성 한도까지만 동시에 호출 (모든 람다 트리거 = IP분산) -> 대기 반복.

@@ -1,7 +1,6 @@
 package net.kotlinx.aws
 
-import net.kotlinx.aws1.AwsConfig
-import net.kotlinx.core2.test.TestRoot
+import net.kotlinx.core.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.time.Duration
 

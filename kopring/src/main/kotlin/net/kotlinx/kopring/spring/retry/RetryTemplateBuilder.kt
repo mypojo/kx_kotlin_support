@@ -1,7 +1,7 @@
 package net.kotlinx.kopring.spring.retry
 
 import mu.KotlinLogging
-import net.kotlinx.core1.lib.ExceptionUtil
+import net.kotlinx.core.lib.ExceptionUtil
 import org.springframework.retry.RetryCallback
 import org.springframework.retry.RetryContext
 import org.springframework.retry.RetryListener

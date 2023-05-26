@@ -1,6 +1,6 @@
 package net.kotlinx.aws.sfn
 
-import net.kotlinx.aws1.AwsConfig
+import net.kotlinx.aws.AwsConfig
 
 object SfnUtil {
 

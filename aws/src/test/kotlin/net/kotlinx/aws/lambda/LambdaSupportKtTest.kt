@@ -1,12 +1,12 @@
 package net.kotlinx.aws.lambda
 
 import kotlinx.coroutines.runBlocking
+import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.toAwsClient
-import net.kotlinx.aws1.AwsConfig
-import net.kotlinx.aws1.lambda.*
+import net.kotlinx.core.test.TestRoot
 import org.junit.jupiter.api.Test
 
-internal class LambdaSupportKtTest : net.kotlinx.core2.test.TestRoot() {
+internal class LambdaSupportKtTest : TestRoot() {
 
     val aws = AwsConfig(profileName = "sin").toAwsClient()
     val functionName = "sin-chatgpt-prod"

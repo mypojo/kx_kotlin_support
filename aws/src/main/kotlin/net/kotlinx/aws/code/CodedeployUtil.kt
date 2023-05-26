@@ -1,6 +1,6 @@
 package net.kotlinx.aws.code
 
-import net.kotlinx.aws1.AwsConfig
+import net.kotlinx.aws.AwsConfig
 
 object CodedeployUtil {
 

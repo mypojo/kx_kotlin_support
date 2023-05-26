@@ -19,7 +19,7 @@ data class AthenaReadAll(
     /** 쿼리 */
     override val query: String,
     /** CSV line 인메모리 읽기 */
-    var callback: suspend (List<List<String>>) -> Unit
+    var callback: suspend (List<List<String>>) -> Unit = {}
 ) : AthenaQuery {
     /** 결과 */
     var lines: List<List<String>>? = null

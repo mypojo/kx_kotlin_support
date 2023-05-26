@@ -1,8 +1,8 @@
 package net.kotlinx.aws.code
 
+import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.toAwsClient
-import net.kotlinx.aws1.AwsConfig
-import net.kotlinx.core1.DeploymentType
+import net.kotlinx.core.DeploymentType
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter

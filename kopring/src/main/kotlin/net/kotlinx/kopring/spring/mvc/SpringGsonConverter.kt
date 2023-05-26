@@ -1,8 +1,8 @@
 package net.kotlinx.kopring.spring.mvc
 
 import com.google.gson.Gson
-import net.kotlinx.core1.string.ResultData
-import net.kotlinx.core2.gson.GsonSet
+import net.kotlinx.core.gson.GsonSet
+import net.kotlinx.core.string.ResultData
 import org.springframework.http.converter.json.AbstractJsonHttpMessageConverter
 import java.io.Reader
 import java.io.Writer

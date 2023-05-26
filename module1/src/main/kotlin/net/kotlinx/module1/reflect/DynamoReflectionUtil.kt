@@ -1,7 +1,7 @@
 package net.kotlinx.module1.reflect
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import net.kotlinx.core1.string.toSnakeFromCamel
+import net.kotlinx.core.string.toSnakeFromCamel
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.memberProperties

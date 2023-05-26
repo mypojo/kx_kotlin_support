@@ -2,7 +2,7 @@ package net.kotlinx.aws.athena
 
 import aws.sdk.kotlin.services.s3.S3Client
 import mu.KotlinLogging
-import net.kotlinx.aws1.s3.listDirs
+import net.kotlinx.aws.s3.listDirs
 
 /**
  * Athena s3 - 파티션 생성 도우미

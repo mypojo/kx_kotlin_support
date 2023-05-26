@@ -1,12 +1,13 @@
 package net.kotlinx.aws.athena
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
+import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.toAwsClient
-import net.kotlinx.aws1.AwsConfig
+import net.kotlinx.core.test.TestRoot
 import org.junit.jupiter.api.Test
 import kotlin.io.path.deleteExisting
 
-internal class AthenaModuleTest : net.kotlinx.core2.test.TestRoot() {
+internal class AthenaModuleTest : TestRoot() {
 
     val aws = AwsConfig(profileName = "sin").toAwsClient()
 

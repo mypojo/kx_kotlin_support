@@ -3,7 +3,7 @@ package net.kotlinx.aws.module.batchStep
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import net.kotlinx.core2.koson.KosonSet
+import net.kotlinx.core.koson.KosonSet
 import java.util.*
 
 /**

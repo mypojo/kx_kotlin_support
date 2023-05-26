@@ -1,6 +1,6 @@
 package net.kotlinx.module1.reflect
 
-import net.kotlinx.core1.string.toSnakeFromCamel
+import net.kotlinx.core.string.toSnakeFromCamel
 import java.time.LocalDateTime
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty

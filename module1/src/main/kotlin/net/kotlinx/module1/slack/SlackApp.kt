@@ -4,7 +4,7 @@ import com.slack.api.Slack
 import com.slack.api.methods.request.chat.ChatPostMessageRequest
 import com.slack.api.methods.response.chat.ChatPostMessageResponse
 import mu.KotlinLogging
-import net.kotlinx.core2.gson.GsonData
+import net.kotlinx.core.gson.GsonData
 import java.io.Closeable
 
 /**

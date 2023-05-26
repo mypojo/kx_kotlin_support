@@ -1,8 +1,8 @@
 package net.kotlinx.core.retry
 
 import kotlinx.coroutines.runBlocking
-import net.kotlinx.core2.test.TestLevel02
-import net.kotlinx.core2.test.TestRoot
+import net.kotlinx.core.test.TestLevel02
+import net.kotlinx.core.test.TestRoot
 import java.io.IOException
 import kotlin.time.Duration.Companion.seconds
 

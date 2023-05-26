@@ -5,9 +5,9 @@ import mu.KotlinLogging
 import net.kotlinx.aws.module.batchStep.BatchStepConfig
 import net.kotlinx.aws.module.batchStep.BatchStepContext
 import net.kotlinx.aws.module.batchStep.BatchStepMode
-import net.kotlinx.core1.regex.RegexSet
-import net.kotlinx.core1.string.retainFrom
-import net.kotlinx.core2.concurrent.collectToList
+import net.kotlinx.core.concurrent.collectToList
+import net.kotlinx.core.regex.RegexSet
+import net.kotlinx.core.string.retainFrom
 import java.time.LocalDateTime
 
 /**

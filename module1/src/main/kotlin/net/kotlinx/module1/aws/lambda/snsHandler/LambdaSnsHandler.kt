@@ -1,7 +1,7 @@
 package net.kotlinx.module1.aws.lambda.snsHandler
 
-import net.kotlinx.core1.collection.invokeUntilNotNull
-import net.kotlinx.core2.gson.GsonData
+import net.kotlinx.core.collection.invokeUntilNotNull
+import net.kotlinx.core.gson.GsonData
 
 /**
  * 람다에서 직접 json을 받아서 SNS를 처리하는 템플릿

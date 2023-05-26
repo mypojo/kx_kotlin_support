@@ -2,7 +2,7 @@ package net.kotlinx.module1.dooray
 
 import com.lectra.koson.obj
 import mu.KotlinLogging
-import net.kotlinx.aws1.okhttp.fetch
+import net.kotlinx.aws.okhttp.fetch
 import okhttp3.OkHttpClient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

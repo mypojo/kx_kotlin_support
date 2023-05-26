@@ -1,7 +1,7 @@
 package net.kotlinx.kopring.servlet
 
 import aws.smithy.kotlin.runtime.util.encodeBase64
-import net.kotlinx.core1.string.encodeUrl
+import net.kotlinx.core.string.encodeUrl
 import org.aspectj.weaver.tools.cache.SimpleCacheFactory
 import org.springframework.http.MediaType
 import javax.servlet.http.Cookie

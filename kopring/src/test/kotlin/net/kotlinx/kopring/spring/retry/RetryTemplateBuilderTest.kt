@@ -2,17 +2,18 @@ package net.kotlinx.kopring.spring.retry
 
 import aws.sdk.kotlin.services.dynamodb.model.DynamoDbException
 import kotlinx.coroutines.runBlocking
-import net.kotlinx.aws1.AwsConfig
-import net.kotlinx.aws1.dynamo.updateItemMap
-import net.kotlinx.aws1.toAwsClient1
-import net.kotlinx.core2.concurrent.parallelExecute
-import net.kotlinx.core2.test.TestLevel03
+import net.kotlinx.aws.AwsConfig
+import net.kotlinx.aws.dynamo.updateItemMap
+import net.kotlinx.aws.toAwsClient1
+import net.kotlinx.core.concurrent.parallelExecute
+import net.kotlinx.core.test.TestLevel03
+import net.kotlinx.core.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.util.concurrent.Callable
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
-class RetryTemplateBuilderTest : net.kotlinx.core2.test.TestRoot() {
+class RetryTemplateBuilderTest : TestRoot() {
 
     @Test
     fun test() {

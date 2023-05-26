@@ -122,27 +122,60 @@ val athenaModule = AthenaModule(aws)
 athenaModule.startAndWaitAndExecute(executions)
 ```
 
-## CDK step function 샘플
+## AWS step function 을 사용한 대용량 분할 처리 실행 샘플
 ```kotlin
-CdkSfn(MyConfig.PROJECT, deploymentType, this, "sfnJob").apply {
-    config()
-    create(
+val datas = sample().apply {
+    this.chunkSize = 8 * 60
+}.datas
+
+val input = executor.startExecution(datas)
+val consoleLink = config.consoleLink(input.sfnId)
+log.info { "SFN 실행됨 $consoleLink" }
+```
+
+## AWS step function 을 사용한 대용량 분할 처리 실행 인프라(CDK)
+```kotlin
+CdkSfn(project, "batch_step") {
+    this.lambda = func
+    this.iRole = role.iRole
+
+    val stepStart = lambda("StepStart")
+    val stepEnd = lambda("StepEnd")
+
+    val modeMap = listOf(
+        mapInline("StepMap") {
+            next = stepEnd.stateId
+            itemPath = "$.option.${stepStart.stateId}.body.datas"
+        },
+        stepEnd,
+    ).join()
+
+    val listMode = run {
+        val stepList = lambda("StepList")
+        val waitColdstart = wait("WaitColdstart") {
+            this.secondsPath = "${AwsNaming.option}.${AwsNaming.waitColdstartSeconds}"
+        }
+        val waitIpBlock = wait("WaitIpBlock") {
+            this.secondsPath = "${AwsNaming.option}.${AwsNaming.waitSeconds}"
+        }
         listOf(
-            "job01" to listOf(
-                SfnLambda("job01-1"),
-                SfnBatch("job01-2"),
-                "job01-3" to listOf(
-                    SfnLambda("job01-3-1"),
-                    SfnBatch("job01-3-2"),
-                ),
-            ),
-            SfnLambda("job02"),
-            "job03" to listOf(
-                SfnLambda("job03-1"),
-                SfnBatch("job03-2"),
-            )
-        )
+            stepList,
+            choice("IsCompleted").apply {
+                whenMatchesBody(stepList.stateId, AwsNaming.choiceFirst, waitColdstart, stepList)
+                whenMatchesBody(stepList.stateId, AwsNaming.choiceRetry, waitIpBlock, stepList)
+                otherwise(stepEnd)
+            },
+        ).join()
+    }
+
+    create(
+        stepStart,
+        choice("WhenMode").apply {
+            whenMatches("mode", "List", listMode)
+            otherwise(modeMap)
+        },
     )
+    onErrorHandle(adminAllTopic, dlq.iQueue)
 }
 ```
 ### CDK step function 결과

@@ -1,14 +1,15 @@
 package net.kotlinx.aws.athena
 
 import mu.KotlinLogging
+import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.toAwsClient
-import net.kotlinx.aws1.AwsConfig
-import net.kotlinx.core1.time.toTimeString
-import net.kotlinx.core1.time.toYmd
+import net.kotlinx.core.test.TestRoot
+import net.kotlinx.core.time.toTimeString
+import net.kotlinx.core.time.toYmd
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-internal class AthenaPartitionSqlBuilderTest : net.kotlinx.core2.test.TestRoot() {
+internal class AthenaPartitionSqlBuilderTest : TestRoot() {
 
     private val log = KotlinLogging.logger {}
 

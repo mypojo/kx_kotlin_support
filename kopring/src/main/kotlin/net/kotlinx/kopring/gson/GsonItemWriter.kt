@@ -3,7 +3,7 @@ package net.kotlinx.kopring.gson
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.stream.JsonWriter
-import net.kotlinx.core2.gson.GsonSet
+import net.kotlinx.core.gson.GsonSet
 import org.springframework.batch.item.ExecutionContext
 import org.springframework.batch.item.ItemStream
 import org.springframework.batch.item.ItemStreamException

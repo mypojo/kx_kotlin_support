@@ -2,7 +2,7 @@ package net.kotlinx.kopring.gson
 
 import com.google.gson.Gson
 import com.google.gson.stream.JsonReader
-import net.kotlinx.core2.gson.GsonSet
+import net.kotlinx.core.gson.GsonSet
 import org.springframework.batch.item.ExecutionContext
 import org.springframework.batch.item.ItemReader
 import org.springframework.batch.item.ItemStream

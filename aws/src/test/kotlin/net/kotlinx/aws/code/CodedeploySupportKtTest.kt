@@ -3,11 +3,12 @@ package net.kotlinx.aws.code
 import aws.sdk.kotlin.services.codedeploy.model.LifecycleEventStatus
 import aws.sdk.kotlin.services.codedeploy.putLifecycleEventHookExecutionStatus
 import kotlinx.coroutines.runBlocking
+import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.toAwsClient
-import net.kotlinx.aws1.AwsConfig
+import net.kotlinx.core.test.TestRoot
 import org.junit.jupiter.api.Test
 
-class CodedeploySupportKtTest : net.kotlinx.core2.test.TestRoot() {
+class CodedeploySupportKtTest : TestRoot() {
 
     val aws = AwsConfig(profileName = "sin", awsId = "112233").toAwsClient()
 

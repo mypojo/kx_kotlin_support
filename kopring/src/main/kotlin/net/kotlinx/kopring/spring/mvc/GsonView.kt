@@ -4,8 +4,8 @@ import com.google.gson.Gson
 import com.lectra.koson.ObjectType
 import com.lectra.koson.obj
 import com.lectra.koson.rawJson
-import net.kotlinx.core2.gson.GsonData
-import net.kotlinx.core2.gson.GsonSet
+import net.kotlinx.core.gson.GsonData
+import net.kotlinx.core.gson.GsonSet
 import net.kotlinx.kopring.servlet.writeJson
 import org.springframework.web.servlet.View
 import javax.servlet.http.HttpServletRequest

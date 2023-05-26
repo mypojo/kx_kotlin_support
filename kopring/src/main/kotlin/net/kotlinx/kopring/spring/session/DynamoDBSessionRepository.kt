@@ -5,9 +5,9 @@ import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
-import net.kotlinx.aws1.dynamo.deleteItem
-import net.kotlinx.aws1.dynamo.getItem
-import net.kotlinx.aws1.dynamo.putItem
+import net.kotlinx.aws.dynamo.deleteItem
+import net.kotlinx.aws.dynamo.getItem
+import net.kotlinx.aws.dynamo.putItem
 import org.apache.commons.lang3.tuple.Pair
 import org.springframework.session.SessionRepository
 import java.io.*

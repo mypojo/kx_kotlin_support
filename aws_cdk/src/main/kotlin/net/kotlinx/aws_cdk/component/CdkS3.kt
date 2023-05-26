@@ -3,7 +3,7 @@ package net.kotlinx.aws_cdk.component
 import net.kotlinx.aws_cdk.CdkDeploymentType
 import net.kotlinx.aws_cdk.CdkProject
 import net.kotlinx.aws_cdk.util.TagUtil
-import net.kotlinx.core1.DeploymentType
+import net.kotlinx.core.DeploymentType
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.s3.*
 

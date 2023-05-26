@@ -1,6 +1,6 @@
 package net.kotlinx.kopring.servlet
 
-import net.kotlinx.core2.gson.GsonSet
+import net.kotlinx.core.gson.GsonSet
 import javax.servlet.http.HttpServletResponse
 
 /** 스프링에 의존적이지 않은 http 예외 클래스 */

@@ -1,8 +1,8 @@
 package net.kotlinx.aws_cdk.component.sfnv2
 
 import com.lectra.koson.obj
+import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.batch.BatchUtil
-import net.kotlinx.aws1.AwsNaming
 import software.amazon.awscdk.services.stepfunctions.State
 import software.amazon.awscdk.services.stepfunctions.TaskInput
 import software.amazon.awscdk.services.stepfunctions.tasks.BatchSubmitJob

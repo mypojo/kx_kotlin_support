@@ -4,9 +4,9 @@ import aws.sdk.kotlin.services.sfn.startExecution
 import com.lectra.koson.obj
 import com.lectra.koson.rawJson
 import mu.KotlinLogging
+import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.sfn.SfnUtil
-import net.kotlinx.aws1.AwsClient1
-import net.kotlinx.aws1.AwsNaming
 
 /** SFN 실행기.  */
 class BatchStepExecutor(

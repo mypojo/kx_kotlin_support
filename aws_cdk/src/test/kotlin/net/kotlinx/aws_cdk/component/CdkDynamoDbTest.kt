@@ -1,8 +1,9 @@
 package net.kotlinx.aws_cdk.component
 
+import net.kotlinx.core.test.TestRoot
 import org.junit.jupiter.api.Test
 
-class CdkDynamoDbTest : net.kotlinx.core2.test.TestRoot() {
+class CdkDynamoDbTest : TestRoot() {
 
     @Test
     fun test() {

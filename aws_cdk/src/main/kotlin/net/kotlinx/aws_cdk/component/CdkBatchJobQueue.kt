@@ -2,8 +2,8 @@ package net.kotlinx.aws_cdk.component
 
 import net.kotlinx.aws_cdk.CdkDeploymentType
 import net.kotlinx.aws_cdk.CdkProject
-import net.kotlinx.core1.DeploymentType
-import net.kotlinx.core1.DeploymentType.dev
+import net.kotlinx.core.DeploymentType
+import net.kotlinx.core.DeploymentType.dev
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.batch.CfnComputeEnvironment
 import software.amazon.awscdk.services.batch.CfnJobQueue

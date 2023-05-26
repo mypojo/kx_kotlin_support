@@ -3,18 +3,18 @@ package net.kotlinx.aws.module.batchStep.step
 import aws.sdk.kotlin.services.s3.deleteObject
 import com.lectra.koson.obj
 import mu.KotlinLogging
+import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsInstanceTypeUtil
+import net.kotlinx.aws.lambda.LambdaUtil
 import net.kotlinx.aws.module.batchStep.BatchStepConfig
-import net.kotlinx.aws1.AwsClient1
-import net.kotlinx.aws1.AwsInstanceTypeUtil
-import net.kotlinx.aws1.lambda.LambdaUtil
-import net.kotlinx.aws1.s3.getObjectText
-import net.kotlinx.aws1.s3.putObject
-import net.kotlinx.aws1.with
-import net.kotlinx.core1.lib.ExceptionUtil
-import net.kotlinx.core1.time.TimeStart
-import net.kotlinx.core1.time.toTimeString
-import net.kotlinx.core2.csv.CsvUtil
-import net.kotlinx.core2.gson.GsonData
+import net.kotlinx.aws.s3.getObjectText
+import net.kotlinx.aws.s3.putObject
+import net.kotlinx.aws.with
+import net.kotlinx.core.csv.CsvUtil
+import net.kotlinx.core.gson.GsonData
+import net.kotlinx.core.lib.ExceptionUtil
+import net.kotlinx.core.time.TimeStart
+import net.kotlinx.core.time.toTimeString
 import java.io.File
 
 /**

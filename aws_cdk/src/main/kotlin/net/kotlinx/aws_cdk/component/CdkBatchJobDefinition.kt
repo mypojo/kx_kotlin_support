@@ -4,8 +4,8 @@ import net.kotlinx.aws.batch.BatchUtil
 import net.kotlinx.aws_cdk.CdkDeploymentType
 import net.kotlinx.aws_cdk.CdkProject
 import net.kotlinx.aws_cdk.util.TagUtil
-import net.kotlinx.core1.DeploymentType
-import net.kotlinx.core1.DeploymentType.dev
+import net.kotlinx.core.DeploymentType
+import net.kotlinx.core.DeploymentType.dev
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.batch.CfnJobDefinition
 import software.amazon.awscdk.services.batch.CfnJobDefinition.*

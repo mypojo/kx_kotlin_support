@@ -3,7 +3,7 @@ package net.kotlinx.aws.code
 import com.lectra.koson.ObjectType
 import com.lectra.koson.arr
 import com.lectra.koson.obj
-import net.kotlinx.aws1.AwsConfig
+import net.kotlinx.aws.AwsConfig
 
 /**
  * appSepc 만들기 매우 짜증남.. 왜 이렇게 했을까..
