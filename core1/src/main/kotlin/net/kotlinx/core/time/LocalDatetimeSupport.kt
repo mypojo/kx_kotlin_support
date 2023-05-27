@@ -1,8 +1,8 @@
 package net.kotlinx.core.time
 
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.*
 
 
@@ -18,8 +18,8 @@ inline fun LocalDateTime.toIos(): String = TimeFormat.ISO[this]
 /** YMD  */
 inline fun LocalDateTime.toYmd(): String = TimeFormat.YMD[this]
 
-/** 이게 베이스 */
-inline fun LocalDateTime.toInstant(zoneId: ZoneId = TimeUtil.SEOUL): Instant = this.atZone(zoneId).toInstant()
+/** ZonedDateTime 리턴 */
+inline fun LocalDateTime.toZone(zoneId: ZoneId = TimeUtil.SEOUL): ZonedDateTime = this.atZone(zoneId)
 
 /** 한국시간 기준 미리초 리턴 */
 fun LocalDateTime.toLong(zoneId: ZoneId = TimeUtil.SEOUL): Long = this.atZone(zoneId).toInstant().toEpochMilli()

@@ -8,6 +8,7 @@ import java.util.stream.Collectors
 /**
  * 모르는건 기본 API 먼저 확인할것
  *
+ *
  * @see Instant <--
  * @see LocalDateTime <-- 타임존이 적용된 일상 생활에 쓰이는 시간.
  *
@@ -34,24 +35,6 @@ object TimeUtil {
         TimeZone.setDefault(timeZone)
     }
 
-    /**
-     * 서울 기준 밀리초 반환
-     * System.currentTimeMillis() 와 동일하다. (확인할것)
-     */
-    @JvmStatic
-    @Deprecated("toInstant", ReplaceWith("time.atZone(SEOUL).toInstant().toEpochMilli()", "net.kotlinx.core.time.TimeUtil.SEOUL"))
-    fun getMills(time: LocalDateTime): Long {
-        return time.atZone(SEOUL).toInstant().toEpochMilli()
-    }
-
-    /** 밀리초 구하는게 짜증나졌다.  */
-    @JvmStatic
-    fun interval(start: LocalDateTime, end: LocalDateTime): Long {
-        val endTime = getMills(end)
-        val startTime = getMills(start)
-        return endTime - startTime
-    }
-
     fun toLocalDateTime(date: Date): LocalDateTime {
         return toLocalDateTime(date.time)
     }
@@ -65,9 +48,7 @@ object TimeUtil {
         return instant.atZone(SEOUL).toLocalDateTime()
     }
 
-    fun toDate(localDateTime: LocalDateTime): Date {
-        return Date.from(localDateTime.atZone(SEOUL).toInstant())
-    }
+
     //==================================================== MONTH ======================================================
     /** 샘플용 간단 메소드  */
     fun toListMonth(format: TimeFormat, start: String?, end: String): List<String> {

@@ -1,9 +1,9 @@
 package net.kotlinx.core.calculator
 
-import net.kotlinx.core.time.TimeUtil
 import net.kotlinx.core.time.toTimeString
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import kotlin.math.abs
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -43,7 +43,7 @@ class ProgressData(
     }
 
     /** 진행 시간 */
-    val progressTime: Long = TimeUtil.interval(startTime!!, now)
+    val progressTime: Long = ChronoUnit.MILLIS.between(startTime!!, now)
 
     /** 전체 예상 시간 */
     val totalTime: Long = if (completed == 0L) 0L else progressTime * total / completed

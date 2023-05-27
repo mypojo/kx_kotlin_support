@@ -3,7 +3,6 @@ package net.kotlinx.aws.dynamo
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.aws.AwsInstanceType
 import net.kotlinx.core.string.toLocalDateTime
-import net.kotlinx.core.time.TimeUtil
 import net.kotlinx.core.time.toIos
 import java.time.LocalDateTime
 
@@ -174,11 +173,11 @@ open class Job(
     //==================================================== 편의 메소드 ======================================================
 
 
-    /** 작동시간 밀리초 리턴 */
-    fun toIntervalMills(): Long? = when {
-        arrayOf(startTime, endTime).any { it == null } -> null
-        else -> TimeUtil.interval(startTime!!, endTime!!)
-    }
+//    /** 작동시간 밀리초 리턴 */
+//    fun toIntervalMills(): Long? = when {
+//        arrayOf(startTime, endTime).any { it == null } -> null
+//        else -> TimeUtil.interval(startTime!!, endTime!!)
+//    }
 
 //    fun toProcessRate(): BigDecimal {
 //        if (!ObjectUtils.allNotNull(rowSuccessCnt, rowTotalCnt, rowFailCnt, startTime)) {
