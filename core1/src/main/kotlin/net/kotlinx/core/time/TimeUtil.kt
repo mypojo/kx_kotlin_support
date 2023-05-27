@@ -35,29 +35,16 @@ object TimeUtil {
         TimeZone.setDefault(timeZone)
     }
 
-    fun toLocalDateTime(date: Date): LocalDateTime {
-        return toLocalDateTime(date.time)
-    }
-
-    fun toLocalDateTime(millis: Long): LocalDateTime {
-        val instant = Instant.ofEpochMilli(millis)
-        return toLocalDateTime(instant)
-    }
-
-    fun toLocalDateTime(instant: Instant): LocalDateTime {
-        return instant.atZone(SEOUL).toLocalDateTime()
-    }
-
 
     //==================================================== MONTH ======================================================
     /** 샘플용 간단 메소드  */
-    fun toListMonth(format: TimeFormat, start: String?, end: String): List<String> {
+    fun toListMonth(format: TimeFormat, start: String, end: String): List<String> {
         val dates = toList(format.toLocalDateTime(start), Period.ofMonths(1), format.toLocalDateTime(end))
         return dates.stream().map { dateTime: LocalDateTime? -> format[dateTime] }.collect(Collectors.toList())
     }
 
     /** 샘플용 간단 메소드  */
-    fun toListMonth(start: String?, end: String): List<String> {
+    fun toListMonth(start: String, end: String): List<String> {
         return toListMonth(TimeFormat.YM, start, end)
     }
     //==================================================== DATE ======================================================
@@ -88,7 +75,7 @@ object TimeUtil {
     }
 
     /** 샘플용 간단 메소드  */
-    fun toListDate(start: String?, end: String): List<String> {
+    fun toListDate(start: String, end: String): List<String> {
         val format = TimeFormat.YMD
         val localDates = toList(format.toLocalDate(start), format.toLocalDate(end))
         return localDates.stream().map { dateTime: LocalDate -> format[dateTime] }.collect(Collectors.toList())
@@ -99,7 +86,7 @@ object TimeUtil {
      * ex) List<LocalDateTime> days = TimeUtil.toList(LocalDateTime.now(), Period.ofDays(1), 5);
      * 시작 시간을 포함한다.
     </LocalDateTime> */
-    fun toList(start: LocalDateTime, period: Period?, size: Int): List<LocalDateTime> {
+    fun toList(start: LocalDateTime, period: Period, size: Int): List<LocalDateTime> {
         val list: MutableList<LocalDateTime> = ArrayList()
         var current = start
         for (i in 0 until size) {
@@ -113,7 +100,7 @@ object TimeUtil {
      * 같은 이름의 다른 버전
      * 이게 베이스!
      */
-    fun toList(start: LocalDateTime, period: Period?, end: LocalDateTime?): List<LocalDateTime> {
+    fun toList(start: LocalDateTime, period: Period, end: LocalDateTime?): List<LocalDateTime> {
         val list: MutableList<LocalDateTime> = ArrayList()
         var current = start
         while (!current.isAfter(end)) {
@@ -122,18 +109,13 @@ object TimeUtil {
         }
         return list
     }
-    //==================================================== 소스코드 마킹용 ======================================================
-    /** 날짜의 첫 시간대를 리턴함  */
-    @JvmOverloads
-    fun trim(localDate: LocalDate = LocalDate.now()): LocalDateTime {
-        return localDate.atTime(LocalTime.MIN)
-    }
+
     //==================================================== 텍스트 파싱 ======================================================
     /**
      * 디폴트 파싱
      * ex) 2022-01-20T14:15:27.394237800
      */
-    fun parseTime(time: String?): LocalDateTime {
+    fun parseTime(time: String): LocalDateTime {
         return LocalDateTime.parse(time)
     }
 
@@ -143,7 +125,7 @@ object TimeUtil {
      * 네이버가 이렇게 준다.
      * 타임존이 필요하면 instant.atZone(TimeUtil.SEOUL) 이렇게 변환할것.
      */
-    fun parseTimeUtc(time: String?): Instant {
+    fun parseTimeUtc(time: String): Instant {
         return Instant.parse(time)
     }
 
@@ -157,7 +139,7 @@ object TimeUtil {
         return toIsoInstant(zonedDateTime)
     }
 
-    fun toIsoInstant(time: ZonedDateTime?): String {
+    fun toIsoInstant(time: ZonedDateTime): String {
         return DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(time)
         //return DateTimeFormatter.ISO_ZONED_DATE_TIME.format(time); //Zone이 들어가면 aws가 못읽는다 주의!.
     } //

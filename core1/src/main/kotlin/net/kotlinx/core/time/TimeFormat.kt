@@ -1,6 +1,6 @@
 package net.kotlinx.core.time
 
-import net.kotlinx.core.time.TimeUtil.toLocalDateTime
+import net.kotlinx.core.number.toLocalDateTime
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAccessor
@@ -91,10 +91,7 @@ enum class TimeFormat(
     }
 
     /** 기본 메소드  */
-    operator fun get(mills: Long): String {
-        val localDateTime = toLocalDateTime(mills)
-        return formatter.format(localDateTime)
-    }
+    operator fun get(mills: Long): String = formatter.format(mills.toLocalDateTime())
 
     /** 기본 메소드  */
     operator fun get(date: Date): String = this[date.time]

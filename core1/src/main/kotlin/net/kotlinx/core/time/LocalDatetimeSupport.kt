@@ -18,7 +18,7 @@ inline fun LocalDateTime.toIos(): String = TimeFormat.ISO[this]
 /** YMD  */
 inline fun LocalDateTime.toYmd(): String = TimeFormat.YMD[this]
 
-/** ZonedDateTime 리턴 */
+/** 기본 존으로 변환 */
 inline fun LocalDateTime.toZone(zoneId: ZoneId = TimeUtil.SEOUL): ZonedDateTime = this.atZone(zoneId)
 
 /** 한국시간 기준 미리초 리턴 */

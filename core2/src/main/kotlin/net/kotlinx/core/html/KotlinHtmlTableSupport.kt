@@ -25,6 +25,7 @@ fun TABLE.write(headers: List<String>, datas: List<Array<*>>, nullString: String
     }
 }
 
+@Suppress("SameParameterValue") //뭔지 모르겠다..
 private fun TD.insert(data: Any?, nullString: String) {
     when (data) {
         is List<*> -> {
