@@ -10,9 +10,10 @@ import software.amazon.awscdk.services.batch.CfnComputeEnvironment.ComputeResour
 import software.amazon.awscdk.services.batch.CfnComputeEnvironmentProps
 import software.amazon.awscdk.services.ec2.IVpc
 
+/** 접두어 소문자 주의! (네이밍 때문)  */
 enum class ComputeEnvironmentType(val resourceType: String) {
-    Normal("FARGATE"),
-    Spot("FARGATE_SPOT"),
+    normal("FARGATE"),
+    spot("FARGATE_SPOT"),
     ;
 }
 
