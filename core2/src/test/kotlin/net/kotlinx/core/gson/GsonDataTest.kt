@@ -24,6 +24,13 @@ internal class GsonDataTest : TestRoot() {
             println(this)
         }
 
+
+        val lett01 = updated["type"].lett { "${it}xx" }
+        check(lett01 != null)
+        val lett02 = updated["type2"].lett { "${it}xx" }
+        check(lett02 == null)
+
+
         val json2 = obj {
             "option" to rawJson(updated.toString())
             "optionText" to updated.toString()

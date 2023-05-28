@@ -45,6 +45,16 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
     override fun toString(): String = delegate.toString()
 
     //==================================================== 편의용  ======================================================
+
+    /**
+     * get 호출시 null 이 무조건 아니기 때문에 빈값을 체크하기위한 let 대용으로 사용됨
+     * 비어있으면 block이 실행되지 않는다.
+     *  */
+    inline fun <R> lett(block: (GsonData) -> R): R? {
+        if (empty) return null
+        return block(this)
+    }
+
     val str: String?
         get() = (delegate as? JsonPrimitive)?.asString
     val long: Long?

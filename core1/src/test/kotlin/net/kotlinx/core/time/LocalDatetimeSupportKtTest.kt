@@ -6,6 +6,30 @@ import java.time.temporal.ChronoUnit
 
 internal class LocalDatetimeSupportKtTest {
 
+//    infix fun LocalDateTime.between(x: LocalDateTime): Long {
+//
+//        val asd = this between x
+//
+//
+//        this.toLong() - x.toLong()
+//    }
+
+
+    @Test
+    fun `toLocalDate2`() {
+        val closedRange = "20230101".."20230131"
+    }
+
+
+    @Test
+    fun `bt`() {
+        val message = "a".."g"
+        println(message)
+        println("b" in message)
+
+
+    }
+
     @Test
     fun `기본테스트`() {
 
