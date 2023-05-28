@@ -11,8 +11,8 @@ import software.amazon.awscdk.services.batch.CfnComputeEnvironmentProps
 import software.amazon.awscdk.services.ec2.IVpc
 
 enum class ComputeEnvironmentType(val resourceType: String) {
-    normal("FARGATE"),
-    spot("FARGATE_SPOT"),
+    Normal("FARGATE"),
+    Spot("FARGATE_SPOT"),
     ;
 }
 
@@ -24,7 +24,7 @@ open class CdkComputeEnvironment(
     override var deploymentType: DeploymentType = dev
 
     /** VPC 이름 */
-    open override val logicalName: String
+    override val logicalName: String
         get() = "${project.projectName}_compenv_${type.name}_${deploymentType}"
 
     lateinit var compEnv: CfnComputeEnvironment

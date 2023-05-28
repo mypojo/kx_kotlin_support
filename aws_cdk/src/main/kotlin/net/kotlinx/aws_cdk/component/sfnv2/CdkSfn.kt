@@ -25,10 +25,6 @@ import software.amazon.awscdk.services.stepfunctions.StateMachineProps
  * */
 class CdkSfn(val project: CdkProject, val name: String, block: CdkSfn.() -> Unit) : CdkInterface {
 
-    init {
-        block(this)
-    }
-
     //==================================================== 속성들 ======================================================
     lateinit var stack: Stack
     lateinit var deploymentType: DeploymentType
@@ -50,6 +46,10 @@ class CdkSfn(val project: CdkProject, val name: String, block: CdkSfn.() -> Unit
     lateinit var jobQueueArn: String
 
     lateinit var stateMachine: StateMachine
+
+    init {
+        block(this)
+    }
 
     //==================================================== 단축 ======================================================
 
