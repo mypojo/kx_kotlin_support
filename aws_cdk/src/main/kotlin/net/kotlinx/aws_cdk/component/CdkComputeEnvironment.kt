@@ -16,7 +16,8 @@ enum class ComputeEnvironmentType(val resourceType: String) {
     ;
 }
 
-open class CdkComputeEnvironment(
+/** enum 정의 */
+class CdkComputeEnvironment(
     val project: CdkProject,
     val type: ComputeEnvironmentType,
 ) : CdkDeploymentType {

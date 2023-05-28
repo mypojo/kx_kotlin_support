@@ -14,7 +14,8 @@ import software.amazon.awscdk.services.ecs.EcrImage
 import software.amazon.awscdk.services.iam.IRole
 import kotlin.time.Duration.Companion.hours
 
-open class CdkBatchJobDefinition(
+/** enum 정의 */
+class CdkBatchJobDefinition(
     val project: CdkProject,
     val name: String,
     val vcpu: String,
@@ -27,7 +28,7 @@ open class CdkBatchJobDefinition(
     final override val logicalName: String
         get() = "${project.projectName}-${name}-${deploymentType}" //가변으로 써도 됨
 
-    val arn: String = "arn:aws:batch:ap-northeast-2:${this.project.awsId}:job-definition/${logicalName}"
+    val arn: String = "arn:aws:batch:ap-northeast-2:${project.awsId}:job-definition/${logicalName}"
 
     lateinit var jobDef: CfnJobDefinition
 

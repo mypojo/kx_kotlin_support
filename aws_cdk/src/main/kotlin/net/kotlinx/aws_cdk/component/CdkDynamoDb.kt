@@ -12,6 +12,7 @@ fun String.cdkDynamoAttN(): Attribute = Attribute.builder().name(this).type(Attr
 
 class CdkDynamoDb(
     val tableName: String,
+    block: CdkDynamoDb.() -> Unit = {}
 ) : CdkDeploymentType {
 
     override var deploymentType: DeploymentType = DeploymentType.dev
@@ -28,6 +29,10 @@ class CdkDynamoDb(
     var pointInTimeRecovery = true
 
     lateinit var iTable: Table
+
+    init {
+        block(this)
+    }
 
     /** 아직 삭제 보호 모드 설정이 안된다. */
     fun create(stack: Stack): CdkDynamoDb {

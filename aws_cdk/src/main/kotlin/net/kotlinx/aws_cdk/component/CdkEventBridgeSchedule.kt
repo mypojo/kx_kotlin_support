@@ -8,23 +8,20 @@ import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.events.*
 
 /** 한국시간 입력기 */
-data class CronKrOptions(
-    /** 한국 날짜 등록 */
-    var krDay: Int? = null,
-    /** 한국시간 등록 */
-    var krHour: Int? = null,
+class CronKrOptions {
 
-    var year: String? = null,
-    var month: String? = null,
-    var weekDay: String? = null,
-    var hour: String? = null,
-    var day: String? = null,
-    var minute: String? = null,
-) {
-    //{krDay: 2, krHour: 3, minute: '00'}
-    //{krHour: 9, minute: '30'}
-    //{minute: '15/30'}
-    //{hour:"23,00-10",minute: '15/30'}
+    /** 한국 날짜 등록 */
+    var krDay: Int? = null
+
+    /** 한국시간 등록 */
+    var krHour: Int? = null
+
+    var year: String? = null
+    var month: String? = null
+    var weekDay: String? = null
+    var hour: String? = null
+    var day: String? = null
+    var minute: String? = null
 
     fun toSchedule(): Schedule {
         return Schedule.cron(
@@ -56,7 +53,7 @@ data class CronKrOptions(
         const val OFFSET_HOUR: Int = 9
 
         /** 특정 시간들을 UTC로 변환 */
-        fun hourToUtc(vararg krHours: Int): String = krHours.map { CronKrOptions(krHour = it).updateToUtc().hour }.joinToString(",")
+        fun hourToUtc(vararg krHours: Int): String = krHours.map { CronKrOptions().apply { krHour = it }.updateToUtc().hour }.joinToString(",")
     }
 }
 

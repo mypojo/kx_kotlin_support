@@ -10,7 +10,8 @@ import software.amazon.awscdk.services.batch.CfnJobQueue
 import software.amazon.awscdk.services.batch.CfnJobQueue.ComputeEnvironmentOrderProperty
 import software.amazon.awscdk.services.batch.CfnJobQueueProps
 
-open class CdkBatchJobQueue(
+/** enum 정의 */
+class CdkBatchJobQueue(
     val project: CdkProject,
     val name: String,
     val priority: Int = 10,

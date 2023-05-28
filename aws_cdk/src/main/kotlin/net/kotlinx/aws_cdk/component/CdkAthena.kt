@@ -13,9 +13,14 @@ class CdkAthena(
     val project: CdkProject,
     /** 결과 쿼리가 저장될 work 버킷 */
     val bucketName: String,
+    block: CdkAthena.() -> Unit = {},
 ) {
 
     var deploymentType: DeploymentType = DeploymentType.dev
+
+    init {
+        block(this)
+    }
 
     /** 데이터베이스와 워크 그룹을 만들어준다 */
     fun create(stack: Stack) {

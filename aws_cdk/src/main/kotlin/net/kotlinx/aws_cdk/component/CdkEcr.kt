@@ -10,7 +10,8 @@ import software.amazon.awscdk.services.ecr.TagStatus.ANY
 import software.amazon.awscdk.services.ecr.TagStatus.TAGGED
 import software.amazon.awscdk.services.ecs.EcrImage
 
-open class CdkEcr(
+/** enum 정의 */
+class CdkEcr(
     val project: CdkProject,
     val name: String,
     val expires: Duration = Duration.days(30),
