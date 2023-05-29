@@ -14,11 +14,15 @@ import software.amazon.awscdk.services.ec2.Peer
 class CdkPrefixList(
     val project: CdkProject,
     val name: String,
-    val prefixDatas: Map<String, String>,
-    val maxEntries: Int = 50,
+    block: CdkPrefixList.() -> Unit = {}
 ) : CdkDeploymentType {
 
     override var deploymentType: DeploymentType = DeploymentType.dev
+
+    lateinit var prefixDatas: Map<String, String>
+
+    /** 기본 최대 */
+    val maxEntries: Int = 50
 
     override val logicalName: String
         get() = "${project.projectName}-prefix_${name}-${deploymentType}"

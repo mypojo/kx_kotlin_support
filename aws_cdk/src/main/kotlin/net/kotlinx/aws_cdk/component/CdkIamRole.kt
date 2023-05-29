@@ -6,7 +6,9 @@ import software.amazon.awscdk.services.iam.*
 /**
  * 자주 사용되는 IAM 정의해서 하드코딩 방지
  * */
-class CdkIamRole {
+class CdkIamRole(
+    block: CdkIamRole.() -> Unit = {}
+) {
 
     /**
      * 대분류는 -, 소분류는 _ 로 분리
@@ -32,6 +34,10 @@ class CdkIamRole {
     /** 간단 변환 */
     fun managedPolicy(vararg name: String) {
         fixedManagedPolicies = name.map { ManagedPolicy.fromAwsManagedPolicyName(it) }
+    }
+
+    init {
+        block(this)
     }
 
 

@@ -11,12 +11,13 @@ import software.amazon.awscdk.services.glue.CfnDatabaseProps
 
 class CdkAthena(
     val project: CdkProject,
-    /** 결과 쿼리가 저장될 work 버킷 */
-    val bucketName: String,
     block: CdkAthena.() -> Unit = {},
 ) {
 
     var deploymentType: DeploymentType = DeploymentType.dev
+
+    /** 결과 쿼리가 저장될 work 버킷 */
+    lateinit var bucketName: String
 
     init {
         block(this)
