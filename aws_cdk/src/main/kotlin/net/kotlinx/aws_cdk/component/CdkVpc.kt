@@ -15,28 +15,33 @@ import software.amazon.awscdk.services.iam.PolicyStatement
  * 가능하면 한번에 서브넷을 구성하는게 좋고,
  * 그게 아니라면 좀 복잡해진다.. (수동으로 서브넷 나누고 할당 등..)
  *  */
-open class CdkVpc(
+class CdkVpc(
     val project: CdkProject,
-    val vpcCidr: String = "10.1.0.0/16",
-    /** 최초  */
-    val cidrMask: Int = 24,
-    val subnetTypes: List<SubnetType> = listOf(SubnetType.PUBLIC, SubnetType.PRIVATE_WITH_EGRESS),
-    val maxAzs: Int = 2,
-    val natGateways: Int = 1,
+    override var deploymentType: DeploymentType = DeploymentType.dev,
+    block: CdkVpc.() -> Unit = {}
 ) : CdkDeploymentType {
 
-    override var deploymentType: DeploymentType = DeploymentType.dev
+    var vpcCidr: String = "10.1.0.0/16"
+
+    /** 최초  */
+    var cidrMask: Int = 24
+    var subnetTypes: List<SubnetType> = listOf(SubnetType.PUBLIC, SubnetType.PRIVATE_WITH_EGRESS)
+    var maxAzs: Int = 2
+    var natGateways: Int = 1
 
     /** VPC 이름 */
-    open override val logicalName: String
-        get() = "${project.projectName}_vpc_${deploymentType}"
+    override val logicalName: String = "${project.projectName}_vpc_${deploymentType}"
 
     lateinit var iVpc: IVpc
 
     val feer: IPeer
         get() = Peer.ipv4(iVpc.vpcCidrBlock)
 
-    var subnetCnt: Int = subnetTypes.size * maxAzs
+    init {
+        block(this)
+    }
+
+    var subnetCnt: Int = subnetTypes.size * maxAzs //초기화 이후에 사용
 
     /** 최초 생성 */
     fun create(stack: Stack, vpcProps: VpcProps = vpcProps()) {
@@ -50,7 +55,7 @@ open class CdkVpc(
      *  -> 여기서 서브넷 추가시,  vpc에서 서브넷을 조회할때 최초 생성된 서브넷만 조회된다. 이거말고도 문제가 많음..
      *  따라서 프로젝트별로 VPC를 만들고 그냥 이들을 연결하자
      *  */
-    open fun vpcProps(): VpcProps = VpcProps.builder()
+    fun vpcProps(): VpcProps = VpcProps.builder()
         .ipAddresses(IpAddresses.cidr(vpcCidr))
         .natGateways(natGateways)
         .vpcName(logicalName)
@@ -83,7 +88,7 @@ open class CdkVpc(
     }
 
     /** 서브넷 설정으로 변환 */
-    protected fun subnetConfiguration(name: String, subnetType: SubnetType): SubnetConfiguration =
+    fun subnetConfiguration(name: String, subnetType: SubnetType): SubnetConfiguration =
         SubnetConfiguration.builder().name("${name}_${subnetType.name.lowercase()}/${deploymentType}").subnetType(subnetType).cidrMask(cidrMask).build()!!
 
     /** VPC 내의 서브넷 네이밍 테그 강제 수정 (디폴트는 너무 길고 이상함) */

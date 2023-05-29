@@ -67,18 +67,24 @@ class CdkEventBridgeSchedule(
     val stack: Stack,
     /** 해당 시케줄에 트리거 할 대상 (람다 등..) */
     val ruleTarget: IRuleTarget,
+    block: CdkEventBridgeSchedule.() -> Unit = {}
 ) {
 
+    init {
+        block(this)
+    }
+
     /** 스케쥴을 등록함 */
-    fun addSchedule(jobName: String, enabled: Boolean, config: CronKrOptions): Rule {
+    fun addSchedule(jobName: String, enabled: Boolean, block: CronKrOptions.() -> Unit = {}): Rule {
+        val options = CronKrOptions().apply(block)
         val ruleName = "${project.projectName}-${jobName}-${this.deploymentType}"
-        val comment = GsonSet.TABLE_UTC.toJson(config) //변환 전으로 해야함
+        val comment = GsonSet.TABLE_UTC.toJson(options) //변환 전으로 해야함
         val rule = Rule(
             this.stack, ruleName, RuleProps.builder()
                 .enabled(enabled)
                 .ruleName(ruleName)
                 .description(comment)
-                .schedule(config.updateToUtc().toSchedule())
+                .schedule(options.updateToUtc().toSchedule())
                 .build()
         )
         rule.addTarget(this.ruleTarget)

@@ -10,6 +10,7 @@ import software.amazon.awscdk.services.ec2.CfnPrefixListProps
 import software.amazon.awscdk.services.ec2.IPeer
 import software.amazon.awscdk.services.ec2.Peer
 
+/** enum 정의 */
 class CdkPrefixList(
     val project: CdkProject,
     val name: String,

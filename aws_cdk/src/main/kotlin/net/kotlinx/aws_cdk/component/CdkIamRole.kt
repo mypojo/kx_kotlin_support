@@ -6,27 +6,34 @@ import software.amazon.awscdk.services.iam.*
 /**
  * 자주 사용되는 IAM 정의해서 하드코딩 방지
  * */
-open class CdkIamRole(
+class CdkIamRole {
+
     /**
      * 대분류는 -, 소분류는 _ 로 분리
      * ex) app-admin-ecs_task
      *  */
-    val roleName: String,
+    lateinit var roleName: String
+
     /**
      * 신뢰할 수 있는 assume 서비스명
      * ex) ecs-tasks.amazonaws.com
      * */
-    val services: List<String>,
+    lateinit var services: List<String>
 
     /** 인라인 액션들. ADMIN 역할이 아니라면 다 지정할것 */
-    val actions: List<String>,
+    var actions: List<String> = emptyList()
 
     /**
      * ADMIN 역할이 아니라면 다 지정할것
      * ex) ManagedPolicy.fromAwsManagedPolicyName("AWSCodeCommitPowerUser")
      * */
-    val fixedManagedPolicies: List<IManagedPolicy>,
-) {
+    var fixedManagedPolicies: List<IManagedPolicy> = emptyList()
+
+    /** 간단 변환 */
+    fun managedPolicy(vararg name: String) {
+        fixedManagedPolicies = name.map { ManagedPolicy.fromAwsManagedPolicyName(it) }
+    }
+
 
     lateinit var iRole: IRole
 

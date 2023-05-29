@@ -11,9 +11,9 @@ interface CdkDeploymentType : CdkInterface {
 
 }
 
-/** 간단변경 */
-@Deprecated("DSL 사용할것..")
-fun <T : CdkDeploymentType> T.deploymentType(deploymentType: DeploymentType): T {
-    this.deploymentType = deploymentType
-    return this
-}
+///** 간단변경 */
+//@Deprecated("DSL 사용할것..")
+//fun <T : CdkDeploymentType> T.deploymentType(deploymentType: DeploymentType): T {
+//    this.deploymentType = deploymentType
+//    return this
+//}

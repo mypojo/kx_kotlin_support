@@ -8,7 +8,8 @@ import software.amazon.awscdk.services.sqs.IQueue
 import software.amazon.awscdk.services.sqs.Queue
 import software.amazon.awscdk.services.sqs.QueueProps
 
-open class CdkSqs(
+/** enum */
+class CdkSqs(
     val project: CdkProject,
     val name: String,
 ) : CdkDeploymentType {

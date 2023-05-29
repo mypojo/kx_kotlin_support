@@ -13,7 +13,7 @@ import software.amazon.awscdk.services.rds.*
 import software.amazon.awscdk.services.rds.InstanceProps
 
 /** 재작성 해야함. 샘플임. */
-open class CdkRdsAurora(
+class CdkRdsAurora(
     val project: CdkProject,
     val name: String,
     val vpc: IVpc,

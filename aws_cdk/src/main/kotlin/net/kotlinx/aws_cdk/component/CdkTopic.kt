@@ -12,6 +12,7 @@ import software.amazon.awscdk.services.sns.ITopic
 import software.amazon.awscdk.services.sns.Topic
 import software.amazon.awscdk.services.sns.TopicProps
 
+/** enum */
 class CdkTopic(
     val project: CdkProject,
     val topicName: String,
