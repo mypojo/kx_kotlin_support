@@ -1,5 +1,6 @@
 package net.kotlinx.aws_cdk.component
 
+import net.kotlinx.aws_cdk.CdkDeploymentType
 import net.kotlinx.aws_cdk.CdkProject
 import net.kotlinx.aws_cdk.util.EventPatternUtil
 import net.kotlinx.aws_cdk.util.TagUtil
@@ -13,14 +14,17 @@ import software.amazon.awscdk.services.events.*
  * */
 class CdkEventBus(
     val project: CdkProject,
-    val deploymentType: DeploymentType,
-) {
+) : CdkDeploymentType {
+
+    override var deploymentType: DeploymentType = DeploymentType.dev
+
+    override val logicalName: String
+        get() = "${project.projectName}-eventbus-${deploymentType}"
 
     lateinit var iEventBus: IEventBus
 
     fun create(stack: Stack) {
-        val eventBusName = "${project.projectName}-eventbus-${deploymentType}"
-        iEventBus = EventBus(stack, eventBusName, EventBusProps.builder().eventBusName(eventBusName).build())
+        iEventBus = EventBus(stack, logicalName, EventBusProps.builder().eventBusName(logicalName).build())
         TagUtil.tag(iEventBus, deploymentType)
     }
 

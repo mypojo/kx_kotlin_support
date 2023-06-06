@@ -16,7 +16,6 @@ import software.amazon.awscdk.services.s3.*
 class CdkS3(
     val project: CdkProject,
     val name: String,
-    block: CdkS3.() -> Unit = {}
 ) : CdkDeploymentType {
 
     override var deploymentType: DeploymentType = DeploymentType.dev
@@ -33,10 +32,6 @@ class CdkS3(
     var versioned: Boolean = false
     var publicReadAccess: Boolean = false
     var cors = listOf(CORS_OPEN)
-
-    init {
-        block(this)
-    }
 
     fun create(stack: Stack): CdkS3 {
         val bucketProps = BucketProps.builder()

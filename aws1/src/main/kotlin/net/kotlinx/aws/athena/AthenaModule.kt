@@ -22,7 +22,8 @@ import java.util.concurrent.TimeUnit
 
 /**
  * 아테나 실행시 도우미
- * 아테나 쿼리 실행후 기다렸다 결과를 리턴해주는 편의용 모듈
+ * 다수의 아테나 쿼리 실행후 기다렸다 결과를 리턴해주는 편의용 모듈
+ * checkTimeout 등의 이유료 내장 코루틴을 사용함
  *  */
 class AthenaModule(
     private val aws: AwsClient1,

@@ -51,6 +51,8 @@ class CdkDynamoDb(
         return this
     }
 
+    fun addLocalSecondaryIndex(sk: String, projectionType: ProjectionType = ProjectionType.KEYS_ONLY) = addLocalSecondaryIndex(sk.cdkDynamoAttS(), projectionType)
+
     /** 로컬 기본은 키값만 */
     fun addLocalSecondaryIndex(sk: Attribute, projectionType: ProjectionType = ProjectionType.KEYS_ONLY) {
         iTable.addLocalSecondaryIndex(
@@ -62,6 +64,9 @@ class CdkDynamoDb(
         )
         TagUtil.tag(iTable, deploymentType)
     }
+
+    fun addGlobalSecondaryIndex(pk: String, sk: String, projectionType: ProjectionType = ProjectionType.KEYS_ONLY) =
+        addGlobalSecondaryIndex(pk.cdkDynamoAttS(), sk.cdkDynamoAttS(), projectionType)
 
     /** 글로벌 기본은 키값만 */
     fun addGlobalSecondaryIndex(pk: Attribute, sk: Attribute, projectionType: ProjectionType = ProjectionType.KEYS_ONLY) {

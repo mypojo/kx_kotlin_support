@@ -30,4 +30,11 @@ enum class AwsInstanceType(val root: File?) {
 
     /** 로컬  */
     local(getWorkspace());
+
+    /** 클라우드와치 로그 링크가 가능한 타입들 */
+    fun isLogLinkAble(): Boolean = this in setOf(lambda, batch, ecs)
+
+    /** 로그 링크에 시간 입력이 필요한것들 */
+    fun isLogLinkWithTime(): Boolean = this in setOf(lambda, ecs)
+
 }
