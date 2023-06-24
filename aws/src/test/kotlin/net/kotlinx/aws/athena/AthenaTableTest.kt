@@ -41,7 +41,6 @@ class AthenaTableTest : TestRoot() {
                     ),
                 ),
             )
-
             partition = mapOf(
                 "basicDate" to "string",
                 "hh" to "string",

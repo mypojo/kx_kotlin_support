@@ -25,7 +25,6 @@ class Excel(
      * */
     val lazyCallback: MutableList<() -> Unit> = mutableListOf()
 
-
     /** 생성된 시트들. 래핑등에 필요한 부가정보들을 함게 들고있다.  */
     val sheets: MutableMap<String, ExcelSheet> = LinkedHashMap()
 

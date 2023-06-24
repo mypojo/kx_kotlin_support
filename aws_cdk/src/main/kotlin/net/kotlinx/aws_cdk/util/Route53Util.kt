@@ -29,4 +29,19 @@ object Route53Util {
         )
     }
 
+    /**
+     * A레코드 달아주기
+     * @param target ex) RecordTarget.fromAlias(CloudFrontTarget(distribution))
+     * */
+    fun arecord(stack: Stack, iZone: IHostedZone, domain: String, target: RecordTarget) {
+        ARecord(
+            stack, "${domain}-arecord",
+            ARecordProps.builder()
+                .zone(iZone)
+                .recordName(domain)
+                .target(target)
+                .build(),
+        )
+    }
+
 }

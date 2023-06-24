@@ -48,7 +48,7 @@ ________________________________________________________________________________
 프리사인 다운로드 url = https://...
 ```
 
-## CDK 작성 참고용 샘플코드
+## VPC 인프라 생성 샘플코드(CDK)
 ```kotlin
 val project = CdkProject("aws-id-123456..", "myProject")
 val vpc = CdkVpc(project = project, deploymentType = DeploymentType.dev, vpcCidr = "10.111.0.0/16", cidrMask = 24)
@@ -65,29 +65,33 @@ vpc.nacl(
 ```
 
 
-## JSON 샘플
+## AWS athena 테이블생성 샘플
 ```kotlin
-val json = obj {
-    "type" to "normal"
-    "members" to arr[
-            obj { "name" to "A"; "age" to 10; },
-            obj { "name" to "B"; "age" to 20; },
-    ]
+val demo = AthenaTable {
+    tableName = "demo"
+    location = "s3://${bucketName}/collect/event1_job/"
+    schema = mapOf(
+        "detail-type" to "string",
+        "account" to "string",
+        "detail" to mapOf(
+            "eventId" to "bigint",
+            "eventDate" to "string",
+            "datas" to listOf(
+                "id" to "string",
+                "x" to "string",
+            ),
+        ),
+    )
+    partition = mapOf(
+        "basicDate" to "string",
+        "hh" to "string",
+    )
+    athenaTableFormat = AthenaTableFormat.Json
+    athenaTablePartitionType = AthenaTablePartitionType.Index
 }
-
-val gsonData = GsonData.parse(json)
-gsonData["members"].filter { it["name"].str == "B" }.onEach { it.put("age", 25) }
-
-val sumOfAge = gsonData["members"].sumOf { it["age"].long ?: 0L }
-println("sumOfAge : $sumOfAge")
 ```
 
-### JSON 결과
-```text
-sumOfAge : 35
-```
-
-## AWS athena 샘플
+## AWS athena 쿼리 샘플
 ```kotlin
 
 val executions = listOf(
@@ -120,17 +124,6 @@ val executions = listOf(
 val athenaModule = AthenaModule(aws)
 //모든 쿼리 로직을 동시에 처리 (동시 실행 제한수 주의)
 athenaModule.startAndWaitAndExecute(executions)
-```
-
-## AWS step function 을 사용한 대용량 분할 처리 실행 샘플
-```kotlin
-val datas = sample().apply {
-    this.chunkSize = 8 * 60
-}.datas
-
-val input = executor.startExecution(datas)
-val consoleLink = config.consoleLink(input.sfnId)
-log.info { "SFN 실행됨 $consoleLink" }
 ```
 
 ## AWS step function 을 사용한 대용량 분할 처리 실행 인프라(CDK)
@@ -178,9 +171,39 @@ CdkSfn(project, "batch_step") {
     onErrorHandle(adminAllTopic, dlq.iQueue)
 }
 ```
+
+
+## AWS step function 을 사용한 대용량 분할 처리 실행 샘플
+```kotlin
+val datas = sample().apply {
+    this.chunkSize = 8 * 60
+}.datas
+
+val input = executor.startExecution(datas)
+val consoleLink = config.consoleLink(input.sfnId)
+log.info { "SFN 실행됨 $consoleLink" }
+```
+
+## JSON 샘플
+```kotlin
+val json = obj {
+    "type" to "normal"
+    "members" to arr[
+            obj { "name" to "A"; "age" to 10; },
+            obj { "name" to "B"; "age" to 20; },
+    ]
+}
+
+val gsonData = GsonData.parse(json)
+gsonData["members"].filter { it["name"].str == "B" }.onEach { it.put("age", 25) }
+
+val sumOfAge = gsonData["members"].sumOf { it["age"].long ?: 0L }
+println("sumOfAge : $sumOfAge")
+```
+
 ### CDK step function 결과
 ![img.png](readme/sfn.png)
 
 
-## 의존관계
+## 전체 모듈 의존관계
 ![img.png](readme/dependencies.png)

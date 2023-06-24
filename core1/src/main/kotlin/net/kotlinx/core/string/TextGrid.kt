@@ -15,7 +15,7 @@ inline fun List<String>.toTextGrid(datas: List<Array<out Any?>>) = TextGrid(this
  * https://github.com/naver/d2codingfont  <-- 고정폭 폰트 필수
  */
 class TextGrid(
-    private val headers: List<out String>,
+    private val headers: List< String>,
     private var datas: List<Array<out Any?>>,
     private val lineSeparator: String = "\n",
 ) {

@@ -40,8 +40,8 @@ internal class ReflectionUtilTest {
         val p1 = ReflectionLineUtil.lineToData(arrayOf("영감님", "판매부서", "12", "", "B"), Poo::class)
         val p21 = ReflectionLineUtil.lineToData(arrayOf("영감님1", "판매부서", "-2", "1231", "202212211356"), PooDto::class)
         val p22 = ReflectionLineUtil.lineToData(arrayOf("영감님2", "개발부서", "545", "874", "202512211356"), PooDto::class)
-        listOf(p1).toTextGrid().print()
-        listOf(p21, p22).toTextGrid().print()
+//        listOf(p1).toTextGrid().print()
+//        listOf(p21, p22).toTextGrid().print()
 
     }
 

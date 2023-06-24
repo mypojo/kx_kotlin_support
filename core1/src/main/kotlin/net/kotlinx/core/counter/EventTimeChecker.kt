@@ -23,10 +23,9 @@ class EventTimeChecker(
         val lastEvent:Long,
         /** 시도 수. 이번시도 포함. 성공이후 리셋 */
         val tryCnt:Int,
-    ){
         /** 다음 hit 까지 남은시간 */
-        var next:Long = 0
-    }
+        val next:Long = 0
+    )
 
     //=================================================== 내부사용 ===================================================
     /** 최근 이벤트 실행 시간. 0 초기화임으로 최초인경우 -> 최초 1회는 true  */
@@ -57,9 +56,7 @@ class EventTimeChecker(
                 tryCnt = 0
             }
         }else{
-            EventTimeResult(false,now,lastEvent,tryCnt).apply {
-                next = currentInterval.inWholeMilliseconds - betweenDuration
-            }
+            EventTimeResult(false,now,lastEvent,tryCnt,currentInterval.inWholeMilliseconds - betweenDuration)
         }
     }
 

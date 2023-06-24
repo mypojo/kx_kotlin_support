@@ -15,7 +15,6 @@ class AwsSdk2HikariDataSourceTest : TestRoot() {
             "$name-dev.cluster-cxoltcrf7s91.ap-northeast-2.rds.amazonaws.com",
             "$name",
         )
-
         println(dataSource.password)
 
     }

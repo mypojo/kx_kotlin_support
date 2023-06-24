@@ -44,7 +44,8 @@ class AwsSdk2HikariDataSource(
 
     override fun getPassword(): String {
         log.info { "RDS 데이터소스 password 생성" }
-        val rdsUtilities = rdsClient.utilities()
+
+        val rdsUtilities = rdsClient.utilities() //코틀린 버전에는 이 함수가 없음
         val request = GenerateAuthenticationTokenRequest.builder()
             .username(inputUsername)
             .hostname(inputHostname)

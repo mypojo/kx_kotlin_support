@@ -41,9 +41,9 @@ dependencies {
 
     //덜중요한것들
     api("aws.sdk.kotlin:costexplorer:$awsVersion") //계정당 비용 확인용
+    api("aws.sdk.kotlin:elasticloadbalancingv2:$awsVersion") //레거시 수동 ALB 컨트롤용
 //    api("aws.sdk.kotlin:pricing:$awsVersion") //제품의 비용(고정) 확인용
 //    api("aws.sdk.kotlin:xray:$awsVersion")
-//    api("aws.sdk.kotlin:elasticloadbalancingv2:$awsVersion")
 //    api("aws.sdk.kotlin:quicksight:$awsVersion")
 //    api("aws.sdk.kotlin:auth:$awsVersion")
 //    api("aws.sdk.kotlin:regions:$awsVersion")

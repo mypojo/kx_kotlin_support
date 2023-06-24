@@ -8,6 +8,7 @@ import aws.sdk.kotlin.services.costexplorer.CostExplorerClient
 import aws.sdk.kotlin.services.ec2.Ec2Client
 import aws.sdk.kotlin.services.ecr.EcrClient
 import aws.sdk.kotlin.services.ecs.EcsClient
+import aws.sdk.kotlin.services.elasticloadbalancingv2.ElasticLoadBalancingV2Client
 import aws.sdk.kotlin.services.eventbridge.EventBridgeClient
 import aws.sdk.kotlin.services.iam.IamClient
 import aws.sdk.kotlin.services.rds.RdsClient
@@ -26,6 +27,7 @@ class AwsClient(awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     val cost: CostExplorerClient by lazy { CostExplorerClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val ses: SesClient by lazy { SesClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val logs: CloudWatchLogsClient by lazy { CloudWatchLogsClient  { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
+    val elb: ElasticLoadBalancingV2Client by lazy { ElasticLoadBalancingV2Client  { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
 
     //==================================================== 저장소 ======================================================
     val rds: RdsClient by lazy { RdsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }

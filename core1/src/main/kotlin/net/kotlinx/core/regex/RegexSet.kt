@@ -6,6 +6,8 @@ import java.util.regex.Pattern
  * 자주 사용되는 정규식 모음
  * 확장함수가 가능해셔서 enum으로 만들지 않음
  * 문법 참고용으로 사용
+ *
+ * @see net.kotlinx.core.text.RegexParseSupport
  * */
 object RegexSet {
 
@@ -18,6 +20,9 @@ object RegexSet {
     var NUMERIC_DOT = "[\\d.]*".toRegex()
 
     //==================================================== 문자 ======================================================
+
+    /** 비밀번호 가능.  !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~  (확인필요) */
+    val ALPAH_NUMERIC_SPECIAL = "[a-zA-Z\\d\\s\\{\\}\\[\\]\\/?\\.,;:|\\)*~`!^\\-_+<>@\\#\$%&\\\\\\=\\(\\'\\\"]*".toRegex()
 
     /** 알파벳+영문+완성형한글  */
     val ALPAH_NUMERIC_HAN = "[a-zA-Z\\d가-힣]*".toRegex()

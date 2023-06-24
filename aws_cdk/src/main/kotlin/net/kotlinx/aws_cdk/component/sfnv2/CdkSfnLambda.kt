@@ -1,6 +1,7 @@
 package net.kotlinx.aws_cdk.component.sfnv2
 
 import net.kotlinx.aws.AwsNaming
+import software.amazon.awscdk.services.lambda.CfnFunction
 import software.amazon.awscdk.services.lambda.IFunction
 import software.amazon.awscdk.services.stepfunctions.TaskInput
 import software.amazon.awscdk.services.stepfunctions.tasks.LambdaInvoke
@@ -18,6 +19,12 @@ class CdkSfnLambda(
 
     /** 기본 재시도 정책(10초 3회). 람다 특성상, 혹시 모르니 리트라이 해준다. 커스텀은 addRetry() 사용 */
     var retry: Boolean = true
+
+    /** 아직 정식지원 안하는듯. */
+    fun snapStartOn(){
+        val cfnFunction = lambda.node.defaultChild as CfnFunction
+        cfnFunction.addPropertyOverride("SnapStart", mapOf("ApplyOn" to "PublishedVersions")) //스냅스타트 온
+    }
 
     override fun convert(): LambdaInvoke {
         return LambdaInvoke(

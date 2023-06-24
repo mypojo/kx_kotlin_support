@@ -21,6 +21,7 @@ object ReflectionLineUtil {
      * 객체간 변환을 도와준다.
      * @param to 기본 생성자가 있어야함
      * */
+    @Deprecated("Bean 사용")
     fun <T : Any> convertTo(from: Any, to: KClass<T>): T {
         val fromMap: Map<String, KProperty<*>> = from::class.members.filterIsInstance<KProperty<*>>().associateBy { it.name }
         val newInstance: T = to.constructors.firstOrNull { it.parameters.isEmpty() }?.call() ?: throw IllegalArgumentException("기본 생성자가 있어야 합니다 : $to")
@@ -62,6 +63,7 @@ object ReflectionLineUtil {
     }
 
     /** 간단 로그 출력용 */
+    @Deprecated("Bean 사용")
     fun dataToLine(from: Any): List<Any> {
         val fromMap = from::class.members.filterIsInstance<KProperty<*>>().associateBy { it.name }
         //가장 긴 파라메터로 사용
@@ -73,12 +75,14 @@ object ReflectionLineUtil {
     }
 
     /** 간단 로그 출력용 */
+    @Deprecated("Bean 사용")
     fun dataToHeader(clazz: KClass<*>): List<String> =
         clazz.constructors.maxWith(compareBy { it.parameters.size }).parameters.map { it.name ?: "-" }
 
     /**
      * @return 입력된 문자열을 지정된 타입의 값으로 변경해준다.
      * */
+    @Deprecated("Bean 사용")
     private fun convertTo(type: KType, value: String?, nameForPrint: String?): Any? {
         val kClazz: KClass<*> = type.classifier as? KClass<*> ?: throw IllegalStateException("안되는거! $type") //타입을 클래스로 변환 가능 (실패할 수 있음)
         val nullMarker: DataNullMark = when {
@@ -134,6 +138,7 @@ object ReflectionLineUtil {
 }
 
 /** 리플렉션으로 출력. 하나 이상의 객체가 있어야 한다. */
+@Deprecated("Bean 사용")
 fun List<Any>.toTextGrid(): TextGrid {
     val first = this.first()
     val datas = this.map { ReflectionLineUtil.dataToLine(it).toTypedArray() }

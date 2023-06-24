@@ -1,5 +1,6 @@
 package net.kotlinx.module.xlsx
 
+import net.kotlinx.core.number.StringIntUtil
 import org.apache.poi.common.usermodel.HyperlinkType
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.xssf.usermodel.XSSFHyperlink
@@ -40,12 +41,12 @@ class XlsHyperlink(override val value: String, block: XlsHyperlink.() -> Unit = 
              *  */
             else -> {
                 val link: XSSFHyperlink = creationHelper.createHyperlink(HyperlinkType.DOCUMENT)
-                link.address = "$sheetName!${ExcelUtil.intToUpperAlpha(sheetColumn + 1)}${sheetRownum + 1}"
+                link.address = "$sheetName!${StringIntUtil.intToUpperAlpha(sheetColumn + 1)}${sheetRownum + 1}"
                 cell.hyperlink = link
             }
         }
         cell.setCellValue(XSSFRichTextString(value))
-        sheet.excel.lazyCallback.add { cell.cellStyle = sheet.excel.style.styleLink }
+        sheet.excel.lazyCallback.add { cell.cellStyle = sheet.excel.style.buleRight }
 
     }
 }

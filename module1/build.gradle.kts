@@ -23,7 +23,6 @@ dependencies {
     api("org.jetbrains.kotlin:kotlin-reflect:${providers["kotlinVersion"]}") // 리플렉션 dto 변환용
     implementation("org.jetbrains.exposed:exposed:${providers["exposedVersion"]}")
     api("io.insert-koin:koin-core:3.4.0") //kotlin DI 도구  <-- module 단계서부터 적용
-
     //implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
 //        implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
 //        implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
@@ -42,7 +41,8 @@ dependencies {
     api("com.jcraft:jsch:0.1.55") //SFTP 모듈
     api("org.apache.poi:poi-ooxml:4.1.0") //엑셀
     implementation("commons-codec:commons-codec:1.15") //구글 OTP 모듈
-
+    //==================================================== 기타 ======================================================
+    implementation("org.passay:passay:1.6.3") //패스워드 간단 검증
 
     //==================================================== 기본 의존 ======================================================
     api("com.google.guava:guava:31.1-jre")  //AWS에도 동일의존 있음

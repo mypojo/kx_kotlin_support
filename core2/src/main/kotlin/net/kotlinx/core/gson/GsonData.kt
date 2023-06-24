@@ -60,6 +60,8 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
         get() = (delegate as? JsonPrimitive)?.asString
     val long: Long?
         get() = (delegate as? JsonPrimitive)?.asLong
+    val bool: Boolean?
+        get() = (delegate as? JsonPrimitive)?.asBoolean
 
     val empty: Boolean
         get() = when (delegate) {

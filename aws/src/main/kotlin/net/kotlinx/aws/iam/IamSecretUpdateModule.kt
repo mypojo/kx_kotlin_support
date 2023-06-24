@@ -11,10 +11,7 @@ import net.kotlinx.core.string.toTextGrid
 import net.kotlinx.core.time.toKr01
 import net.kotlinx.core.time.toLong
 import net.kotlinx.core.time.toTimeString
-import java.nio.file.Paths
 import java.time.Duration
-import kotlin.io.path.readText
-import kotlin.io.path.writeText
 
 /**
  * 일반적인 보안규정상 영구키값은 주기적으로(약3개월) 교체 해야한다. 이것을 자동으로 해주는 도구
@@ -71,26 +68,14 @@ class IamSecretUpdateModule(
             }
         }
 
-        val secretFilePath = System.getenv("USERPROFILE").let { userProfile ->
-            listOf(
-                Paths.get(userProfile, AWS_CREDENTIAL_PATH01),
-                Paths.get(userProfile, AWS_CREDENTIAL_PATH02),
-            ).firstOrNull { it.toFile().exists() } ?: throw IllegalStateException("AWS 설정파일이 없습니다. ${Paths.get(userProfile, AWS_CREDENTIAL_PATH01)}")
-        }
-        val secretFileText = secretFilePath.readText()
+        val credential = IamCredential()
+        val oldKey = credential.keyPair
 
-        val oldKey = run {
-            val accessKey = ACCESS_KEY.find(secretFileText)?.value?.trim() ?: throw IllegalStateException("억세스 키가 없습니다.")
-            val secretKey = SECRET_KEY.find(secretFileText)?.value?.trim() ?: throw IllegalStateException("시크릿 키가 없습니다.")
-            accessKey to secretKey
-        }
         check(invalid.key.accessKeyId == oldKey.first) { "저장된 키와 invalid 키가 동일해야 합니다." }
 
         val newKey = iamClient.createAccessKey { this.userName = userName }.let { it.accessKey!!.accessKeyId!! to it.accessKey!!.secretAccessKey!! }
-        log.info { " -> 키가 교체되어 저장됩니다. ${oldKey.first} => ${newKey.first} / 확인 :  $secretFilePath" }
-
-        val newSecretFileText = secretFileText.replace(oldKey.first, newKey.first).replace(oldKey.second, newKey.second)
-        secretFilePath.writeText(newSecretFileText)
+        log.info { " -> 키가 교체되어 저장됩니다. ${oldKey.first} => ${newKey.first} / 확인 :  $credential" }
+        credential.replaceKey(newKey)
 
         log.debug { " -> invalid 키 ${oldKey.first} 를 비활성화 시킵니다." }
         iamClient.updateAccessKey {
@@ -101,16 +86,5 @@ class IamSecretUpdateModule(
 
     }
 
-    companion object {
-        /**
-         * 기본 설정 위치
-         * https://docs.aws.amazon.com/ko_kr/sdkref/latest/guide/file-location.html
-         * */
-        private const val AWS_CREDENTIAL_PATH01 = ".aws/credentials"
-        private const val AWS_CREDENTIAL_PATH02 = ".aws/config"
-
-        private val ACCESS_KEY = "(?<=aws_access_key_id\\s{0,2}=).*".toRegex(RegexOption.MULTILINE)
-        private val SECRET_KEY = "(?<=aws_secret_access_key\\s{0,2}=).*".toRegex(RegexOption.MULTILINE)
-    }
 
 }

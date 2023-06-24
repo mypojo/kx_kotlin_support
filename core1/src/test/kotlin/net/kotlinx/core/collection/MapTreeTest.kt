@@ -16,6 +16,14 @@ class MapTreeTest {
         println(mapTree.delegate)
 
 
+        val mapTree1 = MapTree {
+            "aa $it"
+        }
+
+        println(mapTree1["aa"])
+        println(mapTree1["bb"])
+
+
     }
 
 }

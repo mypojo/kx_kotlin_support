@@ -24,10 +24,17 @@ class ExcelSheet(val excel: Excel, val sheet: XSSFSheet) {
     /** 헤더의 로우 수. 보통 헤더는 많아야 2줄이다. */
     var headerRowCnt = 0
 
-    fun addHeader(titles: List<String>): ExcelSheet {
+    /**
+     * 커스텀 로우단위 스타일 설정
+     * 주의!! 0부터 시작하는 로우 인덱스임. 1부터 시작하는 엑셀의 인덱스 아님!
+     * */
+    val customRowStyleSet: MutableMap<Int, XlsStyleSet> = mutableMapOf()
+
+    fun addHeader(titles: List<Any>): ExcelSheet {
         val row = createRow()
         for (i in titles.indices) {
-            row.createCell(i).setCellValue(XSSFRichTextString(titles[i]))
+            val cell = row.createCell(i)
+            updateCell(cell, titles[i])
         }
         headerRowCnt++
         return this
@@ -44,6 +51,10 @@ class ExcelSheet(val excel: Excel, val sheet: XSSFSheet) {
             is XlsCellApply -> value.cellApply(this, cell)
             else -> cell.setCellValue(XSSFRichTextString(value.toString()))
         }
+    }
+
+    fun writeLine(values: List<Any?>) {
+        writeLine(values.toTypedArray())
     }
 
     /** 한줄 쓰기 */
@@ -70,14 +81,16 @@ class ExcelSheet(val excel: Excel, val sheet: XSSFSheet) {
             val cells = thisRow.cellIterator()
             while (cells.hasNext()) {
                 val thisCell = cells.next()
+
+                val styleSet = customRowStyleSet[thisCell.rowIndex] ?: styles.normal
                 val thisCellType = thisCell.cellType
                 if (thisRow.rowNum < headerRowCnt) {
-                    thisCell.cellStyle = styles.styleHeader
+                    thisCell.cellStyle = styles.header
                 } else {
-                    when (thisCellType) {
-                        CellType.NUMERIC -> thisCell.cellStyle = styles.styleBodyRight
-                        CellType.FORMULA -> styles.styleBodyRight
-                        else -> thisCell.cellStyle = styles.styleBodyLeft
+                    thisCell.cellStyle = when (thisCellType) {
+                        CellType.NUMERIC -> styleSet.right
+                        CellType.FORMULA -> styleSet.right
+                        else -> styleSet.left
                     }
                 }
             }

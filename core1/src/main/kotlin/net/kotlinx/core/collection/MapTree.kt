@@ -1,7 +1,6 @@
 package net.kotlinx.core.collection
 
 import java.util.concurrent.atomic.AtomicLong
-import java.util.function.Supplier
 
 /**
  * 스래드 세이프한, value가 없으면 생성해주는 맵
@@ -12,8 +11,9 @@ import java.util.function.Supplier
  * 단순 계산이라면 delegate.computeIfPresent 를 사용해도 됨
  */
 class MapTree<T>(
+    /** 주의!! 편의상 key 가 String 임!! */
     val delegate: MutableMap<String, T> = mutableMapOf(),
-    private val supplier: Supplier<T>,
+    private val supplier: (String) -> T,
 ) {
 
     //============================== method =================================
@@ -21,7 +21,7 @@ class MapTree<T>(
     @Synchronized
     operator fun get(key: Any): T {
         val keyStr = key.toString()
-        return delegate[keyStr] ?: supplier.get().also { delegate[keyStr] = it }
+        return delegate[keyStr] ?: supplier(keyStr).also { delegate[keyStr] = it }
     }
 
     companion object {

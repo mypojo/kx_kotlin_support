@@ -4,6 +4,7 @@ import net.kotlinx.core.regex.RegexSet
 
 /**
  * 정규표현식을 사용하는 텍스트 파서. 크롤링 등에 사용
+ * String에 너무 많은 확장을 담지 않기 위해서 RegexParseSupport가 있어야 작동하게 분리함
  *
  * 아래는 이전에 시도해봤단 실패작들.
  * 1. 텍스트 라인을 사용하는 라인세퍼레이터 파서 -> 싱글라인에 매추 취약함. 복잡한 XML 파싱 힘듬. \n를 활용한 파싱 불가.
@@ -27,5 +28,18 @@ interface RegexParseSupport {
     /** 텍스트 값 추출 */
     fun String.extractAll(pair: Pair<String, String>, op: Set<RegexOption> = RegexSet.CRW): List<String> =
         RegexSet.extract(pair.first, pair.second).toRegex(op).findAll(this).map { it.value }.toList()
+
+
+    companion object {
+
+        /** block용 간이 구현체 */
+        class RegexParseTemplate : RegexParseSupport
+
+        /** 인라인 지원기 */
+        fun template(block: RegexParseTemplate.() -> Unit) {
+            block(RegexParseTemplate())
+        }
+    }
+
 
 }

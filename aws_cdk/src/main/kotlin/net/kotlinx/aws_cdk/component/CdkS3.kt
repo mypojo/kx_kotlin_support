@@ -16,12 +16,16 @@ import software.amazon.awscdk.services.s3.*
 class CdkS3(
     val project: CdkProject,
     val name: String,
+    block: CdkS3.() -> Unit = {}
 ) : CdkDeploymentType {
 
     override var deploymentType: DeploymentType = DeploymentType.dev
 
+    /** 도메인 등은 이름 그대로를 버킷명으로 사용함 */
+    var domain: Boolean = false
+
     override val logicalName: String
-        get() = "${project.projectName}-${name}-${deploymentType}"
+        get() = if (domain) name else "${project.projectName}-${name}-${deploymentType}"
 
     lateinit var iBucket: IBucket
 
@@ -30,23 +34,61 @@ class CdkS3(
     var removalPolicy = RemovalPolicy.RETAIN
 
     var versioned: Boolean = false
-    var publicReadAccess: Boolean = false
-    var cors = listOf(CORS_OPEN)
 
-    fun create(stack: Stack): CdkS3 {
+    /** 이거 설정하면 자동 s3:GetObject 권한 부여해줌 */
+    var publicReadAccess: Boolean = false
+
+    /** 2023 이후 설정 적용. (AWS에서는 권장하지 않음) */
+    var publicAll: Boolean = false
+
+    /** static 이미지등을 링크 걸어서 사용할거면 필수 */
+    var cors: List<CorsRule>? = null
+
+    /** 웹호스팅-리다이렉트 (딴데로 넘김) */
+    var websiteRedirect: String? = null
+
+    /** 웹호스팅-문서 (S3를 기반으로 호스팅) */
+    var websiteIndexDocument: String? = null
+
+    init {
+        block(this)
+    }
+
+    fun create(stack: Stack, block: BucketProps.Builder.() -> Unit = {}): CdkS3 {
         val bucketProps = BucketProps.builder()
             .bucketName(this.logicalName)
             .removalPolicy(removalPolicy)
             .lifecycleRules(lifecycleRules)
             .versioned(versioned)
+            .publicReadAccess(publicReadAccess)
+            .cors(cors)
+            .websiteIndexDocument(websiteIndexDocument)
             .apply {
-                if (publicReadAccess) {
-                    publicReadAccess(true)
-                    cors(cors)
+                websiteRedirect?.let {
+                    //리다이렉트는 별도의 객체 권한 필요없음
+                    websiteRedirect(RedirectTarget.builder().hostName(it).build())
+                }
+                if (publicAll) {
+                    //과거 publicReadAccess 와 동일설정.
+                    //publicReadAccess 대체함. Bucket policy가 자동으로 생김
+                    //2023년에 AWS 정책 변경. 이거 없으면 다음의 오류가 발생함  API: s3:PutBucketPolicy Access Denied
+                    blockPublicAccess(
+                        BlockPublicAccess(
+                            BlockPublicAccessOptions.builder()
+                                .blockPublicAcls(false)
+                                .ignorePublicAcls(false)
+                                .blockPublicPolicy(false)
+                                .restrictPublicBuckets(false)
+                                .build()
+                        )
+                    )
                 }
             }
+            .apply(block)
             .build()
-        iBucket = Bucket(stack, logicalName, bucketProps)
+
+        val id = "${logicalName}${if (domain) "-bucket" else ""}" //혹시나 도메인 그대로 쓰면 겹칠까봐 변경해줌
+        iBucket = Bucket(stack, id, bucketProps)
         TagUtil.tag(iBucket, deploymentType)
         return this
     }

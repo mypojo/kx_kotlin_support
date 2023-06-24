@@ -28,18 +28,18 @@ data class KColumn(
 )
 
 enum class KColumnTypeGroup {
-    String, Number, Enum, LocalDateTime, LocalDate, Boolean, Unknown
+    KString, KNumber, KEnum, KLocalDateTime, KLocalDate, KBoolean, KUnknown
     ;
 
     companion object {
         fun from(columnType: KClass<*>): KColumnTypeGroup = when {
-            columnType == kotlin.String::class -> String
-            columnType.isSubclassOf(kotlin.Number::class) -> Number
-            columnType.isSubclassOf(kotlin.Enum::class) -> Enum
-            columnType == java.time.LocalDateTime::class -> LocalDateTime
-            columnType == java.time.LocalDate::class -> LocalDate
-            columnType == kotlin.Boolean::class -> Boolean
-            else -> Unknown
+            columnType == String::class -> KString
+            columnType.isSubclassOf(Number::class) -> KNumber
+            columnType.isSubclassOf(Enum::class) -> KEnum
+            columnType == java.time.LocalDateTime::class -> KLocalDateTime
+            columnType == java.time.LocalDate::class -> KLocalDate
+            columnType == Boolean::class -> KBoolean
+            else -> KUnknown
         }
     }
 }
