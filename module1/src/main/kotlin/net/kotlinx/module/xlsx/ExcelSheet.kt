@@ -53,12 +53,12 @@ class ExcelSheet(val excel: Excel, val sheet: XSSFSheet) {
         }
     }
 
-    fun writeLine(values: List<Any?>) {
+    fun writeLine(values: List<out Any?>) {
         writeLine(values.toTypedArray())
     }
 
     /** 한줄 쓰기 */
-    fun writeLine(values: Array<Any?>) {
+    fun writeLine(values: Array<out Any?>) {
         val row = createRow()
         for (columnIndex in values.indices) {
             val value = values[columnIndex]

@@ -28,6 +28,10 @@ OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
 
     //==================================================== 벤더 지정 ======================================================
 
+    /**
+     * 아래 랭크에서 복붙할것
+     * https://docs.aws.amazon.com/ko_kr/athena/latest/ug/cloudtrail-logs.html
+     *  */
     CloudTrail(
         """
 ROW FORMAT SERDE 'com.amazon.emr.hive.serde.CloudTrailSerde'

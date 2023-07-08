@@ -36,8 +36,13 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
     /** 파티션 정보 */
     var partition: Map<String, String> = emptyMap()
 
-    /** 테이블 프로퍼티 */
-    var props: MutableMap<String, String> = mutableMapOf()
+    /**
+     * 테이블 프로퍼티
+     *    'classification'='parquet'
+     *    'has_encrypted_data'='false'
+     *    이런것들
+     *  */
+    var props: Map<String, String> = emptyMap()
 
     init {
         block(this)
@@ -52,11 +57,12 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
             // https://docs.aws.amazon.com/ko_kr/athena/latest/ug/partition-projection-supported-types.html
             // 프로젝션에 date 사용하는거 추가해야함
             AthenaTablePartitionType.Projection -> {
-                props["projection.enabled"] = "true"
-                partition.keys.forEach { //S3 경로임으로 타입은 무시..
-                    props["projection.${it}.type"] = "injected"
-                }
-                props["storage.location.template"] = "${location}${partition.keys.joinToString("/") { "\${${it}}" }}/"
+                props = props + mapOf(
+                    "projection.enabled" to "true",
+                    "storage.location.template" to "${location}${partition.keys.joinToString("/") { "\${${it}}" }}/",
+                    *partition.keys.map { "projection.${it}.type" to "injected" }.toTypedArray(),
+                )
+
             }
 
             else -> {}

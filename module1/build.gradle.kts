@@ -44,6 +44,7 @@ dependencies {
     //==================================================== 기타 ======================================================
     implementation("org.passay:passay:1.6.3") //패스워드 간단 검증
 
+
     //==================================================== 기본 의존 ======================================================
     api("com.google.guava:guava:31.1-jre")  //AWS에도 동일의존 있음
     api("com.slack.api:slack-api-client:1.29.1") //기본 API만.  //implementation("com.slack.api:bolt-jetty:1.28.1")     // 기본  API 및 bolt-servlet 등을 포함한다

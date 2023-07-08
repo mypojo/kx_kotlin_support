@@ -45,7 +45,7 @@ class BeanTest : TestRoot() {
             println(it["age"])
             it.put("age", 878)
             println(it["age"])
-            check(it.get<Int>("age") == 878)
+            check(it["age"] == 878)
         }
 
         Bean(p1).convert(PooDto1::class).also {

@@ -2,6 +2,7 @@ package net.kotlinx.module.reflect
 
 import net.kotlinx.core.string.TextGrid
 import net.kotlinx.core.string.toTextGrid
+import org.apache.poi.ss.formula.functions.T
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KProperty
@@ -27,9 +28,9 @@ class Bean(
     //==================================================== 간단 리플렉션 ======================================================
 
     /**
-     * 제너릭 적용 ->  it.get<Int>("age")
+     * operator에 제너릭 안됨 -> 제너릭 적용하지 않음
      * */
-    operator fun <T> get(name: String): T? = props[name]?.let { it.getter.call(data) as T }
+    operator fun get(name: String): Any? = props[name]?.let { it.getter.call(data) }
 
     fun put(name: String, value: Any?) {
         mutableProps[name]?.setter?.call(data, value)
@@ -45,7 +46,7 @@ class Bean(
     /** 신규객체 생성 (생성자가 있다면 해당 값 입력) */
     fun <T : Any> newInstance(to: KClass<T>): T {
         val cons = to.constructors.minBy { it.parameters.size } //가장 인자가 적은걸로 생성
-        val consArgs = cons.parameters.map { get<Any>(it.name!!) }
+        val consArgs = cons.parameters.map { get(it.name!!) }
         return cons.call(*consArgs.toTypedArray())
     }
 
@@ -56,7 +57,7 @@ class Bean(
         val fromBean = this
         val toBean = Bean(newInstance)
         toBean.mutableProps.keys.forEach { name ->
-            fromBean.get<Any>(name)?.let {
+            fromBean[name]?.let {
                 toBean.put(name, it)
             }
         }

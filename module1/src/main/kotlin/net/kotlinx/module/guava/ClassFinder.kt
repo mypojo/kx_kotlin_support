@@ -20,4 +20,7 @@ class ClassFinder(
             .map { clazz -> clazz.load().kotlin }
     }
 
+    /** 익명겍체 거르고 enum만 */
+    val enums:List<KClass<*>> by lazy { classes.filter { it.simpleName != null && it.java.isEnum } }
+
 }
