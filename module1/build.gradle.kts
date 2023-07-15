@@ -41,6 +41,9 @@ dependencies {
     api("com.jcraft:jsch:0.1.55") //SFTP 모듈
     api("org.apache.poi:poi-ooxml:4.1.0") //엑셀
     implementation("commons-codec:commons-codec:1.15") //구글 OTP 모듈
+    //implementation("io.zeko:zeko-sql-builder:1.4.0") //스키마 정의 없는 SQL 빌더 (비정형 쿼리용)  -> 해보니 별 필요 없음
+
+
     //==================================================== 기타 ======================================================
     implementation("org.passay:passay:1.6.3") //패스워드 간단 검증
 

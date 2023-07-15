@@ -15,7 +15,7 @@ object CostExplorerUtil {
     /** 월 5$ 이내 저렴하게 나오는것들 무시  */
     val IGNORES: Set<String> = setOf("Tax", "AWS Cost Explorer", "AWS CodeCommit", "Route 53")
 
-    /** 일상적으로 사용하는 단어로 교체해줌 */
+    /** 긴 단어를 일상적으로 사용하는 단어로 교체해줌 */
     val REPLACER: Map<String, String> = mapOf(
         "Simple Storage Service" to "S3",
         "EC2 - Other" to "EC2-Other",

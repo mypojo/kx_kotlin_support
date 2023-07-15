@@ -18,6 +18,8 @@ inline fun Long.minWith(compare: Long): Long = this.coerceAtMost(compare)
  *  */
 inline fun Long.toLocalDateTime(zone: ZoneId = TimeUtil.SEOUL): LocalDateTime = Instant.ofEpochMilli(this).atZone(zone).toLocalDateTime()!!
 
-
 /** 비율을 구할때 */
 inline fun Long.toRate(sum: Long, scale: Int = 1): BigDecimal = (this * 100.0 / sum).toRoundUp(scale)
+
+/** 만원단위 변환. 은근히 자주 사용됨 */
+inline fun Long.toManwon(scale: Int = 1): BigDecimal = (this / 10000.0).toRoundUp(scale)
