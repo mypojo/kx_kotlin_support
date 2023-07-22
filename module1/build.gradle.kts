@@ -30,22 +30,18 @@ dependencies {
 
     //==================================================== RDB ======================================================
     implementation("software.aws.rds:aws-mysql-jdbc:1.1.2") //aws 장애조치기능이 담긴 mysql 드라이버 & 모든 mysql과 호환가능. https://github.com/awslabs/aws-mysql-jdbc
-    implementation("com.zaxxer:HikariCP:5.0.1")
-
-    //==================================================== RDS IAM ======================================================
-    val awsSdk2Version = "2.17.118" //사용중인거하고 맞춤
-    implementation("software.amazon.awssdk:rds:$awsSdk2Version") //AWS SDK2 버전의 IAM 데이터소스 (코틀린 버전 없음)
-    implementation("software.amazon.awssdk:sts:$awsSdk2Version") //IAM 토큰 발행시 필요
 
     //==================================================== 기타 ======================================================
     api("com.jcraft:jsch:0.1.55") //SFTP 모듈
     api("org.apache.poi:poi-ooxml:4.1.0") //엑셀
     implementation("commons-codec:commons-codec:1.15") //구글 OTP 모듈
-    //implementation("io.zeko:zeko-sql-builder:1.4.0") //스키마 정의 없는 SQL 빌더 (비정형 쿼리용)  -> 해보니 별 필요 없음
+    implementation("io.zeko:zeko-sql-builder:1.4.0") //스키마 정의 없는 SQL 빌더 (비정형 쿼리용 or 간단 람다 API 쿼리)
 
 
     //==================================================== 기타 ======================================================
     implementation("org.passay:passay:1.6.3") //패스워드 간단 검증
+    implementation("com.google.ortools:ortools-java:9.6.2534") //구글 최적화도구 orTool https://developers.google.com/optimization/install/java/pkg_windows?hl=ko
+
 
 
     //==================================================== 기본 의존 ======================================================

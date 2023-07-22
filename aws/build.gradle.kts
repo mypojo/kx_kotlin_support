@@ -48,10 +48,22 @@ dependencies {
 //    api("aws.sdk.kotlin:auth:$awsVersion")
 //    api("aws.sdk.kotlin:regions:$awsVersion")
 
-
 //        //==================================================== AWS 이벤트 스키마 바인딩에 필요 (안씀.. 너무 구림) ======================================================
 //        implementation("com.fasterxml.jackson.core:jackson-core:2.10.0")
 //        implementation("com.fasterxml.jackson.core:jackson-databind:2.10.0")
 //        implementation("com.fasterxml.jackson.core:jackson-annotations:2.10.0")
+
+    //==================================================== AWS JAVA V2 client ======================================================
+    val awsJavaV2Version: String by project
+    implementation("software.amazon.awssdk:apache-client:$awsJavaV2Version") //기본 HTTP 클라이언트 (쓰던거 씀)
+    api("software.amazon.awssdk:dynamodb:$awsJavaV2Version") //DDB 분산락 작용용
+
+    //==================================================== AWS JAVA V2 RDS IAM ======================================================
+    implementation("software.amazon.awssdk:rds:$awsJavaV2Version") //AWS SDK2 버전의 IAM 데이터소스 (코틀린 버전 없음)
+    implementation("software.amazon.awssdk:sts:$awsJavaV2Version") //IAM 토큰 발행시 필요
+
+    //==================================================== RDS ======================================================
+    api("com.zaxxer:HikariCP:5.0.1")
+
 
 }

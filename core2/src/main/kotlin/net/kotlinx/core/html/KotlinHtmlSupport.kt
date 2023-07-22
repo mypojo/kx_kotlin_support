@@ -2,26 +2,6 @@ package net.kotlinx.core.html
 
 import kotlinx.html.*
 
-/** a 태그 링크가 적용된 값 */
-data class HtmlLink(val name: String, val href: String)
-
-/** 스타일이 적용된 값 */
-data class HtmlStyle(val value: String) {
-
-    var style: String = ""
-
-    /** 성공 실패 등을 나타낼때 */
-    fun ok(ok: Boolean): HtmlStyle {
-        style = if (ok) BLUE else RED
-        return this
-    }
-
-    companion object {
-        const val BLUE = "color:blue;"
-        const val RED = "color:red;"
-    }
-
-}
 
 fun HTML.setDefault(title: String) {
     lang = "ko"

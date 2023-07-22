@@ -1,4 +1,4 @@
-package net.kotlinx.module.aws.rds
+package net.kotlinx.aws.javaSdkv2
 
 import com.zaxxer.hikari.HikariDataSource
 import mu.KotlinLogging
@@ -11,7 +11,7 @@ import software.amazon.awssdk.services.rds.model.GenerateAuthenticationTokenRequ
  * https://ordina-jworks.github.io/cloud/2022/06/13/aws-rds-iam-authentication-spring-boot.html
  * 거의 복붙 했음
  */
-class AwsSdk2HikariDataSource(
+class HikariIamDataSource(
     /** DB 계정 명 */
     private val inputUsername: String,
     /** JDBC 주소 */

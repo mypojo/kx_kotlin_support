@@ -35,20 +35,8 @@ private fun TD.insert(data: Any?, nullString: String) {
             }
         }
 
-        is HtmlLink -> {
-            a {
-                href = data.href
-                target = "_blank" //새창열기
-                +data.name //값이 제일 뒤에 와야한다.
-            }
-        }
-
-        is HtmlStyle -> {
-            //개별 적용을 위해 span태그 사용
-            span {
-                style = data.style
-                +data.value //값이 제일 뒤에 와야한다.
-            }
+        is HtmlData -> {
+            data.insertHtml(this)
         }
 
         else -> +(data?.toString() ?: nullString)
