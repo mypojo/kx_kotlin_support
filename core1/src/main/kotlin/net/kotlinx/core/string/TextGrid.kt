@@ -15,7 +15,7 @@ inline fun List<String>.toTextGrid(datas: List<Array<out Any?>>) = TextGrid(this
  * https://github.com/naver/d2codingfont  <-- 고정폭 폰트 필수
  */
 class TextGrid(
-    private val headers: List< String>,
+    private val headers: List<String>,
     private var datas: List<Array<out Any?>>,
     private val lineSeparator: String = "\n",
 ) {
@@ -50,7 +50,7 @@ class TextGrid(
                 is Number -> TextGridType.NUM
                 else -> TextGridType.TEXT
             }
-        }?.toMap()   ?: emptyMap()
+        }?.toMap() ?: emptyMap()
 
         fun resizeAndInline(input: List<out String>): String {
             val resized = input.mapIndexed { index, org ->
@@ -58,7 +58,7 @@ class TextGrid(
                 val maxSize: Int = maxOfGridColumns[index]!!
                 val interval = (maxSize - size).coerceAtLeast(0)
                 // 문자는 촤측 정렬, 숫자는 우측 정렬
-                when(columnType[index]){
+                when (columnType[index]) {
                     TextGridType.NUM -> " ".repeat(interval) + org
                     else -> org + " ".repeat(interval)
                 }

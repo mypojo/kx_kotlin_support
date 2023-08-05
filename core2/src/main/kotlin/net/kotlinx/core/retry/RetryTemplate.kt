@@ -3,8 +3,8 @@ package net.kotlinx.core.retry
 import kotlinx.coroutines.delay
 import mu.KotlinLogging
 import net.kotlinx.core.exception.KnownException
-import net.kotlinx.core.lib.ExceptionUtil
 import net.kotlinx.core.lib.causes
+import net.kotlinx.core.lib.toSimpleString
 import java.io.IOException
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -27,7 +27,7 @@ class RetryTemplate(block: RetryTemplate.() -> Unit) : suspend (suspend () -> An
 
     /** 오류시 로깅 */
     var onError: (tryCnt: Int, e: Throwable) -> Unit = { tryCnt: Int, e: Throwable ->
-        log.warn { " => ${ExceptionUtil.toString(e)} -> 재시도 회차 $tryCnt/$retries " }
+        log.warn { " => ${e.toSimpleString()} -> 재시도 회차 $tryCnt/$retries " }
     }
 
     /** 리트라이 시도 */

@@ -75,9 +75,8 @@ object ReflectionLineUtil {
     }
 
     /** 간단 로그 출력용 */
-    @Deprecated("Bean 사용")
-    fun dataToHeader(clazz: KClass<*>): List<String> =
-        clazz.constructors.maxWith(compareBy { it.parameters.size }).parameters.map { it.name ?: "-" }
+    @Deprecated("Bean 사용2")
+    fun dataToHeader(clazz: KClass<*>): List<String> =  clazz.constructors.maxWith(compareBy { it.parameters.size }).parameters.map { it.name ?: "-" }
 
     /**
      * @return 입력된 문자열을 지정된 타입의 값으로 변경해준다.

@@ -1,7 +1,7 @@
 package net.kotlinx.spring.retry
 
 import mu.KotlinLogging
-import net.kotlinx.core.lib.ExceptionUtil
+import net.kotlinx.core.lib.toSimpleString
 import org.springframework.retry.RetryCallback
 import org.springframework.retry.RetryContext
 import org.springframework.retry.RetryListener
@@ -35,7 +35,7 @@ class RetryTemplateBuilder {
             override fun <T : Any?, E : Throwable?> close(context: RetryContext?, callback: RetryCallback<T, E>?, throwable: Throwable?) {}
 
             override fun <T, E : Throwable?> onError(context: RetryContext, callback: RetryCallback<T, E>, throwable: Throwable) {
-                log.warn { " => 재시도[${retryPolicy.canRetry(context)}] 오류 카운트 ${context.retryCount} : ${ExceptionUtil.toString(throwable)}" }
+                log.warn { " => 재시도[${retryPolicy.canRetry(context)}] 오류 카운트 ${context.retryCount} : ${throwable.toSimpleString()}" }
             }
         }
     )

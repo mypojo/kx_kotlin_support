@@ -19,7 +19,10 @@ class CostExplorerExcel(block: CostExplorerExcel.() -> Unit = {}) {
     /** 단위(월)별 개별 금액이 금액 넘는거만 시트에 상세 표시. 단위 : 달라  */
     var limitCost = 0.5
 
-    /** 달러-원 환율 */
+    /**
+     * 달러-원 환율
+     * @see net.kotlinx.aws.okhttp.OkHttpSamples.dollarWon
+     *  */
     var won = 1320.7
 
     /** 수수료 적용 (메가존, 다우데이터 등등..) */

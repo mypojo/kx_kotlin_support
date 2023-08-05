@@ -12,6 +12,21 @@ import aws.sdk.kotlin.services.eventbridge.putEvents
  * https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-putevent-size.html
  * 256 kb 이하만 가능
  * *   */
+suspend fun EventBridgeClient.putEvents(config: EventBridgeConfig, datas: List<String>): PutEventsResponse {
+    return this.putEvents {
+        this.entries = datas.map { data ->
+            PutEventsRequestEntry {
+                this.eventBusName = config.eventBusName
+                this.source = config.source
+                this.detailType = config.detailType
+                this.resources = config.resources
+                this.detail = data
+            }
+        }
+    }
+}
+
+@Deprecated("안씀")
 suspend fun EventBridgeClient.putEvents(datas: List<EventBridgeData>): PutEventsResponse {
     return this.putEvents {
         this.entries = datas.map { data ->

@@ -13,10 +13,10 @@ interface HtmlData {
 }
 
 /** a 태그 링크가 적용된 값 */
-data class HtmlDataSet(val name: String, val href: String) : HtmlData {
-    override fun <T : HTMLTag> insertHtml(body: T) where T : HtmlBlockTag {
+data class HtmlLink(val name: String, val href: String) : HtmlData {
+    override fun <T> insertHtml(body: T) where T : HTMLTag, T : HtmlBlockTag {
         body.a {
-            href = this@HtmlDataSet.href
+            href = this@HtmlLink.href
             target = "_blank" //새창열기
             +name //값이 제일 뒤에 와야한다.
         }
@@ -26,7 +26,7 @@ data class HtmlDataSet(val name: String, val href: String) : HtmlData {
 
 /** HTML 태그 그대로 보여줌 */
 data class HtmlUnsafe(val html: String) : HtmlData {
-    override fun <T : HTMLTag> insertHtml(body: T) where T : HtmlBlockTag {
+    override fun <T> insertHtml(body: T) where T : HTMLTag, T : HtmlBlockTag {
         body.unsafe {
             +html //강제주입
         }
@@ -36,7 +36,7 @@ data class HtmlUnsafe(val html: String) : HtmlData {
 /** 스타일이 적용된 간단 텍스트 */
 data class HtmlStyle(val value: String) : HtmlData {
 
-    override fun <T : HTMLTag> insertHtml(body: T) where T : HtmlBlockTag {
+    override fun <T> insertHtml(body: T) where T : HTMLTag, T : HtmlBlockTag {
         //개별 적용을 위해 span태그 사용
         body.span {
             style = this@HtmlStyle.style

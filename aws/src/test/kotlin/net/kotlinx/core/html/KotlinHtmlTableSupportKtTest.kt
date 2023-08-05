@@ -20,10 +20,10 @@ class KotlinHtmlTableSupportKtTest : TestRoot() {
                         write(
                             listOf("ID", "이름"),
                             listOf(
-                                arrayOf("111", HtmlDataSet("aaa", "bbb")),
+                                arrayOf("111", HtmlLink("aaa", "bbb")),
                                 arrayOf(
                                     "111",
-                                    listOf(HtmlDataSet("1", "2"), "bbbb")
+                                    listOf(HtmlLink("1", "2"), "bbbb")
                                 ),
                                 arrayOf(
                                     "111",

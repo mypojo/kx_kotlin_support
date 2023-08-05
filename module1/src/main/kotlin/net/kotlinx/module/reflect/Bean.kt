@@ -30,7 +30,7 @@ class Bean(
     /**
      * operator에 제너릭 안됨 -> 제너릭 적용하지 않음
      * */
-    operator fun get(name: String): Any? = props[name]?.let { it.getter.call(data) }
+    operator fun get(name: String): Any? = props[name]?.getter?.call(data)
 
     fun put(name: String, value: Any?) {
         mutableProps[name]?.setter?.call(data, value)

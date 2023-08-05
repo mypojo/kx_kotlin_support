@@ -1,7 +1,7 @@
 package net.kotlinx.core.gson
 
 import com.google.gson.*
-import net.kotlinx.core.time.TimeFormat
+import net.kotlinx.core.time.*
 import java.lang.reflect.Type
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -86,11 +86,22 @@ object GsonAdapterUtil {
 
     //==================================================== 시간 관련 (기본 date 베이스) ======================================================
 
-    class DateTimeAdapter(val timeFormat: TimeFormat) : JsonDeserializer<LocalDateTime>, JsonSerializer<LocalDateTime?> {
+    /** 타임포맷 지정되는 어댑터 */
+    class DateTimeAdapter(val timeFormat: TimeFormat) : JsonDeserializer<LocalDateTime>, JsonSerializer<LocalDateTime> {
         override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): LocalDateTime = timeFormat.toLocalDateTime(json.asString)
-        override fun serialize(src: LocalDateTime?, type: Type, context: JsonSerializationContext): JsonElement {
-            return JsonPrimitive(src?.let { timeFormat[src] } ?: "")
-        }
+        override fun serialize(src: LocalDateTime?, type: Type, context: JsonSerializationContext): JsonElement = JsonPrimitive(src?.let { timeFormat[src] } ?: "")
+    }
+
+    /** 시간의 경우 UTC 기본값으로 변환해줌 */
+    class DateTimeUtcAdapter : JsonDeserializer<LocalDateTime>, JsonSerializer<LocalDateTime> {
+        override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): LocalDateTime = json.asString.fromUtc()
+        override fun serialize(src: LocalDateTime?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement = JsonPrimitive(src?.toUtc() ?: "")
+    }
+
+    /** 시간의 경우 UTC Zone 기본값으로 변환해줌 */
+    class DateTimeUtcZoneAdapter : JsonDeserializer<LocalDateTime>, JsonSerializer<LocalDateTime> {
+        override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): LocalDateTime = json.asString.fromUtcZone()
+        override fun serialize(src: LocalDateTime?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement = JsonPrimitive(src?.toUtcZone() ?: "")
     }
 
 

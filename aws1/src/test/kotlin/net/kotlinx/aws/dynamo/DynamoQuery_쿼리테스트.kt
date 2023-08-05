@@ -9,7 +9,7 @@ import net.kotlinx.core.test.TestLevel03
 import net.kotlinx.core.test.TestRoot
 
 
-internal class JobRepository_쿼리테스트 : TestRoot() {
+internal class DynamoQuery_쿼리테스트 : TestRoot() {
 
     val aws = AwsConfig(profileName = "sin").toAwsClient1()
 

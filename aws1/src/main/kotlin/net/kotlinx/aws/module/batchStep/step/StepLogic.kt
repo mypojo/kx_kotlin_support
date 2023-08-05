@@ -12,7 +12,7 @@ import net.kotlinx.aws.s3.putObject
 import net.kotlinx.aws.with
 import net.kotlinx.core.csv.CsvUtil
 import net.kotlinx.core.gson.GsonData
-import net.kotlinx.core.lib.ExceptionUtil
+import net.kotlinx.core.lib.toSimpleString
 import net.kotlinx.core.time.TimeStart
 import net.kotlinx.core.time.toTimeString
 import java.io.File
@@ -70,7 +70,7 @@ class StepLogic(
         val outputData = try {
             execute(input)
         } catch (e: Exception) {
-            log.warn { "###### 데이터 처리 실패!! -> $start / ${input.fileName} / ${ExceptionUtil.toString(e)}" }
+            log.warn { "###### 데이터 처리 실패!! -> $start / ${input.fileName} / ${e.toSimpleString()}" }
             return LambdaUtil.Fail //리트라이 하지 않음으로 예외를 던지지 않고 실패 리턴함 (로그 지저분해짐)
         }
         log.trace { "데이터 처리 성공 : ${outputData.size}건" }

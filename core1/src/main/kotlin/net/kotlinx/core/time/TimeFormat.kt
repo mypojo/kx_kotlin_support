@@ -16,7 +16,9 @@ enum class TimeFormat(
     val pattern: String? = null,
 ) {
 
-    /** 표준 변환이다!  다이나모 DB 등에서 기본으로 사용  */
+    //==================================================== 표준 ======================================================
+
+    /** 시간입력 표준 변환.  */
     ISO(DateTimeFormatter.ISO_DATE_TIME),
 
     /**
@@ -26,7 +28,16 @@ enum class TimeFormat(
      * ex) kdf to parquet 변환시 (존 포함이나 오프셋 포함을 읽지 못함)  https://docs.aws.amazon.com/firehose/latest/dev/record-format-conversion.html
      * */
     ISO_INSTANT(DateTimeFormatter.ISO_INSTANT.withZone(TimeUtil.SEOUL)),
+    /**
+     * 존 정보(오프셋)가 포함된 UTC 포매팅
+     * eventBridge에 이렇게 넣오도 됨
+     * 일단 이렇게 넣어보고, 안되면 그냥 UTC로 입력
+     * ex) 2022-09-15T09:09:30.617838+09:00
+     * */
     ISO_OFFSET(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+
+    //==================================================== 밀리초까지 ======================================================
+
     YMDHMSS("yyyyMMddHHmmssSSS"),
     YMDHMSS_K01("yyyy년MM월dd일(EEE) HH시mm분ss초(SSS)"),
 

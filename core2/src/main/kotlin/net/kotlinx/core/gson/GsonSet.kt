@@ -1,15 +1,17 @@
 package net.kotlinx.core.gson
 
-import com.google.gson.*
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.GsonBuilder
 import net.kotlinx.core.time.TimeFormat
-import net.kotlinx.core.time.fromUtc
-import net.kotlinx.core.time.toUtc
-import java.lang.reflect.Type
 import java.time.LocalDateTime
 
 
 /**
  * 참고용 간단 모음집
+ *
+ * 아래와 같은 사용법 있음
+ * setDateFormat("xxx)
+ * gsonBuilder.excludeFieldsWithModifiers(Modifier.STATIC,Modifier.TRANSIENT);
  */
 object GsonSet {
 
@@ -20,8 +22,6 @@ object GsonSet {
     val GSON by lazy {
         GsonBuilder().apply {
             setExclusionStrategies(NotExposeStrategy())
-//            registerTypeAdapter(Long::class.java, GsonAdapterUtil.LongAdapter())
-//            registerTypeAdapter(Int::class.java, GsonAdapterUtil.IntAdapter())
             registerTypeAdapter(Map::class.java, GsonAdapterUtil.MapAdapter()) //Lambda 기본 변환에 사용 (다른데는 쓸일 없음)
             registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeAdapter(TimeFormat.YMDHMS)) //날짜만 변경해줌
         }.create()!!
@@ -35,22 +35,30 @@ object GsonSet {
         }.create()!!
     }
 
-
-    /** AWS kinesis 등에 연동할 데이터 변환용 */
+    /**
+     * 이하 적용된것
+     * AWS kinesis 입력데이터 ( athena table 데이터)
+     *  */
     val TABLE_UTC by lazy {
         GsonBuilder().apply {
-            //setDateFormat("xxx)
             setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             setExclusionStrategies(NotExposeStrategy())
-            //gsonBuilder.excludeFieldsWithModifiers(Modifier.STATIC,Modifier.TRANSIENT);
-            registerTypeAdapter(LocalDateTime::class.java, DateTimeUtcAdapter()) //날짜만 변경해줌
+            registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeUtcAdapter()) //날짜만 변경해줌
+            registerTypeAdapter(GsonData::class.java, GsonAdapterUtil.GsonDataAdapter())
         }.create()!!
     }
 
-    /** 시간의 경우 UTC 기본값으로 변환해줌 */
-    class DateTimeUtcAdapter : JsonDeserializer<LocalDateTime>, JsonSerializer<LocalDateTime> {
-        override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): LocalDateTime = json.asString.fromUtc()
-        override fun serialize(src: LocalDateTime?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement = JsonPrimitive(src?.toUtc() ?: "")
+    /**
+     * 이하 적용된것
+     * eventBridge event 적용
+     *  */
+    val BEAN_UTC_ZONE by lazy {
+        GsonBuilder().apply {
+            setExclusionStrategies(NotExposeStrategy())
+            registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeUtcZoneAdapter()) //날짜만 변경해줌
+            registerTypeAdapter(GsonData::class.java, GsonAdapterUtil.GsonDataAdapter())
+        }.create()!!
     }
+
 
 }

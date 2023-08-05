@@ -7,13 +7,11 @@ import aws.sdk.kotlin.services.s3.model.GetObjectRequest
 import aws.sdk.kotlin.services.s3.model.NoSuchKey
 import aws.sdk.kotlin.services.s3.model.ObjectIdentifier
 import aws.sdk.kotlin.services.s3.putObject
-import aws.smithy.kotlin.runtime.content.ByteStream
-import aws.smithy.kotlin.runtime.content.asByteStream
-import aws.smithy.kotlin.runtime.content.decodeToString
-import aws.smithy.kotlin.runtime.content.writeToFile
+import aws.smithy.kotlin.runtime.content.*
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import net.kotlinx.core.concurrent.coroutineExecute
 import java.io.File
+import java.nio.charset.Charset
 
 /** 삭제, 리스트 조회 등 이게 디폴트인듯  */
 const val LIMIT_PER_REQ = 1000
@@ -112,8 +110,9 @@ suspend inline fun S3Client.deleteAll(datas: Collection<S3Data>) {
  * 간단 읽기 (소용량)
  * AWS kotlin에서 아직 스트림 읽기는 안되는거 같음. ByteStream 을 일반 스트림으로 어케 바꾸지?? -> 일단 java SDK2를 사용할것
  * 간단 쓰기는 없음 (스트리핑 put은 안됨) -> 먼저 파일로 쓴 다음 업로드 할것!!
+ * @param charset  지정하지 않으면 기본디코딩
  *  */
-suspend inline fun S3Client.getObjectLines(bucket: String, key: String): List<List<String>>? {
+suspend inline fun S3Client.getObjectLines(bucket: String, key: String, charset: Charset? = null): List<List<String>>? {
     return try {
         this.getObject(
             GetObjectRequest {
@@ -121,7 +120,13 @@ suspend inline fun S3Client.getObjectLines(bucket: String, key: String): List<Li
                 this.key = key
             }
         ) {
-            csvReader().readAll(it.body!!.decodeToString())
+            when (charset) {
+                null -> csvReader().readAll(it.body!!.decodeToString())
+                else -> {
+                    val text = String(it.body!!.toByteArray(), charset) //원하는 캐릭터셋으로 인코딩
+                    csvReader().readAll(text)
+                }
+            }
         }
     } catch (e: NoSuchKey) {
         null
