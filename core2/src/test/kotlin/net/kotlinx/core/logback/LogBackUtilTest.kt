@@ -16,7 +16,7 @@ internal class LogBackUtilTest {
         log.trace { "trace 영감님" }
         log.debug { "debug 영감님" }
 
-        LogBackUtil.logLevelTo(CoreUtil.packageName, Level.DEBUG)
+        LogBackUtil.logLevelTo(CoreUtil.PACKAGE_NAME, Level.DEBUG)
 
         log.trace { "trace 영감님" }
         log.debug { "debug 영감님" }

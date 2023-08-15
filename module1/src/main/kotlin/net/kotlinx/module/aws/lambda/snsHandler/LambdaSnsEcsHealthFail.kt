@@ -21,7 +21,7 @@ class LambdaSnsEcsHealthFail(
         val detail = sns["detail"]
         val msg = "${detail["group"]} => ${detail["stoppedReason"]}"
         eventBus.post(LambdaSnsEvent(title, msg))
-        return LambdaUtil.Ok
+        return LambdaUtil.OK
     }
 }
 

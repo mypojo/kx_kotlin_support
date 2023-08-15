@@ -75,7 +75,7 @@ object ReflectionLineUtil {
     }
 
     /** 간단 로그 출력용 */
-    @Deprecated("Bean 사용2")
+    @Deprecated("Bean 사용2", ReplaceWith("clazz.constructors.maxWith(compareBy { it.parameters.size }).parameters.map { it.name ?: \"-\" }"))
     fun dataToHeader(clazz: KClass<*>): List<String> =  clazz.constructors.maxWith(compareBy { it.parameters.size }).parameters.map { it.name ?: "-" }
 
     /**
@@ -137,11 +137,11 @@ object ReflectionLineUtil {
 }
 
 /** 리플렉션으로 출력. 하나 이상의 객체가 있어야 한다. */
-@Deprecated("Bean 사용")
+@Deprecated("Bean의 toTextGrid 사용")
 fun List<Any>.toTextGrid(): TextGrid {
     val first = this.first()
     val datas = this.map { ReflectionLineUtil.dataToLine(it).toTypedArray() }
-    return ReflectionLineUtil.dataToHeader(first::class).toTextGrid(datas)
+    return first::class.constructors.maxWith(compareBy { it.parameters.size }).parameters.map { it.name ?: "-" }.toTextGrid(datas)
 }
 
 enum class DataNullMark {

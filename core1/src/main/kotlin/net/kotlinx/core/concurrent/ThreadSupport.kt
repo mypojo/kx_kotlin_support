@@ -2,6 +2,7 @@ package net.kotlinx.core.concurrent
 
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
+import kotlin.time.Duration
 
 /**
  * 간단한 작업 실행용. 해보니 Callable 을 단축 하는건 크게 의미 없음..
@@ -12,4 +13,9 @@ fun <T> List<Callable<T>>.parallelExecute(threadCnt: Int = this.size): List<T> {
     val results = this.map { ex.submit(it) }.map { it.get() } //null일 수 있음 (리턴 없는것들)
     ex.shutdown()
     return results
+}
+
+/** 간단 sleep */
+fun Duration.sleep(){
+    Thread.sleep(this.inWholeMilliseconds)
 }

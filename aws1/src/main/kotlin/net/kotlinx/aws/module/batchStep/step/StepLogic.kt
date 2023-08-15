@@ -49,13 +49,13 @@ class StepLogic(
         val input = run {
             log.trace { "입력파일(S3) 로드.." }
 
-            val inputKey = event[key]?.toString() ?: throw IllegalArgumentException("아직 지원하지 않는 형식입니다.  -> $event")
+            val inputKey = event[KEY]?.toString() ?: throw IllegalArgumentException("아직 지원하지 않는 형식입니다.  -> $event")
 
             //csv로 안하고 그냥 한덩어리로 읽음
             val inputJson = aws.s3.with { getObjectText(bsConfig.workUploadBuket, inputKey) }
             if (inputJson == null) {
                 log.warn { "파일없음으로 스킵 $inputKey" } //리스팅 중에 다른 람다에서 처리가 완료된 경우
-                return LambdaUtil.Fail
+                return LambdaUtil.FAIL
             }
             log.trace { "입력파일(S3) 로드 -> $inputKey ->  ${inputJson.length} length" }
             val inputData = GsonData.parse(inputJson)
@@ -71,7 +71,7 @@ class StepLogic(
             execute(input)
         } catch (e: Exception) {
             log.warn { "###### 데이터 처리 실패!! -> $start / ${input.fileName} / ${e.toSimpleString()}" }
-            return LambdaUtil.Fail //리트라이 하지 않음으로 예외를 던지지 않고 실패 리턴함 (로그 지저분해짐)
+            return LambdaUtil.FAIL //리트라이 하지 않음으로 예외를 던지지 않고 실패 리턴함 (로그 지저분해짐)
         }
         log.trace { "데이터 처리 성공 : ${outputData.size}건" }
         val interval = start.interval()
@@ -111,8 +111,11 @@ class StepLogic(
     }
 
     companion object {
-        /** AWS가 S3 객체를 넣어줄때 사용하는 기본 키값을 동일하게 사용 */
-        const val key = "Key"
+        /**
+         * AWS가 S3 객체를 넣어줄때 사용하는 기본 키값을 동일하게 사용
+         * 주의! 두문자가 대문자임
+         * */
+        const val KEY = "Key"
 
     }
 

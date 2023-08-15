@@ -24,12 +24,12 @@ class CdkSfnChoice(
  * @param pattern retry-*
  * */
 fun Choice.whenMatchesBody(name: String, pattern: String, vararg states: IChainable): Choice {
-    this.`when`(Condition.stringMatches("$.${AwsNaming.option}.${name}.${AwsNaming.body}.${"state"}", pattern), states.toList().join())
+    this.`when`(Condition.stringMatches("$.${AwsNaming.OPTION}.${name}.${AwsNaming.BODY}.${"state"}", pattern), states.toList().join())
     return this
 }
 
 /** 옵션에 직접 매핑 */
 fun Choice.whenMatches(name: String, pattern: String, vararg states: IChainable): Choice {
-    this.`when`(Condition.stringMatches("$.${AwsNaming.option}.${name}", pattern), states.toList().join())
+    this.`when`(Condition.stringMatches("$.${AwsNaming.OPTION}.${name}", pattern), states.toList().join())
     return this
 }

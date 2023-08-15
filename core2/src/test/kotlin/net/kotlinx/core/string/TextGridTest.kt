@@ -9,7 +9,7 @@ internal class TextGridTest{
 
         listOf("메뉴명", "설명", "path","cost_of_data").toTextGrid(
             listOf(
-                arrayOf("연동오류 통합조회","레드시프트로부터 오류 로그 분석함","/errs",9847543),
+                arrayOf("연동오류 통합\n조회","레드시프트로부터 오류 로그 분석함","/errs",9847543),
                 arrayOf("사용자 통합조회","RDS 집계분석","/users",8763876),
             )
         ).print()

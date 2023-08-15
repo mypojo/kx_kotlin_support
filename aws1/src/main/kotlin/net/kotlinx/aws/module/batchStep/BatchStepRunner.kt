@@ -27,7 +27,7 @@ class BatchStepRunner(
 
     /** 핸들러 실행 */
     fun handleRequest(event: Map<String, Any>): Map<String, Any> {
-        val methodName = event[AwsNaming.method]
+        val methodName = event[AwsNaming.METHOD]
         val method = methodName?.let {
             methodMap[it] ?: throw IllegalArgumentException("$it id not found")
         } ?: stepLogic //없으면 기본으로 로직으로 간주

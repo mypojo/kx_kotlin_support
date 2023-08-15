@@ -24,6 +24,9 @@ class TextGrid(
         TEXT, NUM, ;
     }
 
+    /** 개행 제거해줌 */
+    private val lineSeparatorReg = lineSeparator.toRegex()
+
     /** 실제 출력물 텍스트 */
     val text: String by lazy {
 
@@ -33,7 +36,7 @@ class TextGrid(
                     is Number -> it.toString() //닷 붙이기
                     is LocalDateTime -> it.toKr01()
                     is Collection<*> -> it.joinToString(",")
-                    else -> it.toString()
+                    else -> it.toString().removeFrom(lineSeparatorReg)
                 }
             }.take(headers.size) //헤더보다 길면 제거
         }

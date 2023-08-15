@@ -18,19 +18,19 @@ class DynamoDbSessionItem(
 
     override fun toAttribute(): Map<String, AttributeValue> {
         return mutableMapOf<String, AttributeValue>().apply {
-            this += DynamoDbBasic.pk to AttributeValue.S(pk)
-            this += DynamoDbBasic.sk to AttributeValue.S(sk)
+            this += DynamoDbBasic.PK to AttributeValue.S(pk)
+            this += DynamoDbBasic.SK to AttributeValue.S(sk)
             this += DynamoDbSessionItem::ttl.name to AttributeValue.N(ttl.toString())
             this += DynamoDbSessionItem::data.name to AttributeValue.B(data)
         }
     }
 
-    override fun <T : DynamoData> fromAttributeMap(map: Map<String, AttributeValue>): T = DynamoDbSessionItem(map[DynamoDbBasic.sk]!!.asS()).apply {
+    override fun <T : DynamoData> fromAttributeMap(map: Map<String, AttributeValue>): T = DynamoDbSessionItem(map[DynamoDbBasic.SK]!!.asS()).apply {
         ttl = map.findOrThrow(DynamoDbSessionItem::ttl)
         data = map[DynamoDbSessionItem::data.name]!!.asB()
     } as T
 
-    override val pk: String = DynamoDbBasic.pk
+    override val pk: String = DynamoDbBasic.PK
 
     companion object {
         lateinit var sessionTableName: String

@@ -10,6 +10,7 @@ import aws.sdk.kotlin.services.sfn.model.StartExecutionResponse
 import aws.sdk.kotlin.services.sfn.startExecution
 import com.lectra.koson.Koson
 import com.lectra.koson.obj
+import net.kotlinx.aws.AwsNaming
 import net.kotlinx.core.gson.GsonData
 import java.util.*
 
@@ -25,10 +26,10 @@ suspend fun SfnClient.startExecution(awsId: String, stateMachineName: String, jo
     val uuid = UUID.randomUUID().toString()
     //원본 잡 옵션에 uuid 추가
     val updatedJobOption = GsonData.parse(jobOption.toString()).apply {
-        put(SfnUtil.sfnId, uuid)
+        put(SfnUtil.SFN_ID, uuid)
     }
     val inputJson = obj {
-        SfnUtil.jobOption to updatedJobOption.toString() //잡 옵션은 무조건 텍스트임 (json xx)
+        AwsNaming.JOB_OPTION to updatedJobOption.toString() //잡 옵션은 무조건 텍스트임 (json xx)
         block?.invoke(this)
     }
     return this.startExecution {

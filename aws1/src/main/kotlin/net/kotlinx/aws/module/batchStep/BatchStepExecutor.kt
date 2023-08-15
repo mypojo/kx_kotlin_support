@@ -29,7 +29,7 @@ class BatchStepExecutor(
 
         aws.sfn.startExecution {
             this.input = obj {
-                AwsNaming.option to rawJson(input.toJson())
+                AwsNaming.OPTION to rawJson(input.toJson())
             }.toString()
             this.name = input.sfnId
             this.stateMachineArn = SfnUtil.stateMachineArn(config.aws.awsConfig.awsId!!, config.stateMachineName)

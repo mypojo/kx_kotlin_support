@@ -9,15 +9,7 @@ object SfnUtil {
     //==================================================== CDK 예약어 ======================================================
 
     /** 일반적인 잡 옵션 */
-    const val sfnId: String = "sfnId"
-
-    /** 일반적인 잡 옵션 */
-    @Deprecated("사용안함 AwsNaming")
-    const val jobOption: String = "jobOption"
-
-    /** 잡 스케쥴링 옵션 */
-    @Deprecated("사용안함 AwsNaming")
-    const val jobScheduleTime: String = "jobScheduleTime"
+    const val SFN_ID: String = "sfnId"
 
     /** 실행 ARN  */
     fun executionArn(awsId: String, stateMachineName: String, uuid: String, region: String = AwsConfig.SEOUL): String {

@@ -3,6 +3,8 @@ package net.kotlinx.aws.ses
 import aws.sdk.kotlin.services.ses.SesClient
 import aws.sdk.kotlin.services.ses.model.RawMessage
 import aws.sdk.kotlin.services.ses.sendRawEmail
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import javax.mail.internet.MimeMessage
 
@@ -13,7 +15,9 @@ import javax.mail.internet.MimeMessage
  */
 suspend fun SesClient.sendRawEmail(message: MimeMessage) {
     val outputStream = ByteArrayOutputStream() // use 안써도 되나??
-    message.writeTo(outputStream)
+    withContext(Dispatchers.IO) {
+        message.writeTo(outputStream)
+    }
     this.sendRawEmail {
         this.rawMessage = RawMessage {
             this.data = outputStream.toByteArray()

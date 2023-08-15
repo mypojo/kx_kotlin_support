@@ -2,7 +2,6 @@ package net.kotlinx.module.reflect
 
 import net.kotlinx.core.string.TextGrid
 import net.kotlinx.core.string.toTextGrid
-import org.apache.poi.ss.formula.functions.T
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KProperty

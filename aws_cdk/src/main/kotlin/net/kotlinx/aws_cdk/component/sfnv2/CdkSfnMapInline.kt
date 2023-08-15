@@ -20,14 +20,14 @@ class CdkSfnMapInline(
     override var suffix: String = ""
 
     /** 실행할 람다 이름 */
-    var lambdaName: String = "${cdkSfn.lambda.functionName}:${LambdaUtil.serviceOn}"
+    var lambdaName: String = "${cdkSfn.lambda.functionName}:${LambdaUtil.SERVICE_ON}"
 
     /** 스탭 내부의 state 이름 */
     var stepName: String = "${name}Inline"
 
     var itemPath: String = "$.StepStart.datas"
 
-    var resultPath: String = "$.${AwsNaming.option}.${name}"
+    var resultPath: String = "$.${AwsNaming.OPTION}.${name}"
 
     /** DISTRIBUTED 모드는 람다 리밋까지 지원 */
     var maxConcurrency: Int = 40

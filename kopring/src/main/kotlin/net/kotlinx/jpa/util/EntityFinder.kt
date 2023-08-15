@@ -1,34 +1,45 @@
-package net.kotlinx.module.guava
+package net.kotlinx.jpa.util
 
 import mu.KotlinLogging
 import net.kotlinx.core.string.abbr
 import net.kotlinx.core.string.toSnakeFromCamel
 import net.kotlinx.core.string.toTextGrid
+import net.kotlinx.module.guava.ClassFinder
 import net.kotlinx.module.reflect.annotationsOrEmpty
 import net.kotlinx.module.reflect.findClass
 import net.kotlinx.module.reflect.props
 import net.kotlinx.module.reflect.toKClass
+import javax.persistence.Column
+import javax.persistence.Table
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
 
 
 /**
- * JPA 클래스
- * XXXX (이동시키기)
+ * 클래스 파인더의 JPA 조회버전
  * */
-object ClassFinderJpa {
+class EntityFinder(
+    val packageName: String,
+) {
+
+    /** 테이블 어노테이션 */
+    val table: KClass<out Annotation> = Table::class
+
+    /** 컬럼 어노테이션 */
+    val column: KClass<out Annotation> = Column::class
 
     private val log = KotlinLogging.logger {}
 
     /** JPA 출력 */
-    fun print(packageName: String, table: KClass<out Annotation>, column: KClass<out Annotation>) {
+    fun print() {
 
         val classFinder = ClassFinder(packageName)
 
         val tables = classFinder.classes.filter { it.annotationsOrEmpty.findClass(table).isNotEmpty() }.map { table ->
-            KTable(
+            EntityTable(
                 table.simpleName!!,
                 table.props().filter { it.annotations.findClass(column).isNotEmpty() }.map { column ->
-                    KColumn(
+                    EntityColumn(
                         column.name,
                         column.returnType.toKClass()
                     )
@@ -89,3 +100,44 @@ object ClassFinderJpa {
 
 }
 
+/** 테이블 */
+data class EntityTable(
+    val name: String,
+    val columns: List<EntityColumn>,
+) {
+    fun print() {
+        columns.map { column ->
+            arrayOf(
+                column.name,
+                column.columnTypeGroup,
+                column.columnType.toString().substringAfterLast(".")
+            )
+        }.also {
+            listOf("name", "typeGroup", "type").toTextGrid(it).print()
+        }
+    }
+}
+
+/** 컬럼 */
+data class EntityColumn(
+    val name: String,
+    val columnType: KClass<*>,
+    val columnTypeGroup: KColumnTypeGroup = KColumnTypeGroup.from(columnType)
+)
+
+enum class KColumnTypeGroup {
+    KString, KNumber, KEnum, KLocalDateTime, KLocalDate, KBoolean, KUnknown
+    ;
+
+    companion object {
+        fun from(columnType: KClass<*>): KColumnTypeGroup = when {
+            columnType == String::class -> KString
+            columnType.isSubclassOf(Number::class) -> KNumber
+            columnType.isSubclassOf(Enum::class) -> KEnum
+            columnType == java.time.LocalDateTime::class -> KLocalDateTime
+            columnType == java.time.LocalDate::class -> KLocalDate
+            columnType == Boolean::class -> KBoolean
+            else -> KUnknown
+        }
+    }
+}

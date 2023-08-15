@@ -58,13 +58,13 @@ class DynamoQuery(block: DynamoQuery.() -> Unit) {
     companion object {
 
         val keyEqualTo = DynamoQuery {
-            queryParam = { mapOf(":${DynamoDbBasic.pk}" to AttributeValue.S(it.pk)) }
+            queryParam = { mapOf(":${DynamoDbBasic.PK}" to AttributeValue.S(it.pk)) }
         }
         val sortBeginsWith = DynamoQuery {
             queryParam = {
                 mapOf(
-                    ":${DynamoDbBasic.pk}" to AttributeValue.S(it.pk),
-                    ":${DynamoDbBasic.sk}" to AttributeValue.S(it.sk),
+                    ":${DynamoDbBasic.PK}" to AttributeValue.S(it.pk),
+                    ":${DynamoDbBasic.SK}" to AttributeValue.S(it.sk),
                 )
             }
         }

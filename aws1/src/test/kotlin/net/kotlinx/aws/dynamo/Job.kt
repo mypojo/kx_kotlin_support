@@ -23,8 +23,8 @@ open class Job(
         val reqTimeStr = reqTime?.toIos() ?: ""
         memberReqTime = "$memberId#$reqTimeStr"
         return mapOf(
-            DynamoDbBasic.pk to AttributeValue.S(pk),
-            DynamoDbBasic.sk to AttributeValue.S(sk),
+            DynamoDbBasic.PK to AttributeValue.S(pk),
+            DynamoDbBasic.SK to AttributeValue.S(sk),
 
             Job::ttl.name to AttributeValue.N(ttl.toString()),
             Job::memberId.name to AttributeValue.S(memberId ?: ""),
@@ -38,8 +38,8 @@ open class Job(
 
     /** 가져올때는 인덱스 없어도 됨 */
     override fun <T : DynamoData> fromAttributeMap(map: Map<String, AttributeValue>): T = Job(
-        map[DynamoDbBasic.pk]!!.asS(),
-        map[DynamoDbBasic.sk]!!.asS()
+        map[DynamoDbBasic.PK]!!.asS(),
+        map[DynamoDbBasic.SK]!!.asS()
     ).apply {
         ttl = map[Job::ttl.name]?.asN()?.toLong()
         memberId = map[Job::memberId.name]?.asS()

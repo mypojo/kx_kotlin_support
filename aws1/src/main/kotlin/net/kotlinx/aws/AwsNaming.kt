@@ -12,42 +12,56 @@ object AwsNaming {
      * 각종 내부 로직의 분기 구분값
      * ex) 공용 람다 사용시 분기처리 키값
      *  */
-    const val method = "method"
+    const val METHOD = "method"
 
     /** 모드 */
-    const val mode = "mode"
+    const val MODE = "mode"
 
     /**
      * json 옵션값의 키값
      * * ex) 공용 람다 사용시 입력 옵션 json
      *  */
-    const val option: String = "option"
+    const val OPTION: String = "option"
 
     /**
      * 스케쥴된 시간
      * ex) SFN 예약시간
      * */
-    const val scheduleTime: String = "scheduleTime"
+    const val SCHEDULE_TIME: String = "scheduleTime"
 
     /**
      * 대기 시간
      * ex) SFN 대기시간
      * */
-    const val waitSeconds: String = "waitSeconds"
+    const val WAIT_SECONDS: String = "waitSeconds"
 
     /** 콜드스타트 대기시간 */
-    const val waitColdstartSeconds: String = "waitColdstartSeconds"
+    const val WAIT_COLDSTART_SECONDS: String = "waitColdstartSeconds"
 
     /** 결과 등의 본문 */
-    const val body: String = "body"
+    const val BODY: String = "body"
+
+    //==================================================== 버킷 관련 ======================================================
+    const val BUCKET = "bucket"
+
+    const val KEY = "key"
 
     //==================================================== 문자 패턴 ======================================================
 
     /** 콜드스타트 */
-    const val choiceFirst: String = "first"
+    const val CHOICE_FIRST: String = "first"
 
     /** 리트라이 */
-    const val choiceRetry: String = "retry"
+    const val CHOICE_RETRY: String = "retry"
 
+    //==================================================== JOB ======================================================
+
+    /**
+     * ex) SFN의 잡 옵션
+     * */
+    const val JOB_OPTION: String = "jobOption"
+
+    /** 잡 스케쥴링 옵션 */
+    const val JOB_SCHEDULE_TIME: String = "jobScheduleTime"
 
 }

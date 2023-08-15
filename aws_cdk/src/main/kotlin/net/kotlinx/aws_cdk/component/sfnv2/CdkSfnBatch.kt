@@ -19,8 +19,8 @@ class CdkSfnBatch(
      * @see net.kotlinx.aws_cdk.component.CdkBatchJobDefinition
      * */
     var input = mapOf(
-        BatchUtil.BATCH_ARGS01 to obj { AwsNaming.method to name }.toString(), //첫번재 파라메터로 method 전달(로직 이름 or job 이라면 DDB PK)
-        "${BatchUtil.BATCH_ARGS02}.$" to "$.${AwsNaming.option}", //두번째 파라메터로 SFN에 입력된 옵션을 넘김
+        BatchUtil.BATCH_ARGS01 to obj { AwsNaming.METHOD to name }.toString(), //첫번재 파라메터로 method 전달(로직 이름 or job 이라면 DDB PK)
+        "${BatchUtil.BATCH_ARGS02}.$" to "$.${AwsNaming.OPTION}", //두번째 파라메터로 SFN에 입력된 옵션을 넘김
     )
 
     override var suffix: String = ""
@@ -32,7 +32,7 @@ class CdkSfnBatch(
                 .jobDefinitionArn(cdkSfn.jobDefinitionArn)
                 .jobQueueArn(cdkSfn.jobQueueArn)
                 .payload(TaskInput.fromObject(input))
-                .resultPath("$.${AwsNaming.option}.${name}") //다른데서 읽을 수 있도록 option에 등록한다
+                .resultPath("$.${AwsNaming.OPTION}.${name}") //다른데서 읽을 수 있도록 option에 등록한다
                 .resultSelector(
                     mapOf(
                         "jobName" to name,

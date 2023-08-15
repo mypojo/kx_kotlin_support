@@ -22,7 +22,7 @@ class StepEnd(
     override suspend fun handleRequest(event: Map<String, Any>): Any {
 
         val context = BatchStepContext(event)
-        val sfnId = context.option[SfnUtil.sfnId].str!!
+        val sfnId = context.option[SfnUtil.SFN_ID].str!!
         val query = """
                     SELECT file_name, COUNT(1) CNT,max(total_interval) total_interval,avg(interval) avg_interval,sum(length(output)) length
                     FROM d.batch_step
@@ -38,7 +38,7 @@ class StepEnd(
             header.toTextGrid(datas).print()
 
             val sumOfInterval = datas.sumOf { it[2].toLong() }
-            val cost = sumOfInterval / 1000 * LambdaUtil.costGiPerSec / 4 * 1350
+            val cost = sumOfInterval / 1000 * LambdaUtil.COST_GI_PER_SEC / 4 * 1350
             log.info { "WAS lambda 과금 ${cost}원" }
             obj {
                 "lambda-누적시간" to sumOfInterval.toTimeString()

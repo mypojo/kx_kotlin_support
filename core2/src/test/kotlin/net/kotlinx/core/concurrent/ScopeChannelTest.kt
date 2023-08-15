@@ -12,7 +12,7 @@ import net.kotlinx.core.time.toTimeString
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 
-val log = KotlinLogging.logger { }.also { LogBackUtil.logLevelTo(CoreUtil.packageName, Level.DEBUG) }
+val log = KotlinLogging.logger { }.also { LogBackUtil.logLevelTo(CoreUtil.PACKAGE_NAME, Level.DEBUG) }
 
 internal class ScopeChannelTest : DescribeSpec({
 

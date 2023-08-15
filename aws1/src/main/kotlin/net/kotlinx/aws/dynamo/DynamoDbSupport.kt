@@ -35,8 +35,8 @@ suspend fun DynamoDbClient.updateItemMap(tableName: String, pk: String, sk: Stri
         this.tableName = tableName
         this.returnValues = ReturnValue.None //필요한 경우 없음.
         this.key = mapOf(
-            DynamoDbBasic.pk to AttributeValue.S(pk),
-            DynamoDbBasic.sk to AttributeValue.S(sk),
+            DynamoDbBasic.PK to AttributeValue.S(pk),
+            DynamoDbBasic.SK to AttributeValue.S(sk),
         )
         this.updateExpression = "set " + append.entries.joinToString(",") { "${columnName}.${it.key} = :${it.key}" }
         this.expressionAttributeValues = append.map { ":${it.key}" to AttributeValue.S(it.value) }.toMap()

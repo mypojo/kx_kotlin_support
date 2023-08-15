@@ -13,7 +13,7 @@ object LambdaUtil {
     //==================================================== cost ======================================================
 
     /** 1G 기준 초당 비용 (가장 비싸게 구매시) -> 256mb 으로 변환 */
-    const val costGiPerSec = 0.0000166667
+    const val COST_GI_PER_SEC = 0.0000166667
 
     //==================================================== 간단 예약어들  ======================================================
 
@@ -23,15 +23,15 @@ object LambdaUtil {
     //==================================================== 결과 간단  ======================================================
 
     /** 정상 결과 리턴 문자열 */
-    const val Ok = "ok"
+    const val OK = "ok"
 
     /** 정상 결과 리턴 문자열 */
-    const val Fail = "fail"
+    const val FAIL = "fail"
 
     /** 스냅스타트용 예약어 */
-    const val beforeCheckpoint = "beforeCheckpoint"
+    const val BEFORE_CHECKPOINT = "beforeCheckpoint"
     /** 실 서비스를 나타내는 람다 Alias 예약어 */
-    const val serviceOn = "serviceOn"
+    const val SERVICE_ON = "serviceOn"
 
 }
 

@@ -33,7 +33,7 @@ data class Menu(
         child.id = id
         child.name = name
         child.configRoles = roles.toList()
-        this.children = children + child
+        this.children += child
         child.parent = this
     }
 

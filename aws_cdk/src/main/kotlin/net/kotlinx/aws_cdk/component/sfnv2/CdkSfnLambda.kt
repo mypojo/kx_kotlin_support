@@ -33,12 +33,12 @@ class CdkSfnLambda(
                 .payload(
                     TaskInput.fromObject(
                         mapOf(
-                            AwsNaming.method to name,
-                            "${AwsNaming.option}.$" to "$.${AwsNaming.option}",  //기준날짜 등의 커스텀 옵션
+                            AwsNaming.METHOD to name,
+                            "${AwsNaming.OPTION}.$" to "$.${AwsNaming.OPTION}",  //기준날짜 등의 커스텀 옵션
                         )
                     )
                 )
-                .resultPath("$.${AwsNaming.option}.${name}") //다른데서 읽을 수 있도록 option에 등록한다
+                .resultPath("$.${AwsNaming.OPTION}.${name}") //다른데서 읽을 수 있도록 option에 등록한다
                 .resultSelector(
                     mapOf(
                         //AwsNaming.method to name,

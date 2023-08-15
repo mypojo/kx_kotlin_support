@@ -24,12 +24,16 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * 사실 두개 거의 같이 호출됨
  */
 class TransactionManager(
+    /** data 를 처리해주는 콜백 */
     private val callback: (Boolean, List<*>) -> Unit
 ) {
 
     private val log = KotlinLogging.logger {}
 
-    /** 스래드 로컬임으로 동기화 할 필요는 없다  */
+    /**
+     * 스래드 로컬임으로 동기화 할 필요는 없다
+     * @param data 여기 입력된 데이터는 트랜잭션이 종료될때 callback 으로 처리됨
+     *  */
     fun addData(data: Any) {
         Preconditions.checkState(TransactionSynchronizationManager.isActualTransactionActive(), "Transaction required")
         val datas = DATAS.get() ?: run {

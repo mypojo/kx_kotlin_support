@@ -15,7 +15,7 @@ object LambdaHandlerUtil {
      *  */
     fun anyToLambdaMap(handlerResp: Any): Map<String, Any> = when (handlerResp) {
         //==================================================== 일반 문자열은 그냥 바디로 ======================================================
-        is String -> mapOf(AwsNaming.body to handlerResp)
+        is String -> mapOf(AwsNaming.BODY to handlerResp)
         //==================================================== json ======================================================
         is ObjectType -> GsonData.parse(handlerResp).fromJson<LinkedHashMap<String, Any>>()
         is GsonData -> handlerResp.fromJson<LinkedHashMap<String, Any>>()

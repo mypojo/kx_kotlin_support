@@ -40,7 +40,7 @@ dependencies {
     implementation("commons-codec:commons-codec:1.15") //구글 OTP 모듈
     //implementation("io.zeko:zeko-sql-builder:1.4.0") //스키마 정의 없는 SQL 빌더 (비정형 쿼리용 or 간단 람다 API 쿼리)
     implementation("com.vladsch.kotlin-jdbc:kotlin-jdbc:0.5.0") //깃에서 주워옴. 간단래퍼
-    implementation("com.amazonaws:dynamodb-lock-client:1.2.0") //DDB 분산락 클라이언트 정발버전
+    api("com.amazonaws:dynamodb-lock-client:1.2.0") //DDB 분산락 클라이언트 정발버전
 
 
     //==================================================== 기타 ======================================================

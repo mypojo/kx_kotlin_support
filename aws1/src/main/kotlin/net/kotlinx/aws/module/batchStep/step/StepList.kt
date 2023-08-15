@@ -51,7 +51,7 @@ class StepList(
             suspend {
                 //AWS의 S3 입력과 동일하게 맞춰준다.
                 val lambdaInput = obj {
-                    StepLogic.key to it
+                    StepLogic.KEY to it
                 }
                 log.trace { " -> lambdaInput $lambdaInput" }
                 aws.lambda.with { invokeAsynch(bsConfig.lambdaFunctionName, lambdaInput) }
@@ -63,9 +63,9 @@ class StepList(
         log.info { "리스팅 종료. ${contents.size}건 -> 걸린시간 : $start / $result" }
 
         val state = when {
-            contents.isEmpty() -> LambdaUtil.Ok
-            result.empty -> AwsNaming.choiceFirst
-            else -> AwsNaming.choiceRetry
+            contents.isEmpty() -> LambdaUtil.OK
+            result.empty -> AwsNaming.CHOICE_FIRST
+            else -> AwsNaming.CHOICE_RETRY
         }
 
         val stepStart: StepStartContext = context[StepStart::class]

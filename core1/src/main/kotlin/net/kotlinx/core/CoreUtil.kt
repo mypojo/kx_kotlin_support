@@ -2,6 +2,6 @@ package net.kotlinx.core
 
 object CoreUtil {
 
-    const val packageName:String =  "net.kotlinx"
+    const val PACKAGE_NAME:String =  "net.kotlinx"
 
 }

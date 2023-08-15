@@ -1,5 +1,6 @@
 package net.kotlinx.aws_cdk.component.sfnv2
 
+import net.kotlinx.aws.AwsNaming
 import software.amazon.awscdk.services.stepfunctions.CustomState
 import software.amazon.awscdk.services.stepfunctions.CustomStateProps
 import software.amazon.awscdk.services.stepfunctions.State
@@ -27,10 +28,10 @@ class CdkSfnMapDist(
     var maxConcurrency: Int = 40
 
     /** 버킷명 키 */
-    var bucket: String = CdkSfnMapDist.bucket
+    var bucket: String = AwsNaming.BUCKET
 
     /** S3 경로  키 */
-    var key: String = CdkSfnMapDist.key
+    var key: String = AwsNaming.KEY
 
     //==================================================== 오류 3종 ======================================================
 
@@ -93,14 +94,6 @@ class CdkSfnMapDist(
                 )
                 .build()
         )
-    }
-
-    companion object {
-        @Deprecated("xx")
-        const val bucket = "bucket"
-
-        @Deprecated("xx")
-        const val key = "key"
     }
 
 }

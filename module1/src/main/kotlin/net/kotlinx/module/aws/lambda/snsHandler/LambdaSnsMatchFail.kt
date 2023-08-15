@@ -15,6 +15,6 @@ class LambdaSnsMatchFail : (GsonData) -> String?, KoinComponent {
 
     override fun invoke(sns: GsonData): String {
         eventBus.post(LambdaSnsEvent("unkown SNS Notification", sns.toString()))
-        return LambdaUtil.Ok
+        return LambdaUtil.OK
     }
 }

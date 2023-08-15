@@ -18,13 +18,13 @@ class CdkSfnWait(
 
     /**
      * 언제까지 대기할지?
-     * @see net.kotlinx.aws.AwsNaming.scheduleTime
+     * @see net.kotlinx.aws.AwsNaming.SCHEDULE_TIME
      *  */
     var timestampPath: String? = null
 
     /**
      * 몇초 대기할지?
-     * @see net.kotlinx.aws.AwsNaming.waitSeconds
+     * @see net.kotlinx.aws.AwsNaming.WAIT_SECONDS
      * */
     var secondsPath: String? = null
 

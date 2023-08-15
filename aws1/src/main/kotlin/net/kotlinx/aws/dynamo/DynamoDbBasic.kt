@@ -10,8 +10,8 @@ interface DynamoDbBasic {
     val sk: String
 
     companion object {
-        const val pk = "pk"
-        const val sk = "sk"
+        const val PK = "pk"
+        const val SK = "sk"
     }
 }
 
@@ -22,8 +22,8 @@ interface DynamoData : DynamoDbBasic {
 
     fun toKeyMap(): Map<String, AttributeValue> {
         return mapOf(
-            DynamoDbBasic.pk to AttributeValue.S(this.pk),
-            DynamoDbBasic.sk to AttributeValue.S(this.sk),
+            DynamoDbBasic.PK to AttributeValue.S(this.pk),
+            DynamoDbBasic.SK to AttributeValue.S(this.sk),
         )
     }
 

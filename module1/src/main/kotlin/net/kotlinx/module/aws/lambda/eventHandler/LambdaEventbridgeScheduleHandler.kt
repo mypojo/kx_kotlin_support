@@ -27,7 +27,7 @@ class LambdaEventbridgeScheduleHandler : (GsonData) -> String?, KoinComponent {
         val eventName: String = resourceArn.substringAfterLast("/")
 
         eventBus.post(LambdaEventbridgeEvent(eventName))
-        return LambdaUtil.Ok
+        return LambdaUtil.OK
     }
 
     companion object {

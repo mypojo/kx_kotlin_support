@@ -20,7 +20,7 @@ class LambdaSqsHandler : (GsonData) -> String?, KoinComponent {
         val body: GsonData = GsonData.parse(event["body"].str!!)
 
         eventBus.post(LambdaSqsEvent(queueName, body))
-        return LambdaUtil.Ok
+        return LambdaUtil.OK
     }
 
     companion object {

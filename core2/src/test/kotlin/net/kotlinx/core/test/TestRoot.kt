@@ -36,7 +36,7 @@ abstract class TestRoot {
         @BeforeAll
         @JvmStatic
         fun beforeClass() {
-            LogBackUtil.logLevelTo(CoreUtil.packageName, Level.DEBUG)
+            LogBackUtil.logLevelTo(CoreUtil.PACKAGE_NAME, Level.DEBUG)
             start = TimeStart()
         }
 

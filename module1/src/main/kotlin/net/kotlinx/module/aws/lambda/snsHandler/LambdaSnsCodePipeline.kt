@@ -23,7 +23,7 @@ class LambdaSnsCodePipeline(
         val msg = "pipeline [${detail["pipeline"]}] => ${detail["state"]}"
 
         eventBus.post(LambdaSnsEvent(title, msg))
-        return LambdaUtil.Ok
+        return LambdaUtil.OK
     }
 }
 

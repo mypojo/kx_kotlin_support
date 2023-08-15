@@ -28,8 +28,8 @@ suspend fun DynamoDbClient.batchGetItem(tableName: String, params: List<Map<Stri
         tableName to KeysAndAttributes {
             this.keys = params.map {
                 mapOf(
-                    DynamoDbBasic.pk to it[DynamoDbBasic.pk]!!,
-                    DynamoDbBasic.sk to it[DynamoDbBasic.sk]!!,
+                    DynamoDbBasic.PK to it[DynamoDbBasic.PK]!!,
+                    DynamoDbBasic.SK to it[DynamoDbBasic.SK]!!,
                 )
             }
         }

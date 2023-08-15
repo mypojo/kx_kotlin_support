@@ -18,7 +18,7 @@ internal class BatchStepContext(event: Map<String, Any>) {
      * 결과도 여기에 들어감
      * 반복 실행일경우 처음이면 empty
      *  */
-    val option: GsonData = gsonData[AwsNaming.option]
+    val option: GsonData = gsonData[AwsNaming.OPTION]
 
     val mode: BatchStepMode? by lazy { option["mode"].str?.let { BatchStepMode.valueOf(it) } }
 
@@ -29,7 +29,7 @@ internal class BatchStepContext(event: Map<String, Any>) {
 
     /** 옵션을 객체화 시킴 */
     inline operator fun <reified T> get(clazz: KClass<*>): T {
-        val json = option[clazz.simpleName!!][AwsNaming.body].toString()
+        val json = option[clazz.simpleName!!][AwsNaming.BODY].toString()
         return GsonData.parse(json).fromJson<T>()
     }
 }

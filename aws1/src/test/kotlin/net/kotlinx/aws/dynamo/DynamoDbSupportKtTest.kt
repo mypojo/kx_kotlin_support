@@ -21,8 +21,8 @@ class DynamoDbSupportKtTest : TestRoot() {
                 this.tableName = "system-dev"
                 this.returnValues = ReturnValue.UpdatedNew //새 값 리턴
                 this.key = mapOf(
-                    DynamoDbBasic.pk to AttributeValue.S("p1"),
-                    DynamoDbBasic.sk to AttributeValue.S("s1"),
+                    DynamoDbBasic.PK to AttributeValue.S("p1"),
+                    DynamoDbBasic.SK to AttributeValue.S("s1"),
                 )
                 this.updateExpression = "set results = :val"
                 this.expressionAttributeValues = mapOf(

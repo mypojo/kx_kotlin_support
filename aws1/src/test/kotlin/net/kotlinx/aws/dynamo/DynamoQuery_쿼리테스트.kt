@@ -21,7 +21,7 @@ internal class DynamoQuery_쿼리테스트 : TestRoot() {
         queryParam = {
             val job = it as Job
             mapOf(
-                ":${DynamoDbBasic.pk}" to AttributeValue.S(job.pk),
+                ":${DynamoDbBasic.PK}" to AttributeValue.S(job.pk),
                 ":${Job::jobStatus.name}" to AttributeValue.S(job.jobStatus!!)
             )
         }

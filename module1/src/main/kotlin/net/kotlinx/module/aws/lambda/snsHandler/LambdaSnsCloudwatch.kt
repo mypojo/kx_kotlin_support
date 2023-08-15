@@ -25,7 +25,7 @@ class LambdaSnsCloudwatch : (GsonData) -> String?, KoinComponent {
         val msg = "${data["Namespace"]} ${data["MetricName"]}\n${sns["NewStateReason"]}"
 
         eventBus.post(LambdaSnsEvent(alarmName, msg))
-        return LambdaUtil.Ok
+        return LambdaUtil.OK
 
     }
 }

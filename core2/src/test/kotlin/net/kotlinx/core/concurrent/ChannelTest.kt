@@ -12,7 +12,7 @@ import net.kotlinx.core.logback.LogBackUtil
 internal class ChannelTest : DescribeSpec({
 
     val log = KotlinLogging.logger {}
-    LogBackUtil.logLevelTo(CoreUtil.packageName, Level.DEBUG)
+    LogBackUtil.logLevelTo(CoreUtil.PACKAGE_NAME, Level.DEBUG)
 
     describe("바닐라 Channel") {
 

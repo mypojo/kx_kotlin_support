@@ -27,7 +27,7 @@ class LambdaSnsSfnFail(
         val msg = detail["cause"].str!!
 
         eventBus.post(LambdaSnsEvent(title, msg))
-        return LambdaUtil.Ok
+        return LambdaUtil.OK
 
     }
 }

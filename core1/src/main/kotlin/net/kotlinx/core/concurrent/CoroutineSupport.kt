@@ -1,11 +1,13 @@
 package net.kotlinx.core.concurrent
 
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
+import kotlin.time.Duration
 
 /**
  * 간단한 코루틴 실행기.
@@ -58,4 +60,9 @@ suspend fun <T, R> Flow<T>.collectToList(block: (T) -> R): List<R> {
         list += r
     }
     return list
+}
+
+/** 간단 delay. */
+suspend fun Duration.delay(){
+    delay(this)
 }
