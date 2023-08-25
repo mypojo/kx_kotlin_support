@@ -1,8 +1,11 @@
 package net.kotlinx.module.aws.cost
 
+import aws.sdk.kotlin.services.costexplorer.model.GroupDefinitionType
+import mu.KotlinLogging
 import net.kotlinx.aws.cost.CostExplorerLine
 import net.kotlinx.core.collection.flattenAny
 import net.kotlinx.core.number.StringIntUtil
+import net.kotlinx.core.string.ifNullOrEmpty
 import net.kotlinx.core.time.TimeFormat
 import net.kotlinx.module.xlsx.Excel
 import net.kotlinx.module.xlsx.XlsComment
@@ -15,6 +18,9 @@ import java.time.LocalDate
  * 간단 엑셀 출력기
  * */
 class CostExplorerExcel(block: CostExplorerExcel.() -> Unit = {}) {
+
+    private val log = KotlinLogging.logger {}
+
     //==================================================== 설정 ======================================================
     /** 단위(월)별 개별 금액이 금액 넘는거만 시트에 상세 표시. 단위 : 달라  */
     var limitCost = 0.5
@@ -52,6 +58,7 @@ class CostExplorerExcel(block: CostExplorerExcel.() -> Unit = {}) {
     /** 최종 계산 */
     fun Double.toWon(): BigDecimal = (this * won * fee * tax / 10000).toBigDecimal().setScale(1, RoundingMode.HALF_UP) //보기 편하게 반올림
 
+    /** 헤더에 상세 설명 추가 */
     fun List<Any>.convertHeader(): List<Any> {
         return this.map {
             if (it is String) {
@@ -157,51 +164,69 @@ class CostExplorerExcel(block: CostExplorerExcel.() -> Unit = {}) {
     }
 
     /** 각 AWS 별 상세 정보 저장  */
-    fun eachProjectByService() {
+    fun eachProject() {
 
-        groupByProject.entries.forEach { e ->
+        val rptConfigs = mapOf(
+            GroupDefinitionType.Dimension to "서비스별",
+            GroupDefinitionType.Tag to "태그별",
+        )
 
-            val sheet = excel.createSheet("${e.key}_서비스별")
+        groupByProject.entries.forEach { entry ->
 
-            //항목이 너무 많기때문에 1달러 안되는애들은 무시
-            val serviceNames = e.value.filter { it.costValue!! >= limitCost }.map { it.serviceName!! }.distinct().sortedBy { it }
+            rptConfigs.forEach { config ->
+                log.debug { " -> ${config.value}별 시트 생성.." }
 
-            sheet.addHeader(
-                listOf(
-                    "Month",
-                    serviceNames,
-                    "월비용(만원)",
-                ).flattenAny().convertHeader()
-            )
+                //항목이 너무 많기때문에 1달러 안되는애들은 무시
+                val targeteList: List<CostExplorerLine> = entry.value.filter { it.groupDefinitionType == config.key.value }.filter { it.costValue!! >= limitCost }
+                val keyNames = targeteList.map { it.key!! }.distinct().sorted().toList()
+                if (keyNames.isEmpty()) return@forEach //태그기반 리포트 등은 없을 수 있음
 
-            val startCol = StringIntUtil.intToUpperAlpha(2)
-            val endCol = StringIntUtil.intToUpperAlpha(serviceNames.size + 1)
-            val lastMonth = TimeFormat.YM_F01[LocalDate.now().minusMonths(1)]
-            totalMonths.forEachIndexed { i, month ->
-                val groupByService = e.value.filter { it.timeSeries == month }.associateBy { it.serviceName!! }
+                val sheet = excel.createSheet("${entry.key}_${config.value}")
+                sheet.addHeader(
+                    listOf(
+                        "Month",
+                        //헤더 네임은 태그 접두어 제거
+                        keyNames.map { key ->
+                            when {
+                                key.contains("$") -> key.substringAfter("$").ifNullOrEmpty { "-" }
+                                else -> key
+                            }
+                        },
+                        "월비용(만원)",
+                    ).flattenAny().convertHeader()
+                )
 
-                val values = serviceNames.map { v -> groupByService[v]?.costValue?.toWon() ?: 0.0 }
-                val row = i + 1 + 1 //헤더 + 0부터 시작
+                val startCol = StringIntUtil.intToUpperAlpha(2)
+                val endCol = StringIntUtil.intToUpperAlpha(keyNames.size + 1)
+                val lastMonth = TimeFormat.YM_F01[LocalDate.now().minusMonths(1)]
+                totalMonths.forEachIndexed { i, month ->
+                    val groupByService = targeteList.filter { it.timeSeries == month }.associateBy { it.key!! }
 
-                val isLastMonth = month == lastMonth
-                val line = listOf(
-                    when (isLastMonth) {
-                        true -> XlsComment(month) {
-                            this.comments = listOf("지난달 데이터")
-                        }
+                    val values = keyNames.map { v -> groupByService[v]?.costValue?.toWon() ?: 0.0 }
+                    val row = i + 1 + 1 //헤더 + 0부터 시작
 
-                        false -> month
-                    },
-                    values,
-                    XlsFormula("ROUND(SUM(${startCol}${row}:${endCol}${row}) ,0)"),
-                ).flattenAny()
+                    val isLastMonth = month == lastMonth
+                    val line = listOf(
+                        when (isLastMonth) {
+                            true -> XlsComment(month) {
+                                this.comments = listOf("지난달 데이터")
+                            }
 
-                if (isLastMonth) {
-                    sheet.customRowStyleSet[row - 1] = sheet.excel.style.green
+                            false -> month
+                        },
+                        values,
+                        XlsFormula("ROUND(SUM(${startCol}${row}:${endCol}${row}) ,0)"),
+                    ).flattenAny()
+
+                    if (isLastMonth) {
+                        sheet.customRowStyleSet[row - 1] = sheet.excel.style.green
+                    }
+                    sheet.writeLine(line)
+
                 }
-                sheet.writeLine(line)
-
             }
+
+
         }
 
     }

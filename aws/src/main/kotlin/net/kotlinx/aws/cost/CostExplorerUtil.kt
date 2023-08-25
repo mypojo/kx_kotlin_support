@@ -12,7 +12,7 @@ object CostExplorerUtil {
     /** 합산된 금액  */
     const val BLENDED_COST = "BlendedCost"
 
-    /** 월 5$ 이내 저렴하게 나오는것들 무시  */
+    /** 월 5$ 이내 저렴하게 나오는것들의 키값(서비스명, 태그) 무시  */
     val IGNORES: Set<String> = setOf("Tax", "AWS Cost Explorer", "AWS CodeCommit", "Route 53")
 
     /** 긴 단어를 일상적으로 사용하는 단어로 교체해줌 */

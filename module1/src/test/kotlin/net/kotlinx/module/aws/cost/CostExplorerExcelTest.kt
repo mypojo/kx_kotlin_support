@@ -5,6 +5,7 @@ import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.cost.CostExplorerLine
 import net.kotlinx.aws.cost.monthService
+import net.kotlinx.aws.cost.monthTag
 import net.kotlinx.aws.iam.IamCredential
 import net.kotlinx.aws.okhttp.OkHttpSamples
 import net.kotlinx.aws.toAwsClient
@@ -19,25 +20,42 @@ import java.time.LocalDate
 
 class CostExplorerExcelTest : TestRoot() {
 
+
     @Test
     fun test() {
 
         val workspace = File(ResourceHolder.getWorkspace(), this::class.simpleName).apply { mkdirs() }
         val dataFile = File(workspace, "AWS비용캐시_.${LocalDate.now().toYmdF01()}.json")
 
+        val tagRequired = setOf("catson")
+
         if (!dataFile.exists()) {
             runBlocking {
                 val profileNames = IamCredential().profileNames.filter { it !in setOf("sin") }
                 val datas = profileNames.flatMap { profileName ->
                     val client = AwsConfig(profileName = profileName).toAwsClient()
-                    try {
+                    val byService = try {
                         client.cost.monthService().onEach { it.projectName = profileName }
                     } catch (e: CostExplorerException) {
                         log.warn { " -> 프로파일 [${profileName}] 무시" }
                         emptyList()
                     }
+                    val byTag = when (profileName in tagRequired) {
+                        true -> {
+                            try {
+                                client.cost.monthTag(listOf("ProjectName")).onEach { it.projectName = profileName }
+                            } catch (e: CostExplorerException) {
+                                log.warn { " -> 프로파일 [${profileName}] 무시" }
+                                emptyList()
+                            }
+                        }
+
+                        false -> emptyList()
+                    }
+
+                    byService + byTag
                 }
-                dataFile.writeText(GsonSet.GSON.toJson(datas))
+                dataFile.writeText(GsonSet.GSON.toJson(datas)) //일단 json을 기록
             }
         }
 
@@ -47,7 +65,7 @@ class CostExplorerExcelTest : TestRoot() {
             won = OkHttpSamples.dollarWon()
             costDatas = lines
             groupByProject()
-            eachProjectByService()
+            eachProject()
             excel.wrap()
             val outFile = File(workspace, "AWS비용_${LocalDate.now().toYmdF01()}.xlsx")
             excel.write(outFile)
