@@ -8,10 +8,10 @@ import org.hibernate.persister.entity.EntityPersister
  */
 abstract class AbstractJpaPostListener : PostCommitInsertEventListener, PostCommitUpdateEventListener, PostCommitDeleteEventListener {
 
-    /** 이거 안씀 */
-    override fun requiresPostCommitHanding(persister: EntityPersister): Boolean {
-        throw UnsupportedOperationException()
-    }
+//    /** 이거 안씀 */
+//    override fun requiresPostCommitHanding(persister: EntityPersister): Boolean {
+//        throw UnsupportedOperationException()
+//    }
 
     /** 필요하면 이거 오버라이드  */
     override fun requiresPostCommitHandling(persister: EntityPersister): Boolean {

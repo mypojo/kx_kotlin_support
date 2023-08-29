@@ -30,7 +30,7 @@ allprojects {
         mavenCentral()
     }
 
-    tasks.getByName<Test>("test") {
+    tasks.withType<Test> {
         useJUnitPlatform()
         filter {
             useJUnitPlatform {
@@ -63,6 +63,8 @@ allprojects {
 }
 
 //==================================================== 배포 ======================================================
+
+//메이븐 센트럴 배포
 //https://jitpack.io/#mypojo/kx_kotlin_support/-SNAPSHOT  이걸로 해도 됨 (직접 배포하는게 더 좋은듯)
 //publishing {
 //    publications {
@@ -94,6 +96,8 @@ allprojects {
 //        }
 //    }
 //}
+
+/** private 배포 */
 publishing {
     publications {
         fun pub(projectName: String) {

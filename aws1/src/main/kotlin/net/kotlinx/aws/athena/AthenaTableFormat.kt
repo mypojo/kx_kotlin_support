@@ -17,6 +17,18 @@ OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
 ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
         """.trimIndent()
     ),
+    /**
+     * TSV로 입력할때. (특이사항)
+     * https://docs.aws.amazon.com/ko_kr/athena/latest/ug/lazy-simple-serde.html
+     * */
+    Tsv(
+        """
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+ESCAPED BY '\\'
+LINES TERMINATED BY '\n'
+        """.trimIndent()
+    ),
     /** 최종 2차 or 3차 가공 테이블을 만들때 사용 */
     Parquet(
         """

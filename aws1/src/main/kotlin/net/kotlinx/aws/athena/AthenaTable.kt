@@ -56,6 +56,7 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
         when (athenaTablePartitionType) {
             // https://docs.aws.amazon.com/ko_kr/athena/latest/ug/partition-projection-supported-types.html
             // 프로젝션에 date 사용하는거 추가해야함
+            // 프로젝션의 경우 basic_date=20210101  이런식으로 하지 않음 ( firehose 예제 참고)
             AthenaTablePartitionType.Projection -> {
                 props = props + mapOf(
                     "projection.enabled" to "true",
@@ -111,6 +112,16 @@ $propsText
         else -> throw IllegalArgumentException("${value::class} is not required!")
     }
 
+    //==================================================== athena type 입력용 (하드코딩 방지) ======================================================
+    //https://docs.aws.amazon.com/ko_kr/athena/latest/ug/data-types.html
+
+    val boolean  = "boolean"
+    val string = "string"
+    /** YYYY-MM-DD HH:MM:SS.SSS */
+    val timestamp = "timestamp"
+
+    val tinyint = "tinyint"
+    val bigint = "bigint"
 
 }
 

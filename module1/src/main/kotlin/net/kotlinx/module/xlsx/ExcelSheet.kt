@@ -7,7 +7,7 @@ import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.xssf.usermodel.XSSFRichTextString
 import org.apache.poi.xssf.usermodel.XSSFRow
 import org.apache.poi.xssf.usermodel.XSSFSheet
-import javax.annotation.concurrent.NotThreadSafe
+import software.amazon.awssdk.annotations.NotThreadSafe
 
 /**
  * 스래드 안전하지 않음

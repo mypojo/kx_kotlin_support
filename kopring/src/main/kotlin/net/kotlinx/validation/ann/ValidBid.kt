@@ -1,12 +1,12 @@
 package net.kotlinx.validation.ann
 
 import com.google.common.base.Strings
+import jakarta.validation.Constraint
+import jakarta.validation.ConstraintValidator
+import jakarta.validation.ConstraintValidatorContext
+import jakarta.validation.Payload
 import net.kotlinx.core.string.DomainValidationUtil.isBusinessId
 import org.hibernate.validator.constraints.Length
-import javax.validation.Constraint
-import javax.validation.ConstraintValidator
-import javax.validation.ConstraintValidatorContext
-import javax.validation.Payload
 import kotlin.reflect.KClass
 
 /** 사업자등록번호  */

@@ -1,5 +1,7 @@
 package net.kotlinx.jpa.util
 
+import jakarta.persistence.Column
+import jakarta.persistence.Table
 import mu.KotlinLogging
 import net.kotlinx.core.string.abbr
 import net.kotlinx.core.string.toSnakeFromCamel
@@ -9,8 +11,6 @@ import net.kotlinx.module.reflect.annotationsOrEmpty
 import net.kotlinx.module.reflect.findClass
 import net.kotlinx.module.reflect.props
 import net.kotlinx.module.reflect.toKClass
-import javax.persistence.Column
-import javax.persistence.Table
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 

@@ -1,5 +1,6 @@
 package net.kotlinx.core.validation
 
+import jakarta.validation.ValidationException
 import net.kotlinx.core.collection.MutableListString
 import net.kotlinx.core.string.TextGrid
 import net.kotlinx.core.string.abbr
@@ -7,7 +8,6 @@ import net.kotlinx.core.string.toTextGrid
 import net.kotlinx.core.time.toTimeString
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import javax.validation.ValidationException
 
 enum class ValidationRange {
     /** 지금기준 = 전체 = 실시간 */
@@ -113,7 +113,8 @@ fun List<ValidationConfig>.check(threadCnt: Int = Runtime.getRuntime().available
 fun List<ValidationResult>.toGrid(): TextGrid = listOf("그룹", "코드", "설명", "구현설명", "담당자", "검사범위", "걸린시간", "결과", "메세지").toTextGrid(this.map { it.toGridArray() })
 
 /** 단순 확인용 */
-fun List<ValidationResult>.toDetailGrid(): TextGrid = listOf("그룹", "코드", "메세지").toTextGrid(this.filter { !it.success }.flatMap { r -> r.msgs.map { arrayOf(r.config.group, r.config.code, it) } })
+fun List<ValidationResult>.toDetailGrid(): TextGrid =
+    listOf("그룹", "코드", "메세지").toTextGrid(this.filter { !it.success }.flatMap { r -> r.msgs.map { arrayOf(r.config.group, r.config.code, it) } })
 
 /** 예외를 던져서 알려줌 */
 fun List<ValidationResult>.andThrow(lineSeparator: String = "\n") {

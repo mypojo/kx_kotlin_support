@@ -3,13 +3,13 @@ package net.kotlinx.spring.security.jwt
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
 import io.jsonwebtoken.security.SecurityException
+import jakarta.validation.ValidationException
 import mu.KotlinLogging
 import net.kotlinx.core.time.toDate
 import org.springframework.security.core.userdetails.UserDetails
 import java.security.Key
 import java.time.LocalDateTime
 import java.util.*
-import javax.validation.ValidationException
 import kotlin.time.Duration
 
 

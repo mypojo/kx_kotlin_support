@@ -2,6 +2,7 @@ package net.kotlinx.spring.opencsv
 
 import com.opencsv.CSVParser
 import com.opencsv.CSVWriter
+import org.springframework.batch.item.Chunk
 import org.springframework.batch.item.ExecutionContext
 import org.springframework.batch.item.ItemStream
 import org.springframework.batch.item.ItemWriter
@@ -24,7 +25,7 @@ class CsvItemWriter : ResourceAwareItemWriterItemStream<Array<String>>, ItemWrit
     /** 리소스 */
     private lateinit var resource: Resource
 
-    override fun setResource(resource: Resource) {
+    override fun setResource(resource: WritableResource) {
         this.resource = resource
     }
 
@@ -100,7 +101,7 @@ class CsvItemWriter : ResourceAwareItemWriterItemStream<Array<String>>, ItemWrit
             CSVWriter(ww, separator, quote, escaper, lineEnd)
         }
         header?.let {
-            write(listOf(it))
+            write(Chunk(it))
         }
     }
 
@@ -119,7 +120,7 @@ class CsvItemWriter : ResourceAwareItemWriterItemStream<Array<String>>, ItemWrit
     /**
      * SQL의 메타데이터는 read()후에 계산됨으로 header에 쓰는 부분을 여기에 둔다
      */
-    override fun write(items: List<Array<String>>) {
+    override fun write(items: Chunk<out Array<String>>) {
         mutex.lock()
         try {
             for (item in items) {

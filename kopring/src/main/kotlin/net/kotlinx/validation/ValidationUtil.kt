@@ -1,9 +1,9 @@
 package net.kotlinx.validation
 
 
-import javax.validation.ConstraintViolation
-import javax.validation.Validation
-import javax.validation.Validator
+import jakarta.validation.ConstraintViolation
+import jakarta.validation.Validation
+import jakarta.validation.Validator
 
 
 /** 벨리데이터 팩토리 있던데 뭐 지정하는게 딱히 없음 */

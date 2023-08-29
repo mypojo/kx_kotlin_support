@@ -4,10 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.stream.JsonWriter
 import net.kotlinx.core.gson.GsonSet
-import org.springframework.batch.item.ExecutionContext
-import org.springframework.batch.item.ItemStream
-import org.springframework.batch.item.ItemStreamException
-import org.springframework.batch.item.ItemWriter
+import org.springframework.batch.item.*
 import org.springframework.batch.item.file.ResourceAwareItemWriterItemStream
 import org.springframework.core.io.Resource
 import org.springframework.core.io.WritableResource
@@ -60,18 +57,18 @@ class GsonItemWriter<T>(
         }
     }
 
-    override fun setResource(resource: Resource) {
+    override fun setResource(resource: WritableResource) {
         this.resource = resource
     }
 
 
     /** 동기화 필수  */
     @Synchronized
-    override fun write(items: List<T>) {
+    override fun write(items: Chunk<out T>) {
         for (item in items) {
             val json = gson.toJsonTree(item)
             gson.toJson(json, writer)
         }
-        writeCnt += items.size.toLong()
+        writeCnt += items.size().toLong()
     }
 }

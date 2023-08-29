@@ -3,10 +3,10 @@ package net.kotlinx.aws.ses
 import aws.sdk.kotlin.services.ses.SesClient
 import aws.sdk.kotlin.services.ses.model.RawMessage
 import aws.sdk.kotlin.services.ses.sendRawEmail
+import jakarta.mail.internet.MimeMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
-import javax.mail.internet.MimeMessage
 
 
 /**

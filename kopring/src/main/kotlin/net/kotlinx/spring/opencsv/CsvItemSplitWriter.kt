@@ -1,5 +1,6 @@
 package net.kotlinx.spring.opencsv
 
+import org.springframework.batch.item.Chunk
 import org.springframework.batch.item.ExecutionContext
 import org.springframework.batch.item.ItemStream
 import org.springframework.batch.item.ItemWriter
@@ -78,13 +79,13 @@ class CsvItemSplitWriter(
 
 
     @Synchronized
-    override fun write(items: List<Array<String>>) {
+    override fun write(items: Chunk<out Array<String>>) {
         val groupBy = items.groupBy { toSplitKey(it) }
         groupBy.entries.forEach { e ->
             val writer: CsvItemWriter = getOrMakeWriter(e.key)
-            writer.write(e.value)
+            writer.write(Chunk(e.value))
         }
-        totalItemCnt += items.size
+        totalItemCnt += items.size()
     }
     //=================================================== 오버라이드  ===================================================
     /** 아무것도 안함 */

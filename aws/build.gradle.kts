@@ -17,7 +17,8 @@ dependencies {
     testApi(project(":core2").dependencyProject.sourceSets["test"].output) //코어 테스트에 있는 공통 (testRoot 등)을 사용할 수 있게 해줌
 
     //==================================================== 자바 표준 ======================================================
-    api("javax.mail:javax.mail-api:1.6.2") //이메일 전송에 필요함
+    api("jakarta.mail:jakarta.mail-api:2.1.2") //이메일 전송에 필요함
+
 
     //==================================================== 기본 (이정도는 괜찮겠지) ======================================================
     api("com.google.guava:guava:${providers["guavaVersion"]}")

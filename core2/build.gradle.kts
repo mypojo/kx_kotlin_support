@@ -24,8 +24,9 @@ dependencies {
     //==================================================== 내부 의존성 ======================================================
     api(project(":core1")) //API로 해야 하위 프로젝트에서 사용 가능하다.
 
-    //==================================================== javax ======================================================
-    api("javax.validation:validation-api:2.0.1.Final")
+    //==================================================== jakarta ======================================================
+    api("jakarta.validation:jakarta.validation-api:3.0.2")
+
     api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0") //자주 쓰니까 일단 넣음
     //api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0") //LocalDatetime 등.. 상당히 별로임.. 일단 disable
 

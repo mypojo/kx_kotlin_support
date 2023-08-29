@@ -1,5 +1,6 @@
 package net.kotlinx.spring.batch.component
 
+import org.springframework.batch.item.Chunk
 import org.springframework.batch.item.file.FlatFileItemWriter
 
 /**
@@ -12,7 +13,7 @@ class FlatFileItemWriter2<T> : FlatFileItemWriter<T>() {
         setEncoding("UTF-8")
     }
 
-    override fun doWrite(items: List<T>): String {
+    override fun doWrite(items: Chunk<out T>): String {
         val lines = StringBuilder()
         for (item in items) {
             val aggregate = lineAggregator.aggregate(item)

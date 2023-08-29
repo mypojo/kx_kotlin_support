@@ -1,8 +1,8 @@
 package net.kotlinx.spring.validation
 
+import jakarta.validation.constraints.NotNull
 import net.kotlinx.core.test.TestRoot
 import java.time.LocalDate
-import javax.validation.constraints.NotNull
 
 class ValidationUtilTest : TestRoot() {
 

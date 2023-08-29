@@ -1,6 +1,7 @@
 package net.kotlinx.spring.batch
 
 import mu.KotlinLogging
+import org.springframework.batch.item.Chunk
 import org.springframework.batch.item.ExecutionContext
 import org.springframework.batch.item.ItemReader
 import org.springframework.batch.item.ItemWriter
@@ -63,12 +64,12 @@ class BatchExecutor(
             list.add(item)
             val size = list.size
             if (size >= commitInterval) {
-                itemWriter.write(list as List<Nothing>) //편의상 이렇게 캐스팅
+                itemWriter.write(list as Chunk<out Nothing>) //편의상 이렇게 캐스팅
                 updateCounter(size)
                 list = mutableListOf()
             }
         }
-        itemWriter.write(list as List<Nothing>)
+        itemWriter.write(list as Chunk<out Nothing>)
         updateCounter(list.size)
     }
 

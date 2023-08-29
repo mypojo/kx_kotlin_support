@@ -7,10 +7,12 @@ import software.amazon.awscdk.Duration
 import software.amazon.awscdk.RemovalPolicy
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.customresources.*
-import software.amazon.awscdk.services.ec2.*
+import software.amazon.awscdk.services.ec2.ISecurityGroup
+import software.amazon.awscdk.services.ec2.IVpc
+import software.amazon.awscdk.services.ec2.SubnetSelection
+import software.amazon.awscdk.services.ec2.SubnetType
 import software.amazon.awscdk.services.logs.RetentionDays
 import software.amazon.awscdk.services.rds.*
-import software.amazon.awscdk.services.rds.InstanceProps
 
 /** 재작성 해야함. 샘플임. */
 class CdkRdsAuroraServerlessV2(
@@ -70,7 +72,7 @@ class CdkRdsAuroraServerlessV2(
             .build()
         val instanceProps = InstanceProps.builder()
             .vpc(vpc)
-            .instanceType(InstanceType("serverless"))
+            //.instanceType(InstanceType("serverless"))  // XXXXX 이거 확인해야함
             .securityGroups(listOf(securityGroup))
             .vpcSubnets(
                 SubnetSelection.builder()

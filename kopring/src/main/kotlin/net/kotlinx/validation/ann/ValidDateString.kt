@@ -1,10 +1,10 @@
 package net.kotlinx.validation.ann
 
+import jakarta.validation.Constraint
+import jakarta.validation.ConstraintValidator
+import jakarta.validation.ConstraintValidatorContext
+import jakarta.validation.Payload
 import net.kotlinx.core.time.TimeFormat
-import javax.validation.Constraint
-import javax.validation.ConstraintValidator
-import javax.validation.ConstraintValidatorContext
-import javax.validation.Payload
 import kotlin.reflect.KClass
 
 /** 문자열 형식이지만 실제로는 숫자만 들어가는 형태를 컨버팅한다.

@@ -1,11 +1,11 @@
 package net.kotlinx.validation
 
+import jakarta.validation.ConstraintViolation
+import jakarta.validation.ValidationException
 import net.kotlinx.core.Comment
 import net.kotlinx.core.string.toTextGrid
 import net.kotlinx.module.reflect.annotaionAll
 import net.kotlinx.module.reflect.findClass
-import javax.validation.ConstraintViolation
-import javax.validation.ValidationException
 import kotlin.reflect.full.memberProperties
 
 /** 간단변환 */
@@ -31,7 +31,7 @@ fun Collection<ValidationResult>.print() {
 
 /**
  * 결과메세지를 만들기 위한 템플릿용 빈
- * javax ConstraintViolation 와 호환된다.
+ * jakarta ConstraintViolation 와 호환된다.
  */
 class ValidationResult(
     val violation: ConstraintViolation<*>

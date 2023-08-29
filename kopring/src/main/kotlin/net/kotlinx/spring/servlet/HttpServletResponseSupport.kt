@@ -1,11 +1,11 @@
 package net.kotlinx.spring.servlet
 
 import aws.smithy.kotlin.runtime.util.encodeBase64
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletResponse
 import net.kotlinx.core.string.encodeUrl
 import org.aspectj.weaver.tools.cache.SimpleCacheFactory
 import org.springframework.http.MediaType
-import javax.servlet.http.Cookie
-import javax.servlet.http.HttpServletResponse
 import kotlin.time.Duration.Companion.days
 
 

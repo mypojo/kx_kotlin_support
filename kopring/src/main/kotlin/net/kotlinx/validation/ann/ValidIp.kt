@@ -1,7 +1,7 @@
 package net.kotlinx.validation.ann
 
-import javax.validation.Payload
-import javax.validation.constraints.Pattern
+import jakarta.validation.Payload
+import jakarta.validation.constraints.Pattern
 import kotlin.reflect.KClass
 
 /** IP 벨리데이션  */

@@ -1,14 +1,14 @@
 package net.kotlinx.spring.security.jwt
 
+import jakarta.servlet.FilterChain
+import jakarta.servlet.ServletRequest
+import jakarta.servlet.ServletResponse
+import jakarta.servlet.http.HttpServletRequest
 import mu.KotlinLogging
 import net.kotlinx.spring.security.SimpleAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.filter.GenericFilterBean
-import javax.servlet.FilterChain
-import javax.servlet.ServletRequest
-import javax.servlet.ServletResponse
-import javax.servlet.http.HttpServletRequest
 
 class JwtTokenReadFilter(
     /** null이면 jwt 인증이 불가능한것으로 간주한다. */

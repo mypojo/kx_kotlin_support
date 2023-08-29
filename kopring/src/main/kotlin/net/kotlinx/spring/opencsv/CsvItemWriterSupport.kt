@@ -1,7 +1,8 @@
 package net.kotlinx.spring.opencsv
 
+import jakarta.servlet.http.HttpServletResponse
 import net.kotlinx.spring.resource.OutputStreamResource2
-import javax.servlet.http.HttpServletResponse
+import org.springframework.batch.item.Chunk
 
 /**
  * 인메모리용 CSV 라이터 -> http resp 에 직접 write
@@ -20,6 +21,6 @@ fun HttpServletResponse.toCsvItemWriter(): CsvItemWriter {
 /** 간단 쓰기 */
 fun CsvItemWriter.writeAll(items: List<Array<String>>) {
     open()
-    write(items)
+    write(Chunk(items))
     close()
 }

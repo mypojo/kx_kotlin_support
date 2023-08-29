@@ -4,12 +4,12 @@ import com.google.gson.Gson
 import com.lectra.koson.ObjectType
 import com.lectra.koson.obj
 import com.lectra.koson.rawJson
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.gson.GsonSet
 import net.kotlinx.spring.servlet.writeJson
 import org.springframework.web.servlet.View
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 /**
  * 결과 json을 통일 하기 외한 객체

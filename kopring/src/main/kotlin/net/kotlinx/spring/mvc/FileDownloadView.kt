@@ -1,10 +1,10 @@
 package net.kotlinx.spring.mvc
 
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import net.kotlinx.spring.servlet.setFileName
 import org.springframework.web.servlet.View
 import java.io.File
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 /**
  * 파일 다운로드 & 삭제

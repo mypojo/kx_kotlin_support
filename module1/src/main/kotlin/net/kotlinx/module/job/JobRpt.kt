@@ -1,0 +1,44 @@
+package net.kotlinx.module.job
+
+import net.kotlinx.aws.fargate.FargateUtil
+import java.math.BigDecimal
+import java.math.RoundingMode
+import java.time.LocalDateTime
+
+/** 반올림 */
+inline fun Double.toRoundUp(scale: Int): BigDecimal = this.toBigDecimal().setScale(scale, RoundingMode.HALF_UP)
+
+data class JobSta(
+    val job: Job,
+    val cnt: Int,
+    val successCnt: Int,
+    val failCnt: Int,
+    val startMax: LocalDateTime,
+    val startMin: LocalDateTime,
+    val lastExecute: LocalDateTime,
+    val sumOfDuration: Long,
+    val avgOfDuration: Long,
+    val maxOfDuration: Long,
+    /** 최근 일주일 비용 기준으로 계산.. 환율 1400원 */
+    val sumOfCost: BigDecimal,
+)
+
+inline fun Collection<Job>.toJobSta(): JobSta {
+    val jobs = this
+    val sumOfDuration = jobs.sumOf { it.toIntervalMills() ?: 0 }
+    val monthTime = (sumOfDuration / 7 * 30.5).toLong()
+    return JobSta(
+        jobs.first(),
+        jobs.size,
+        jobs.count { it.jobStatus == JobStatus.SUCCEEDED },
+        jobs.count { it.jobStatus != JobStatus.SUCCEEDED },
+        jobs.mapNotNull { it.startTime }.maxOf { it },
+        jobs.mapNotNull { it.startTime }.minOf { it },
+        jobs.mapNotNull { it.startTime }.maxOf { it },
+        sumOfDuration,
+        sumOfDuration / jobs.size,
+        jobs.mapNotNull { it.toIntervalMills() }.maxOf { it },
+        (FargateUtil.cost(1.0, 2.0, monthTime) * 1400 / 10000).toRoundUp(1),
+    )
+}
+
