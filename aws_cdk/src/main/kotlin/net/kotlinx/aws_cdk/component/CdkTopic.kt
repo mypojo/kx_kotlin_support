@@ -23,16 +23,17 @@ class CdkTopic(
     override val logicalName: String
         get() = "${project.projectName}-topic-${topicName}-${deploymentType}"
 
-    lateinit var iTopic: ITopic
-
     /** 전체 오픈할 기능 */
     var allOpenActions = listOf(
         "SNS:Publish",
         "SNS:Subscribe", //이거는 논란의  여지가 있을 수 있음
     )
 
-    fun create(stack: Stack): CdkTopic {
-        iTopic = Topic(stack, logicalName, TopicProps.builder().topicName(logicalName).build())
+    /** 결과 */
+    lateinit var iTopic: ITopic
+
+    fun create(stack: Stack, block: TopicProps.Builder.() -> Unit = {}): CdkTopic {
+        iTopic = Topic(stack, logicalName, TopicProps.builder().topicName(logicalName).apply(block).build())
         TagUtil.tag(iTopic, deploymentType)
 
         //중요!! 정책을 정확하게 줘야 작동함!!

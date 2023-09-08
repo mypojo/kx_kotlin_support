@@ -14,7 +14,7 @@ object JobPrintUtil {
         return jobs.sortedBy { it.reqTime }.reversed().map {
             arrayOf(
                 it.pk, it.sk, it.jobStatus, it.awsInfo?.instanceType,
-                it.reqTime?.toKr01() ?: "-",
+                it.reqTime.toKr01(),
                 it.startTime?.toKr01() ?: "-",
                 it.toIntervalMills()?.toTimeString(),
             )
@@ -28,7 +28,7 @@ object JobPrintUtil {
         return jobs.sortedBy { it.reqTime }.reversed().map {
             arrayOf(
                 it.pk, it.sk, it.jobStatus, it.awsInfo?.instanceType,
-                it.reqTime?.toKr01() ?: "-",
+                it.reqTime.toKr01(),
                 it.startTime?.toKr01() ?: "-",
                 it.toIntervalMills()?.toTimeString(),
                 it.toLogLink(),

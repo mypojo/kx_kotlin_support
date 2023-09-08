@@ -1,5 +1,6 @@
 package net.kotlinx.module.job.trigger
 
+import kotlinx.coroutines.delay
 import mu.KotlinLogging
 import net.kotlinx.aws.batch.BatchUtil
 import net.kotlinx.core.gson.GsonData
@@ -9,6 +10,7 @@ import net.kotlinx.module.job.JobFactory
 import net.kotlinx.module.job.JobRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * 잡 설정(json) <-> job 객체 변환
@@ -44,12 +46,12 @@ class JobSerializer : KoinComponent {
             var job = jobRepository.getItem(Job(jobPk, jobSk))
             if (job == null) {
                 log.warn("1초후 다시 DDB 접근")
-                Thread.sleep(1000 * 1)
+                delay(1.seconds)
                 job = jobRepository.getItem(Job(jobPk, jobSk)) //입력 전에 get 할 수 있는듯.. 지속되면 수정
             }
             if (job == null) {
                 log.warn("5초후 다시 DDB 접근")
-                Thread.sleep(1000 * 5)
+                delay(5.seconds)
                 job = jobRepository.getItem(Job(jobPk, jobSk)) //입력 전에 get 할 수 있는듯.. 지속되면 수정
             }
             checkNotNull(job) { "DDB job $jobPk $jobSk  => not found" }
@@ -65,12 +67,12 @@ class JobSerializer : KoinComponent {
     }
 
     //====================================================  ======================================================
-    @Deprecated("미구현")
-    fun toJsonSfnReserve(job: Job): GsonData = GsonData.obj().apply {
-        job.jobScheduleTime?.let {
-
-        }
-    }
+//    @Deprecated("미구현")
+//    fun toJsonSfnReserve(job: Job): GsonData = GsonData.obj().apply {
+//        job.jobScheduleTime?.let {
+//
+//        }
+//    }
 
     /** 상수를 private 으로 관리한다. */
     companion object {

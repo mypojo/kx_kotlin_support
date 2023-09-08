@@ -5,6 +5,7 @@ import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.athena.AthenaModule
 import net.kotlinx.aws.module.batchStep.step.StepLogicRuntime
+import net.kotlinx.aws.s3.deleteDir
 import net.kotlinx.aws.s3.putObject
 import net.kotlinx.aws.sfn.SfnUtil
 import net.kotlinx.core.calculator.ProgressInlineChecker
@@ -74,6 +75,23 @@ class BatchStepConfig(block: BatchStepConfig.() -> Unit) {
             thidDir.deleteRecursively() //정리
         }.also {
             log.debug { "S3로 업로드 start => 데이터 ${datas.size}건 => 걸린시간 $it" }
+        }
+    }
+
+    /**
+     * 업로드 디렉토리를 전부 삭제한다.
+     * 주의!! 테스트용으로만 사용할것
+     * */
+    suspend fun clear() {
+        repeat(100) {
+            val d1 = aws.s3.deleteDir(workUploadBuket, workUploadInputDir)
+            log.warn { "sfnBatchModuleInput 파일 ${d1}건 삭제" }
+            if (d1 == 0) return@repeat
+        }
+        repeat(100) {
+            val d2 = aws.s3.deleteDir(workUploadBuket, workUploadOutputDir)
+            log.warn { "sfnBatchModuleOutput 파일 ${d2}건 삭제" }
+            if (d2 == 0) return@repeat
         }
     }
 

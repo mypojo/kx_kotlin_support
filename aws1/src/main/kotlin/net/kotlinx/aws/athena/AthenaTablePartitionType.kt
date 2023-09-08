@@ -9,6 +9,9 @@ package net.kotlinx.aws.athena
  * */
 enum class AthenaTablePartitionType {
 
+    /** 파티션 없음 */
+    None,
+
     /**
      * 1. 정규 파티션 사용. 예측 불가능한 값으로 파티셔닝 되고, 범위 조회를 해야하는 경우
      *     1. ex) “날짜” / “사용자ID” 로 파티셔닝 → “날짜” 별 전체 사용자 ID를 조회 해야함

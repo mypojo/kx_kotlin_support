@@ -2,7 +2,6 @@ package net.kotlinx.module.job
 
 /**
  * 잡 상태에 없는게 있어서 새로 만들었음
- * @see software.amazon.awssdk.services.batch.model.JobStatus
  *
  * 중간에 상태 생략 가능
  * SCHEDULED -> STARTING -> RUNNING -> WAITING -> SUCCEEDED or FAILED or CANCELED

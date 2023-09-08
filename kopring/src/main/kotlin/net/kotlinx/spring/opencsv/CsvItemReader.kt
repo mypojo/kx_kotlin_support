@@ -72,7 +72,7 @@ class CsvItemReader : ResourceAwareItemReaderItemStream<Array<String>>, ItemRead
         if (lineCount >= maxItemCount) {
             return null
         }
-        val lines: Array<String> = reader.readNext()
+        val lines: Array<String>? = reader.readNext()
         if (lines != null) lineCount++
         return lines
     }

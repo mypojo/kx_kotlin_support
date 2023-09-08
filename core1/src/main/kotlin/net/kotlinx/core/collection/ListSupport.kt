@@ -1,5 +1,17 @@
 package net.kotlinx.core.collection
 
+
+/**
+ * 객체를 추가후 그대로 리턴해줌
+ * 주로 static을 초기화 할때 사용
+ * operator는 사용하지 않음
+ *  */
+fun <T> MutableList<T>.addAndGet(block: () -> T): T {
+    val data = block()
+    this += data
+    return data
+}
+
 /**
  * 리스트를 조건에 따라 분리해준다.
  * 순서에 따라 나뉨으로 그룹바이하고는 다름.

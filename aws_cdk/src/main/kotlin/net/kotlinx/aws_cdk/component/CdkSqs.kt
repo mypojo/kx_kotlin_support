@@ -51,13 +51,15 @@ class CdkSqs(
 
     lateinit var iQueue: IQueue
 
-    fun create(stack: Stack,block: QueueProps.Builder.() -> Unit = {}): CdkSqs {
+    fun create(stack: Stack, block: QueueProps.Builder.() -> Unit = {}): CdkSqs {
         val props = QueueProps.builder()
             .queueName(this.logicalName)
             .visibilityTimeout(visibilityTimeout.toCdk())  //자주 확인 가능하도록 짧게 줌. 디폴트 30초임
             .deliveryDelay(deliveryDelay.toCdk())
             .retentionPeriod(retentionPeriod.toCdk())
-            .fifo(fifo)
+            .apply {
+                if (fifo) fifo(true) //여기 false 를 넣으면 에러난다.. 그대로 둬서 null이 되게 해야함. CDK 수준 참..
+            }
             .apply(block)
             .build()
         iQueue = Queue(stack, "sqs-$logicalName", props)

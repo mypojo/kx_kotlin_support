@@ -15,6 +15,7 @@ import software.amazon.awscdk.services.iam.IRole
 import software.amazon.awscdk.services.lambda.IFunction
 import software.amazon.awscdk.services.sns.ITopic
 import software.amazon.awscdk.services.sqs.IQueue
+import software.amazon.awscdk.services.stepfunctions.DefinitionBody
 import software.amazon.awscdk.services.stepfunctions.IChainable
 import software.amazon.awscdk.services.stepfunctions.StateMachine
 import software.amazon.awscdk.services.stepfunctions.StateMachineProps
@@ -45,8 +46,6 @@ class CdkSfn(val project: CdkProject, val name: String, block: CdkSfn.() -> Unit
     lateinit var jobDefinitionArn: String
     lateinit var jobQueueArn: String
 
-    lateinit var stateMachine: StateMachine
-
     init {
         block(this)
     }
@@ -54,19 +53,23 @@ class CdkSfn(val project: CdkProject, val name: String, block: CdkSfn.() -> Unit
     //==================================================== 단축 ======================================================
 
     fun lambda(name: String, block: CdkSfnLambda.() -> Unit = {}) = CdkSfnLambda(this, name).apply(block).convert()
+
     fun wait(name: String, block: CdkSfnWait.() -> Unit = {}) = CdkSfnWait(this, name).apply(block).convert()
     fun choice(name: String, block: CdkSfnChoice.() -> Unit = {}) = CdkSfnChoice(this, name).apply(block).convert()
     fun mapInline(name: String, block: CdkSfnMapInline.() -> Unit = {}) = CdkSfnMapInline(this, name).apply(block).convert()
-
     //==================================================== 작업 ======================================================
+
+    /** 결과 */
+    lateinit var stateMachine: StateMachine
 
     /** 처음(시작) 객체가 입력되어야 한다 */
     fun create(vararg definitions: IChainable) {
+
         stateMachine = StateMachine(
             stack, "sfn-$logicalName", StateMachineProps.builder()
                 .stateMachineName(logicalName)
                 .timeout(timeout)
-                .definition(definitions.toList().join())
+                .definitionBody(DefinitionBody.fromChainable(definitions.toList().join()))
                 .role(iRole)
                 .build()
         )

@@ -64,12 +64,13 @@ class BatchExecutor(
             list.add(item)
             val size = list.size
             if (size >= commitInterval) {
-                itemWriter.write(list as Chunk<out Nothing>) //편의상 이렇게 캐스팅
+
+                itemWriter.write(Chunk(list) as Chunk<out Nothing>) //나중에 수정.
                 updateCounter(size)
                 list = mutableListOf()
             }
         }
-        itemWriter.write(list as Chunk<out Nothing>)
+        itemWriter.write(Chunk(list) as Chunk<out Nothing>)
         updateCounter(list.size)
     }
 

@@ -24,7 +24,7 @@ suspend fun CloudWatchLogsClient.cleanLogStream(logGroupName: String) {
                 this.logGroupName = logGroupName
                 this.logStreamName = it.logStreamName!!
             }
-            delay(200) //  100이면 exceed 오류남. 넉넉하게 200
+            delay(300) //  100이면 exceed 오류남. 넉넉하게 200 -> 300
         }
         if (logStreams.size < 50) return@repeat
     }

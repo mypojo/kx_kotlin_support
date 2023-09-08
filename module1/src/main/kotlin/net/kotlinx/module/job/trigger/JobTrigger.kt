@@ -13,10 +13,9 @@ import net.kotlinx.aws.lambda.invokeSynch
 import net.kotlinx.aws.sfn.listExecutions
 import net.kotlinx.aws.sfn.startExecution
 import net.kotlinx.core.exception.KnownException.ItemRetryException
-import net.kotlinx.core.lib.ExceptionUtil
+import net.kotlinx.core.lib.toSimpleString
 import net.kotlinx.module.job.Job
 import net.kotlinx.module.job.JobExeDiv
-import net.kotlinx.module.job.JobExeDiv.*
 import net.kotlinx.module.job.JobFactory
 import net.kotlinx.module.job.JobRepository
 import net.kotlinx.module.job.JobStatus.FAILED
@@ -65,7 +64,7 @@ abstract class AbstractJobTrigger : JobTrigger, KoinComponent {
         } catch (e: Throwable) {
             log.warn { "잡 트리거중 예외!!" }
             job.jobStatus = FAILED
-            job.jobErrMsg = ExceptionUtil.toString(e)
+            job.jobErrMsg = e.toSimpleString()
             job.endTime = LocalDateTime.now()
             jobRepository.updateItem(job, JobUpdateSet.ERROR)
             throw e
@@ -76,7 +75,7 @@ abstract class AbstractJobTrigger : JobTrigger, KoinComponent {
 /** 로컬 */
 open abstract class JobLocal : AbstractJobTrigger() {
     override val name: String = "local"
-    override val jobExeDiv: JobExeDiv = local
+    override val jobExeDiv: JobExeDiv = JobExeDiv.local
 }
 
 /** step function */
@@ -85,7 +84,7 @@ open class JobSfn(
     override val name: String,
     val machinesNameBuilder: (jobPk: String) -> String,
 ) : AbstractJobTrigger() {
-    override val jobExeDiv: JobExeDiv = lambda
+    override val jobExeDiv: JobExeDiv = JobExeDiv.lambda
     override suspend fun doTrigger(job: Job, op: JobTriggerOption) {
         val machinesName: String = machinesNameBuilder(job.pk)
         //중복실행 막음
@@ -109,7 +108,7 @@ open class JobLambda(
     /** 호출용 람다 함수 이름 */
     val lambdaFunctionName: String,
 ) : AbstractJobTrigger() {
-    override val jobExeDiv: JobExeDiv = lambda
+    override val jobExeDiv: JobExeDiv = JobExeDiv.lambda
     override suspend fun doTrigger(job: Job, op: JobTriggerOption) {
         jobRepository.putItem(job)
         val param = jobSerializer.toJson(job)
@@ -139,7 +138,7 @@ open class JobBatch(
     /** 잡 큐 이름 (온디벤드/스팟 등의 설정)  */
     val jobQueueName: String,
 ) : AbstractJobTrigger() {
-    override val jobExeDiv: JobExeDiv = batch
+    override val jobExeDiv: JobExeDiv = JobExeDiv.batch
     override suspend fun doTrigger(job: Job, op: JobTriggerOption) {
         jobRepository.putItem(job)
         val param = jobSerializer.toJson(job)

@@ -29,19 +29,16 @@ class CdkIamRole(
      * ADMIN 역할이 아니라면 다 지정할것
      * ex) ManagedPolicy.fromAwsManagedPolicyName("AWSCodeCommitPowerUser")
      * */
-    var fixedManagedPolicies: List<IManagedPolicy> = emptyList()
+    var managedPolicy: List<IManagedPolicy> = emptyList()
 
     /** 간단 변환 */
     fun managedPolicy(vararg name: String) {
-        fixedManagedPolicies = name.map { ManagedPolicy.fromAwsManagedPolicyName(it) }
+        managedPolicy = name.map { ManagedPolicy.fromAwsManagedPolicyName(it) }
     }
 
     init {
         block(this)
     }
-
-
-    lateinit var iRole: IRole
 
     /** 권한 가져옴 (다른 스택에서) */
     fun load(stack: Stack): CdkIamRole {
@@ -49,11 +46,13 @@ class CdkIamRole(
         return this
     }
 
+    /** 결과 */
+    lateinit var iRole: IRole
+
     /**
      * 권한 생성
-     * @param managedPolicy 관리자 통합 권한 등, 수동으로 관리할때 사용
      *  */
-    fun create(stack: Stack, managedPolicy: List<IManagedPolicy> = fixedManagedPolicies): CdkIamRole {
+    fun create(stack: Stack): CdkIamRole {
         check(services.isNotEmpty())
         val inlinePolicies = run {
             if (actions.isEmpty()) {

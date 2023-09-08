@@ -27,11 +27,15 @@ class CdkPrefixList(
     override val logicalName: String
         get() = "${project.projectName}-prefix_${name}-${deploymentType}"
 
-
-    lateinit var prefixList: CfnPrefixList
-
     val feer: IPeer
         get() = Peer.prefixList(prefixList.attrPrefixListId)
+
+    init {
+        block(this)
+    }
+
+    /** 결과 */
+    lateinit var prefixList: CfnPrefixList
 
     /**
      * 프리픽스 리스트는 IP당 할당량을 사용함으로 range로 적용하려면 쿼터를 추가해야 한다.

@@ -8,7 +8,10 @@ import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.sfn.SfnUtil
 
-/** SFN 실행기.  */
+/**
+ * SFN 실행기.
+ * 리스트 기억해서, 일단 전부 실행 후, 안된거 파악하게 수정하기
+ *  */
 class BatchStepExecutor(
     val aws: AwsClient1,
     val config: BatchStepConfig

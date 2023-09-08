@@ -44,8 +44,7 @@ object IamPolicyUtil {
     val ALL = listOf("*")
 
     /** 간단 폴리시 생성. 주로 관리자 정책 만들때 사용함 */
-    fun create(stack: Stack, policyName: String = "app_admin", actions: List<String> = DEFAULT_ADMIN_ACTIONS): ManagedPolicy {
-        ManagedPolicyProps.builder().build()
+    fun createDefaultPolicy(stack: Stack, policyName: String = "app_admin", actions: List<String> = DEFAULT_ADMIN_ACTIONS): ManagedPolicy {
         return ManagedPolicy(
             stack, policyName + "_policy", ManagedPolicyProps.builder()
                 .managedPolicyName(policyName)

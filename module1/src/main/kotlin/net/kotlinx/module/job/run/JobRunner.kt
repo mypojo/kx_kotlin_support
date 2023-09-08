@@ -4,7 +4,7 @@ import com.google.common.eventbus.EventBus
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsInfoLoader
 import net.kotlinx.aws.AwsInstanceType
-import net.kotlinx.core.lib.ExceptionUtil
+import net.kotlinx.core.lib.toSimpleString
 import net.kotlinx.module.job.*
 import net.kotlinx.module.job.JobStatus.*
 import net.kotlinx.module.job.run.JobRoot.JobTasklet
@@ -18,7 +18,6 @@ import java.time.LocalDateTime
  * 싱글톤이다.
  * 여기에서는 개발 환경을 구분하지 않는다.
  */
-@Suppress("UnstableApiUsage")
 class JobRunner : KoinComponent {
 
     private val log = KotlinLogging.logger {}
@@ -53,7 +52,7 @@ class JobRunner : KoinComponent {
             run {
                 job.jobStatus = FAILED
                 job.jobContext = job.jobContext
-                job.jobErrMsg = ExceptionUtil.toString(e)
+                job.jobErrMsg = e.toSimpleString()
                 job.endTime = LocalDateTime.now()
                 jobRepository.updateItem(job, JobUpdateSet.ERROR)
             }

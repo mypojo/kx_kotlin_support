@@ -16,6 +16,11 @@ internal class CdkEventBridgeScheduleTest {
         check(op.hour == "18")
         println(CronKrOptions.hourToUtc(1, 13, 19))
 
+        val inline = CronKrOptions().apply { hhmm = "03:25" }.updateToUtc()
+        println(inline.hour)
+
+
+
     }
 
 }

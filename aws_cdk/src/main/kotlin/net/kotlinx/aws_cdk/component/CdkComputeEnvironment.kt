@@ -29,10 +29,15 @@ class CdkComputeEnvironment(
     override val logicalName: String
         get() = "${project.projectName}_compenv_${type.name}_${deploymentType}"
 
+    lateinit var iVpc: IVpc
+
+    lateinit var securityGroupIds: List<String>
+
+    /** 결과 */
     lateinit var compEnv: CfnComputeEnvironment
 
     //ECS 클러스터 이름 수정이 안됨..
-    fun create(stack: Stack, iVpc: IVpc, securityGroupIds: List<String>): CdkComputeEnvironment {
+    fun create(stack: Stack,block: CfnComputeEnvironmentProps.Builder.() -> Unit = {}): CdkComputeEnvironment {
         compEnv = CfnComputeEnvironment(
             stack, logicalName, CfnComputeEnvironmentProps.builder()
                 .computeEnvironmentName(logicalName)
@@ -46,6 +51,7 @@ class CdkComputeEnvironment(
                         .securityGroupIds(securityGroupIds)
                         .build()
                 )
+                .apply(block)
                 .build()
         )
         return this

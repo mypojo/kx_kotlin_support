@@ -22,7 +22,7 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
     lateinit var schema: Map<String, Any>
 
     /** 파티션 타입 */
-    lateinit var athenaTablePartitionType: AthenaTablePartitionType
+    var athenaTablePartitionType: AthenaTablePartitionType = AthenaTablePartitionType.None
 
     /** 포맷 */
     var athenaTableFormat: AthenaTableFormat = AthenaTableFormat.Json
@@ -30,11 +30,22 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
     /** 테이블명  */
     lateinit var tableName: String
 
-    /** 위치 */
-    lateinit var location: String
+
+    /** 버킷 명 */
+    lateinit var bucket: String
+
+    /**
+     * 테이블 시작점의 S3 key
+     * 폴더형식 이여야 한다 ( / 로 끝나야함)
+     * ex) collect/member/
+     *  */
+    lateinit var s3Key: String
 
     /** 파티션 정보 */
     var partition: Map<String, String> = emptyMap()
+
+    /** 헤더가 있으면 true로 지정할것 */
+    var skipHeader: Boolean = false
 
     /**
      * 테이블 프로퍼티
@@ -44,6 +55,9 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
      *  */
     var props: Map<String, String> = emptyMap()
 
+    /** 테이블 생성시에는 필요없음. 권한 부여용 */
+    var database: String = ""
+
     init {
         block(this)
     }
@@ -52,6 +66,7 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
 
     fun create(): String {
 
+        val location = "s3://${bucket}/${s3Key}"
         //속성 추가
         when (athenaTablePartitionType) {
             // https://docs.aws.amazon.com/ko_kr/athena/latest/ug/partition-projection-supported-types.html
@@ -67,6 +82,10 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
             }
 
             else -> {}
+        }
+
+        if (skipHeader) {
+            props = props + mapOf("skip.header.line.count" to "1") //헤더 스킵 정보
         }
 
         val partitionText = when {
@@ -115,13 +134,18 @@ $propsText
     //==================================================== athena type 입력용 (하드코딩 방지) ======================================================
     //https://docs.aws.amazon.com/ko_kr/athena/latest/ug/data-types.html
 
-    val boolean  = "boolean"
+    val boolean = "boolean"
     val string = "string"
+
     /** YYYY-MM-DD HH:MM:SS.SSS */
     val timestamp = "timestamp"
 
     val tinyint = "tinyint"
+    val int = "int"
     val bigint = "bigint"
+
+    val float = "float"
+    val double = "double"
 
 }
 

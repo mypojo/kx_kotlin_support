@@ -13,6 +13,8 @@ import software.amazon.awscdk.services.ec2.*
 class CdkSecurityGroup(
     val project: CdkProject,
     val sgName: String,
+    /** ID 하드코딩된 맵 (캐시 등의 이유로 name으로 조회가 안될때) */
+    var idMap: Map<DeploymentType, String> = emptyMap()
 ) : CdkDeploymentType {
 
     override var deploymentType: DeploymentType = DeploymentType.dev
@@ -24,13 +26,15 @@ class CdkSecurityGroup(
 
     val feer: IPeer by lazy { Peer.securityGroupId(iSecurityGroup.securityGroupId) }
 
-    lateinit var iVpc: IVpc
-
     /** 아웃바둔드 오픈 디폴트로 true */
     var allowAllOutbound: Boolean = true
 
-    fun create(stack: Stack): CdkSecurityGroup {
-        iSecurityGroup = SecurityGroup(stack, logicalName, SecurityGroupProps.builder().vpc(iVpc).allowAllOutbound(allowAllOutbound).build())
+    /** 결과 */
+    lateinit var iVpc: IVpc
+
+    fun create(stack: Stack, block: SecurityGroupProps.Builder.() -> Unit = {}): CdkSecurityGroup {
+        val props = SecurityGroupProps.builder().vpc(iVpc).allowAllOutbound(allowAllOutbound).apply(block).build()
+        iSecurityGroup = SecurityGroup(stack, logicalName, props)
         TagUtil.name(iSecurityGroup, logicalName)
         TagUtil.tag(iSecurityGroup, deploymentType)
         return this
@@ -49,6 +53,12 @@ class CdkSecurityGroup(
         val queryString = "*${logicalName}**".retainFrom(RegexSet.ALPAH_NUMERIC_HAN).lowercase() //이거 이름으로 캐싱되니 주의! 삭제된게 자꾸 나온다면 검색어를 수정해야함
         iSecurityGroup = SecurityGroup.fromLookupByName(stack, sgName, queryString, vpc)
         return this
+    }
+
+    /** 네임으로 못찾을경우 임시 인식용 */
+    fun loadById(stack: Stack): ISecurityGroup {
+        val id = idMap[deploymentType]!!
+        return SecurityGroup.fromSecurityGroupId(stack, "sg_${this.sgName}-${deploymentType}", id)
     }
 
 //    /**

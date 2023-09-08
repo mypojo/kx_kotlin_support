@@ -30,8 +30,12 @@ object LambdaUtil {
 
     /** 스냅스타트용 예약어 */
     const val BEFORE_CHECKPOINT = "beforeCheckpoint"
+
     /** 실 서비스를 나타내는 람다 Alias 예약어 */
     const val SERVICE_ON = "serviceOn"
+
+    /** URL 직접호출시 쿼리스트링을 추출한다. */
+    fun queryString(event: Map<String, Any>): Map<String, *> = event["queryStringParameters"] as Map<String, *>
 
 }
 

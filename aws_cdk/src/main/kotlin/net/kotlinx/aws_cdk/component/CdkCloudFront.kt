@@ -26,7 +26,7 @@ class CdkCloudFront(
     override val logicalName: String
         get() = "${domain}_cloudfront"
 
-
+    /** 결과 */
     lateinit var distribution: Distribution
 
     init {

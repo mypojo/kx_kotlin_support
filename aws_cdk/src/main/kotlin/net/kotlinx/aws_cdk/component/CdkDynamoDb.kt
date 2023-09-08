@@ -35,7 +35,7 @@ class CdkDynamoDb(
     }
 
     /** 아직 삭제 보호 모드 설정이 안된다. */
-    fun create(stack: Stack): CdkDynamoDb {
+    fun create(stack: Stack, block: TableProps.Builder.() -> Unit = {}): CdkDynamoDb {
         iTable = Table(
             stack, "ddb-$logicalName", TableProps.builder()
                 .tableName(logicalName)
@@ -45,6 +45,7 @@ class CdkDynamoDb(
                 .sortKey(sk)
                 .timeToLiveAttribute(ttl)
                 .pointInTimeRecovery(pointInTimeRecovery)
+                .apply(block)
                 .build()
         )
 

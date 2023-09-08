@@ -23,6 +23,7 @@ class CronKrOptions {
     var day: String? = null
     var minute: String? = null
 
+
     fun toSchedule(): Schedule {
         return Schedule.cron(
             CronOptions.builder()
@@ -46,6 +47,18 @@ class CronKrOptions {
         day = krDay?.let { "${it + (if (isYesterday) -1 else 0)}" } ?: null //날짜는 하루 당겨줘야함
         return this
     }
+
+    //==================================================== 자주 사용함 ======================================================
+
+    /** 한국시간 시분 인라인 입력 ex) 02:30  */
+    var hhmm: String
+        get() = throw UnsupportedOperationException()
+        set(value) {
+            val split = value.split(":")
+            check(split.size == 2)
+            krHour = split[0].toInt()
+            minute = split[1]
+        }
 
     /** 간편생성은 만들지 않음..바리에이션이 너무 많다. */
     companion object {
@@ -74,7 +87,7 @@ class CdkEventBridgeSchedule(
         block(this)
     }
 
-    /** 스케쥴을 등록함 */
+    /** 스케쥴을 등록함. 가능하면 인라인 가능하도록 구성 */
     fun addSchedule(jobName: String, enabled: Boolean, block: CronKrOptions.() -> Unit = {}): Rule {
         val options = CronKrOptions().apply(block)
         val ruleName = "${project.projectName}-${jobName}-${this.deploymentType}"

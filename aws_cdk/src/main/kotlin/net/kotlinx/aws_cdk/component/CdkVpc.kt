@@ -32,8 +32,6 @@ class CdkVpc(
     /** VPC 이름 */
     override val logicalName: String = "${project.projectName}_vpc_${deploymentType}"
 
-    lateinit var iVpc: IVpc
-
     val feer: IPeer
         get() = Peer.ipv4(iVpc.vpcCidrBlock)
 
@@ -43,24 +41,28 @@ class CdkVpc(
 
     var subnetCnt: Int = subnetTypes.size * maxAzs //초기화 이후에 사용
 
-    /** 최초 생성 */
-    fun create(stack: Stack, vpcProps: VpcProps = vpcProps()) {
-        iVpc = Vpc(stack, logicalName, vpcProps)
-        subnetRename() //간단으로 만든건 이름 이상하게 나옴.
-        gatewayVpcEndpoint()
-    }
+    /** 결과 */
+    lateinit var iVpc: IVpc
 
     /**
      * 필요에따라 오버라이드. ex) VPC 하나에 다수의 프로젝트 설정
      *  -> 여기서 서브넷 추가시,  vpc에서 서브넷을 조회할때 최초 생성된 서브넷만 조회된다. 이거말고도 문제가 많음..
      *  따라서 프로젝트별로 VPC를 만들고 그냥 이들을 연결하자
      *  */
-    fun vpcProps(): VpcProps = VpcProps.builder()
-        .ipAddresses(IpAddresses.cidr(vpcCidr))
-        .natGateways(natGateways)
-        .vpcName(logicalName)
-        .maxAzs(maxAzs)
-        .subnetConfiguration(subnetTypes.map { subnetConfiguration(project.projectName, it) }).build()
+    fun create(stack: Stack, block: VpcProps.Builder.() -> Unit = {}) {
+        val vpcProps = VpcProps.builder()
+            .ipAddresses(IpAddresses.cidr(vpcCidr))
+            .natGateways(natGateways)
+            .vpcName(logicalName)
+            .maxAzs(maxAzs)
+            .subnetConfiguration(subnetTypes.map { subnetConfiguration(project.projectName, it) })
+            .apply(block)
+            .build()
+        iVpc = Vpc(stack, logicalName, vpcProps)
+        subnetRename() //간단으로 만든건 이름 이상하게 나옴.
+        gatewayVpcEndpoint()
+    }
+
 
     /**
      * 기본 24 마스크만 해당

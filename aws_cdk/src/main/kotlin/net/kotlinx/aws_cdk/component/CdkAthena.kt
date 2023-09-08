@@ -23,10 +23,16 @@ class CdkAthena(
         block(this)
     }
 
+    /** 결과1 */
+    lateinit var database: CfnDatabase
+
+    /** 결과2 */
+    lateinit var workGroup: CfnWorkGroup
+
     /** 데이터베이스와 워크 그룹을 만들어준다 */
     fun create(stack: Stack) {
         val dbName = deploymentType.name.substring(0, 1)
-        val database = CfnDatabase(
+        database = CfnDatabase(
             stack, "glue_db_${dbName}-${deploymentType}", CfnDatabaseProps.builder()
                 .catalogId(project.awsId) //계정 ID임
                 .databaseInput(
@@ -40,7 +46,7 @@ class CdkAthena(
         TagUtil.tag(database, deploymentType)
 
         val workgroupName = "workgroup-${deploymentType}"
-        val workGroup = CfnWorkGroup(
+        workGroup = CfnWorkGroup(
             stack, workgroupName, CfnWorkGroupProps.builder()
                 .name(workgroupName)
                 .description("${project.projectName} workGroup for $deploymentType")
