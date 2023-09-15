@@ -3,6 +3,7 @@ package net.kotlinx.aws_cdk.module
 import net.kotlinx.aws.athena.AthenaTable
 import net.kotlinx.aws_cdk.CdkProject
 import net.kotlinx.aws_cdk.component.*
+import net.kotlinx.aws_cdk.util.IamCertType
 import net.kotlinx.aws_cdk.util.TagSet
 import software.amazon.awscdk.SecretValue
 import software.amazon.awscdk.Stack
@@ -46,13 +47,16 @@ class AthenaIamUser(block: AthenaIamUser.() -> Unit = {}) {
         CdkPolicyStatementSetAthena.ATHENA_EXE_ALL,
     )
 
+    /** 임시 비밀번호 접미어 */
+    var tempPwdSuff: String = "123!"
+
+    /** 계정 생성 타입 */
+    var iamCertType: IamCertType = IamCertType.USER
+
     /**
      * 생성할 사용자 리스트
      *  */
     lateinit var userNames: List<String>
-
-    /** 임시 비밀번호 접미어 */
-    var tempPwdSuff: String = "123!"
 
     init {
         block(this)
@@ -65,6 +69,7 @@ class AthenaIamUser(block: AthenaIamUser.() -> Unit = {}) {
      * 아테나 & 글루 종합 권한
      * 여기서 resources로 적절히 필터링 해야 테이블 리스트나 워크 그룹에  권한없는 객체가 안보임
      * database나 table 등은 태그를 못달기 때문에 태그 베이스로 권한을 부여하지 않음
+     * 태그 적용시 aws:PrincipalTag 를 사용할것
      *  */
     private fun createAthenaTablesStatement(): CdkPolicyStatement {
         return CdkPolicyStatement {
@@ -127,37 +132,43 @@ class AthenaIamUser(block: AthenaIamUser.() -> Unit = {}) {
         TagSet.IamGroup.tag(workGroup, teamName) //워크스페이스에는 태깅 가능
 
         //==================================================== IAM 생성 ======================================================
-        val policy = CdkIamPolicy {
-            policyName = "app_${teamName}_athena"
+        when (iamCertType) {
+            IamCertType.USER -> {
+                val policy = CdkIamPolicy {
+                    policyName = "app_${teamName}_athena"
 
-            val tableBuckets = tables.map { it.bucket }.distinct().map { "arn:aws:s3:::${it}" }
-            val tablePaths = tables.map { "arn:aws:s3:::${it.bucket}/${it.s3Key}*" } //전체(*)를 지정해야함
-            val customStates = listOf(
-                CdkPolicyStatementSetS3.s3Read(tableBuckets + tablePaths), //테이블에 읽기 권한 부여
-                CdkPolicyStatementSetS3.s3ReadWrite(listOf("arn:aws:s3:::${outputDir}/*")), //쿼리 결과 저장소에 쓰기 권한 부여
-                createAthenaTablesStatement(),
-            )
-            statements = defaultStatements + customStates
-            create(stack)
-        }
+                    val tableBuckets = tables.map { it.bucket }.distinct().map { "arn:aws:s3:::${it}" }
+                    val tablePaths = tables.map { "arn:aws:s3:::${it.bucket}/${it.s3Key}*" } //전체(*)를 지정해야함
+                    val customStates = listOf(
+                        CdkPolicyStatementSetS3.s3Read(tableBuckets + tablePaths), //테이블에 읽기 권한 부여
+                        CdkPolicyStatementSetS3.s3ReadWrite(listOf("arn:aws:s3:::${outputDir}/*")), //쿼리 결과 저장소에 쓰기 권한 부여
+                        createAthenaTablesStatement(),
+                    )
+                    statements = defaultStatements + customStates
+                    create(stack)
+                }
 
-        //==================================================== IAM USER ======================================================
-        val group = Group(
-            stack, "iam_group-$teamName", GroupProps.builder()
-                .groupName(teamName)
-                .managedPolicies(listOf(policy.iManagedPolicy))
-                .build()
-        )
+                //==================================================== IAM USER ======================================================
+                val group = Group(
+                    stack, "iam_group-$teamName", GroupProps.builder()
+                        .groupName(teamName)
+                        .managedPolicies(listOf(policy.iManagedPolicy))
+                        .build()
+                )
 
-        userNames.forEach { userName ->
-            User(
-                stack, "iam_user-${userName}", UserProps.builder()
-                    .groups(listOf(group))
-                    .userName(userName)
-                    .passwordResetRequired(true)
-                    .password(SecretValue.unsafePlainText("${userName}${tempPwdSuff}"))
-                    .build()
-            )
+                userNames.forEach { userName ->
+                    User(
+                        stack, "iam_user-${userName}", UserProps.builder()
+                            .groups(listOf(group))
+                            .userName(userName)
+                            .passwordResetRequired(true)
+                            .password(SecretValue.unsafePlainText("${userName}${tempPwdSuff}"))
+                            .build()
+                    )
+                }
+            }
+
+            IamCertType.ROLE -> throw UnsupportedOperationException("준비중..")
         }
 
 

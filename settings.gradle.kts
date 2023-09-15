@@ -3,6 +3,7 @@ pluginManagement {
         val kotlinVersion: String by settings
         kotlin("jvm") version kotlinVersion //변수지정 안됨.. 아래 kotlinVersion하고 동일
         //kotlin("multiplatform") version kotlinVersion apply false // 아직은 이르다.. kotlin-jvm 하고 같이 사용 못함
+        kotlin("plugin.serialization") version kotlinVersion  // apply 까지 해당 프로젝트에 해야지 컴파일할때 적용됨
         //==================================================== 스프링부트 ======================================================
         val springBootVersion: String by settings
         id("org.springframework.boot") version springBootVersion //부트 기본 플러그인.

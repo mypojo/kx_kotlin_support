@@ -2,6 +2,11 @@
 plugins {
     //코어 플러그인
     kotlin("jvm") //항상 최신버전 사용. 멀티플랫폼 버전과 동일함
+    kotlin("plugin.serialization")
+}
+
+apply {
+    plugin("org.jetbrains.kotlin.plugin.serialization")
 }
 
 //==================================================== 공통 ======================================================

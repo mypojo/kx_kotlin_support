@@ -5,6 +5,13 @@ import com.lectra.koson.ObjectType
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.core.gson.GsonData
 
+/** 람다결과(map) 형식 지원하는 객체 */
+interface LambdaMapResult {
+
+    fun toLambdaMap(): Map<String, Any>
+
+}
+
 
 object LambdaHandlerUtil {
 
@@ -21,6 +28,7 @@ object LambdaHandlerUtil {
         is GsonData -> handlerResp.fromJson<LinkedHashMap<String, Any>>()
         is JsonElement -> GsonData(handlerResp).fromJson<LinkedHashMap<String, Any>>()
         //==================================================== 객체 ======================================================
+        is LambdaMapResult -> handlerResp.toLambdaMap()
         else -> GsonData.fromObj(handlerResp).fromJson<LinkedHashMap<String, Any>>()
     }
 

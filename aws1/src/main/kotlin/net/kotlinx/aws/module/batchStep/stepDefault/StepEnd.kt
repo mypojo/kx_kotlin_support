@@ -1,27 +1,26 @@
-package net.kotlinx.aws.module.batchStep.step
+package net.kotlinx.aws.module.batchStep.stepDefault
 
+import com.amazonaws.services.lambda.runtime.Context
 import com.lectra.koson.obj
 import mu.KotlinLogging
 import net.kotlinx.aws.lambda.LambdaUtil
+import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
 import net.kotlinx.aws.module.batchStep.BatchStepConfig
-import net.kotlinx.aws.module.batchStep.BatchStepContext
 import net.kotlinx.aws.sfn.SfnUtil
+import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.string.toTextGrid
 import net.kotlinx.core.time.toTimeString
 
 
-/**
- *
- *  */
 class StepEnd(
     private val config: BatchStepConfig,
-) : StepHandler {
+) : LambdaLogicHandler {
 
     private val log = KotlinLogging.logger {}
 
-    override suspend fun handleRequest(event: Map<String, Any>): Any {
+    override suspend fun invoke(input: GsonData, context: Context?): Any? {
 
-        val context = BatchStepContext(event)
+        val context = BatchStepContext(input)
         val sfnId = context.option[SfnUtil.SFN_ID].str!!
         val query = """
                     SELECT file_name, COUNT(1) CNT,max(total_interval) total_interval,avg(interval) avg_interval,sum(length(output)) length

@@ -32,8 +32,17 @@ class BeanTest : TestRoot() {
         var tag: String? = null,
     )
 
+
+    lateinit var aa:String
+
     @Test
     fun test() {
+
+        if(aa==null){
+            aa = "aaa"
+        }
+        println(aa)
+
 
         val p1 = Poo1("홍길동").apply {
             age = 15

@@ -6,6 +6,8 @@ import kotlinx.html.*
  * HTML을 구성해주는 객체
  * DSL 태그 구현체가 한개가 아닌 여러개를 구현하개 되어있다.
  * 여기서는 범용으로 쓸것임으로 다 구현함
+ *
+ * 참고!! 아쉽게도 typealias 는 아직 멀티타입을 지원하지 않는다.
  *  */
 interface HtmlData {
     /** 일반적으로 테이블을 구성하는 TD 에 사용 */

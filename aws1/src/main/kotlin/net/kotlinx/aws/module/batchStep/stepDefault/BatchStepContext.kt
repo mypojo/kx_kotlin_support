@@ -1,17 +1,17 @@
-package net.kotlinx.aws.module.batchStep
+package net.kotlinx.aws.module.batchStep.stepDefault
 
 import net.kotlinx.aws.AwsNaming
+import net.kotlinx.aws.module.batchStep.BatchStepInput
+import net.kotlinx.aws.module.batchStep.BatchStepMode
 import net.kotlinx.core.gson.GsonData
 import kotlin.reflect.KClass
 
 /**
- * 전체 전달되는 event Map을 래핑.
+ * 기본 step에 전달되는 입력값을 래핑.
  * 범용적으로 사용하기 위해서 객체 매핑을 사용하지 않는다.
  * 참고!! json이 Any로 입력되면  LinkedHashMap 으로 매핑된다.
  * */
-internal class BatchStepContext(event: Map<String, Any>) {
-
-    val gsonData: GsonData = GsonData.fromObj(event)
+internal class BatchStepContext(gsonData: GsonData) {
 
     /**
      * 인풋 중에서 option
@@ -23,7 +23,7 @@ internal class BatchStepContext(event: Map<String, Any>) {
     val mode: BatchStepMode? by lazy { option["mode"].str?.let { BatchStepMode.valueOf(it) } }
 
     /** 옵션을 객체화 시킴 */
-    val optionInput: BatchStepInput by lazy { BatchStepInput.parse(option.toString()) } //없는 필드는 무시
+    val optionInput: BatchStepInput by lazy { BatchStepInput.parseJson(option.toString()) } //없는 필드는 무시
 
     //==================================================== 각 단계 ======================================================
 

@@ -28,9 +28,9 @@ import java.util.concurrent.TimeUnit
 class AthenaModule(
     private val aws: AwsClient1,
     /** 데이터베이스 명 (기본스키마) */
-    private val database: String = "",
+    val database: String = "",
     /** 워크그룹 (쿼리 결과 위치 있어야함) */
-    private val workGroup: String = "primary",
+    val workGroup: String = "primary",
     /** 쿼리 종료되었는지 체크를 시도하는 간격 */
     private val checkIntervalMills: Long = TimeUnit.SECONDS.toMillis(1),
     /** 쿼리 체크 타임아웃 */

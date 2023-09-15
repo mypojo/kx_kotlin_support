@@ -1,16 +1,19 @@
-package net.kotlinx.aws.module.batchStep.step
+package net.kotlinx.aws.module.batchStep.stepDefault
 
 import aws.sdk.kotlin.services.s3.listObjectsV2
+import com.amazonaws.services.lambda.runtime.Context
 import com.lectra.koson.obj
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.lambda.LambdaUtil
 import net.kotlinx.aws.lambda.invokeAsynch
+import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
+import net.kotlinx.aws.lambdaCommon.handler.s3.S3LogicHandler
 import net.kotlinx.aws.module.batchStep.BatchStepConfig
-import net.kotlinx.aws.module.batchStep.BatchStepContext
 import net.kotlinx.aws.with
 import net.kotlinx.core.calculator.ProgressData
 import net.kotlinx.core.concurrent.coroutineExecute
+import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.regex.RegexSet
 import net.kotlinx.core.string.retainFrom
 import net.kotlinx.core.time.TimeStart
@@ -21,40 +24,40 @@ import net.kotlinx.core.time.TimeStart
  * 람다에에는 반드시 타임아웃이 걸려있어야함
  *  */
 class StepList(
-    private val bsConfig: BatchStepConfig,
-) : StepHandler {
+    private val config: BatchStepConfig,
+) : LambdaLogicHandler {
 
-    val aws = bsConfig.aws
+    val aws = config.aws
 
     private val log = KotlinLogging.logger {}
 
-    override suspend fun handleRequest(event: Map<String, Any>): Any {
+    override suspend fun invoke(input: GsonData, context: Context?): Any? {
 
         log.trace { "start.." }
         val start = TimeStart()
-        val context = BatchStepContext(event)
+        val context = BatchStepContext(input)
         val input = context.optionInput
 
-        val prefix = "${bsConfig.workUploadInputDir}${input.targetSfnId}/"
+        val prefix = "${config.workUploadInputDir}${input.targetSfnId}/"
 
         log.trace { "리스팅.." }
         val contents = aws.s3.with {
             listObjectsV2 {
-                this.bucket = bsConfig.workUploadBuket
+                this.bucket = this@StepList.config.workUploadBuket
                 this.prefix = prefix
                 this.maxKeys = input.maxConcurrency //최대치 까지만 읽어서 실행
             }.contents?.map { it.key!! } ?: emptyList()
         }
-        log.trace { " -> ${bsConfig.workUploadBuket}/$prefix -> S3 list ${contents.size}건" }
+        log.trace { " -> ${config.workUploadBuket}/$prefix -> S3 list ${contents.size}건" }
 
         contents.map {
             suspend {
                 //AWS의 S3 입력과 동일하게 맞춰준다.
                 val lambdaInput = obj {
-                    StepLogic.KEY to it
+                    S3LogicHandler.KEY to it
                 }
                 log.trace { " -> lambdaInput $lambdaInput" }
-                aws.lambda.with { invokeAsynch(bsConfig.lambdaFunctionName, lambdaInput) }
+                aws.lambda.with { invokeAsynch(this@StepList.config.lambdaFunctionName, lambdaInput) }
             }
         }.coroutineExecute(100) // 100개 정도는 문제 없음.
 

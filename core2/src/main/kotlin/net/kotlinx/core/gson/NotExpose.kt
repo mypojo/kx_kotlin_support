@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy
  * Google Guava의 Expose와 유사.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(AnnotationTarget.FIELD)
+@Target(AnnotationTarget.FIELD,AnnotationTarget.PROPERTY)
 annotation class NotExpose(val value: String = "")
 
 /** NotExpose의 기본구현.   */
