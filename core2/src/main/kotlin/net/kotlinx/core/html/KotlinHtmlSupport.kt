@@ -2,8 +2,8 @@ package net.kotlinx.core.html
 
 import kotlinx.html.*
 
-
-fun HTML.setDefault(title: String) {
+/** 프로젝트마다 오버라이드 해서 사용할것! */
+fun HTML.setDefault(title: String, block: HEAD.() -> Unit = {}) {
     lang = "ko"
     head {
         meta { charset = "utf-8" }
@@ -19,6 +19,7 @@ fun HTML.setDefault(title: String) {
         style {
             +DEFAULT_TABLE.trimIndent()
         }
+        block()
     }
 }
 

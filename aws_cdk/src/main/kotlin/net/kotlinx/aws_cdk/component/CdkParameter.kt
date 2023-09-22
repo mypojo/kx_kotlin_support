@@ -12,7 +12,7 @@ class CdkParameter(
     val name: String,
 ) : CdkDeploymentType {
 
-    override var deploymentType: DeploymentType = DeploymentType.dev
+    override var deploymentType: DeploymentType = DeploymentType.DEV
 
     override val logicalName: String
         get() = "/cdk/${project.projectName}/${this.name}/$deploymentType"

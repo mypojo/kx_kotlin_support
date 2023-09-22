@@ -27,7 +27,7 @@ internal class OkHttpSupportTest {
     @Test
     fun `다운로드_캐시`() {
 
-        val file = File(AwsInstanceTypeUtil.instanceType.root, "demo.jpg")
+        val file = File(AwsInstanceTypeUtil.INSTANCE_TYPE.root, "demo.jpg")
         file.delete()
         val url = "http://imgep.xxx.co.kr/productimg/image/img9/29/300011929_FI57778.jpg"
 

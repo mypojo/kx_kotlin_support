@@ -31,7 +31,7 @@ class CdkSfn(val project: CdkProject, val name: String, block: CdkSfn.() -> Unit
     lateinit var deploymentType: DeploymentType
 
     override val logicalName: String
-        get() = "${project.projectName}-$name-${deploymentType.name}"
+        get() = "${project.projectName}-$name-${deploymentType.name.lowercase()}"
 
     /** 새벽 기준으로 출근 할때까지 */
     var timeout: Duration = Duration.hours(6)

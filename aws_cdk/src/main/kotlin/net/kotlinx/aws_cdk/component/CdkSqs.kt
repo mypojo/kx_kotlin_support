@@ -17,10 +17,10 @@ class CdkSqs(
     val name: String,
 ) : CdkDeploymentType {
 
-    override var deploymentType: DeploymentType = DeploymentType.dev
+    override var deploymentType: DeploymentType = DeploymentType.DEV
 
     override val logicalName: String
-        get() = "${project.projectName}-${name}-${deploymentType}"
+        get() = "${project.projectName}-${name}-${deploymentType.name.lowercase()}"
 
     /**
      * 메시지가 대기열에서 소비된 후에만 숨겨짐 (큐에서 읽어갔으나 아직 삭제 전)

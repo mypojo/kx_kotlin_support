@@ -5,7 +5,7 @@ import net.kotlinx.aws_cdk.CdkDeploymentType
 import net.kotlinx.aws_cdk.CdkProject
 import net.kotlinx.aws_cdk.util.TagUtil
 import net.kotlinx.core.DeploymentType
-import net.kotlinx.core.DeploymentType.dev
+import net.kotlinx.core.DeploymentType.DEV
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.batch.CfnJobDefinition
 import software.amazon.awscdk.services.batch.CfnJobDefinitionProps
@@ -21,11 +21,11 @@ class CdkBatchJobDefinition(
     val memory: Long,
 ) : CdkDeploymentType {
 
-    override var deploymentType: DeploymentType = dev
+    override var deploymentType: DeploymentType = DEV
 
     /** VPC 이름 */
     final override val logicalName: String
-        get() = "${project.projectName}-${name}-${deploymentType}" //가변으로 써도 됨
+        get() = "${project.projectName}-${name}-${deploymentType.name.lowercase()}" //가변으로 써도 됨
 
     val arn: String = "arn:aws:batch:ap-northeast-2:${project.awsId}:job-definition/${logicalName}"
 

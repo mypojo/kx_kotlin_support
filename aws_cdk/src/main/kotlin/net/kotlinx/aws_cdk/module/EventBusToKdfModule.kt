@@ -43,13 +43,13 @@ class EventLogModule(
      * 아테나 테이블 컬럼명은 소문자로 리플레이스 된다. 어디까지 변환되는지 헷갈리니 언더바 형식을 사용할것
      * */
     fun create(stack: Stack, eventName: String, eventPattern: EventPattern): String {
-        val compressionFormat = if (deploymentType == DeploymentType.prod) "GZIP" else "UNCOMPRESSED" // => 개발은 "UNCOMPRESSED"
+        val compressionFormat = if (deploymentType == DeploymentType.PROD) "GZIP" else "UNCOMPRESSED" // => 개발은 "UNCOMPRESSED"
         val tableName = "${tablePrefix}${eventName}" //전체 프로젝트 공통임으로 프로젝트 이름이 들어가지 않는다.
-        val intervalInSeconds = if (deploymentType == DeploymentType.prod) 60 * 10 else 60 //실서버는 10분에 한번 로깅. 60이 최소. 최초 개발시 빠른 반응을 위해서 60으로 하자.
-        val deliveryStreamName = "${tableName}-${deploymentType}"
+        val intervalInSeconds = if (deploymentType == DeploymentType.PROD) 60 * 10 else 60 //실서버는 10분에 한번 로깅. 60이 최소. 최초 개발시 빠른 반응을 위해서 60으로 하자.
+        val deliveryStreamName = "${tableName}-${deploymentType.name.lowercase()}"
 
 
-        val awsEventLogRuleName = "${project.projectName}-event_${eventName}-${deploymentType}"
+        val awsEventLogRuleName = "${project.projectName}-event_${eventName}-${deploymentType.name.lowercase()}"
         //CDK로 답이 없음. 오버라이드라도 하게 해주지.. 그냥 콘솔에서 \n 추가 (엔터키 누르기)
         val message: RuleTargetInput = RuleTargetInput.fromObject("")
 //        val message: RuleTargetInput = RuleTargetInput.fromObject({

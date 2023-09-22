@@ -3,9 +3,9 @@ package net.kotlinx.aws.lambdaCommon.handler.s3
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import net.kotlinx.core.koson.KosonCompanion
-import net.kotlinx.core.koson.KosonObj
-import net.kotlinx.core.koson.KosonSet
+import net.kotlinx.core.serial.SerialJsonCompanion
+import net.kotlinx.core.serial.SerialJsonObj
+import net.kotlinx.core.serial.SerialJsonSet
 
 /**
  * S3에 JSON 덩어리로 저장되는 입력 데이터
@@ -18,13 +18,13 @@ data class S3LogicInput(
     val datas: List<String>,
     /** 로직 옵션 */
     val logicOption: String = "{}",
-) : KosonObj {
+) : SerialJsonObj {
 
-    override fun toJson(): String = KosonSet.KSON_OTHER.encodeToString(this)
+    override fun toJson(): String = SerialJsonSet.KSON_OTHER.encodeToString(this)
 
-    companion object : KosonCompanion {
+    companion object : SerialJsonCompanion {
 
-        override fun parseJson(json: String): S3LogicInput = KosonSet.KSON_OTHER.decodeFromString<S3LogicInput>(json)
+        override fun parseJson(json: String): S3LogicInput = SerialJsonSet.KSON_OTHER.decodeFromString<S3LogicInput>(json)
 
     }
 

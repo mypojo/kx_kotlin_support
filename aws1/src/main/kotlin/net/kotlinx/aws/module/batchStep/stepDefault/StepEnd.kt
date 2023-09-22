@@ -18,7 +18,7 @@ class StepEnd(
 
     private val log = KotlinLogging.logger {}
 
-    override suspend fun invoke(input: GsonData, context: Context?): Any? {
+    override suspend fun invoke(input: GsonData, context: Context?): Any {
 
         val context = BatchStepContext(input)
         val sfnId = context.option[SfnUtil.SFN_ID].str!!

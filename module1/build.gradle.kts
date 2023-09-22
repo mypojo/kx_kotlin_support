@@ -43,7 +43,4 @@ dependencies {
     implementation("org.passay:passay:1.6.3") //패스워드 간단 검증
     implementation("com.google.ortools:ortools-java:9.6.2534") //구글 최적화도구 orTool https://developers.google.com/optimization/install/java/pkg_windows?hl=ko
 
-    //==================================================== 기본 의존 ======================================================
-    api("com.slack.api:slack-api-client:1.29.1") //기본 API만.  //implementation("com.slack.api:bolt-jetty:1.28.1")     // 기본  API 및 bolt-servlet 등을 포함한다
-
 }

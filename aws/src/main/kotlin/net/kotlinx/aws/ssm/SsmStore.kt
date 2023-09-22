@@ -1,7 +1,6 @@
 package net.kotlinx.aws.ssm
 
 import aws.sdk.kotlin.services.ssm.SsmClient
-import aws.sdk.kotlin.services.ssm.getParameter
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import kotlinx.coroutines.runBlocking
@@ -9,6 +8,8 @@ import java.util.concurrent.TimeUnit
 
 /**
  * 파라메터 캐시 저장소
+ * 일반적인 테이터가 늦은 초기화로 작동할때는 그냥 ssm 쓰면 됨
+ * 이거는 자주 참조되는 데이터를 저장하는용도  ex) 글로벌 설정을 10분마다 교체 등..
  *  */
 class SsmStore(
     private val ssmClient: SsmClient,
@@ -21,7 +22,7 @@ class SsmStore(
         synchronized(this) {
             return cache.get(key) {
                 runBlocking {
-                    ssmClient.getParameter { this.name = key; this.withDecryption = true }.parameter?.value
+                    ssmClient.find(key)
                 }
             }
         }

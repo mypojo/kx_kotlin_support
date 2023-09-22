@@ -18,15 +18,6 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
 
     protected val log = KotlinLogging.logger {}
 
-    constructor() {
-        TimeUtil.initTimeZone()
-        //아직 셧다운 훅은 지원안함.
-        Runtime.getRuntime().addShutdownHook(Thread {
-            log.warn("### 람다가 셧다운 됩니다 ###")
-            ResourceHolder.finish()
-        })
-    }
-
     /** 전체 내장 로직. 한번 람다 호출에 한개만 동작한다 */
     private val logics: MutableList<LambdaFunctionLogic> = mutableListOf()
 
@@ -66,5 +57,14 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
     /** 스탭스타트 복구 */
     override fun afterRestore(context: org.crac.Context<out Resource>?) {
         log.info { "AWS snapstart afterRestore" }
+    }
+
+    init {
+        TimeUtil.initTimeZone()
+        //아직 셧다운 훅은 지원안함.
+        Runtime.getRuntime().addShutdownHook(Thread {
+            log.warn("### 람다가 셧다운 됩니다 ###")
+            ResourceHolder.finish()
+        })
     }
 }

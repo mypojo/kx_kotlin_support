@@ -14,7 +14,7 @@ class CdkAthena(
     block: CdkAthena.() -> Unit = {},
 ) {
 
-    var deploymentType: DeploymentType = DeploymentType.dev
+    var deploymentType: DeploymentType = DeploymentType.DEV
 
     /** 결과 쿼리가 저장될 work 버킷 */
     lateinit var bucketName: String
@@ -31,9 +31,10 @@ class CdkAthena(
 
     /** 데이터베이스와 워크 그룹을 만들어준다 */
     fun create(stack: Stack) {
-        val dbName = deploymentType.name.substring(0, 1)
+        val depName = deploymentType.name.lowercase()
+        val dbName = depName.substring(0, 1)
         database = CfnDatabase(
-            stack, "glue_db_${dbName}-${deploymentType}", CfnDatabaseProps.builder()
+            stack, "glue_db_${dbName}-$depName", CfnDatabaseProps.builder()
                 .catalogId(project.awsId) //계정 ID임
                 .databaseInput(
                     CfnDatabase.DatabaseInputProperty.builder()
@@ -45,11 +46,11 @@ class CdkAthena(
         )
         TagUtil.tag(database, deploymentType)
 
-        val workgroupName = "workgroup-${deploymentType}"
+        val workgroupName = "workgroup-$depName"
         workGroup = CfnWorkGroup(
             stack, workgroupName, CfnWorkGroupProps.builder()
                 .name(workgroupName)
-                .description("${project.projectName} workGroup for $deploymentType")
+                .description("${project.projectName} workGroup for $depName")
                 .workGroupConfiguration(
                     CfnWorkGroup.WorkGroupConfigurationProperty.builder()
                         .bytesScannedCutoffPerQuery(GB_TO_BYTE * 1)

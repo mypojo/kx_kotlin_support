@@ -25,7 +25,7 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
     var athenaTablePartitionType: AthenaTablePartitionType = AthenaTablePartitionType.None
 
     /** 포맷 */
-    var athenaTableFormat: AthenaTableFormat = AthenaTableFormat.Json
+    var athenaTableFormat: AthenaTableFormat = AthenaTableFormat.IonDdb
 
     /** 테이블명  */
     lateinit var tableName: String
@@ -55,6 +55,9 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
      *  */
     var props: Map<String, String> = emptyMap()
 
+    /** ION에서 강제로 falt 하게 지정할 path */
+    var ionFlatPath: String? = "Item"
+
     /** 테이블 생성시에는 필요없음. 권한 부여용 */
     var database: String = ""
 
@@ -67,6 +70,10 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
     fun create(): String {
 
         val location = "s3://${bucket}/${s3Key}"
+        if (skipHeader) {
+            props = props + mapOf("skip.header.line.count" to "1") //헤더 스킵 정보
+        }
+
         //속성 추가
         when (athenaTablePartitionType) {
             // https://docs.aws.amazon.com/ko_kr/athena/latest/ug/partition-projection-supported-types.html
@@ -84,42 +91,43 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
             else -> {}
         }
 
-        if (skipHeader) {
-            props = props + mapOf("skip.header.line.count" to "1") //헤더 스킵 정보
-        }
-
+        val schemaText = schema.map { "    `${it.key}` ${toSchema(it.value)}" }.joinToString(",\n") //뎁스에 따라 표현 방식이 틀려진다.
         val partitionText = when {
-            athenaTablePartitionType == AthenaTablePartitionType.Index && partition.isNotEmpty() -> {
+            partition.isNotEmpty() -> ""
+            athenaTablePartitionType == AthenaTablePartitionType.Index -> {
                 "PARTITIONED BY (${partition.map { "${it.key} ${it.value}" }.joinToString(",")})"
             }
 
             else -> ""
         }
 
+        val formatText = athenaTableFormat.toRowFormat(this).joinToString("\n")
+
         val propsText = when {
             props.isEmpty() -> ""
-            else -> "TBLPROPERTIES ( ${
-                props.map { "'${it.key}' = '${it.value}'" }.joinToString(",")
-            } )" //'storage.location.template' = 's3://sin-work-dev/upload/sfnBatchModuleOutput/$\\{sfnId}'
+            else -> "TBLPROPERTIES ( ${props.map { "   '${it.key}' = '${it.value}'" }.joinToString(",")} )"
         }
 
-        val schemaText = schema.map { "`${it.key}` ${toSchema(it.value)}" }.joinToString(",") //뎁스에 따라 표현 방식이 틀려진다.
-        return """            
-CREATE EXTERNAL TABLE ${tableName}( $schemaText  )
-$partitionText
-${athenaTableFormat.define}
-LOCATION  '${location}'
-$propsText
-            ;
-        """.trimIndent()
+        return listOf(
+            "CREATE EXTERNAL TABLE ${tableName}(",
+            schemaText,
+            ")",
+            partitionText,
+            formatText,
+            "LOCATION  '${location}'",
+            propsText,
+            ";",
+        ).joinToString("\n")
     }
 
     private fun toSchema(value: Any?): String = when (value) {
 
         null -> throw NullPointerException()
 
+        /** 주로 JSON 매핑에 사용 */
         is Map<*, *> -> "STRUCT< ${value.entries.joinToString(",") { toSchema(it) }} >"
 
+        /** 주로 JSON 매핑에 사용 */
         is List<*> -> "ARRAY<STRUCT< ${value.joinToString(",") { toSchema(it) }} >>"
 
         //is Map.Entry<*, *> -> "`${value.key}` ${toSchema(value.value!!)}"

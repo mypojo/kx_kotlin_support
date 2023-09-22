@@ -19,13 +19,13 @@ class CdkS3(
     block: CdkS3.() -> Unit = {}
 ) : CdkDeploymentType {
 
-    override var deploymentType: DeploymentType = DeploymentType.dev
+    override var deploymentType: DeploymentType = DeploymentType.DEV
 
     /** 도메인 등은 이름 그대로를 버킷명으로 사용함 */
     var domain: Boolean = false
 
     override val logicalName: String
-        get() = if (domain) name else "${project.projectName}-${name}-${deploymentType}"
+        get() = if (domain) name else "${project.projectName}-${name}-${deploymentType.name.lowercase()}"
 
     lateinit var iBucket: IBucket
 
@@ -110,7 +110,7 @@ class CdkS3(
      * ex) "athena", "athena/", Duration.days(3)
      * */
     fun addLifeCycleDelete(name: String, prefix: String, delete: kotlin.time.Duration) {
-        lifecycleRules += LifecycleRule.builder().id("${project.projectName}-lifecycle-$name-$deploymentType")
+        lifecycleRules += LifecycleRule.builder().id("${project.projectName}-lifecycle-$name-${deploymentType.name.lowercase()}")
             .prefix(prefix)
             .abortIncompleteMultipartUploadAfter(Duration.days(7))// 기본설정
             .expiration(delete.toCdk())
@@ -122,7 +122,7 @@ class CdkS3(
      * ex) download/ -> 90일 후에 삭제 마킹 -> 삭제마킹 이후 30일 이후 실제 삭제
      * */
     fun addLifeCycleMarkAndDelete(name: String, prefix: String, deleteMark: kotlin.time.Duration, delete: kotlin.time.Duration) {
-        lifecycleRules += LifecycleRule.builder().id("${project.projectName}-lifecycle-$name-$deploymentType")
+        lifecycleRules += LifecycleRule.builder().id("${project.projectName}-lifecycle-$name-${deploymentType.name.lowercase()}")
             .prefix(prefix)
             .abortIncompleteMultipartUploadAfter(Duration.days(7))// 기본설정
             .expiration(deleteMark.toCdk()) //xx 후에 삭제 마킹

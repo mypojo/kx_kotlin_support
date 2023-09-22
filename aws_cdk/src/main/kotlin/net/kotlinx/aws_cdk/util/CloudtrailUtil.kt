@@ -22,7 +22,7 @@ object CloudtrailUtil {
                 .build()
         )
         //trail.addEventSelector() 1개는 공짜임으로 필터링 일단 무시..
-        TagUtil.tag(trail, DeploymentType.prod) //실서버로 간주
+        TagUtil.tag(trail, DeploymentType.PROD) //실서버로 간주
 
     }
 

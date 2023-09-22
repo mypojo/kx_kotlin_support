@@ -3,9 +3,9 @@ package net.kotlinx.aws.module.batchStep
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import net.kotlinx.core.koson.KosonCompanion
-import net.kotlinx.core.koson.KosonObj
-import net.kotlinx.core.koson.KosonSet
+import net.kotlinx.core.serial.SerialJsonCompanion
+import net.kotlinx.core.serial.SerialJsonObj
+import net.kotlinx.core.serial.SerialJsonSet
 import java.util.*
 
 /**
@@ -15,7 +15,7 @@ import java.util.*
  * 그냥.. kotlin Serializable 함 써봤음
  * */
 @Serializable
-class BatchStepInput : KosonObj {
+class BatchStepInput : SerialJsonObj {
 
     /** 기본적으로 Map 모드 */
     var mode: BatchStepMode = BatchStepMode.Map
@@ -51,11 +51,11 @@ class BatchStepInput : KosonObj {
     /** 콜드 스타트시 대기시간 (초). 정수로 입력해야한다.  */
     var waitColdstartSeconds: Int = waitSeconds + 10
 
-    override fun toJson(): String = KosonSet.KSON_OTHER.encodeToString(this)
+    override fun toJson(): String = SerialJsonSet.KSON_OTHER.encodeToString(this)
 
-    companion object : KosonCompanion {
+    companion object : SerialJsonCompanion {
 
-        override fun parseJson(json: String): BatchStepInput = KosonSet.KSON_OTHER.decodeFromString<BatchStepInput>(json)
+        override fun parseJson(json: String): BatchStepInput = SerialJsonSet.KSON_OTHER.decodeFromString<BatchStepInput>(json)
 
     }
 

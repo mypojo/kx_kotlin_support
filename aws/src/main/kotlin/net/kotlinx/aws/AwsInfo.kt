@@ -21,7 +21,6 @@ data class AwsInfo(
      * 이 뒤에 필터를 붙일 수 있다.
      */
     fun toLogLink(startTime: LocalDateTime? = null): String {
-        if (instanceType == null) return "instanceType is null -> loglink is not available"
         if (!instanceType.isLogLinkAble()) return "instanceType (${instanceType}) -> loglink is not available"
         val basicLink = CloudWatchUtil.toLogLink(logGroupName, logStreamName)
         val filter = when {

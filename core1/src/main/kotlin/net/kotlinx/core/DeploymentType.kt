@@ -8,10 +8,10 @@ enum class DeploymentType {
     /**
      * 운영서버
      */
-    prod,
+    PROD,
 
     /** 개발서버  */
-    dev
+    DEV
     ;
 
     companion object {
@@ -20,9 +20,9 @@ enum class DeploymentType {
         fun load(): DeploymentType {
             val config = System.getenv(DeploymentType::class.java.simpleName)
             return when {
-                config.isNullOrEmpty() -> dev
-                prod.name.equals(config, true) -> prod
-                dev.name.equals(config, true) -> dev
+                config.isNullOrEmpty() -> DEV
+                PROD.name.equals(config, true) -> PROD
+                DEV.name.equals(config, true) -> DEV
                 else -> throw IllegalStateException("$config is not required DeploymentType")
             }
         }

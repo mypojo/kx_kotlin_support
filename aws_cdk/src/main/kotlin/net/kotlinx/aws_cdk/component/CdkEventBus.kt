@@ -16,10 +16,10 @@ class CdkEventBus(
     val project: CdkProject,
 ) : CdkDeploymentType {
 
-    override var deploymentType: DeploymentType = DeploymentType.dev
+    override var deploymentType: DeploymentType = DeploymentType.DEV
 
     override val logicalName: String
-        get() = "${project.projectName}-eventbus-${deploymentType}"
+        get() = "${project.projectName}-eventbus-${deploymentType.name.lowercase()}"
 
     lateinit var iEventBus: IEventBus
 
@@ -33,7 +33,7 @@ class CdkEventBus(
      * 코드 참고용임!
      *  */
     fun link(stack: Stack, eventPattern: EventPattern = EventPatternUtil.of(DEFAULT_EVENT_LIST)) {
-        val eventDisRuleName = "${project.projectName}-event_dispatch-${deploymentType}"
+        val eventDisRuleName = "${project.projectName}-event_dispatch-${deploymentType.name.lowercase()}"
         val eventDisRule = Rule(
             stack, eventDisRuleName, RuleProps.builder()
                 .enabled(true)

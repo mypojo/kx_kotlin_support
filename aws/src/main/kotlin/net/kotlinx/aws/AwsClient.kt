@@ -15,7 +15,6 @@ import aws.sdk.kotlin.services.rds.RdsClient
 import aws.sdk.kotlin.services.secretsmanager.SecretsManagerClient
 import aws.sdk.kotlin.services.ses.SesClient
 import aws.sdk.kotlin.services.sqs.SqsClient
-import aws.sdk.kotlin.services.ssm.SsmClient
 import net.kotlinx.aws.iam.IamSecretUpdateModule
 import net.kotlinx.aws.sm.SmStore
 import net.kotlinx.aws.ssm.SsmStore
@@ -32,7 +31,6 @@ class AwsClient(awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     //==================================================== 저장소 ======================================================
     val rds: RdsClient by lazy { RdsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val sqs: SqsClient by lazy { SqsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
-    val ssm: SsmClient by lazy { SsmClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val sm: SecretsManagerClient by lazy { SecretsManagerClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val event: EventBridgeClient by lazy { EventBridgeClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
 

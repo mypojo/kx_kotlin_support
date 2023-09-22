@@ -10,10 +10,10 @@ class CdkBatchJobDefinitionTest {
     fun test() {
         val definition = CdkBatchJobDefinition(CdkProject("", "aa"), "bb", "", 1)
         //로지컬 명이 가변적이어야함
-        definition.deploymentType = DeploymentType.dev
-        check(definition.logicalName.endsWith(DeploymentType.dev.name))
-        definition.deploymentType = DeploymentType.prod
-        check(definition.logicalName.endsWith(DeploymentType.prod.name))
+        definition.deploymentType = DeploymentType.DEV
+        check(definition.logicalName.endsWith(DeploymentType.DEV.name))
+        definition.deploymentType = DeploymentType.PROD
+        check(definition.logicalName.endsWith(DeploymentType.PROD.name))
 
     }
 

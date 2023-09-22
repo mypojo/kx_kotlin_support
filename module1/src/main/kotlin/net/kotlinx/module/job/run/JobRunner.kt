@@ -42,7 +42,7 @@ class JobRunner : KoinComponent {
                 //else -> throw IllegalStateException(jobService.javaClass.name + " is not required")
             }
             //실서버 강제호출의 경우 알람 전송
-            if (job.awsInfo!!.instanceType == AwsInstanceType.batch) {
+            if (job.awsInfo!!.instanceType == AwsInstanceType.BATCH) {
                 if (job.jobExeFrom == JobExeFrom.ADMIN) {
                     eventBus.post(JobEvent(job, msgs = listOf("강제실행 정상 종료")))
                 }
@@ -59,7 +59,7 @@ class JobRunner : KoinComponent {
             eventBus.post(JobEvent(job, err = e))
             throw JobException(e) //예외를 반드시 던져야 한다.
         }
-        return JobRoot.OK
+        return job.toKeyString()
     }
 
     /** 리더 라이터가 없는 태스크릿  */

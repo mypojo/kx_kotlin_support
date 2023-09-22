@@ -36,7 +36,7 @@ suspend fun <E> ReceiveChannel<E>.receiveAvailable(): List<E> {
 }
 
 /**
- * 소스코드 참고용 채널
+ * 소스코드 참고용 채널 (실무사용 xx)
  * ex) 크롤링 서버 (동시 실행제한 & 횟수 제한으로 IP블록 회피)
  * Channel 위임 안함
  * 예외 발생시 채널의 데이터는 다 소실된다.
@@ -53,7 +53,7 @@ class ScopeChannel(
     /** 처리당 기본 타임아웃 */
     private val timeout: Long = TimeUnit.SECONDS.toMillis(20),
     /** 타임아웃 콜백. throw 해봐야 반응 안함(전체를 취소시키지 않음). 알람 or 큐처리 할것 */
-    private val timeoutCallback: suspend (TimeoutCancellationException, data: Any) -> Unit = { e, data -> println("$e / input = $data") },
+    private val timeoutCallback: suspend (TimeoutCancellationException, data: Any) -> Unit = DEFAULT_TIMEOUT_CALLBACK,
     /**
      * 개별 로직의 예외 처리 콜백
      * JobCancellationException
@@ -148,6 +148,12 @@ class ScopeChannel(
     }
 
     companion object {
+
+        private val log = KotlinLogging.logger {}
+
+        val DEFAULT_TIMEOUT_CALLBACK: suspend (TimeoutCancellationException, data: Any) -> Unit = { e, data ->
+            log.debug { "$e / input = $data" }
+        }
 
         /** 예외를 잡아서 아무것도 하지 않는다. */
         suspend fun silenceClose(run: suspend () -> Unit) {

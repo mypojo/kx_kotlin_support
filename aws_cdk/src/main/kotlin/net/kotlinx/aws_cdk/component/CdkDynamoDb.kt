@@ -15,10 +15,10 @@ class CdkDynamoDb(
     block: CdkDynamoDb.() -> Unit = {}
 ) : CdkDeploymentType {
 
-    override var deploymentType: DeploymentType = DeploymentType.dev
+    override var deploymentType: DeploymentType = DeploymentType.DEV
 
     override val logicalName: String
-        get() = "$tableName-${deploymentType.name}"
+        get() = "$tableName-${deploymentType.name.lowercase()}"
 
     var billingMode = BillingMode.PAY_PER_REQUEST
     var removalPolicy = RemovalPolicy.RETAIN

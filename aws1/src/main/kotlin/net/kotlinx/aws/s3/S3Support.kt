@@ -1,20 +1,20 @@
 package net.kotlinx.aws.s3
 
-import aws.sdk.kotlin.services.s3.S3Client
-import aws.sdk.kotlin.services.s3.deleteObjects
-import aws.sdk.kotlin.services.s3.listObjectsV2
+import aws.sdk.kotlin.services.s3.*
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
 import aws.sdk.kotlin.services.s3.model.NoSuchKey
 import aws.sdk.kotlin.services.s3.model.ObjectIdentifier
-import aws.sdk.kotlin.services.s3.putObject
 import aws.smithy.kotlin.runtime.content.*
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
+import mu.KotlinLogging
 import net.kotlinx.core.concurrent.coroutineExecute
 import java.io.File
 import java.nio.charset.Charset
 
 /** 삭제, 리스트 조회 등 이게 디폴트인듯  */
 const val LIMIT_PER_REQ = 1000
+
+//==================================================== 기본 읽기/쓰기 ======================================================
 
 /** 간단 다운로드. 스트리밍 처리시 다운받아서 하세여 (inputStream 제공이 없는거 같음.) */
 suspend inline fun S3Client.getObjectDownload(bucket: String, key: String, file: File) = this.getObject(
@@ -43,6 +43,29 @@ suspend inline fun S3Client.putObject(bucket: String, key: String, file: File) =
 
 /** 바이트 업로드 */
 suspend inline fun S3Client.putObject(bucket: String, key: String, byteArray: ByteArray) = putObject(bucket, key, ByteStream.fromBytes(byteArray))
+
+//==================================================== move ======================================================
+/**
+ * 대상 디렉토리를 변경한다
+ * ex) DDB 변환후 지정된 장소로 이동
+ * 실제 move는 존재하지 않고, 카피 후 삭제 해야함.
+ *  */
+suspend inline fun S3Client.moveDir(fromDir: S3Data, toDir: S3Data) {
+    val log = KotlinLogging.logger {}
+    for (i in 0..100) {
+        val fromDatas = this.listFiles(fromDir.bucket, fromDir.key)
+        log.info { "moveDir [$i/100] -> ${fromDatas.size}건 이동 : $fromDir -> $toDir" }
+        for (fromData in fromDatas) {
+            this.copyObject {
+                this.copySource = fromData.toPath()
+                this.bucket = toDir.bucket
+                this.key = toDir.key + fromData.fileName
+            }
+        }
+        this.deleteAll(fromDatas)
+        if (fromDatas.size < LIMIT_PER_REQ) break
+    }
+}
 
 //==================================================== list ======================================================
 

@@ -30,7 +30,7 @@ class BatchStepExecutor(
     private val log = KotlinLogging.logger {}
 
     /** 로컬에서 S3업로드할 파일을 만들 작업공간. 사실 로컬 설정이라..  */
-    var workDir: File = File(AwsInstanceTypeUtil.instanceType.root, "BatchStep")
+    var workDir: File = File(AwsInstanceTypeUtil.INSTANCE_TYPE.root, "BatchStep")
 
     /**
      * @param datas 각 단위는 5~8분 이내로 처리 가능한 사이즈가 좋아보임. (부득이하게 좀 길어져도 안전하도록)

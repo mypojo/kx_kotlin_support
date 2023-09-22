@@ -28,8 +28,8 @@ class KdfModule(
      * @param parameterValue ex) {basic_date:.basic_date,name:.name}
      *  */
     fun parquet(tableName: String, prefix: String, parameterValue: String) {
-        val deliveryStreamName = "${tableName}-${deploymentType}"
-        val intervalInSeconds = if (deploymentType == DeploymentType.prod) 60 * 10 else 60 //실서버는 10분에 한번 로깅. 60이 최소. 최초 개발시 빠른 반응을 위해서 60으로 하자.
+        val deliveryStreamName = "${tableName}-${deploymentType.name.lowercase()}"
+        val intervalInSeconds = if (deploymentType == DeploymentType.PROD) 60 * 10 else 60 //실서버는 10분에 한번 로깅. 60이 최소. 최초 개발시 빠른 반응을 위해서 60으로 하자.
 
         CfnDeliveryStream(
             stack, "kdf-$deliveryStreamName", CfnDeliveryStreamProps.builder()

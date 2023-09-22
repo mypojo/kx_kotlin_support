@@ -6,6 +6,7 @@ import aws.sdk.kotlin.services.cloudwatchlogs.model.QueryStatus
 import aws.sdk.kotlin.services.cloudwatchlogs.startQuery
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
+import mu.KotlinLogging
 import net.kotlinx.core.exception.KnownException
 import net.kotlinx.core.time.toLong
 import java.time.LocalDateTime
@@ -43,6 +44,7 @@ class CloudWatchQuery {
  * 대부분 로컬에서 테스트로 작동함으로 그냥 여기다 간단히 코딩함
  *  */
 suspend fun CloudWatchLogsClient.queryAndWait(block: CloudWatchQuery.() -> Unit = {}): List<String> {
+    val log = KotlinLogging.logger {}
     val op = CloudWatchQuery().apply(block)
     val startQueryResponse = this.startQuery {
         this.logGroupNames = op.logGroupNames
@@ -64,7 +66,7 @@ suspend fun CloudWatchLogsClient.queryAndWait(block: CloudWatchQuery.() -> Unit 
             when (resp.status) {
 
                 QueryStatus.Running, QueryStatus.Scheduled -> {
-                    println(" -> ${cnt + 1}/${op.repeat} ${resp.status}..")
+                    log.debug { " -> ${cnt + 1}/${op.repeat} ${resp.status}.." }
                 }
 
                 QueryStatus.Complete -> {

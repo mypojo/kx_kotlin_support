@@ -53,7 +53,7 @@ class S3LogicHandler(
     }
 
     /** 로컬 작업공간 */
-    private val workDir = File(AwsInstanceTypeUtil.instanceType.root, S3LogicHandler::class.simpleName).apply { mkdirs() }
+    private val workDir = File(AwsInstanceTypeUtil.INSTANCE_TYPE.root, S3LogicHandler::class.simpleName).apply { mkdirs() }
 
     /** 직접 호출 */
     suspend fun execute(input: S3LogicInput): List<S3LogicOutput> {

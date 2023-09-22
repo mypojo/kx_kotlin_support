@@ -41,7 +41,7 @@ class AwsInfoLoader(
         fun loadBatch(jobDetail: JobDetail): AwsInfo {
             val container = jobDetail.container!!
             return AwsInfo(
-                AwsInstanceType.batch,
+                AwsInstanceType.BATCH,
                 jobDetail.jobId!!,
                 container.logConfiguration?.options?.get("awslogs-group")!!,
                 container.logStreamName!!,
@@ -53,8 +53,8 @@ class AwsInfoLoader(
      * 환경변수로부터 Aws 메타데이터를 추가로 입력해줌
      * instanceType 에 추가로 각종 설정값을을 로드해야 해서 단일 static 함수로 구성하지 않는다.
      */
-    fun load(): AwsInfo = when (val instanceType = AwsInstanceTypeUtil.instanceType) {
-        AwsInstanceType.lambda -> {
+    fun load(): AwsInfo = when (val instanceType = AwsInstanceTypeUtil.INSTANCE_TYPE) {
+        AwsInstanceType.LAMBDA -> {
             val lambdaName = System.getenv(AwsInstanceTypeUtil.AWS_LAMBDA_FUNCTION_NAME)
             AwsInfo(
                 instanceType,
@@ -64,7 +64,7 @@ class AwsInfoLoader(
             )
         }
 
-        AwsInstanceType.local -> {
+        AwsInstanceType.LOCAL -> {
             AwsInfo(
                 instanceType,
                 "-",
@@ -73,7 +73,7 @@ class AwsInfoLoader(
             )
         }
 
-        AwsInstanceType.codebuild -> {
+        AwsInstanceType.CODEBUILD -> {
             AwsInfo(
                 instanceType,
                 "-",
@@ -82,7 +82,7 @@ class AwsInfoLoader(
             )
         }
 
-        AwsInstanceType.ecs -> {
+        AwsInstanceType.ECS -> {
             val containerMetadataUri = System.getenv("ECS_CONTAINER_METADATA_URI")
             val containerId = containerMetadataUri.substringAfterLast("/") //StringFindUtil.getLast(container_metadata_uri, "/")
             val linkId = containerId.substringBefore("-") //StringFindUtil.getFirst(containerId, "-")
@@ -94,7 +94,7 @@ class AwsInfoLoader(
             )
         }
 
-        AwsInstanceType.batch -> {
+        AwsInstanceType.BATCH -> {
             val batchJobId = System.getenv(AwsInstanceTypeUtil.AWS_BATCH_JOB_ID)
             loadBatch(aws, batchJobId)
         }

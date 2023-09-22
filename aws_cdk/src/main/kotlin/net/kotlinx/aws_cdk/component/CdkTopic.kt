@@ -18,10 +18,10 @@ class CdkTopic(
     val topicName: String,
 ) : CdkDeploymentType {
 
-    override var deploymentType: DeploymentType = DeploymentType.dev
+    override var deploymentType: DeploymentType = DeploymentType.DEV
 
     override val logicalName: String
-        get() = "${project.projectName}-topic-${topicName}-${deploymentType}"
+        get() = "${project.projectName}-topic-${topicName}-${deploymentType.name.lowercase()}"
 
     /** 전체 오픈할 기능 */
     var allOpenActions = listOf(

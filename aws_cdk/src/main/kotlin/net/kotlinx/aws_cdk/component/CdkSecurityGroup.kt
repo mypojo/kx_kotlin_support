@@ -17,10 +17,10 @@ class CdkSecurityGroup(
     var idMap: Map<DeploymentType, String> = emptyMap()
 ) : CdkDeploymentType {
 
-    override var deploymentType: DeploymentType = DeploymentType.dev
+    override var deploymentType: DeploymentType = DeploymentType.DEV
 
     override val logicalName: String
-        get() = "${project.projectName}-sg_${sgName}-${deploymentType}"
+        get() = "${project.projectName}-sg_${sgName}-${deploymentType.name.lowercase()}"
 
     lateinit var iSecurityGroup: ISecurityGroup
 
@@ -58,7 +58,7 @@ class CdkSecurityGroup(
     /** 네임으로 못찾을경우 임시 인식용 */
     fun loadById(stack: Stack): ISecurityGroup {
         val id = idMap[deploymentType]!!
-        return SecurityGroup.fromSecurityGroupId(stack, "sg_${this.sgName}-${deploymentType}", id)
+        return SecurityGroup.fromSecurityGroupId(stack, "sg_${this.sgName}-${deploymentType.name.lowercase()}", id)
     }
 
 //    /**

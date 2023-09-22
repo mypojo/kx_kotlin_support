@@ -17,7 +17,7 @@ import software.amazon.awscdk.services.iam.PolicyStatement
  *  */
 class CdkVpc(
     val project: CdkProject,
-    override var deploymentType: DeploymentType = DeploymentType.dev,
+    override var deploymentType: DeploymentType = DeploymentType.DEV,
     block: CdkVpc.() -> Unit = {}
 ) : CdkDeploymentType {
 
@@ -30,7 +30,7 @@ class CdkVpc(
     var natGateways: Int = 1
 
     /** VPC 이름 */
-    override val logicalName: String = "${project.projectName}_vpc_${deploymentType}"
+    override val logicalName: String = "${project.projectName}_vpc-${deploymentType.name.lowercase()}"
 
     val feer: IPeer
         get() = Peer.ipv4(iVpc.vpcCidrBlock)
@@ -74,14 +74,14 @@ class CdkVpc(
         val block = vpcCidr.split(".").take(2).joinToString(".") //앞의 2개 자리만 잘라줌
         val subnets = iVpc.availabilityZones.map { az ->
             val zoneName = az.substring(az.length - 1)
-            val subnetName = "${projectName}_subnet_$type/${zoneName}_${deploymentType}"
+            val subnetName = "${projectName}_subnet_$type/${zoneName}-${deploymentType.name.lowercase()}"
             val subnet = PrivateSubnet.Builder.create(stack, subnetName)
                 .vpcId(iVpc.vpcId).availabilityZone(az).cidrBlock("${block}.${subnetCnt++}.0/${cidrMask}").build()
             TagUtil.name(subnet, subnetName)
             subnet
         }
 
-        val naclName = "${projectName}_nacl_${type}_${deploymentType}"
+        val naclName = "${projectName}_nacl_${type}-${deploymentType.name.lowercase()}"
         val nacl = NetworkAcl.Builder.create(stack, naclName).vpc(iVpc).subnetSelection(
             SubnetSelection.builder().subnets(subnets).build()
         ).build()
@@ -145,7 +145,7 @@ class CdkVpc(
      * 하위 프로젝트에서 그대로 호출해도 추가된 부분만 잘 적용됨
      *  */
     fun nacl(stack: Stack, subnetType: SubnetType, entrys: Map<String, CommonNetworkAclEntryOptions>) {
-        val naclId = "${project.projectName}_nacl_${subnetType.name.lowercase()}_${deploymentType}"
+        val naclId = "${project.projectName}_nacl_${subnetType.name.lowercase()}-${deploymentType.name.lowercase()}"
         val nacl = NetworkAcl.Builder.create(stack, naclId).vpc(iVpc).subnetSelection(
             SubnetSelection.builder().subnetType(subnetType).build()
         ).build()

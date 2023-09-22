@@ -40,9 +40,13 @@ dependencies {
     api("aws.sdk.kotlin:lambda:$awsVersion")
     api("aws.sdk.kotlin:sfn:$awsVersion")
     api("aws.sdk.kotlin:athena:$awsVersion")
+    api("aws.sdk.kotlin:ssm:$awsVersion")
 
     //====================================================커먼즈 ======================================================
     api("org.apache.commons:commons-text:1.10.0") // javacript 등의 이스케이핑에 사용된다. kotlin 네이티브가 없네..
+
+    //==================================================== 슬랙 ======================================================
+    api("com.slack.api:slack-api-client:1.29.1") //기본 API만 포함함
 
     //==================================================== 테스트 ======================================================
     testImplementation("org.junit-pioneer:junit-pioneer:1.9.1")  //환경변수 테스트용 (실서버 job 실행 등)

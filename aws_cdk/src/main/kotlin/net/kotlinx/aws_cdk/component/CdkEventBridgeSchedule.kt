@@ -44,7 +44,7 @@ class CronKrOptions {
         val hourKr = krHour!! - offsetHour
         val isYesterday = hourKr < 0
         hour = "${hourKr + (if (isYesterday) 24 else 0)}" //시간은 24시간 더하고
-        day = krDay?.let { "${it + (if (isYesterday) -1 else 0)}" } ?: null //날짜는 하루 당겨줘야함
+        day = krDay?.let { "${it + (if (isYesterday) -1 else 0)}" } //날짜는 하루 당겨줘야함
         return this
     }
 

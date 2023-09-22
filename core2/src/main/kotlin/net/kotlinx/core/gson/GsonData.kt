@@ -50,6 +50,7 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
     /**
      * get 호출시 null 이 무조건 아니기 때문에 빈값을 체크하기위한 let 대용으로 사용됨
      * 비어있으면 block이 실행되지 않는다.
+     * ex)  gson.lett? { do.. }
      *  */
     inline fun <R> lett(block: (GsonData) -> R): R? {
         if (empty) return null

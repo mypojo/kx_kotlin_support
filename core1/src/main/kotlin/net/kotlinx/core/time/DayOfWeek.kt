@@ -20,7 +20,7 @@ enum class DayOfWeek(
 
     companion object {
         fun from(index: Int): DayOfWeek {
-            for (each in values()) {
+            for (each in entries) {
                 if (each.dayOfWeek == index) return each
             }
             throw IllegalArgumentException("index가 잘못되었습니다. $index")

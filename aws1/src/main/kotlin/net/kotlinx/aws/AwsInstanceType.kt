@@ -14,27 +14,27 @@ enum class AwsInstanceType(val root: File?) {
 
     //==================================================== 서버리스 제품 ======================================================
     /** AWS LAMBDA  */
-    lambda(File("/tmp")),
+    LAMBDA(File("/tmp")),
 
     /** AWS CODEBUILD.  로컬 디스크 의미없을듯..   */
-    codebuild(File("/codebuild/output")),
+    CODEBUILD(File("/codebuild/output")),
 
     //==================================================== 파게이트 ======================================================
     /** AWS BATCH  */
-    batch(File("/local")),
+    BATCH(File("/local")),
 
     /** ECS 파게이트  */
-    ecs(File("/local")),
+    ECS(File("/local")),
 
     //==================================================== 기타 ======================================================
 
     /** 로컬  */
-    local(getWorkspace());
+    LOCAL(getWorkspace());
 
     /** 클라우드와치 로그 링크가 가능한 타입들 */
-    fun isLogLinkAble(): Boolean = this in setOf(lambda, batch, ecs)
+    fun isLogLinkAble(): Boolean = this in setOf(LAMBDA, BATCH, ECS)
 
     /** 로그 링크에 시간 입력이 필요한것들 */
-    fun isLogLinkWithTime(): Boolean = this in setOf(lambda, ecs)
+    fun isLogLinkWithTime(): Boolean = this in setOf(LAMBDA, ECS)
 
 }

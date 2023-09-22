@@ -31,7 +31,6 @@ dependencies {
     api("aws.sdk.kotlin:ecs:$awsVersion")  //ec2 생략
     api("aws.sdk.kotlin:ses:$awsVersion")
     api("aws.sdk.kotlin:batch:$awsVersion")
-    api("aws.sdk.kotlin:ssm:$awsVersion")
     api("aws.sdk.kotlin:eventbridge:$awsVersion")
     api("aws.sdk.kotlin:codedeploy:$awsVersion")
     api("aws.sdk.kotlin:codecommit:$awsVersion")

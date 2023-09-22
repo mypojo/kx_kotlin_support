@@ -7,6 +7,7 @@ import aws.sdk.kotlin.services.kinesis.KinesisClient
 import aws.sdk.kotlin.services.lambda.LambdaClient
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.sfn.SfnClient
+import aws.sdk.kotlin.services.ssm.SsmClient
 
 /**
  * 기본 AWS 설정
@@ -24,4 +25,6 @@ open class AwsClient1(val awsConfig: AwsConfig) {
 
     val sfn: SfnClient by lazy { SfnClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
     val athena: AthenaClient by lazy { AthenaClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
+
+    val ssm: SsmClient by lazy { SsmClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
 }

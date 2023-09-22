@@ -12,6 +12,28 @@ import kotlinx.html.*
 interface HtmlData {
     /** 일반적으로 테이블을 구성하는 TD 에 사용 */
     fun <T> insertHtml(body: T) where T : HTMLTag, T : HtmlBlockTag
+
+    companion object {
+
+        /** 간단 인라인 생성기 */
+        fun htmlTag(block: (HTMLTag) -> Unit): HtmlData {
+            return object : HtmlData {
+                override fun <R> insertHtml(body: R) where R : HTMLTag, R : HtmlBlockTag {
+                    block(body)
+                }
+            }
+        }
+
+        /** 간단 인라인 생성기 */
+        fun htmlBlockTag(block: (HtmlBlockTag) -> Unit): HtmlData {
+            return object : HtmlData {
+                override fun <R> insertHtml(body: R) where R : HTMLTag, R : HtmlBlockTag {
+                    block(body)
+                }
+            }
+        }
+
+    }
 }
 
 /** a 태그 링크가 적용된 값 */
@@ -60,4 +82,45 @@ data class HtmlStyle(val value: String) : HtmlData {
     }
 
 
+}
+
+/** HTMX GET 사용하는 버튼 */
+class HtmxGetButton(block: HtmxGetButton.() -> Unit = {}) : HtmlData {
+
+    /** 버튼명 */
+    lateinit var btnName: String
+
+    /**  데이터 URL ex) "/crw/exe?aa=bb" */
+    lateinit var dataUrl: String
+
+    /** 대상 ID */
+    lateinit var targetId: String
+
+    /**
+     * 교체 모드
+     * innerHTML 대상 요소의 내부 HTML을 대체
+     * outerHTML 전체 대상 요소를 응답으로 대체
+     * */
+    var swap: String = "innerHTML"
+
+    /**
+     * 데이터 가져올때 여기 인자를 추가로 파라메터로 전송함
+     * 형식은 CSS 셀렉터
+     * ex) [id='ta-NV_DATALAB_CAT_POP_KWD']
+     *  */
+    var include: String? = null
+
+    init {
+        block(this)
+    }
+
+    override fun <T> insertHtml(body: T) where T : HTMLTag, T : HtmlBlockTag {
+        body.button(classes = "btn") {
+            attributes["hx-get"] = dataUrl
+            attributes["hx-target"] = "#${targetId}"
+            attributes["hx-swap"] = swap
+            include?.let { attributes["hx-include"] = it }
+            +btnName
+        }
+    }
 }

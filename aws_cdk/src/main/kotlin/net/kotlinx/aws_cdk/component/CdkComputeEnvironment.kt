@@ -3,7 +3,7 @@ package net.kotlinx.aws_cdk.component
 import net.kotlinx.aws_cdk.CdkDeploymentType
 import net.kotlinx.aws_cdk.CdkProject
 import net.kotlinx.core.DeploymentType
-import net.kotlinx.core.DeploymentType.dev
+import net.kotlinx.core.DeploymentType.DEV
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.batch.CfnComputeEnvironment
 import software.amazon.awscdk.services.batch.CfnComputeEnvironment.ComputeResourcesProperty
@@ -23,11 +23,11 @@ class CdkComputeEnvironment(
     val type: ComputeEnvironmentType,
 ) : CdkDeploymentType {
 
-    override var deploymentType: DeploymentType = dev
+    override var deploymentType: DeploymentType = DEV
 
     /** VPC 이름 */
     override val logicalName: String
-        get() = "${project.projectName}_compenv_${type.name}_${deploymentType}"
+        get() = "${project.projectName}_compenv_${type.name}-${deploymentType.name.lowercase()}"
 
     lateinit var iVpc: IVpc
 

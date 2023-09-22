@@ -17,7 +17,7 @@ class CdkEcr(
     val expires: Duration = Duration.days(30),
     val maxImageCount: Int = 200,
     val imageTagMutability: TagMutability = TagMutability.IMMUTABLE,
-    val tagPrefixList: List<String> = DeploymentType.values().map { it.name },
+    val tagPrefixList: List<String> = DeploymentType.entries.map { it.name },
 ) : CdkInterface {
 
     override val logicalName: String

@@ -17,7 +17,7 @@ class CdkPrefixList(
     block: CdkPrefixList.() -> Unit = {}
 ) : CdkDeploymentType {
 
-    override var deploymentType: DeploymentType = DeploymentType.dev
+    override var deploymentType: DeploymentType = DeploymentType.DEV
 
     lateinit var prefixDatas: Map<String, String>
 
@@ -25,7 +25,7 @@ class CdkPrefixList(
     val maxEntries: Int = 50
 
     override val logicalName: String
-        get() = "${project.projectName}-prefix_${name}-${deploymentType}"
+        get() = "${project.projectName}-prefix_${name}-${deploymentType.name.lowercase()}"
 
     val feer: IPeer
         get() = Peer.prefixList(prefixList.attrPrefixListId)
