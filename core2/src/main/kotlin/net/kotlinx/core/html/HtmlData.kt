@@ -110,17 +110,53 @@ class HtmxGetButton(block: HtmxGetButton.() -> Unit = {}) : HtmlData {
      *  */
     var include: String? = null
 
+    /**
+     * 지정하면 "로딩중" 등의 메세지 표시.
+     *  */
+    var indicatorMsg: String? = null
+
+    /** 커스텀 설정 */
+    var btnCustom: BUTTON.() -> Unit = { }
+
     init {
         block(this)
     }
 
     override fun <T> insertHtml(body: T) where T : HTMLTag, T : HtmlBlockTag {
-        body.button(classes = "btn") {
-            attributes["hx-get"] = dataUrl
-            attributes["hx-target"] = "#${targetId}"
-            attributes["hx-swap"] = swap
-            include?.let { attributes["hx-include"] = it }
-            +btnName
+
+        body.div {
+            attributes["style"] = "display: flex;" //가로 정렬
+
+            val indicatorId = "indicator_${targetId}"
+            button(classes = "btn") {
+                attributes["hx-get"] = dataUrl
+                attributes["hx-target"] = "#${targetId}" //CSS 선택자
+                attributes["hx-swap"] = swap
+                include?.let { attributes["hx-include"] = it }
+                indicatorMsg?.let { attributes["hx-indicator"] = "#${indicatorId}" } //CSS 선택자
+                this.apply(btnCustom) //downstream 이전에 적용해야함
+                +btnName
+            }
+
+            indicatorMsg?.let {
+                space()
+                div {
+                    id = indicatorId
+                    attributes["class"] = "htmx-indicator"
+                    +it
+                }
+            }
         }
+
+
+//        body.button(classes = "btn") {
+//            attributes["hx-get"] = dataUrl
+//            attributes["hx-target"] = "#${targetId}" //CSS 선택자
+//            attributes["hx-swap"] = swap
+//            include?.let { attributes["hx-include"] = it }
+//            indicator?.let { attributes["hx-indicator"] = "#${it}" } //CSS 선택자
+//            this.apply(custom) //downstream 이전에 적용해야함
+//            +btnName
+//        }
     }
 }

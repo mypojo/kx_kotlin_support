@@ -29,9 +29,12 @@ fun TABLE.write(headers: List<String>, datas: List<Array<*>>, nullString: String
 private fun TD.insert(data: Any?, nullString: String) {
     when (data) {
         is List<*> -> {
-            data.forEach { each ->
+            data.forEachIndexed { index, each ->
                 insert(each, nullString)
-                br
+                //마지막에는 라인분리 하지 않음
+                if(index != data.lastIndex){
+                    br
+                }
             }
         }
 

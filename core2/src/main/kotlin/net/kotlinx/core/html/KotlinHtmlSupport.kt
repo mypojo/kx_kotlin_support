@@ -23,7 +23,21 @@ fun HTML.setDefault(title: String, block: HEAD.() -> Unit = {}) {
     }
 }
 
-/** 간단 사용 */
+/**
+ * 공백문자(nbsp) 삽입.
+ * unsafe 가 없는경우 태그가 아니라 문자로 입력됨
+ *  */
+fun HTMLTag.space() {
+    unsafe {
+        +Entities.nbsp.text
+    }
+}
+
+/**
+ * 간단 사용
+ * padding -> 16 -> 10
+ * 하단에 htmx-indicator 추가
+ * */
 const val DEFAULT_TABLE = """
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
 body {
@@ -54,7 +68,7 @@ table {
 }
 table th,
 table td {
-    padding:16px;
+    padding:10px;
     border-right:1px solid #e6eaed;
     border-bottom:1px solid #e6eaed;
 }
@@ -66,5 +80,16 @@ table th {
 table td {
     font-size:11px;
     color:#868e96;
-}            
+}
+
+.htmx-indicator{
+    opacity:0;
+    transition: opacity 500ms ease-in;
+}
+.htmx-request .htmx-indicator{
+    opacity:1
+}
+.htmx-request.htmx-indicator{
+    opacity:1
+}
 """

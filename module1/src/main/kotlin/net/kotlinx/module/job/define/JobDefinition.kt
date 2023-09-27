@@ -4,6 +4,8 @@ import net.kotlinx.module.job.run.JobRoot
 import net.kotlinx.module.job.trigger.JobTrigger
 import net.kotlinx.module.job.trigger.JobTriggerOption
 import kotlin.reflect.KClass
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 
 /** job ENUM 에서 이걸 구현하면 됨  */
 open class JobDefinition(
@@ -34,6 +36,9 @@ open class JobDefinition(
 
     /** 그룹(상위 sfn 이름 등) */
     var parentJobPk: String = "",
+
+    /** 기본적인 잡의 타임아웃. 이게 넘어가면 경고 등이 실행되어야함 */
+    var timeout: Duration = 1.hours,
 
     ) {
 
