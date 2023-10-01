@@ -36,11 +36,20 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 
     //==================================================== 기본 구현 ======================================================
 
-    /** 타입 세이프하지 않음 주의!! */
+    /**
+     * 타입 세이프하지 않음 주의!!
+     * JsonObject 의 경우 편의상 value만 리턴한다.
+     *  */
     override fun iterator(): Iterator<GsonData> = when (delegate) {
         is JsonArray -> delegate.map { GsonData(it) }.iterator()
-        is JsonObject -> delegate.entrySet().map { GsonData(it.value) }.iterator()
+        is JsonObject -> delegate.entrySet().map { GsonData(it.value) }.iterator()  // see entryMap
         else -> emptyList<GsonData>().iterator()
+    }
+
+    /** 간단히 entrySet 변형 구현 */
+    fun entryMap(): Map<String, GsonData> {
+        check(delegate is JsonObject)
+        return delegate.entrySet().associate { it.key to GsonData(it.value) }
     }
 
     override fun toString(): String = delegate.toString()

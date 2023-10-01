@@ -6,7 +6,7 @@ import net.kotlinx.aws.okhttp.fetch
 import okhttp3.OkHttpClient
 import org.junit.jupiter.api.Test
 
-internal class Notion_테스트 {
+internal class Notion_page {
 
     val aws = AwsConfig().toAwsClient()
     val secretValue = aws.ssmStore["/notion/key"]

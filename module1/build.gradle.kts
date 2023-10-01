@@ -38,6 +38,13 @@ dependencies {
     implementation("com.vladsch.kotlin-jdbc:kotlin-jdbc:0.5.0") //깃에서 주워옴. JDBC 간단래퍼
     api("com.amazonaws:dynamodb-lock-client:1.2.0") //DDB 분산락 클라이언트 정발버전
 
+    //==================================================== 구글 ======================================================
+    //사용하기 키 발급받아서 사용하기 너무 불편함!! 일단 사용처는 없음
+    //implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0") //https://github.com/googleapis/google-auth-library-java  구글인증은 이걸로 다 바뀐듯함
+    implementation("com.google.api-client:google-api-client:2.2.0")
+    implementation("com.google.apis:google-api-services-oauth2:v2-rev157-1.25.0") // 예전에 쓰던거
+    implementation("com.google.apis:google-api-services-calendar:v3-rev411-1.25.0") //캘린더
+    implementation("com.google.apis:google-api-services-sheets:v4-rev581-1.25.0") //시트.. 다 버전 제각각임
 
     //==================================================== 기타 ======================================================
     implementation("org.passay:passay:1.6.3") //패스워드 간단 검증
