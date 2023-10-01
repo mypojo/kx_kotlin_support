@@ -8,7 +8,6 @@ class GoogleSheetTest {
 //        GoogleSheet sheet = new GoogleSheet().applicationName("mypojo app").init(secretFile,secretFile.getParentFile());
 //        List<List<Object>> orgValues = sheet.load("xx", "단어장");
 //        TextGrid.buildFromGoogleSheet(orgValues).print();
-//        //AIzaSyDWzmKVufeyyZ5VhVhDlT405o8rn7-dJh4  my.pojo
 //    }
 //
 //    @Test @Order(1)
