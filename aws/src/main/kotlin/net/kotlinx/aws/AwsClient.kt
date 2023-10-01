@@ -48,7 +48,9 @@ class AwsClient(awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     val iamSecretUpdateModule: IamSecretUpdateModule by lazy { IamSecretUpdateModule(iam) }
 
     //==================================================== 기타 ======================================================
+    /** SSM(Systems Manager) 스토어. = 파라메터 스토어 */
     val ssmStore: SsmStore by lazy { SsmStore(ssm) }
+    /** 시크릿 매니저 스토어 */
     val smStore: SmStore by lazy { SmStore(sm) }
 
 }

@@ -10,6 +10,7 @@ import aws.sdk.kotlin.services.ssm.getParameter
  *  */
 suspend fun SsmClient.find(key: String): String? {
     return this.getParameter {
-        this.name = key; this.withDecryption = true
+        this.name = key
+        this.withDecryption = true
     }.parameter?.value
 }

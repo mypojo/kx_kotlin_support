@@ -6,7 +6,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
 /** 직렬화 가능한 요청 객체 : 응답이 텍스트인경우 */
-open class OkHttpReq {
+class OkHttpReq {
     /** url */
     lateinit var url: String
 
