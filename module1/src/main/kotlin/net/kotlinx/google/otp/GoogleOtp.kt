@@ -1,4 +1,4 @@
-package net.kotlinx.module.google.otp
+package net.kotlinx.google.otp
 
 import org.apache.commons.codec.binary.Base32
 import java.security.SecureRandom

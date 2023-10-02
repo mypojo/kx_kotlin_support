@@ -1,4 +1,4 @@
-package net.kotlinx.module.google.otp
+package net.kotlinx.google.otp
 
 import okhttp3.HttpUrl.Companion.toHttpUrl
 

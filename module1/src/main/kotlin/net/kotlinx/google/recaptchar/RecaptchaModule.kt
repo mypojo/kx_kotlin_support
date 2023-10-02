@@ -1,4 +1,4 @@
-package net.kotlinx.module.google.recaptchar
+package net.kotlinx.google.recaptchar
 
 import mu.KotlinLogging
 import net.kotlinx.aws.okhttp.fetch

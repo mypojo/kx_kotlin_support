@@ -1,4 +1,4 @@
-package net.kotlinx.module.google.otp
+package net.kotlinx.google.otp
 
 import net.kotlinx.core.test.TestRoot
 import org.junit.jupiter.api.Test
