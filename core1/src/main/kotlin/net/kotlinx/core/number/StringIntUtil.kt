@@ -4,7 +4,6 @@ package net.kotlinx.core.number
 /** 문자와 숫자 간의 간단 변환 지원 */
 object StringIntUtil {
 
-
     /**
      * 소문자로 바꿔준다~ 체크는 안함 귀찮..
      * 97 ~ 122 : a~z --> 0부터 시작
@@ -28,7 +27,6 @@ object StringIntUtil {
     fun intToUpperAlpha(i: Int): String {
         return String(charArrayOf((i + 64).toChar()))
     }
-
 
     fun upperAlphaToInt(i: Char): Int {
         return i.code - 64
