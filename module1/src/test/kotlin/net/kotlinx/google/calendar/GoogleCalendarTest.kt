@@ -1,12 +1,10 @@
 package net.kotlinx.google.calendar
 
 import com.google.api.services.calendar.Calendar
-import com.google.api.services.calendar.model.EventDateTime
 import mu.KotlinLogging
 import net.kotlinx.google.GoogleSecret
 import org.junit.jupiter.api.Test
 import java.io.File
-import java.util.*
 
 
 internal class GoogleCalendarTest {
@@ -31,31 +29,7 @@ internal class GoogleCalendarTest {
         // 캘린더 ID를 설정합니다.
         val calendarId = "va5ki7q0uqcg13re1re23l2frg@group.calendar.google.com"
 
-        // 이벤트를 생성합니다.
-        val event = com.google.api.services.calendar.model.Event()
-        event.setSummary("My New Event 22")
-        event.setDescription("This is my new event.")
-        event.setLocation("Seoul, Korea")
-        event.setStart(
-            EventDateTime().setDateTime(
-                com.google.api.client.util.DateTime(Date())
-            )
-        )
-        event.setEnd(
-            EventDateTime().setDateTime(
-                com.google.api.client.util.DateTime(Date())
-//                LocalDateTime.of(2023, 10, 2, 11, 0, 0),
-//                ZoneId.of("Asia/Seoul")
-            )
-        )
 
-        // 이벤트를 추가합니다.
-        val eventResponse = try {
-            calendar.events().insert(calendarId, event).execute()
-        } catch (e: Exception) {
-            println(e.message)
-        }
-        println(eventResponse)
 
         // 이벤트 ID를 출력합니다.
 

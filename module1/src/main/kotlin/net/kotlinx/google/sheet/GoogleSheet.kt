@@ -2,7 +2,7 @@ package net.kotlinx.google.sheet
 
 import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.model.ValueRange
-import net.kotlinx.google.GoogleSecret
+import net.kotlinx.google.GoogleService
 
 /**
  * 주의!.
@@ -14,34 +14,31 @@ import net.kotlinx.google.GoogleSecret
  *
  * ###### 제한 ######
  * 최대 로우 수 : 40,000
+ *
+ * @param sheetId : 구글 시트의 ID 문자열 https://docs.google.com/spreadsheets/d/spreadsheetId/edit#gid=sheetId
+ * @param tabName : 탭의 이름(한글 가능)
  */
-class GoogleSheet(
-    googleSecret: GoogleSecret,
-    /** 어플 네임  */
-    applicationName: String = "Google Sheet",
-) {
+class GoogleSheet(service: GoogleService, val sheetId: String, val tabName: String) {
 
-    /** 시트 본체  */
-    val service: Sheets = Sheets.Builder(googleSecret.transport, googleSecret.jsonFactory, googleSecret.credential).setApplicationName(applicationName).build()
+    val sheets = service.sheets
 
-    ///==================================================== 조회 ======================================================
     /**
-     * @param  sheetId : 구글 시트의 ID 문자열 https://docs.google.com/spreadsheets/d/spreadsheetId/edit#gid=sheetId
-     * @param tabName : 탭의 이름(한글 가능)
+     * 참고 https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
      */
-    fun load(sheetId: String?, tabName: String?): List<List<Any>> {
-        val response: ValueRange =
-            service.spreadsheets().values().get(sheetId, tabName).setValueRenderOption("UNFORMATTED_VALUE").execute() //https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+    fun load(range: String = ""): List<List<Any>> {
+        val sheet = sheets.spreadsheets().values().get(sheetId, tabName)
+        val response: ValueRange = sheet.setValueRenderOption("UNFORMATTED_VALUE").execute()
         return response.getValues()
     }
+
     ///==================================================== 쓰기 ======================================================
     /**
      * 해당 구간에 value만 오버라이드 한다. (컬러같은건 안바뀜)
      */
-    fun write(sheetId: String?, range: String?, values: List<List<Any?>?>?) {
-        val sheet: Sheets.Spreadsheets.Values = service.spreadsheets().values()
+    fun write(values: List<List<Any>>, range: String = "") {
+        val sheet: Sheets.Spreadsheets.Values = sheets.spreadsheets().values()
         val body = ValueRange().setValues(values)
-        sheet.update(sheetId, range, body).setValueInputOption("USER_ENTERED").execute()
+        sheet.update(sheetId, tabName, body).setValueInputOption("USER_ENTERED").execute()
     }
 
 }

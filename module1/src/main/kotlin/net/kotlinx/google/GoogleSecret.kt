@@ -32,6 +32,9 @@ import java.io.InputStreamReader
  */
 class GoogleSecret(block: GoogleSecret.() -> Unit = {}) {
 
+    /** 어플 네임 (각 서비스를 인스턴스화 할때 사용됨)  */
+    var applicationName: String = "Google Service";
+
     /** 토큰에 부여받을 권한  */
     var scopes = listOf(
         SheetsScopes.SPREADSHEETS,
@@ -72,6 +75,8 @@ class GoogleSecret(block: GoogleSecret.() -> Unit = {}) {
     fun buildHttpRequestInitializer(apiKey: String): HttpRequestInitializer = HttpRequestInitializer { httpRequest ->
         httpRequest.headers.authorization = "Bearer $apiKey" //정확하지 않음
     }
+
+    fun createService(): GoogleService = GoogleService(this)
 
     companion object {
 

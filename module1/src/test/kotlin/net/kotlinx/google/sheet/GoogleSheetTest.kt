@@ -6,14 +6,23 @@ import java.io.File
 
 internal class GoogleSheetTest {
 
+    val secret = GoogleSecret {
+        secretDir = File("C:\\Users\\mypoj\\.google/")
+    }
+    val sheet = GoogleSheet(secret.createService(),"13U-VKClgbbwhic6Jb6nsf9ITeESn7nZiEXNN6M5fsNY", "테스트용")
+
     @Test
     fun `구글시트 읽기`() {
-        val secret = GoogleSecret {
-            secretDir = File("C:\\Users\\mypoj\\.google/")
+        sheet.load().forEach {
+            println(it)
         }
-        val sheet = GoogleSheet(secret)
-        val orgValues = sheet.load("18KFAeXWWnJYG6Si_vNo3CyPgC4QK1XIoSK33gC3dkGg", "운동정보")
-        println(orgValues)
+    }
+
+    @Test
+    fun `구글시트 쓰기`() {
+        sheet.write(listOf(
+            listOf("멍멍","야옹")
+        ))
     }
 
 }
