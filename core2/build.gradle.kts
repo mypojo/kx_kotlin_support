@@ -41,6 +41,11 @@ dependencies {
     api("org.jetbrains.kotlinx:kotlinx-html:0.8.0")
     api("org.jetbrains.kotlinx:kotlinx-html-jvm:0.8.0") //간단 HTML 구성
 
+    //==================================================== 라인의 컨디셔널 (합쳐서 100kb) ======================================================
+    runtimeOnly("com.linecorp.conditional:conditional:1.1.3")
+    api("com.linecorp.conditional:conditional-kotlin:1.1.3") //요구사항에 and 와 or이 포함되어있을경우 이걸로 예쁘게 포매팅
+
+
     //==================================================== 기본옵션 ======================================================
     api("com.google.code.gson:gson:2.10") // 외부 의존성 없음.. 깔끔함.  300kb 이내  https://mvnrepository.com/artifact/com.google.code.gson/gson
 

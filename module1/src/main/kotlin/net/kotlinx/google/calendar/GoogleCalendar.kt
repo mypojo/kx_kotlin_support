@@ -6,6 +6,7 @@ import java.util.*
 
 /**
  * 간단 캘린더 등록
+ * https://developers.google.com/calendar/api/v3/reference?apix=true&hl=ko
  */
 class GoogleCalendar(service: GoogleService, val calendarId: String) {
 
