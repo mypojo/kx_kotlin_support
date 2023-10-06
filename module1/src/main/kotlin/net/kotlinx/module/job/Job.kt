@@ -6,7 +6,7 @@ import net.kotlinx.aws.dynamo.DynamoData
 import net.kotlinx.aws.dynamo.DynamoDbBasic
 import net.kotlinx.aws.dynamo.DynamoUtil
 import net.kotlinx.core.gson.GsonSet
-import net.kotlinx.core.time.toIos
+import net.kotlinx.core.time.toIso
 import net.kotlinx.module.reflect.find
 import net.kotlinx.module.reflect.findJson
 import net.kotlinx.module.reflect.findOrThrow
@@ -33,7 +33,7 @@ class Job(
             this += DynamoDbBasic.SK to AttributeValue.S(sk)
 
             //==================================================== 최초 생성시 필수 입력값 ======================================================
-            val reqTimeStr = reqTime.toIos()
+            val reqTimeStr = reqTime.toIso()
             this += Job::reqTime.name to AttributeValue.S(reqTimeStr)
             this += Job::memberId.name to AttributeValue.S(memberId)
             this += Job::ttl.name to AttributeValue.N(ttl.toString())
@@ -43,9 +43,9 @@ class Job(
             this += Job::jobContext.name to AttributeValue.S(jobContext)
             this += Job::jobExeFromName.name to AttributeValue.S(jobExeFromName)
             //==================================================== 공통 시스템 자동(필수) 입력값 ======================================================
-            startTime?.let { this += Job::startTime.name to AttributeValue.S(it.toIos()) }
-            updateTime?.let { this += Job::updateTime.name to AttributeValue.S(it.toIos()) }
-            endTime?.let { this += Job::endTime.name to AttributeValue.S(it.toIos()) }
+            startTime?.let { this += Job::startTime.name to AttributeValue.S(it.toIso()) }
+            updateTime?.let { this += Job::updateTime.name to AttributeValue.S(it.toIso()) }
+            endTime?.let { this += Job::endTime.name to AttributeValue.S(it.toIso()) }
 
             jobErrMsg?.let { this += Job::jobErrMsg.name to AttributeValue.S(it) }
             awsInfo?.let { this += Job::awsInfo.name to AttributeValue.S(GsonSet.GSON.toJson(awsInfo)) }

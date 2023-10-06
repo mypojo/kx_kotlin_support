@@ -33,6 +33,7 @@ class EventTimeChecker(
     /** 시도 수. 이번시도 포함. 성공이후 리셋 */
     private var tryCnt: Int = 0
 
+    /** 상세 정보를 알려면 check() 사용 */
     override fun invoke(): Boolean = check().ok
 
     /**

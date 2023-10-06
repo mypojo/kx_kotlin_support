@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicLong
  * 특정 횟수마다 이벤트 트리거가 가능한 간단 카운터
  */
 class EventCountChecker(
-    /** 액션이 실행될 카운트 수  */
+    /** 액션이 실행될 회차  */
     private val limit: Long,
 ) : () -> Boolean {
 

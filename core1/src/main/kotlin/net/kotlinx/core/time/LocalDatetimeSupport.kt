@@ -15,7 +15,7 @@ inline fun LocalDateTime.toKr01(): String = TimeFormat.YMDHMS_K01[this]
 inline fun LocalDateTime.toYmdhmKr01(): String = TimeFormat.YMDHM_K01[this]
 
 /** 한국 시간으로 포매팅 (로그 확인용) - 기본 시분초까지 */
-inline fun LocalDateTime.toIos(): String = TimeFormat.ISO[this]
+inline fun LocalDateTime.toIso(): String = TimeFormat.ISO[this]
 
 /** YMD  */
 inline fun LocalDateTime.toYmd(): String = TimeFormat.YMD[this]

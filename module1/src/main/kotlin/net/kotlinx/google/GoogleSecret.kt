@@ -50,6 +50,7 @@ class GoogleSecret(block: GoogleSecret.() -> Unit = {}) {
      *  */
     var secretClientFileName: String = "secret.json"
 
+
     /** 최종 크리덴셜 */
     val credential: Credential
 
@@ -82,5 +83,8 @@ class GoogleSecret(block: GoogleSecret.() -> Unit = {}) {
 
         /** 계정 인증받을 임시포트  */
         const val TEMP_PORT = 8888
+
+        /** OAuth2 승인 후 저장되는 파일 명 */
+        const val SECRET_STORED_FILE_NAME = "StoredCredential"
     }
 }

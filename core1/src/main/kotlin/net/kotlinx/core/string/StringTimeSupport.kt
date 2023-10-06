@@ -10,7 +10,6 @@ import java.time.LocalTime
 inline fun String.toLocalDateTime():LocalDateTime{
     //일단 ISO 스타일 먼저 체크
     if(this.contains('T')){
-
         return TimeFormat.ISO.toLocalDateTime(this) //이경우 존 정보는 버린다.
     }
     val value = this.retainFrom(RegexSet.NUMERIC)

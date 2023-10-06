@@ -3,6 +3,7 @@ package net.kotlinx.aws.s3
 import aws.sdk.kotlin.services.s3.*
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
 import aws.sdk.kotlin.services.s3.model.NoSuchKey
+import aws.sdk.kotlin.services.s3.model.ObjectAttributes
 import aws.sdk.kotlin.services.s3.model.ObjectIdentifier
 import aws.smithy.kotlin.runtime.content.*
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
@@ -43,6 +44,20 @@ suspend inline fun S3Client.putObject(bucket: String, key: String, file: File) =
 
 /** 바이트 업로드 */
 suspend inline fun S3Client.putObject(bucket: String, key: String, byteArray: ByteArray) = putObject(bucket, key, ByteStream.fromBytes(byteArray))
+
+
+//==================================================== 속성만 읽기 ======================================================
+
+/** 파일 크기만 읽고싶을때 */
+suspend inline fun S3Client.objectSize(data: S3Data) {
+    this.getObjectAttributes {
+        this.bucket = data.bucket
+        this.key = data.key
+        this.objectAttributes = listOf(
+            ObjectAttributes.ObjectSize
+        )
+    }.objectSize
+}
 
 //==================================================== move ======================================================
 /**

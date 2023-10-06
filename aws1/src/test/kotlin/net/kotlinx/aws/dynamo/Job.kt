@@ -3,7 +3,7 @@ package net.kotlinx.aws.dynamo
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.aws.AwsInstanceType
 import net.kotlinx.core.string.toLocalDateTime
-import net.kotlinx.core.time.toIos
+import net.kotlinx.core.time.toIso
 import java.time.LocalDateTime
 
 /**
@@ -20,7 +20,7 @@ open class Job(
         get() = TABLE_NAME
 
     override fun toAttribute(): Map<String, AttributeValue> {
-        val reqTimeStr = reqTime?.toIos() ?: ""
+        val reqTimeStr = reqTime?.toIso() ?: ""
         memberReqTime = "$memberId#$reqTimeStr"
         return mapOf(
             DynamoDbBasic.PK to AttributeValue.S(pk),

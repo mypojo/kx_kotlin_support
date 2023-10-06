@@ -26,6 +26,7 @@ enum class TimeFormat(
      * 벤더 디폴으로 파싱할때 사용된다.
      * athena 조회시에는 AT TIME ZONE 'Asia/Seoul' 를 사용
      * ex) kdf to parquet 변환시 (존 포함이나 오프셋 포함을 읽지 못함)  https://docs.aws.amazon.com/firehose/latest/dev/record-format-conversion.html
+     * ex) 2023-10-05T06:16:00.000Z 이런형식의 UTC를 한국시간으로 변경해줌
      * */
     ISO_INSTANT(DateTimeFormatter.ISO_INSTANT.withZone(TimeUtil.SEOUL)),
     /**

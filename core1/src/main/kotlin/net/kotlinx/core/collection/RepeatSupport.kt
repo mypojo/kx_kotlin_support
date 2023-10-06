@@ -17,3 +17,24 @@ fun <T> repeatCollectUntilEmpty(maxTimes: Int = 100, block: (Int) -> List<T>): L
     }
     return results
 }
+
+
+/**
+ * 리턴값(보통 next_token)이 없을때까지 반복한다.
+ * keep : 결과 누적객체
+ * nextToken : 입력할 다음토큰. 최초에는 null
+ * return : 다음 토큰.  null이면 중지
+ *  */
+suspend fun <T> repeatCollectUntil(
+    maxTimes: Int = 100, block: suspend (keep: MutableList<List<T>>, nextToken: String?) -> String?
+): List<List<T>> {
+    val results = mutableListOf<List<T>>()
+    var nextToken: String? = null
+    repeat(maxTimes) {
+        nextToken = block(results, nextToken)
+        if (nextToken == null) {
+            return results
+        }
+    }
+    return results
+}

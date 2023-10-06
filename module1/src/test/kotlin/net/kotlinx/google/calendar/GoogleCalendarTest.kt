@@ -1,35 +1,50 @@
 package net.kotlinx.google.calendar
 
-import com.google.api.services.calendar.Calendar
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import net.kotlinx.aws.AwsConfig
+import net.kotlinx.aws.s3.getObjectDownload
+import net.kotlinx.aws.ssm.findAndWrite
+import net.kotlinx.aws.toAwsClient1
+import net.kotlinx.core.concurrent.sleep
 import net.kotlinx.google.GoogleSecret
 import org.junit.jupiter.api.Test
 import java.io.File
+import java.time.LocalDate
+import kotlin.time.Duration.Companion.seconds
 
 
 internal class GoogleCalendarTest {
 
     private val log = KotlinLogging.logger {}
 
+    val aws = AwsConfig().toAwsClient1()
+
+    val workDir = File("C:\\Users\\dev\\.google/").apply { mkdirs() }
+
+    val secret = GoogleSecret {
+        secretDir = workDir
+        runBlocking {
+            aws.ssm.findAndWrite("/google/app-access/oauth2_client", File(workDir, secretClientFileName))
+            aws.s3.getObjectDownload("kotlinx", "store/secret/google/app-access/StoredCredential", File(workDir, GoogleSecret.SECRET_STORED_FILE_NAME))
+        }
+    }
+    val calendar = GoogleCalendar(secret.createService(), "va5ki7q0uqcg13re1re23l2frg@group.calendar.google.com")
+
     @Test
     fun `기본테스트`() {
 
-        val secret = GoogleSecret {
-            secretDir = File("C:\\Users\\mypoj\\.google/")
+        val event = calendar.insert {
+            title = "긴급작업5"
+            desc = "사실 별거아님"
+            startDate = LocalDate.now() to LocalDate.now()
+            //startTime = LocalDateTime.now() to LocalDateTime.now().plusDays(3)
         }
 
-        // Calendar API를 초기화합니다.
-        val calendar = Calendar.Builder(secret.transport, secret.jsonFactory, secret.credential)
-            .setApplicationName("My Calendar App")
-            //.setScopes(Collections.singletonList(CalendarScopes.CALENDAR))
-            .build()
+        10.seconds.sleep()
 
-        println(calendar.CalendarList().list())
-
-        // 캘린더 ID를 설정합니다.
-        val calendarId = "va5ki7q0uqcg13re1re23l2frg@group.calendar.google.com"
-
-
+        event.title = "작업 종료!!"
+        calendar.update(event)
 
         // 이벤트 ID를 출력합니다.
 
@@ -49,15 +64,6 @@ internal class GoogleCalendarTest {
 //// Iterate through entries in calendar list
 //
 //// Iterate through entries in calendar list
-//        var pageToken: String? = null
-//        do {
-//            val calendarList: CalendarList = service.calendarList().list().setPageToken(pageToken).execute()
-//            val items: List<CalendarListEntry> = calendarList.getItems()
-//            for (calendarListEntry in items) {
-//                println(calendarListEntry.summary)
-//            }
-//            pageToken = calendarList.getNextPageToken()
-//        } while (pageToken != null)
 
 
     }

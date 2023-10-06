@@ -7,7 +7,7 @@ import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
 
 /**
- * 파라메터 캐시 저장소
+ * AWS Systems Manager 의 AWS Parameter Store 캐시 저장소
  * 일반적인 테이터가 늦은 초기화로 작동할때는 그냥 ssm 쓰면 됨
  * 이거는 자주 참조되는 데이터를 저장하는용도  ex) 글로벌 설정을 10분마다 교체 등..
  *  */

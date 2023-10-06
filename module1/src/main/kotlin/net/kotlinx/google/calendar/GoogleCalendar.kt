@@ -1,8 +1,8 @@
 package net.kotlinx.google.calendar
 
-import com.google.api.services.calendar.model.EventDateTime
+import com.google.api.services.calendar.model.CalendarList
+import com.google.api.services.calendar.model.CalendarListEntry
 import net.kotlinx.google.GoogleService
-import java.util.*
 
 /**
  * 간단 캘린더 등록
@@ -12,31 +12,33 @@ class GoogleCalendar(service: GoogleService, val calendarId: String) {
 
     val calendar = service.calendar
 
-    fun addEvent() {
-        // 이벤트를 생성합니다.
-        val event = com.google.api.services.calendar.model.Event()
-        event.setSummary("My New Event 22")
-        event.setDescription("This is my new event.")
-        event.setLocation("Seoul, Korea")
-        event.setStart(
-            EventDateTime().setDateTime(
-                com.google.api.client.util.DateTime(Date())
-            )
-        )
-        event.setEnd(
-            EventDateTime().setDateTime(
-                com.google.api.client.util.DateTime(Date())
-//                LocalDateTime.of(2023, 10, 2, 11, 0, 0),
-//                ZoneId.of("Asia/Seoul")
-            )
-        )
+    /** 필요할때 완성하기 */
+    fun listAll() {
+        var pageToken: String? = null
+        do {
+            val calendarList: CalendarList = calendar.calendarList().list().setPageToken(pageToken).execute()
+            val items: List<CalendarListEntry> = calendarList.items
+            for (calendarListEntry in items) {
+                println(calendarListEntry.summary)
+            }
+            pageToken = calendarList.nextPageToken
+        } while (pageToken != null)
+//        repeatCollectUntil { keep, nextToken ->
+//
+//        }
+    }
 
-        // 이벤트를 추가합니다.
-        val eventResponse = try {
-            calendar.events().insert(calendarId, event).execute()
-        } catch (e: Exception) {
-            println(e.message)
-        }
+    fun insert(block: GoogleCalendarData.() -> Unit): GoogleCalendarData = insert(GoogleCalendarData().apply(block))
+
+    fun insert(data: GoogleCalendarData): GoogleCalendarData {
+        val execute = calendar.events().insert(calendarId, data.toEvent()).execute()!!
+        data.id = execute.id
+        return data
+    }
+
+    fun update(data: GoogleCalendarData): GoogleCalendarData {
+        calendar.events().update(calendarId, data.id, data.toEvent()).execute()
+        return data
     }
 
 
