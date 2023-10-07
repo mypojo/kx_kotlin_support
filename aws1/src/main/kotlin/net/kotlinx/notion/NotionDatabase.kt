@@ -1,8 +1,6 @@
 package net.kotlinx.notion
 
-import com.lectra.koson.ArrayType
-import com.lectra.koson.ObjectType
-import com.lectra.koson.obj
+import com.lectra.koson.*
 import mu.KotlinLogging
 import net.kotlinx.aws.okhttp.fetch
 import net.kotlinx.core.collection.repeatCollectUntil
@@ -10,6 +8,10 @@ import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.string.toLocalDateTime
 import net.kotlinx.core.time.TimeStart
 import okhttp3.OkHttpClient
+
+fun KosonType.asd(){
+
+}
 
 /**
  * 노션 DB
@@ -42,7 +44,7 @@ class NotionDatabase(
                 }
                 "properties" to obj {
                     cells.forEach { cell ->
-                        //koson에 입력할때, 명시적으로 두개 타입이 아니면 스트링 문자열로 인식함으로 이렇게 해줘야 한다.
+                        //koson에 입력할때, koson infix에서 명시적으로 두개 타입이 아니면 스트링 문자열로 인식함으로 이렇게 해줘야 한다. 내부 infix 추가하는건 없는듯.
                         when (val koson = cell.notionJson) {
                             is ArrayType -> cell.name to koson
                             is ObjectType -> cell.name to koson

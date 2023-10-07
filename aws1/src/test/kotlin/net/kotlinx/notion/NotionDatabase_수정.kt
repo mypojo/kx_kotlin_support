@@ -5,7 +5,6 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.ssm.find
 import net.kotlinx.aws.toAwsClient1
-import net.kotlinx.core.time.TimeFormat
 import okhttp3.OkHttpClient
 import org.junit.jupiter.api.Test
 
@@ -26,10 +25,12 @@ internal class NotionDatabase_수정 {
     @Test
     fun `수정`() = runBlocking {
         val pageId = "04ac0a37-5726-45ae-8eae-f552a4f9a696"
-        database.update(pageId, listOf(
-            NotionCell("gcId",NotionCellType.rich_text,"수정됨-${TimeFormat.Y2MD_K01.get()}"),
-            NotionCell("내용상세",NotionCellType.rich_text,"상세내용1"),
-        ))
+        database.update(
+            pageId, listOf(
+                NotionCell("gcId", NotionCellType.rich_text, "수정됨22"),
+                NotionCell("내용상세", NotionCellType.rich_text, "상세내용1"),
+            )
+        )
 
     }
 
