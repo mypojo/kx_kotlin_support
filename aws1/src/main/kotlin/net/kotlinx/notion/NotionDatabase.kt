@@ -1,7 +1,7 @@
 package net.kotlinx.notion
 
+import com.lectra.koson.ArrayType
 import com.lectra.koson.ObjectType
-import com.lectra.koson.arr
 import com.lectra.koson.obj
 import mu.KotlinLogging
 import net.kotlinx.aws.okhttp.fetch
@@ -27,7 +27,7 @@ class NotionDatabase(
     /** 최대 100건씩 X번만 불러옴 */
     var maxFetchCnt = 10
 
-    suspend fun update(pageId: String) {
+    fun update(pageId: String, cells: List<NotionCell>) {
         val resp = client.fetch {
             url = "https://api.notion.com/v1/pages/${pageId}"
             method = "PATCH"
@@ -41,24 +41,19 @@ class NotionDatabase(
                     "database_id" to dbId
                 }
                 "properties" to obj {
-                    "gcId" to obj {
-                        "type" to "rich_text"
-                        "rich_text" to arr[
-                            obj {
-                                "text" to obj {
-                                    "content" to "xxxx"
-                                }
-                            }
-                        ]
+                    cells.forEach { cell ->
+                        //koson에 입력할때, 명시적으로 두개 타입이 아니면 스트링 문자열로 인식함으로 이렇게 해줘야 한다.
+                        when (val koson = cell.notionJson) {
+                            is ArrayType -> cell.name to koson
+                            is ObjectType -> cell.name to koson
+                            else -> throw IllegalStateException()
+                        }
                     }
                 }
-
             }
         }
         check(resp.response.code == 200) { "${resp.response.code} ${resp.respText}" }
-
-        println(resp.respText)
-
+        log.debug { " -> notion update 성공" }
     }
 
     /** 데이터베이스 쿼리  */

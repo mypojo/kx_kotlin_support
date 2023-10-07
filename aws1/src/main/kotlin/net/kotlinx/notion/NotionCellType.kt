@@ -1,6 +1,6 @@
 package net.kotlinx.notion
 
-import com.lectra.koson.ObjectType
+import com.lectra.koson.KosonType
 import com.lectra.koson.arr
 import com.lectra.koson.obj
 import net.kotlinx.core.gson.GsonData
@@ -35,9 +35,9 @@ enum class NotionCellType {
 
 
     /** 노션 형태로 변경 (입력/수정) */
-    fun toNotionJson(text: String): ObjectType {
+    fun toNotionJson(text: String): KosonType {
         val type = this
-        val typeObj = when (this) {
+        return when (type) {
             title -> arr[
                 obj {
                     "text" to obj {
@@ -62,9 +62,11 @@ enum class NotionCellType {
                 "start" to text
             }
         }
-        return obj {
-            "type" to type.name
-            type.name to typeObj
-        }
     }
+
+//        return obj {
+//            "type" to type.name
+//            type.name to typeObj
+//        }
+//    }
 }
