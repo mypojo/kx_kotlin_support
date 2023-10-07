@@ -28,7 +28,7 @@ internal class NotionDatabase_수정 {
         database.update(
             pageId, listOf(
                 NotionCell("gcId", NotionCellType.rich_text, "수정됨22"),
-                NotionCell("내용상세", NotionCellType.rich_text, "상세내용1"),
+                NotionCell("내용상세", NotionCellType.rich_text, "상세내용33"),
             )
         )
 
