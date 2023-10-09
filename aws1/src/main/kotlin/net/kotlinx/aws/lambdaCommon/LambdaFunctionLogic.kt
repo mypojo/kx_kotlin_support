@@ -11,7 +11,7 @@ class LambdaFunctionLogic {
     /** 유니크한 ID */
     lateinit var id: String
 
-    /** 설명 */
+    /** 로직 설명 */
     var desc: List<String> = emptyList()
 
     /** 등록 핸들러. null이 리턴되면 스킵으로 간주 */
