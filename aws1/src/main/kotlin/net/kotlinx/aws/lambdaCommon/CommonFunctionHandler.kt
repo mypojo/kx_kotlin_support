@@ -14,6 +14,7 @@ import org.crac.Resource
  * 하나만 만들어서 여러군데 다 사용하고싶은 범용 람다 함수  핸들러
  * Core.getGlobalContext().register(this) 해줄것!
  */
+@LambdaFunctionLogicDsl
 abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<String, Any>>, Resource {
 
     protected val log = KotlinLogging.logger {}
@@ -68,3 +69,7 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
         })
     }
 }
+
+/** this를 생략할 수 없게 해줌 -> 1뎁스에서만 DSL 사용 가능 */
+@DslMarker
+annotation class LambdaFunctionLogicDsl
