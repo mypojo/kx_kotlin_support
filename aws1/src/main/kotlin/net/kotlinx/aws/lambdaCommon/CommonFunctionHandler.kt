@@ -69,7 +69,3 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
         })
     }
 }
-
-/** this를 생략할 수 없게 해줌 -> 1뎁스에서만 DSL 사용 가능 */
-@DslMarker
-annotation class LambdaFunctionLogicDsl
