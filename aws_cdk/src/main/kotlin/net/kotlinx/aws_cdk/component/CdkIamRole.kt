@@ -42,7 +42,7 @@ class CdkIamRole(
 
     /** 권한 가져옴 (다른 스택에서) */
     fun load(stack: Stack): CdkIamRole {
-        if (iRole == null) iRole = Role.fromRoleName(stack, this.roleName, this.roleName)
+        iRole = Role.fromRoleName(stack, this.roleName, this.roleName)
         return this
     }
 

@@ -21,11 +21,13 @@ rootProject.name = "kx_kotlin_support"
 
 include(
 //    "common",
-    "core1",
-    "core2",
-    "aws1",
-    "aws",
+    "core",
+    "light",
     "aws_cdk",
-    "module1",
-    "kopring",
+
+    "light_v1",
+
+    "heavy",
+    "heavy_boot3",
+    "heavy_test",
 )

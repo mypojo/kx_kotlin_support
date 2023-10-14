@@ -10,8 +10,8 @@ plugins {
 dependencies {
 
     //==================================================== 내부 의존성 ======================================================
-    api(project(":aws"))
-    testApi(project(":core2").dependencyProject.sourceSets["test"].output) //코어 테스트에 있는 공통 (testRoot 등)을 사용할 수 있게 해줌
+    api(project(":light"))
+    testApi(project(":core").dependencyProject.sourceSets["test"].output) //코어 테스트에 있는 공통 (testRoot 등)을 사용할 수 있게 해줌
 
     //==================================================== AWS ======================================================
     api("software.amazon.awscdk:aws-cdk-lib:2.93.0")   //https://mvnrepository.com/artifact/software.amazon.awscdk/aws-cdk-lib

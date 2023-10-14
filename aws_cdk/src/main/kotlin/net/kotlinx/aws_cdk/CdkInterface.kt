@@ -7,6 +7,11 @@ package net.kotlinx.aws_cdk
  * #2. 타 스택에서 같이 사용되어야 하는 리소스는 반드시 공유 가능하게 선언 되어야함  ex) S3, IAM, SQS ..
  * #3. 그자리에서 생성해서 쓰거나 트리 구조인경우 생성자에 DSL 필수. ex) RDS,DDB, SFN ..
  *  -> 커스텀이 자주 필요한건 props block을 반드시 열어둘것!
+ *
+ *  주의!!
+ *  load 할때,
+ *  1. 같은 스택에서 create 한 객체인경우 -> load() 하지말고 그냥 사용
+ *  2. 같은 스택에서 create 하지 않은 경우 -> load() 로 초기화 후 사용해야함 (cycle 에러남)
  *  */
 interface CdkInterface {
 

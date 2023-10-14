@@ -56,6 +56,10 @@ allprojects {
         testImplementation("org.junit-pioneer:junit-pioneer:1.9.1")  //환경변수 테스트용 (실서버 job 실행 등)
         testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.1") //최신버전
         testImplementation("io.mockk:mockk:1.13.3") //코틀린 모킹
+
+        testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter-kotlin:0.6.10")  //네이버 픽스쳐몽키.. 애매함
+
+
         //코테스트 문제가 많아서 공통에서 제거함 -> 이유없이 메모리아웃 오류남
 //        testImplementation("io.kotest:kotest-runner-junit5:5.5.4")
 //        testImplementation("io.kotest:kotest-assertions-core:5.5.4")
@@ -109,13 +113,14 @@ publishing {
             }
         }
         //모든 의존성이 순서대로 다 있어야함. 선언적 설정이라 병렬 처리는 안되는듯..
-        pub("core1")
-        pub("core2")
-        pub("aws1")
-        pub("aws")
+        pub("core")
+        pub("light")
         pub("aws_cdk")
-        pub("module1")
-        pub("kopring")
+
+        pub("light_v1")
+
+        pub("heavy")
+        pub("heavy_boot3")
 
     }
     repositories {
