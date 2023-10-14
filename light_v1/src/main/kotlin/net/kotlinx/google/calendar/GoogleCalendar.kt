@@ -1,7 +1,6 @@
 package net.kotlinx.google.calendar
 
-import com.google.api.services.calendar.model.CalendarList
-import com.google.api.services.calendar.model.CalendarListEntry
+import com.google.api.services.calendar.model.Event
 import mu.KotlinLogging
 import net.kotlinx.google.GoogleService
 
@@ -15,20 +14,13 @@ class GoogleCalendar(service: GoogleService) {
 
     val calendar = service.calendar
 
-    /** 필요할때 완성하기 */
-    fun listAll() {
-        var pageToken: String? = null
-        do {
-            val calendarList: CalendarList = calendar.calendarList().list().setPageToken(pageToken).execute()
-            val items: List<CalendarListEntry> = calendarList.items
-            for (calendarListEntry in items) {
-                log.debug { calendarListEntry.summary }
-            }
-            pageToken = calendarList.nextPageToken
-        } while (pageToken != null)
-//        repeatCollectUntil { keep, nextToken ->
-//
-//        }
+    /**
+     * 보통 스냅스타트용
+     * @param maxResultCnt 디폴트 250. 최대 2500 개인듯
+     * */
+    fun list(calendarId: String, maxResultCnt: Int = 250): List<Event> {
+        val resp = calendar.events().list(calendarId).setMaxResults(maxResultCnt).execute()
+        return resp.items
     }
 
     fun insert(calendarId: String, block: GoogleCalendarData.() -> Unit): GoogleCalendarData = insert(calendarId, GoogleCalendarData().apply(block))

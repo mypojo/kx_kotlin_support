@@ -4,7 +4,7 @@ import com.lectra.koson.obj
 import mu.KotlinLogging
 import net.kotlinx.core.gson.toGsonData
 import net.kotlinx.core.koson.addByType
-import net.kotlinx.okhttp.fetch
+import net.kotlinx.okhttp.await
 import okhttp3.OkHttpClient
 
 
@@ -22,9 +22,9 @@ class NotionPageBlockClient(
     private val log = KotlinLogging.logger {}
 
     /** 해당 페이지의 블록 조회  */
-    fun blocks(pageId: String, pageSize: Int = 100): List<NotionCell> {
+    suspend fun blocks(pageId: String, pageSize: Int = 100): List<NotionCell> {
 
-        val resp = client.fetch {
+        val resp = client.await {
             url = "https://api.notion.com/v1/blocks/${pageId}/children?page_size=${pageSize}"
             method = "GET"
             header = mapOf(
@@ -56,9 +56,9 @@ class NotionPageBlockClient(
     }
 
     /** 해당 페이지의 블록 조회  */
-    fun update(cell: NotionCell) {
+    suspend fun update(cell: NotionCell) {
 
-        val resp = client.fetch {
+        val resp = client.await {
             url = "https://api.notion.com/v1/blocks/${cell.name}" //페이지 사이즈 고정
             method = "PATCH"
             header = mapOf(

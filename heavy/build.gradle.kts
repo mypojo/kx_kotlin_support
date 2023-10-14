@@ -89,17 +89,3 @@ dependencies {
     api("com.amazonaws:dynamodb-lock-client:1.2.0") //DDB 분산락 클라이언트 정발버전
 
 }
-
-
-/** 용량 확인용 fatJar 생성도구 추가 */
-tasks.create("fatJar", Jar::class) {
-    group = "build"
-    description = "for aws lambda"
-    manifest.attributes["Main-Class"] = "com.example.MyMainClass" //AWS 람다 등록시 필요없음
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    val dependencies = configurations.runtimeClasspath.get().map(::zipTree)
-    from(dependencies)
-    with(tasks.jar.get())
-    archiveFileName = "fatJar.jar"
-    isZip64 = true //archive contains more than 65535 entries
-}

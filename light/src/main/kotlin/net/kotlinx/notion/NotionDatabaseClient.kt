@@ -8,7 +8,7 @@ import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.koson.addByType
 import net.kotlinx.core.string.toLocalDateTime
 import net.kotlinx.core.time.TimeStart
-import net.kotlinx.okhttp.fetch
+import net.kotlinx.okhttp.await
 import okhttp3.OkHttpClient
 
 
@@ -17,18 +17,15 @@ import okhttp3.OkHttpClient
  * 각 기능은 필요할때 만들기
  *  */
 class NotionDatabaseClient(
-    val client: OkHttpClient,
+    private val client: OkHttpClient,
     /** 영구키임!! 주의! */
     private val secretValue: String,
 ) {
 
     private val log = KotlinLogging.logger {}
 
-    /** 최대 100건씩 X번만 불러옴 */
-    var maxFetchCnt = 10
-
-    fun update(dbId: String,pageId: String, cells: List<NotionCell>) {
-        val resp = client.fetch {
+    suspend fun update(dbId: String, pageId: String, cells: List<NotionCell>) {
+        val resp = client.await {
             url = "https://api.notion.com/v1/pages/${pageId}"
             method = "PATCH"
             header = mapOf(
@@ -50,11 +47,11 @@ class NotionDatabaseClient(
     }
 
     /** 데이터베이스 쿼리  */
-    suspend fun queryAll(dbId: String,filter: ObjectType? = null): List<NotionRow> {
+    suspend fun queryAll(dbId: String, filter: ObjectType? = null): List<NotionRow> {
         return repeatCollectUntil { keep, nextToken ->
 
             val start = TimeStart()
-            val resp = client.fetch {
+            val resp = client.await {
                 url = "https://api.notion.com/v1/databases/${dbId}/query"
                 method = "POST"
                 header = mapOf(

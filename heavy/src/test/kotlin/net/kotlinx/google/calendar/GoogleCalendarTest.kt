@@ -31,10 +31,15 @@ internal class GoogleCalendarTest {
     }
     val calendar = GoogleCalendar(secret.createService())
 
+    val calId = "va5ki7q0uqcg13re1re23l2frg@group.calendar.google.com"
+
+    @Test
+    fun `리스팅`() {
+        calendar.list(calId)
+    }
+
     @Test
     fun `기본테스트`() {
-
-        val calId = "va5ki7q0uqcg13re1re23l2frg@group.calendar.google.com"
 
         val event = calendar.insert(calId) {
             title = "긴급작업5"

@@ -51,10 +51,9 @@ dependencies {
 
 }
 
-/** 용량 확인용 */
 tasks.create("fatJar", Jar::class) {
     group = "build"
-    description = "for aws lambda"
+    description = "AWS 람다 all-in-one 빌드용 (전체 의존이 50mb 이내여야함)"
     manifest.attributes["Main-Class"] = "com.example.MyMainClass" //AWS 람다 등록시 필요없음
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     val dependencies = configurations.runtimeClasspath.get().map(::zipTree)
@@ -62,4 +61,21 @@ tasks.create("fatJar", Jar::class) {
     with(tasks.jar.get())
     archiveFileName = "fatJar.jar"
     isZip64 = true //archive contains more than 65535 entries
+    doLast {
+        // 람다 디플로이 및 버전 갱신...
+    }
+}
+
+/**
+ * https://docs.aws.amazon.com/ko_kr/lambda/latest/dg/packaging-layers.html
+ * */
+tasks.create("allDependencies", Zip::class) {
+    group = "build"
+    description = "AWS 람다 레이어용 전체 의존성 압축파일 생성"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from(configurations.runtimeClasspath.get()) {
+        into("java/lib") //java 디렉토리 안에 연관 의존성 저장
+    }
+    archiveFileName = "allDependencies.zip"
 }

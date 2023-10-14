@@ -69,6 +69,13 @@ class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() ->
         block(this)
     }
 
+    /** 스냅스타트용 */
+    suspend fun snapstart() {
+        log.warn { "스냅스타트.." }
+        notionPageBlockClient.blocks(notionPageId, 1)
+        googleCalendar.list(calendarDefaultId, 1)
+    }
+
     /**
      * 마지막 동기화 시간 이후부터 지금까지의 변경데이터 스캔
      * */
@@ -125,7 +132,7 @@ class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() ->
         }
     }
 
-    private fun synchInsert(calendarId: String, calendarData: GoogleCalendarData, notionPageId: String) {
+    private suspend fun synchInsert(calendarId: String, calendarData: GoogleCalendarData, notionPageId: String) {
         googleCalendar.insert(calendarId, calendarData)
         //노션에 구글 캘린더 ID를 업데이트함
         notionDatabaseClient.update(
@@ -136,7 +143,7 @@ class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() ->
         log.debug { " -> [${calendarData.title}] insert" }
     }
 
-    private fun synchUpdate(calendarId: String, calendarData: GoogleCalendarData, gceId: String, notionPageId: String) {
+    private suspend fun synchUpdate(calendarId: String, calendarData: GoogleCalendarData, gceId: String, notionPageId: String) {
         try {
             calendarData.eventId = gceId
             googleCalendar.update(calendarId, calendarData)
