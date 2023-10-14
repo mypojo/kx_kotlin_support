@@ -3,6 +3,7 @@
 .gradle
 build/
 **/generated/**
+.jqwik-database
 
 ### IntelliJ IDEA ###
 .idea

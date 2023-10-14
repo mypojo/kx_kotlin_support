@@ -26,7 +26,7 @@ class NotionPageBlockClient_테스트 : TestRoot() {
         val page = NotionPageBlockClient(client, secretValue)
 
         runBlocking {
-            val blocks = page.blocks("4b18e3f52ce84487b64acab8ab2b5837",1)
+            val blocks = page.blocks("4b18e3f52ce84487b64acab8ab2b5837", 1)
             blocks.forEach {
                 log.info { "value = ${it.value}" }
                 log.info { "value = ${it.value.split(":")[1].trim().toLocalDateTime()}" }
@@ -41,14 +41,16 @@ class NotionPageBlockClient_테스트 : TestRoot() {
 
     @Test
     fun 블록수정() {
-        val page = NotionPageBlockClient(client, secretValue)
-        page.update(
-            NotionCell(
-                "f9405aee-1811-4618-8466-0aa6832e2cf0",
-                NotionCellType.rich_text,
-                "최근동기화시간 : ${LocalDateTime.now().toKr01()}"
+        runBlocking {
+            val page = NotionPageBlockClient(client, secretValue)
+            page.update(
+                NotionCell(
+                    "f9405aee-1811-4618-8466-0aa6832e2cf0",
+                    NotionCellType.rich_text,
+                    "최근동기화시간 : ${LocalDateTime.now().toKr01()}"
+                )
             )
-        )
+        }
     }
 
 }
