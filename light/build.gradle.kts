@@ -22,6 +22,9 @@ dependencies {
     api(project(":core"))
     testApi(project(":core").dependencyProject.sourceSets["test"].output) //코어 테스트에 있는 공통 (testRoot 등)을 사용할 수 있게 해줌
 
+    //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
+    api("org.jetbrains.kotlin:kotlin-reflect:${providers["kotlinVersion"]}") // 리플렉션 약 3.1메가. 살짝 부담되긴 함.
+
     //==================================================== 기본 http 클라이언트 ======================================================
     api("com.squareup.okhttp3:okhttp:5.0.0-alpha.11") //https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     implementation("aws.smithy.kotlin:http-client-engine-okhttp-jvm:0.19.0") //http 설정에 필요  https://mvnrepository.com/artifact/aws.smithy.kotlin/http-client-engine-okhttp-jvm
@@ -45,6 +48,9 @@ dependencies {
 
     //====================================================커먼즈 ======================================================
     api("org.apache.commons:commons-text:1.10.0") // javacript 등의 이스케이핑에 사용된다. kotlin 네이티브가 없네..
+
+    //==================================================== 구아바 (이정도는 괜찮겠지) ======================================================
+    api("com.google.guava:guava:${providers["guavaVersion"]}") //약 3mb
 
     //==================================================== 슬랙 ======================================================
     api("com.slack.api:slack-api-client:1.29.1") //기본 API만 포함함

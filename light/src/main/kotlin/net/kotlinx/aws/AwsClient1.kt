@@ -9,6 +9,7 @@ import aws.sdk.kotlin.services.lambda.LambdaClient
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.sfn.SfnClient
 import aws.sdk.kotlin.services.ssm.SsmClient
+import net.kotlinx.aws.ssm.SsmStore
 
 /**
  * 기본 AWS 설정
@@ -29,4 +30,8 @@ open class AwsClient1(val awsConfig: AwsConfig) {
     val batch: BatchClient by lazy { BatchClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
 
     val ssm: SsmClient by lazy { SsmClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
+
+    //==================================================== 기타 ======================================================
+    /** SSM(Systems Manager) 스토어. = 파라메터 스토어 */
+    val ssmStore: SsmStore by lazy { SsmStore(ssm) }
 }

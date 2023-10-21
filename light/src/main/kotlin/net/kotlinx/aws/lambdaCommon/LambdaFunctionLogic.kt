@@ -8,9 +8,6 @@ annotation class LambdaFunctionLogicDsl
 @LambdaFunctionLogicDsl
 class LambdaFunctionLogic {
 
-    /** 유니크한 ID */
-    lateinit var id: String
-
     /** 로직 설명 */
     var desc: List<String> = emptyList()
 

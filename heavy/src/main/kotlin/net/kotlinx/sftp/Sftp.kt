@@ -132,7 +132,7 @@ class Sftp(
         val parent = remoteFile.substringAfterLast("/") //이거 확인
         if (Strings.isNullOrEmpty(parent)) return  //루트일경우 무시
         if (isDir(parent)) return
-        log.info("원격지에 디렉토리를 생성합니다.  {}", parent)
+        log.info { "원격지에 디렉토리를 생성합니다.  $parent" }
         try {
             channel.mkdir(parent)
         } catch (e: SftpException) {

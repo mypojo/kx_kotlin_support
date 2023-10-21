@@ -1,12 +1,15 @@
 package net.kotlinx.okhttp
 
 import net.kotlinx.okhttp.OkHttpUtil.MEDIA_TYPE_JSON
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
 /** 직렬화 가능한 요청 객체 : 응답이 텍스트인경우 */
 class OkHttpReq {
+
     /** url */
     lateinit var url: String
 
@@ -21,6 +24,11 @@ class OkHttpReq {
 
     /** post 등 */
     var body: Any? = null
+
+    /** 쿼리파라메터 등이 필요할때는 간단하게 이걸 사용 */
+    fun url(path: String, block: HttpUrl.Builder.() -> Unit = {}) {
+        url = path.toHttpUrl().newBuilder().apply(block).build().toString()
+    }
 
     fun build(): Request {
         val builder = Request.Builder()

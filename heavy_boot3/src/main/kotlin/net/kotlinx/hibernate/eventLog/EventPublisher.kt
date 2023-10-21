@@ -51,9 +51,9 @@ class EventPublisher(
     private suspend fun doPubEach(event: AbstractEvent) {
         val json = EventUtil.GSON.toJson(event)!!
         if (log.isTraceEnabled) {
-            log.debug(" -> event json \n{}", GsonSet.GSON_PRETTY.toJson(event))
+            log.debug { " -> event json \n${GsonSet.GSON_PRETTY.toJson(event)}" }
         }
-        log.info("event 발송.. [${event.eventDiv}] 데이터 ${event.datas.size}건 (${json.toByteArray().size}byte)")
+        log.info { "event 발송.. [${event.eventDiv}] 데이터 ${event.datas.size}건 (${json.toByteArray().size}byte)" }
         eventBridgeClient.putEvents(eventBridgeConfig, listOf(json))
     }
 

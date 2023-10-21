@@ -45,7 +45,7 @@ class DynamoIdSource(
             increaseAndGet()
         } catch (e: DynamoDbException) {
             create()
-            log.warn("테이블 [{}] : 신규 seq 컬럼[{}] => 생성됨", seqTableName, pkName)
+            log.warn { "테이블 [${seqTableName}] : 신규 seq 컬럼[${pkName}] => 생성됨" }
             increaseAndGet()
         }
     }

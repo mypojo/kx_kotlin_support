@@ -84,7 +84,7 @@ class EntityFinder(
             val types = c.value.map { it.columnType }.distinct()
             if (types.any { it.java.isEnum }) return@forEach //enum 류는 무시
             if (types.count() > 1) {
-                log.warn("동일한 접미어에 다른 타입 사용됨 [${c.key}] => ${c.value.map { "${it.name}(${it.columnType.simpleName})" }.distinct().joinToString(",")}")
+                log.warn { "동일한 접미어에 다른 타입 사용됨 [${c.key}] => ${c.value.map { "${it.name}(${it.columnType.simpleName})" }.distinct().joinToString(",")}" }
             }
         }
 

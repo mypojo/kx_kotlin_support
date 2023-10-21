@@ -33,13 +33,19 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
     override fun handleRequest(event: Map<String, Any>, context: Context?): Map<String, Any> {
         return runBlocking {
             val data = GsonData.fromObj(event)
-            for (logic in logics) {
-                log.debug { "람다로직 ${logic.id} : $event -> 실행..." }
-                val result = logic.handler(data, context) ?: continue
-                log.info { "람다로직 ${logic.id} : $event -> $result" }
-                return@runBlocking LambdaHandlerUtil.anyToLambdaMap(result)
+            try {
+                for (logic in logics) {
+                    log.debug { "람다로직 ${logic.handler::class.simpleName} 실행..." }
+                    val result = logic.handler(data, context) ?: continue
+                    log.info { "람다로직 ${logic.handler::class.simpleName} -> $result" }
+                    return@runBlocking LambdaHandlerUtil.anyToLambdaMap(result)
+                }
+            } catch (e: Throwable) {
+                //오류 발생시에만 data 로그 출력
+                log.warn { "입력이벤트 $data" }
+                throw e
             }
-            throw IllegalStateException("매칭되는 로직이 없습니다! $event")
+            throw IllegalStateException("매칭되는 로직이 없습니다! $data")
         }
     }
 
@@ -49,7 +55,7 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
         log.info { "AWS snapstart beforeCheckpoint.." }
         runBlocking {
             logics.forEach {
-                log.info { " -> snapstart logic ${it.id} init" }
+                log.info { " -> snapstart logic ${it.handler::class.simpleName} init" }
                 it.snapStart?.invoke()
             }
         }
@@ -64,7 +70,7 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
         TimeUtil.initTimeZone()
         //아직 셧다운 훅은 지원안함.
         Runtime.getRuntime().addShutdownHook(Thread {
-            log.warn("### 람다가 셧다운 됩니다 ###")
+            log.warn { "### 람다가 셧다운 됩니다 ###" }
             ResourceHolder.finish()
         })
     }

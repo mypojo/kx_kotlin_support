@@ -12,7 +12,7 @@ class PhysicalNamingStrategyUnderscore : PhysicalNamingStrategyStandardImpl() {
 
     override fun toPhysicalColumnName(name: Identifier, context: JdbcEnvironment): Identifier {
         val toColumnName = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name.text)
-        log.trace(" -> 컬럼명 자동변경 {} -> {}", name.text, toColumnName)
+        log.trace { " -> 컬럼명 자동변경 ${name.text} -> $toColumnName" }
         return Identifier.toIdentifier(toColumnName)
     }
 }

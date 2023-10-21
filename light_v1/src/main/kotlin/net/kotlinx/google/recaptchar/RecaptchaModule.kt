@@ -31,7 +31,7 @@ class RecaptchaModule(
         val success = result["success"].bool ?: false
         if (!success) {
             for (each in result["error-codes"]) {
-                log.debug("[{}]로 부터의 캡챠코드 검증실패 : {}", remoteip, each.toString())
+                log.debug { "[${remoteip}]로 부터의 캡챠코드 검증실패 : $each" }
             }
         }
         return success

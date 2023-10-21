@@ -30,7 +30,7 @@ object EventUtil {
         event.datas = EventDataHolder.getDatas()
 
         event.instanceType = AwsInstanceTypeUtil.INSTANCE_TYPE
-        event.ip = SystemUtil.ip
+        event.ip = SystemUtil.IP
         return event
     }
 

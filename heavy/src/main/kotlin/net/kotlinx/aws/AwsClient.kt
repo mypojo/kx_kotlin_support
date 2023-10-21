@@ -16,7 +16,6 @@ import aws.sdk.kotlin.services.ses.SesClient
 import aws.sdk.kotlin.services.sqs.SqsClient
 import net.kotlinx.aws.iam.IamSecretUpdateModule
 import net.kotlinx.aws.sm.SmStore
-import net.kotlinx.aws.ssm.SsmStore
 
 /** 선형 구조임으로 조합보다는 상속이 더 좋은 선택 */
 class AwsClient(awsConfig: AwsConfig) : AwsClient1(awsConfig) {
@@ -46,8 +45,6 @@ class AwsClient(awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     val iamSecretUpdateModule: IamSecretUpdateModule by lazy { IamSecretUpdateModule(iam) }
 
     //==================================================== 기타 ======================================================
-    /** SSM(Systems Manager) 스토어. = 파라메터 스토어 */
-    val ssmStore: SsmStore by lazy { SsmStore(ssm) }
     /** 시크릿 매니저 스토어 */
     val smStore: SmStore by lazy { SmStore(sm) }
 

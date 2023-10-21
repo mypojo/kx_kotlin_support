@@ -1,8 +1,8 @@
 package net.kotlinx.spring.tx
 
 import com.amazonaws.services.dynamodbv2.LockItem
-import net.kotlinx.aws.dynamoLock.DynamoLockModule
-import net.kotlinx.aws.dynamoLock.DynamoLockReq
+import net.kotlinx.aws.javaSdkv2.dynamoLock.DynamoLockModule
+import net.kotlinx.aws.javaSdkv2.dynamoLock.DynamoLockReq
 import org.springframework.transaction.support.TransactionSynchronization
 import org.springframework.transaction.support.TransactionSynchronizationManager
 

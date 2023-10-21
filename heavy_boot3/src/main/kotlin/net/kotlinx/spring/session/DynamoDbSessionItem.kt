@@ -3,7 +3,7 @@ package net.kotlinx.spring.session
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.aws.dynamo.DynamoData
 import net.kotlinx.aws.dynamo.DynamoDbBasic
-import net.kotlinx.reflect.findOrThrow
+import net.kotlinx.aws.dynamo.findOrThrow
 
 /** DDB에 입력하는 데이터  */
 class DynamoDbSessionItem(

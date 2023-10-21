@@ -16,7 +16,7 @@ import java.io.File
 class NotionDatabaseToGoogleCalendarTest : TestRoot() {
 
     val aws = AwsConfig().toAwsClient1()
-    val secretValue by lazy {
+    private val secretValue by lazy {
         runBlocking {
             aws.ssm.find("/notion/key")!!
         }

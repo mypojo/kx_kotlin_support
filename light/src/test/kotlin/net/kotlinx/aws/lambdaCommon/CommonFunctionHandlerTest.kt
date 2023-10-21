@@ -12,7 +12,7 @@ class CommonFunctionHandlerTest : TestRoot() {
 
             init {
                 regtiter {
-                    this.id = "aa"
+
                 }
 
             }

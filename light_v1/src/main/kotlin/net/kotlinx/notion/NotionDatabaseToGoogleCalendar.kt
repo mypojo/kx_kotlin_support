@@ -4,8 +4,8 @@ import mu.KotlinLogging
 import net.kotlinx.core.string.toLocalDate
 import net.kotlinx.core.string.toLocalDateTime
 import net.kotlinx.core.time.TimeStart
+import net.kotlinx.core.time.toF01
 import net.kotlinx.core.time.toIso
-import net.kotlinx.core.time.toKr01
 import net.kotlinx.core.time.toTimeString
 import net.kotlinx.google.calendar.GoogleCalendar
 import net.kotlinx.google.calendar.GoogleCalendarData
@@ -52,10 +52,10 @@ class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() ->
     var type: String = "type"
 
     /** 블록을 읽어서 최근 동기화 시간으로 */
-    var fromBlock: (String) -> LocalDateTime = { it.split(":")[1].trim().toLocalDateTime() }
+    var fromBlock: (String) -> LocalDateTime = { it.split("=")[1].trim().toLocalDateTime() }
 
-    /** 최근 동기화 시간을 블록으로 */
-    var toBlock: (LocalDateTime) -> String = { "최근동기화시간 : ${it.toKr01()}" }
+    /** 최근 동기화 시간을 블록으로 (파싱할 날짜 포맷에 한글이 들어가지 않도로고 주의!) */
+    var toBlock: (LocalDateTime) -> String = { "최근동기화시간 = ${it.toF01()}" }
 
     //==================================================== 구글 캘린더 설정 ======================================================
 

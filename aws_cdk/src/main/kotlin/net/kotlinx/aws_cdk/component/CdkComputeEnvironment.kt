@@ -12,8 +12,8 @@ import software.amazon.awscdk.services.ec2.IVpc
 
 /** 접두어 소문자 주의! (네이밍 때문)  */
 enum class ComputeEnvironmentType(val resourceType: String) {
-    normal("FARGATE"),
-    spot("FARGATE_SPOT"),
+    NORMAL("FARGATE"),
+    SPOT("FARGATE_SPOT"),
     ;
 }
 
@@ -27,7 +27,7 @@ class CdkComputeEnvironment(
 
     /** VPC 이름 */
     override val logicalName: String
-        get() = "${project.projectName}_compenv_${type.name}-${deploymentType.name.lowercase()}"
+        get() = "${project.projectName}_compenv_${type.name.lowercase()}-${deploymentType.name.lowercase()}"
 
     lateinit var iVpc: IVpc
 

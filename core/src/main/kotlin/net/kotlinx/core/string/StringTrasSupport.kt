@@ -5,6 +5,13 @@ import java.net.URLDecoder
 import java.net.URLEncoder
 import java.util.*
 
+
+/** decapitalize 쓰고싶은데 왜!!! 부활시킴 */
+fun String.decapital(): String = this.replaceFirstChar { it.lowercase(Locale.getDefault()) }
+
+/** capital 쓰고싶은데 왜!!! 부활시킴 */
+fun String.capital(): String = this.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+
 /** 스네이크 -> 카멜 */
 fun String.toSnakeFromCamel(): String = RegexSet.CAMEL.replace(this) { "_${it.value}" }.lowercase(Locale.getDefault())
 

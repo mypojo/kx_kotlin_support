@@ -24,9 +24,6 @@ dependencies {
     //==================================================== 자바 표준 ======================================================
     api("jakarta.mail:jakarta.mail-api:2.1.2") //이메일 전송에 필요함
 
-    //==================================================== 구아바 (이정도는 괜찮겠지) ======================================================
-    api("com.google.guava:guava:${providers["guavaVersion"]}")
-
     //==================================================== AWS ======================================================
     val awsVersion: String by project
     api("aws.sdk.kotlin:sts:$awsVersion")
@@ -66,7 +63,6 @@ dependencies {
     implementation("software.amazon.awssdk:sts:$awsJavaV2Version") //IAM 토큰 발행시 필요
 
     //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
-    api("org.jetbrains.kotlin:kotlin-reflect:${providers["kotlinVersion"]}") // 리플렉션
     api("io.insert-koin:koin-core:3.4.0") //kotlin DI 도구
     implementation("org.jetbrains.exposed:exposed:${providers["exposedVersion"]}") //라이트 ORM
 

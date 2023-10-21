@@ -39,7 +39,7 @@ class TransactionManager(
         val datas = DATAS.get() ?: run {
             mutableListOf<Any>().apply {
                 DATAS.set(this)
-                log.debug("최초 데이터 입력 => registerSynchronization 시작")
+                log.debug { "최초 데이터 입력 => registerSynchronization 시작" }
                 TransactionSynchronizationManager.registerSynchronization(object : TransactionSynchronization {
                     override fun afterCompletion(status: Int) {
                         try {
@@ -56,7 +56,7 @@ class TransactionManager(
             }
         }
         datas.add(data)
-        log.trace("현재 스래드 추가 데이터(전체 {}건) 입력", datas.size)
+        log.trace { "현재 스래드 추가 데이터(전체 ${datas.size}건) 입력" }
     }
 
     companion object {

@@ -15,7 +15,7 @@ class CdkParameter(
     override var deploymentType: DeploymentType = DeploymentType.DEV
 
     override val logicalName: String
-        get() = "/cdk/${project.projectName}/${this.name}/$deploymentType"
+        get() = "/cdk/${project.projectName}/${this.name}/${deploymentType.name.lowercase()}"
 
     fun put(stack: Stack, value: String) = ParameterUtil.putParameter(stack, logicalName, value)
     fun get(stack: Stack): String = ParameterUtil.getParameter(stack, logicalName)

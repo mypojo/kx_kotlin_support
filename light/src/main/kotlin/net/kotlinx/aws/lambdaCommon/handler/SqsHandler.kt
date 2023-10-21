@@ -4,6 +4,7 @@ import com.amazonaws.services.lambda.runtime.Context
 import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
 import net.kotlinx.core.gson.GsonData
 
+
 /**
  * SQS에 데이터 입력 -> 람다 트리거
  * ex) 특정 로직 실행..
@@ -16,7 +17,7 @@ class SqsHandler(
 ) : LambdaLogicHandler {
 
     override suspend fun invoke(input: GsonData, context: Context?): Any? {
-        if (input["eventSource"].str != EVENT_SOURCE) return null
+        if (input[EVENT_SOURCE].str != SOURCE_SQS) return null
 
         val body: String = input["body"] as String? ?: "{}"
         val sqsBody: GsonData = GsonData.parse(body)
@@ -25,7 +26,8 @@ class SqsHandler(
     }
 
     companion object {
-        private const val EVENT_SOURCE = "aws:sqs"
+        const val EVENT_SOURCE = "eventSource"
+        const val SOURCE_SQS = "aws:sqs"
     }
 
 

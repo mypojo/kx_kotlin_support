@@ -26,7 +26,7 @@ object AwsInstanceTypeUtil {
     }
 
     /** instanceType 을 가져온다 */
-    val INSTANCE_TYPE: AwsInstanceType by lazy { doGetInstanceType().apply { log.info("instanceType => $this") } }
+    val INSTANCE_TYPE: AwsInstanceType by lazy { doGetInstanceType().apply { log.info { "instanceType => $this" } } }
 
     val IS_AWS_ECS_FARGATE: Boolean by lazy { AWS_ECS_FARGATE == System.getenv("AWS_EXECUTION_ENV") }
 

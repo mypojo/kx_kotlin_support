@@ -31,7 +31,11 @@ class S3LogicHandler(
     //private val bsConfig: BatchStepConfig,
     /** AWS 클라이언트 */
     private val aws: AwsClient1,
-    /** 버킷은 단일로 고정이다. (XXXX 확인필요)  */
+    /**
+     * 버킷은 단일로 고정이다.
+     * AWS에서 버킷을 전달 해주는지는 모름.. (해줄거 같은데..) 해주면 그때가서 수정 (수정 간단함)
+     * 일단 컨텍스트 용량을 줄이기 위해서 버킷은 여기 등록하는걸로 하자.
+     *  */
     private val workBucket: String,
     block: S3LogicHandler.() -> Unit
 ) : LambdaLogicHandler {

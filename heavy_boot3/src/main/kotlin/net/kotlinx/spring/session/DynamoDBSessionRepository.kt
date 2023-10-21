@@ -83,7 +83,7 @@ class DynamoDBSessionRepository(
                 return null
             }
             session.lastAccessedTime = Instant.now()
-            log.trace("findById {} -> {}", id, session.attributeNames)
+            log.trace { "findById $id -> $session.attributeNames" }
             session
         } catch (e: InvalidClassException) {
             log.warn { "DDB와 소스코드의 시리얼 불일치 -> 해당 데이터를 무시합니다." }

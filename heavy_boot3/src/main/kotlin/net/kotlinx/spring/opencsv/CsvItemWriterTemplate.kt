@@ -36,7 +36,7 @@ class CsvItemWriterTemplate(
             //MS949 -> 사람이 읽는용. 파일이 N개 까지 생길 수 있음 -> FileZipModule 로 압축할것
             file.isDirectory -> {
                 if (file.listFiles().isNotEmpty()) {
-                    log.warn("Directory is not empty!!")
+                    log.warn { "Directory is not empty!!" }
                 }
                 MultiResourceItemWriterBuilder {
                     this.itemWriter = CsvItemWriter().apply {

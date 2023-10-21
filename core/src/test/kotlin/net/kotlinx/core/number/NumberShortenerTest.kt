@@ -34,7 +34,7 @@ class NumberShortenerTest : TestRoot() {
     fun test(num: Long) {
         val str = NumberShortener(6).toPadString(num)
         if (str == null) {
-            log.warn("변환실패. 너무 큰 수 {}", num)
+            log.warn { "변환실패. 너무 큰 수 $num" }
             return
         }
         val result = NumberShortener.toLong(str)

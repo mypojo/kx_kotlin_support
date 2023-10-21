@@ -20,6 +20,9 @@ inline fun LocalDateTime.toIso(): String = TimeFormat.ISO[this]
 /** YMD  */
 inline fun LocalDateTime.toYmd(): String = TimeFormat.YMD[this]
 
+/** YMDHM_F01  */
+inline fun LocalDateTime.toF01(): String = TimeFormat.YMDHM_F01[this]
+
 /** 기본 존으로 변환 */
 inline fun LocalDateTime.toZone(zoneId: ZoneId = TimeUtil.SEOUL): ZonedDateTime = this.atZone(zoneId)
 

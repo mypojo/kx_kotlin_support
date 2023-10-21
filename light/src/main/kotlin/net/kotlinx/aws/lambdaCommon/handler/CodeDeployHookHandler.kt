@@ -5,6 +5,7 @@ import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
 import net.kotlinx.core.gson.GsonData
 import org.slf4j.LoggerFactory
 
+
 /**
  * 코드 드플로이 훅
  */
@@ -20,8 +21,8 @@ class CodeDeployHookHandler(
     private val log = LoggerFactory.getLogger(javaClass)
 
     override suspend fun invoke(input: GsonData, context: Context?): Any? {
-        val lifecycleEventHookExecutionId = input["LifecycleEventHookExecutionId"].str ?: return null
-        val deploymentId = input["DeploymentId"].str!!
+        val lifecycleEventHookExecutionId = input[LIFECYCLE_EVENT_HOOK_EXECUTION_ID].str ?: return null
+        val deploymentId = input[DEPLOYMENT_ID].str!!
 
         //여기 실서버 8080용 단위테스트가 들어가야 함
         log.info("코드디플로이 빌드 후크 수신 : $deploymentId $lifecycleEventHookExecutionId")
@@ -30,7 +31,8 @@ class CodeDeployHookHandler(
     }
 
     companion object {
-        private const val DIV = "CodeDeploy hooks"
+        const val LIFECYCLE_EVENT_HOOK_EXECUTION_ID = "LifecycleEventHookExecutionId"
+        const val DEPLOYMENT_ID = "DeploymentId"
     }
 
 }
