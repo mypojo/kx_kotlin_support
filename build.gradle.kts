@@ -55,7 +55,7 @@ allprojects {
         //==================================================== 테스트 ======================================================
         testImplementation("org.junit-pioneer:junit-pioneer:1.9.1")  //환경변수 테스트용 (실서버 job 실행 등)
         testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.1") //최신버전
-        testImplementation("io.mockk:mockk:1.13.3") //코틀린 모킹
+        testImplementation("io.mockk:mockk:1.13.8") //코틀린 모킹
 
         testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter-kotlin:0.6.10")  //네이버 픽스쳐몽키.. 애매함
 

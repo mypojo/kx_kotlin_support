@@ -28,7 +28,7 @@ class EventbridgeScheduleHandler(
         //ex) arn:aws:events:ap-northeast-2:xxx:rule/xx-day_update-dev
         val resourceArn: String = input["resources"][0].str!!
         val eventName: String = resourceArn.substringAfterLast("/")
-        log.info { "[event] ARN = $resourceArn  =>  $eventName" }
+        log.debug { "[event] ARN = $resourceArn  =>  $eventName" }
 
         block(eventName)
         return eventName

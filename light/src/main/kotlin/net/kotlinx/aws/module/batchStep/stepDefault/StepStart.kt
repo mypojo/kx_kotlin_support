@@ -31,6 +31,7 @@ class StepStart(
             this.bucket = config.workUploadBuket
             this.prefix = "${config.workUploadInputDir}${context.optionInput.targetSfnId}/"
         }.toList()
+        log.debug { " -> [${config.workUploadBuket}/${config.workUploadInputDir}${context.optionInput.targetSfnId}] -> ${datas.size} 로드됨" }
 
         return when (context.mode) {
             BatchStepMode.Map -> {

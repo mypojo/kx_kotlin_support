@@ -32,7 +32,9 @@ class JobLocalExecutor(
         job.awsInfo = awsInfoLoader.load()
 
         log.debug { "job run (${job.toKeyString()})" }
-        job.jobOption?.let { log.info { " -> job option : ${job.jobOption}" } }
+        job.jobOption?.let {
+            log.debug { " -> job option : ${job.jobOption}" }
+        }
 
         try {
             when (jobService) {

@@ -17,6 +17,7 @@ fun Koson.addByType(name: String, koson: Any) {
         is ObjectType -> name to koson
         is String -> name to koson
         is Number -> name to koson
+        is Boolean -> name to koson
         is GsonData -> name to rawJson(koson.toString())
         else -> throw IllegalStateException()
     }

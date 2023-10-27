@@ -20,8 +20,8 @@ class SnsHandler(
     override suspend fun invoke(input: GsonData, context: Context?): Any? {
         if (input[EVENT_SOURCE].str != SOURCE_SNS) return null
 
-        val body = GsonData.fromObj(input)
-        block(body)
+        val body = input["Sns"]["Message"].str!!
+        block(GsonData.parse(body))
         return body
     }
 

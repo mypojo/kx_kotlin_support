@@ -1,4 +1,4 @@
-package net.kotlinx.aws.lambdaUi
+package net.kotlinx.aws.lambdaUrl
 
 import net.kotlinx.aws.lambda.LambdaMapResult
 

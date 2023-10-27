@@ -1,7 +1,6 @@
 package net.kotlinx.aws_cdk.component.sfnv2
 
 import net.kotlinx.aws.AwsNaming
-import net.kotlinx.aws.lambda.LambdaUtil
 import software.amazon.awscdk.services.stepfunctions.CustomState
 import software.amazon.awscdk.services.stepfunctions.CustomStateProps
 import software.amazon.awscdk.services.stepfunctions.State
@@ -19,8 +18,8 @@ class CdkSfnMapInline(
 
     override var suffix: String = ""
 
-    /** 실행할 람다 이름 */
-    var lambdaName: String = "${cdkSfn.lambda.functionName}:${LambdaUtil.SERVICE_ON}"
+//    /** 실행할 람다 이름 */
+//    var lambdaName: String = "${cdkSfn.lambda.functionName}:${LambdaUtil.SERVICE_ON}"
 
     /** 스탭 내부의 state 이름 */
     var stepName: String = "${name}Inline"
@@ -63,7 +62,7 @@ class CdkSfnMapInline(
                         "Resource" to "arn:aws:states:::lambda:invoke",
                         "OutputPath" to "$.Payload",
                         "Parameters" to mapOf(
-                            "FunctionName" to "arn:aws:lambda:${cdkSfn.project.region}:${cdkSfn.project.awsId}:function:${lambdaName}",
+                            "FunctionName" to cdkSfn.lambda.functionArn,
                             "Payload.$" to "$"
                         ),
                         "Retry" to listOf(

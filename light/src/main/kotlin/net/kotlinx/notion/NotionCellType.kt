@@ -23,9 +23,15 @@ enum class NotionCellType {
 
     /** url 형식 */
     url,
+
+    /** checkbox 형식 */
+    checkbox,
     ;
 
-    /** 노션 형태를 간단 텍스트로 변경 */
+    /**
+     * 노션 형태를 간단 텍스트로 변경
+     * https://developers.notion.com/reference/page-property-values#date
+     *  */
     fun fromNotionJson(value: GsonData): String {
         if (value.empty) return ""
 
@@ -35,6 +41,7 @@ enum class NotionCellType {
             select -> value["name"].str!!
             url -> value.str!! //그 자체
             number -> value.str!! //그 자체
+            checkbox -> value.str!! //그 자체
             date -> {
                 if (value["end"].empty) "${value["start"].str}"
                 else "${value["start"].str} ~ ${value["end"].str}"
@@ -70,6 +77,8 @@ enum class NotionCellType {
             url -> text
 
             number -> text.toLong()
+
+            checkbox -> text.toBoolean()
 
             date -> obj {
                 "start" to text

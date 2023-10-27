@@ -1,10 +1,14 @@
-package net.kotlinx.aws.lambdaUi
+package net.kotlinx.aws.lambdaUrl
 
+import com.amazonaws.services.lambda.runtime.Context
 import kotlinx.html.body
 import kotlinx.html.h1
 import kotlinx.html.html
 import kotlinx.html.stream.createHTML
 import mu.KotlinLogging
+import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
+
+import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.html.setDefault
 import net.kotlinx.core.string.ResultText
 
@@ -12,7 +16,7 @@ import net.kotlinx.core.string.ResultText
 /**
  * 간단 라우터 등록기
  *  */
-class FunctionRouter(block: FunctionRouter.() -> Unit = {}) {
+class FunctionRouter(block: FunctionRouter.() -> Unit = {}) : LambdaLogicHandler {
 
     private val inputRoutes = mutableListOf<FunctionRouteInfo>()
 
@@ -36,8 +40,18 @@ class FunctionRouter(block: FunctionRouter.() -> Unit = {}) {
     /** 매칭할 전체 루트 */
     private val routes: List<FunctionRouteInfo> = inputRoutes.filter { it.pathPrefix != "/" }
 
-    /** 실제 라우팅 처리 */
-    fun execute(data: LambdaUrlInput): LambdaUrlOutput {
+    /** URL 입력이면 라우팅 해줌 */
+    override suspend fun invoke(input: GsonData, context: Context?): Any? {
+
+        LambdaUrlInput.extractPath(input) ?: return null
+
+        val data = try {
+            LambdaUrlInput(input)
+        } catch (e: Exception) {
+            log.warn { "LambdaUrlInput 파싱 실패!  입력값 $input" }
+            throw e
+        }
+        log.debug { "입력 [${data.path}] ${data.ip} : ${data.query}" }
 
         val authCheckResult = authCheck(data)
         if (!authCheckResult.ok) {
@@ -65,6 +79,7 @@ class FunctionRouter(block: FunctionRouter.() -> Unit = {}) {
             return LambdaUrlOutput(html, 400)
         }
         return route.process(data)
+
     }
 
 

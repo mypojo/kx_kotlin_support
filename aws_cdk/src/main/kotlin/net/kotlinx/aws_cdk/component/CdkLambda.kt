@@ -10,8 +10,16 @@ import software.amazon.awscdk.services.iam.IRole
 import software.amazon.awscdk.services.lambda.*
 import software.amazon.awscdk.services.lambda.Function
 import software.amazon.awscdk.services.logs.RetentionDays
-import software.amazon.awscdk.services.s3.IBucket
 import software.amazon.awscdk.services.sqs.IQueue
+import kotlin.time.Duration.Companion.minutes
+
+/**
+ * 함수에 URL 오픈
+ * 각 함수별로 다를 수 있으니 별도 지정해서 사용
+ *  */
+fun IFunction.url(type: FunctionUrlAuthType = FunctionUrlAuthType.NONE) {
+    this.addFunctionUrl(FunctionUrlOptions.builder().authType(type).build()) //외부 오픈됨. 알리아스 & 버전 없음!
+}
 
 /**
  * 람다 함수 정의 (일반 버전)
@@ -46,14 +54,6 @@ class CdkLambda(
     /** DLQ 를 사용할 경우 입력 */
     var dlq: IQueue? = null
 
-    /**
-     * 레이어 소스코드 정보. 있으면 추가함
-     * JVM 레이어는 용량이 크기때문에 S3 권장!
-     * 본문 함수가 50mb 이상이면 레이어로 빼야 직접 업데이트가 가능함
-     * 레이어 jar는 CDK 실행전에 여기 미리 파일을 업로드 해놓아야함 (gradle 사용 추천)
-     *  */
-    var layerCode: Pair<IBucket, String>? = null
-
     /** 런타임 */
     var runtime: Runtime = Runtime.JAVA_17!!
 
@@ -64,7 +64,7 @@ class CdkLambda(
     var aliasName: String? = null
 
     /** 디폴트로 최대인 15분 */
-    var timeout = Duration.seconds(60 * 15)
+    var timeout: kotlin.time.Duration = 15.minutes
 
     /** 보통 이게 최저 */
     var memorySize = 256
@@ -76,27 +76,31 @@ class CdkLambda(
         block(this)
     }
 
-
     /** 결과 레이어 */
-    var layer: LayerVersion? = null
+    var layers: List<ILayerVersion> = emptyList()
 
     /** 결과 (디폴트) */
-    lateinit var defaultFun: Function
+    lateinit var defaultFun: IFunction
 
     /** 결과 (네임드) */
-    lateinit var aliasFun: Alias
+    lateinit var aliasFun: IFunction
+
+
+    /** 일반 로드 */
+    fun load(stack: Stack): CdkLambda {
+        defaultFun = Function.fromFunctionName(stack, logicalName, logicalName)
+        return this
+    }
+
+    /** alias 버전은 ARN 으로 로드한다. */
+    fun loadAlias(stack: Stack): CdkLambda {
+        checkNotNull(aliasName)
+        var arn = "arn:aws:lambda:${project.region}:${project.awsId}:function:${logicalName}:${aliasName}"
+        aliasFun = Function.fromFunctionArn(stack, arn, arn)
+        return this
+    }
 
     fun create(stack: Stack) {
-
-        layerCode?.let {
-            layer = LayerVersion(
-                stack, "layer-$logicalName", LayerVersionProps.builder()
-                    .layerVersionName("layer-$logicalName")
-                    .code(Code.fromBucket(it.first, it.second)) //
-                    .compatibleRuntimes(listOf(runtime)) //17로 지정해도 11로 표기됨..  의미 없을듯
-                    .build()
-            )
-        }
 
         defaultFun = Function(
             stack, logicalName, FunctionProps.builder()
@@ -104,9 +108,9 @@ class CdkLambda(
                 .runtime(runtime)
                 .role(role)
                 .memorySize(memorySize)
-                .timeout(timeout)
+                .timeout(Duration.seconds(timeout.inWholeSeconds)) //초단위로 입력
                 .handler(handlerName)
-                .logRetention(RetentionDays.SIX_MONTHS)
+                .logRetention(logRetention)
                 .code(code)
                 .environment(
                     mapOf(
@@ -114,7 +118,9 @@ class CdkLambda(
                     )
                 )
                 .apply {
-                    layer?.let { layers(listOf(it)) }
+                    if (layers.isNotEmpty()) {
+                        layers(layers)
+                    }
                     dlq?.let { deadLetterQueue(it) }
                     if (!snapstart) {
                         architecture(Architecture.ARM_64) //ARM이 더 쌈. 하지만 SnapStart를 지원하지 않음 ㅠㅠ
@@ -122,6 +128,7 @@ class CdkLambda(
                 }
                 .build()
         )
+
         TagUtil.tag(defaultFun, deploymentType)
 
         if (snapstart) {
@@ -130,7 +137,7 @@ class CdkLambda(
             cfnFunction.addPropertyOverride("SnapStart", mapOf("ApplyOn" to "PublishedVersions"))
         }
 
-        aliasName.let {
+        aliasName?.let {
             aliasFun = Alias.Builder.create(stack, "lambda-alias-${aliasName}-${deploymentType.name.lowercase()}")
                 .aliasName(aliasName)
                 .version(defaultFun.latestVersion).build()

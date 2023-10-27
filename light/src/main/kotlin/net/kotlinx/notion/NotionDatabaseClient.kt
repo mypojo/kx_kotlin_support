@@ -15,6 +15,8 @@ import okhttp3.OkHttpClient
 /**
  * 노션 DB
  * 각 기능은 필요할때 만들기
+ *
+ * 데이터베이스 ID 채번 후 해당 페이지로 가서 "연결" 을 선택 후 KEY를 채번한것과 연결 해주어야 한다.
  *  */
 class NotionDatabaseClient(
     private val client: OkHttpClient,
@@ -24,26 +26,40 @@ class NotionDatabaseClient(
 
     private val log = KotlinLogging.logger {}
 
+    suspend fun insert(dbId: String, cells: List<NotionCell>) {
+        val resp = client.await {
+            url = "https://api.notion.com/v1/pages"
+            method = "POST"
+            header = toHeader()
+            body = toBody(dbId, cells)
+        }
+        check(resp.response.code == 200) { "${resp.response.code} ${resp.respText}" }
+        log.trace { " -> notion insert 성공" }
+    }
+
     suspend fun update(dbId: String, pageId: String, cells: List<NotionCell>) {
         val resp = client.await {
             url = "https://api.notion.com/v1/pages/${pageId}"
             method = "PATCH"
-            header = mapOf(
-                "Authorization" to "Bearer $secretValue",
-                "Notion-Version" to "2022-06-28",
-                "Content-Type" to "application/json",
-            )
+            header = toHeader()
+            body = toBody(dbId, cells)
+        }
+        check(resp.response.code == 200) { "${resp.response.code} ${resp.respText}" }
+        log.trace { " -> notion update 성공" }
+    }
+
+    /** 사실 삭제 아니고 아카이브 */
+    suspend fun delete(dbId: String, pageId: String) {
+        val resp = client.await {
+            url = "https://api.notion.com/v1/pages/${pageId}"
+            method = "PATCH"
+            header = toHeader()
             body = obj {
-                "parent" to obj {
-                    "database_id" to dbId
-                }
-                "properties" to obj {
-                    cells.forEach { addByType(it.name, it.notionJson) }
-                }
+                "archived" to true
             }
         }
         check(resp.response.code == 200) { "${resp.response.code} ${resp.respText}" }
-        log.debug { " -> notion update 성공" }
+        log.trace { " -> notion delete 성공" }
     }
 
     /** 데이터베이스 쿼리  */
@@ -54,11 +70,7 @@ class NotionDatabaseClient(
             val resp = client.await {
                 url = "https://api.notion.com/v1/databases/${dbId}/query"
                 method = "POST"
-                header = mapOf(
-                    "Authorization" to "Bearer $secretValue",
-                    "Notion-Version" to "2022-06-28",
-                    "Content-Type" to "application/json",
-                )
+                header = toHeader()
                 body = obj {
                     filter?.let { "filter" to it }
                     nextToken?.let { "start_cursor" to it }
@@ -95,5 +107,20 @@ class NotionDatabaseClient(
             resultObj["next_cursor"].str
         }.flatten()
     }
+
+    private fun toBody(dbId: String, cells: List<NotionCell>) = obj {
+        "parent" to obj {
+            "database_id" to dbId
+        }
+        "properties" to obj {
+            cells.forEach { addByType(it.name, it.notionJson) }
+        }
+    }
+
+    private fun toHeader() = mapOf(
+        "Authorization" to "Bearer $secretValue",
+        "Notion-Version" to "2022-06-28",
+        "Content-Type" to "application/json",
+    )
 
 }

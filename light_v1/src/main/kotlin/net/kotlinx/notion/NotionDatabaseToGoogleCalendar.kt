@@ -95,9 +95,9 @@ class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() ->
         val notionRows = notionDatabaseClient.queryAll(notionDbId, filter)
         notionRows.forEach { notionRow ->
 
+            val dateCell = notionRow.colimns.firstOrNull { it.name == date } ?: throw IllegalStateException("date column is required")
             val titleCell = notionRow.colimns.firstOrNull { it.name == title } ?: throw IllegalStateException("title column is required")
             val descCell = notionRow.colimns.firstOrNull { it.name == desc } ?: throw IllegalStateException("desc column is required")
-            val dateCell = notionRow.colimns.firstOrNull { it.name == date } ?: throw IllegalStateException("desc column is required")
             val dateValue = when {
                 dateCell.value.contains("~") -> {
                     val range = dateCell.value.split("~").map { it.trim() }

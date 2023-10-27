@@ -24,6 +24,10 @@ internal class GsonDataTest : TestRoot() {
             println(this)
         }
 
+        log.info { "SNS 메세지 포맷 확인용 로그 $updated" }
+        println(updated)
+        println(updated.toString())
+
 
         val lett01 = updated["type"].lett { "${it}xx" }
         check(lett01 != null)

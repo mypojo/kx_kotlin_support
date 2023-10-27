@@ -1,10 +1,8 @@
 package net.kotlinx.aws.module.batchStep.stepDefault
 
 import com.amazonaws.services.lambda.runtime.Context
-import mu.KotlinLogging
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
-import net.kotlinx.aws.module.batchStep.BatchStepConfig
 import net.kotlinx.core.gson.GsonData
 
 /**
@@ -14,25 +12,20 @@ import net.kotlinx.core.gson.GsonData
  *           "method": "StepStart",
  *           "option.$": "$.option"
  *         }
+ *
+ *  이하 기본 제공되는 메소드들
+ *         StepStart(config),
+ *         StepList(config),
+ *         StepEnd(config),
+ *
  * */
-class BatchStepDefaultRunner(
-    config: BatchStepConfig
-) : LambdaLogicHandler {
+class BatchStepDefaultRunner(logics: List<LambdaLogicHandler>) : LambdaLogicHandler {
 
-    /** 외부 접근 가능 */
-    private val log = KotlinLogging.logger {}
-
-    private val methodMap: Map<String, LambdaLogicHandler> = listOf(
-        //이하 기본 제공되는 메소드들
-        StepStart(config),
-        StepList(config),
-        StepEnd(config),
-    ).associateBy { v -> v::class.simpleName!! } //Capital 그대로 사용한다
+    private val methodMap: Map<String, LambdaLogicHandler> = logics.associateBy { v -> v::class.simpleName!! } //Capital 그대로 사용한다
 
     /** 핸들러 실행 */
     override suspend fun invoke(input: GsonData, context: Context?): Any? {
         val methodName = input[AwsNaming.METHOD].str ?: return null
-
         val methodLogic = methodMap[methodName] ?: throw IllegalArgumentException("$methodName id not found")
         val methodResult = methodLogic(input, context)
         checkNotNull(methodResult)

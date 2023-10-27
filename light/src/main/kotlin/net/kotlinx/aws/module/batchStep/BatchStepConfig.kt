@@ -19,7 +19,7 @@ class BatchStepConfig(block: BatchStepConfig.() -> Unit) {
     /** sfn 이름 */
     lateinit var stateMachineName: String
 
-    /** 람다 이름 */
+    /** 람다 이름. List 방식에서 직접 람다를 호출할때 사용함  */
     lateinit var lambdaFunctionName: String
 
     /** 최종 리포트에 사용 */

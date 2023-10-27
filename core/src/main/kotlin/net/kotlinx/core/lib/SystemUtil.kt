@@ -2,6 +2,7 @@ package net.kotlinx.core.lib
 
 import net.kotlinx.core.string.TextGrid
 import net.kotlinx.core.string.toTextGrid
+import java.lang.management.ManagementFactory
 import java.net.Inet4Address
 
 
@@ -16,5 +17,9 @@ object SystemUtil {
 
     /** 환경변수를 간단 텍스트 그리드로 */
     fun envToTextGrid(): TextGrid = listOf("name", "value").toTextGrid(System.getenv().map { arrayOf(it.key, it.value) })
+
+    /** JVM 파라메터 출력 */
+    fun jvmParam(): List<String> = ManagementFactory.getRuntimeMXBean().inputArguments
+
 
 }

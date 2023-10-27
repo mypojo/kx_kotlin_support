@@ -121,7 +121,7 @@ class S3LogicHandler(
             }
         }
         val average = outputData.map { it.durationMills }.average().toLong().toTimeString()
-        log.warn { "데이터 처리성공. ${path.fileName} ${lines.size}건 -> $start / 개별처리평균 $average" }
+        log.info { "데이터 처리성공. ${path.fileName} ${lines.size}건 -> $start / 개별처리평균 $average" }
         return obj {
             "fileName" to path.fileName
             "size" to lines.size

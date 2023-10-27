@@ -12,6 +12,20 @@ import java.time.LocalDateTime
  *  */
 object NotionFilterSet {
 
+    /** 간단한 and eq 조건들  */
+    fun eq(options: List<NotionCell>): ObjectType = obj {
+        "and" to arr[
+            options.map {
+                obj {
+                    "property" to it.name
+                    it.type.name to obj {
+                        "equals" to it.value
+                    }
+                }
+            }
+        ]
+    }
+
     /** 마지막 수정시간 이후  */
     fun lastEditAfter(localDateTime: LocalDateTime): ObjectType = obj {
         "and" to arr[

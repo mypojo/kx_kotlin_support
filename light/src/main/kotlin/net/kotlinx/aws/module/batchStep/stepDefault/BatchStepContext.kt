@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
  * 범용적으로 사용하기 위해서 객체 매핑을 사용하지 않는다.
  * 참고!! json이 Any로 입력되면  LinkedHashMap 으로 매핑된다.
  * */
-internal class BatchStepContext(gsonData: GsonData) {
+class BatchStepContext(gsonData: GsonData) {
 
     /**
      * 인풋 중에서 option

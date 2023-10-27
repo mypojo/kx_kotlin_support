@@ -19,6 +19,7 @@ suspend fun LambdaClient.publishLayerVersion(bucket: String, key: String, layerN
 
 /**
  * 특정 함수에 특정 레이어의 최신 버전을 적용시켜준다.
+ * 주의!! 람다 레이어는 람다 버전별로 다르게 붙을 수 있음. 그냥 최신버전에 달아주고, 람다 버전을 올리도록 하자.
  * @param layerVersionArns 버전이 담긴 arn이 와야 함 주의!!
  *  */
 suspend fun LambdaClient.updateFunctionLayers(funtionName: String, layerVersionArns: List<String>) {
