@@ -1,5 +1,6 @@
 package net.kotlinx.aws.lambdaUrl
 
+import aws.smithy.kotlin.runtime.http.HttpStatusCode
 import com.amazonaws.services.lambda.runtime.Context
 import kotlinx.html.body
 import kotlinx.html.h1
@@ -10,6 +11,7 @@ import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
 
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.html.setDefault
+import net.kotlinx.core.lib.toSimpleString
 import net.kotlinx.core.string.ResultText
 
 
@@ -27,6 +29,42 @@ class FunctionRouter(block: FunctionRouter.() -> Unit = {}) : LambdaLogicHandler
 
     /** IP 체크 등의 벨리데이션 체크 */
     var authCheck: (LambdaUrlInput) -> ResultText = { ResultText(true, "-") }
+
+    //==================================================== 예외 처리기 ======================================================
+
+    /** 기본 인증실패 처리기 */
+    var authFailHandler: (LambdaUrlInput, String) -> LambdaUrlOutput = { _, msg ->
+        val html = createHTML().html {
+            setDefault("잘못된 요청입니다")
+            body {
+                h1 { +msg }
+            }
+        }
+        LambdaUrlOutput(html, HttpStatusCode.Forbidden.value) //403
+    }
+
+    /** 기본 낫파운드 처리기 */
+    var notFoundHandler: (LambdaUrlInput) -> LambdaUrlOutput = {
+        val code = HttpStatusCode.NotFound
+        val html = createHTML().html {
+            setDefault("${code.value} [${code.description}] 잘못된 요청입니다")
+            body {
+                h1 { +"path 매칭 실패 ${it.path}" }
+            }
+        }
+        LambdaUrlOutput(html, code.value)
+    }
+
+    /** 기본 예외 처리기 */
+    var errorHandler: (LambdaUrlInput, Throwable) -> LambdaUrlOutput = { i, e ->
+        val html = createHTML().html {
+            setDefault("오류가 발생했습니다.")
+            body {
+                h1 { +"오류가 발생했습니다. ${i.path} -> ${e.toSimpleString()}" }
+            }
+        }
+        LambdaUrlOutput(html, HttpStatusCode.InternalServerError.value)
+    }
 
     init {
         block(this)
@@ -55,30 +93,20 @@ class FunctionRouter(block: FunctionRouter.() -> Unit = {}) : LambdaLogicHandler
 
         val authCheckResult = authCheck(data)
         if (!authCheckResult.ok) {
-            val html = createHTML().html {
-                setDefault("잘못된 요청입니다")
-                body {
-                    h1 { +authCheckResult.result }
-                }
-            }
-            return LambdaUrlOutput(html, 403)
+            return authFailHandler(data, authCheckResult.result)
         }
 
         val path = data.path
         val route = run {
             if (path.isEmpty() || path == "/") return@run root
             routes.firstOrNull { path.startsWith(it.pathPrefix) }
+        } ?: return notFoundHandler(data)
+
+        try {
+            return route.process(data)
+        } catch (e: Throwable) {
+            return errorHandler.invoke(data, e)
         }
-        if (route == null) {
-            val html = createHTML().html {
-                setDefault("잘못된 요청입니다")
-                body {
-                    h1 { +"path 매칭 실패 ${data.path}" }
-                }
-            }
-            return LambdaUrlOutput(html, 400)
-        }
-        return route.process(data)
 
     }
 
