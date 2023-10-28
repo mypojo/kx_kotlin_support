@@ -29,5 +29,5 @@ include(
 
     "heavy",
     "heavy_boot3",
-    "heavy_test",
+    "heavy_test", //무거운 의존성 별도분리. 테스트용
 )
