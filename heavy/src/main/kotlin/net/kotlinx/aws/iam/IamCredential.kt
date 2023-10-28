@@ -39,10 +39,6 @@ class IamCredential {
         secretPath.writeText(newSecretFileText)
     }
 
-    fun asd(newKey: Pair<String, String>) {
-
-    }
-
     companion object {
         /**
          * 기본 설정 위치

@@ -10,7 +10,6 @@ import software.amazon.awscdk.services.stepfunctions.State
  * SFN MAP 작업 : S3 list -> lambda
  * 다수의 데이터를 상태 관리하면서 대량처리할때 사용된다
  * */
-@Suppress("DuplicatedCode")
 class CdkSfnMapInline(
     override val cdkSfn: CdkSfn,
     override val name: String,

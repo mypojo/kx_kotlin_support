@@ -4,7 +4,7 @@ import net.kotlinx.core.collection.addAndGet
 
 
 /** 잡 정의한 내용을 보관 */
-class JobDefinitionRepository() {
+class JobDefinitionRepository {
 
     private val jobDefs: MutableList<JobDefinition> = mutableListOf()
 

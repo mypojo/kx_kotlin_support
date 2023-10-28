@@ -13,7 +13,6 @@ import software.amazon.awscdk.services.stepfunctions.State
  *
  * !! 일단 사용금지!!
  * */
-@Suppress("DuplicatedCode")
 class CdkSfnMapDist(
     override val cdkSfn: CdkSfn,
     override val name: String,

@@ -23,7 +23,7 @@ class CdkBatchJobQueue(
     lateinit var evns: List<CfnComputeEnvironment>
 
     /** VPC 이름 */
-    final override val logicalName: String
+    override val logicalName: String
         get() = "${project.projectName}-queue_${name}-${deploymentType.name.lowercase()}"
 
     val arn: String = "arn:aws:batch:ap-northeast-2:${this.project.awsId}:job-queue/${logicalName}"

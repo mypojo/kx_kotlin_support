@@ -24,7 +24,7 @@ class CdkBatchJobDefinition(
     override var deploymentType: DeploymentType = DEV
 
     /** VPC 이름 */
-    final override val logicalName: String
+    override val logicalName: String
         get() = "${project.projectName}-${name}-${deploymentType.name.lowercase()}" //가변으로 써도 됨
 
     val arn: String = "arn:aws:batch:ap-northeast-2:${project.awsId}:job-definition/${logicalName}"

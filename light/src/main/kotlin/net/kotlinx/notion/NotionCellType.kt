@@ -4,6 +4,11 @@ import com.lectra.koson.arr
 import com.lectra.koson.obj
 import net.kotlinx.core.gson.GsonData
 
+/**
+ * enum 과 실제 타입 이름을 맞추려는 무리수로 이렇게 됨.. ㅠㅠ
+ * 일단 Suppress 로 해결.
+ * */
+@Suppress("EnumEntryName")
 enum class NotionCellType {
 
     /** title (DB 필수이름) 형식 */

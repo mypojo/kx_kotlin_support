@@ -5,8 +5,8 @@ package net.kotlinx.aws.lambdaUrl
 class FunctionRouteInfo {
 
     /**
-     * 공백문자인경우 디폴트 실행
-     * 접미어가 일치해야함
+     * "/" 입력시 디폴트 실행으로 간주
+     * 프리픽스 매칭이며, 먼저 등록한 순서대로 작동한다.
      *  */
     lateinit var pathPrefix: String
 
@@ -14,7 +14,7 @@ class FunctionRouteInfo {
     var desc: List<String> = emptyList()
 
     /** 처리 */
-    lateinit var process: (net.kotlinx.aws.lambdaUrl.LambdaUrlInput) -> net.kotlinx.aws.lambdaUrl.LambdaUrlOutput
+    lateinit var process: (LambdaUrlInput) -> LambdaUrlOutput
 
 
 }
