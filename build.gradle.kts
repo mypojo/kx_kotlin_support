@@ -114,13 +114,15 @@ publishing {
         }
         //모든 의존성이 순서대로 다 있어야함. 선언적 설정이라 병렬 처리는 안되는듯..
         pub("core")
-        pub("light")
-        pub("aws_cdk")
 
-        pub("light_v1")
+        pub("light").run {
+            pub("light_v1")
+            pub("aws_cdk")
+        }
 
-        pub("heavy")
-        pub("heavy_boot3")
+        pub("heavy").run {
+            pub("heavy_boot3")
+        }
 
     }
     repositories {
