@@ -19,7 +19,10 @@ out/
 # 그래들이 자동생성 해주는거
 gradlew.bat
 out
-.run
+
+#강제 실행중 빌드 정보는 공유한다.  ( *가 있어야 아래의 !예외가 적용된다)
+.run/*
+!.run/SPACE*
 
 # REACT
 node_modules/
