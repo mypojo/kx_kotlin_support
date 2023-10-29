@@ -102,10 +102,10 @@ class FunctionRouter(block: FunctionRouter.() -> Unit = {}) : LambdaLogicHandler
             routes.firstOrNull { path.startsWith(it.pathPrefix) }
         } ?: return notFoundHandler(data)
 
-        try {
-            return route.process(data)
+        return try {
+            route.process(data)
         } catch (e: Throwable) {
-            return errorHandler.invoke(data, e)
+            errorHandler.invoke(data, e)
         }
 
     }

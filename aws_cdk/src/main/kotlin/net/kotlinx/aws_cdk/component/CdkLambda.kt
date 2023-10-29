@@ -95,7 +95,7 @@ class CdkLambda(
     /** alias 버전은 ARN 으로 로드한다. */
     fun loadAlias(stack: Stack): CdkLambda {
         checkNotNull(aliasName)
-        var arn = "arn:aws:lambda:${project.region}:${project.awsId}:function:${logicalName}:${aliasName}"
+        val arn = "arn:aws:lambda:${project.region}:${project.awsId}:function:${logicalName}:${aliasName}"
         aliasFun = Function.fromFunctionArn(stack, arn, arn)
         return this
     }
