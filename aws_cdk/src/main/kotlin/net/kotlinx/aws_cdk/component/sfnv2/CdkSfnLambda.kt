@@ -8,6 +8,7 @@ import software.amazon.awscdk.services.stepfunctions.tasks.LambdaInvokeProps
 
 class CdkSfnLambda(
     override val cdkSfn: CdkSfn,
+    /** decapital 하게 넣자. */
     override val name: String,
 ) : CdkSfnChain {
 

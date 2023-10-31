@@ -2,11 +2,12 @@ package net.kotlinx.module.job
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.Select
-import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.dynamo.*
 import net.kotlinx.core.number.ifTrue
 import net.kotlinx.module.job.define.JobDefinition
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 /**
  * DDB 간단접근용 헬퍼
@@ -14,38 +15,37 @@ import net.kotlinx.module.job.define.JobDefinition
  *
  * 기존코드 실사용은 일단 안함
  */
-class JobRepository(private val aws: AwsClient1) {
+class JobRepository : KoinComponent {
 
-    private val log = KotlinLogging.logger {}
+    private val aws1: AwsClient1 by inject()
 
     //==================================================== 기본 오버라이드 ======================================================
 
-    suspend fun putItem(job: Job) = job.persist.ifTrue { aws.dynamo.putItem(job) }
-    suspend fun updateItem(job: Job, updateKeys: List<String>) = job.persist.ifTrue { aws.dynamo.updateItem(job, updateKeys) }
-    suspend fun getItem(data: Job): Job? = aws.dynamo.getItem(data)
-
-    val quertByStatusPk = DynamoQuery {
-        indexName = "gidx-jobStatus-pk"
-        scanIndexForward = false //최근 데이터 우선
-        select = Select.AllProjectedAttributes
-        limit = 10
-        queryParam = {
-            val job = it as Job
-            mapOf(
-                ":${DynamoDbBasic.PK}" to AttributeValue.S(job.pk),
-                ":${Job::jobStatus.name}" to AttributeValue.S(job.jobStatus.name)
-            )
-        }
-    }
+    suspend fun putItem(job: Job) = job.persist.ifTrue { aws1.dynamo.putItem(job) }
+    suspend fun updateItem(job: Job, updateKeys: List<String>) = job.persist.ifTrue { aws1.dynamo.updateItem(job, updateKeys) }
+    suspend fun getItem(data: Job): Job? = aws1.dynamo.getItem(data)
 
     //==================================================== 인덱스 쿼리 ======================================================
 
     /** 최근 잡 확인용 임시 메소드  */
-    suspend fun findLastJobs(jobStatus: JobStatus, jobDef: JobDefinition): List<Job> {
+    suspend fun findLastJobs(jobDef: JobDefinition, jobStatus: JobStatus, block: DynamoQuery.() -> Unit = {}): List<Job> {
         val param = Job(jobDef.jobPk) {
             this.jobStatus = jobStatus
         }
-        return aws.dynamo.query(quertByStatusPk, param)
+        return aws1.dynamo.query(param) {
+            indexName = JobIndexUtil.GID_STATUS
+            scanIndexForward = false //최근 데이터 우선
+            select = Select.AllProjectedAttributes
+            limit = 10
+            queryParam = {
+                val job = it as Job
+                mapOf(
+                    ":${DynamoDbBasic.PK}" to AttributeValue.S(job.pk),
+                    ":${Job::jobStatus.name}" to AttributeValue.S(job.jobStatus.name)
+                )
+            }
+            block()
+        }
     }
 
 

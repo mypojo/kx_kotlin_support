@@ -18,7 +18,6 @@ operator fun ProviderFactory.get(name: String): String = this.gradleProperty(nam
 dependencies {
     //==================================================== 내부 의존성 ======================================================
     api(project(":light"))
-    api(project(":light_v1"))
     testApi(project(":core").dependencyProject.sourceSets["test"].output) //코어 테스트에 있는 공통 (testRoot 등)을 사용할 수 있게 해줌
 
     //==================================================== 자바 표준 ======================================================
@@ -63,7 +62,6 @@ dependencies {
     implementation("software.amazon.awssdk:sts:$awsJavaV2Version") //IAM 토큰 발행시 필요
 
     //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
-    api("io.insert-koin:koin-core:3.4.0") //kotlin DI 도구
     implementation("org.jetbrains.exposed:exposed:${providers["exposedVersion"]}") //라이트 ORM
 
     //==================================================== RDB ======================================================

@@ -3,11 +3,13 @@ package net.kotlinx.okhttp
 import net.kotlinx.core.regex.RegexSet
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
-object OkHttpUtil {
+object OkHttpUtil : KoinComponent {
 
     /** 디폴트 미디어타입 */
     val MEDIA_TYPE_JSON = "application/json; charset=utf-8".toMediaType()
@@ -36,8 +38,8 @@ object OkHttpUtil {
 
 
     /** 아웃바운드 IP를 간단히 리턴해준다.  */
-    fun findOutboundIp(client: OkHttpClient = OkHttpClient()): String {
-
+    fun findOutboundIp(): String {
+        val client: OkHttpClient by inject()
         val resp: String = client.fetch {
             url = "https://www.findip.kr/"
         }.respText

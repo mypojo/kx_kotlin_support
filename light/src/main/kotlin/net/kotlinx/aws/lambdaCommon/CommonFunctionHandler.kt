@@ -15,7 +15,6 @@ import org.crac.Resource
  * 하나만 만들어서 여러군데 다 사용하고싶은 범용 람다 함수  핸들러
  * Core.getGlobalContext().register(this) 해줄것!
  */
-@LambdaFunctionLogicDsl
 abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<String, Any>>, Resource {
 
     protected val log = KotlinLogging.logger {}
@@ -24,6 +23,7 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
     protected val logics: MutableList<LambdaFunctionLogic> = mutableListOf()
 
     /** 로직 등록 */
+    @LambdaFunctionLogicDsl
     fun regtiter(block: LambdaFunctionLogic.() -> Unit = {}) {
         logics += LambdaFunctionLogic().apply(block)
     }
@@ -80,8 +80,12 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
                 log.info { " -> snapstart logic ${it.handler::class.simpleName} init" }
                 it.snapStart?.invoke()
             }
+            beforeCheckpointFinally()
         }
     }
+
+    /** 스냅스타트 이후 DI 정보를 다시 복구시킨다 */
+    abstract suspend fun beforeCheckpointFinally()
 
     /** 스탭스타트 복구 */
     override fun afterRestore(context: org.crac.Context<out Resource>?) {

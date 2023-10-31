@@ -48,20 +48,15 @@ object AwsNaming {
 
     //==================================================== 문자 패턴 ======================================================
 
-    /** 콜드스타트 */
-    const val CHOICE_FIRST: String = "first"
-
     /** 리트라이 */
     const val CHOICE_RETRY: String = "retry"
 
     //==================================================== JOB ======================================================
 
-    /**
-     * ex) SFN의 잡 옵션
-     * */
-    const val JOB_OPTION: String = "jobOption"
+    /** 여러가지 용도로 사용되는 잡의 pk. */
+    const val JOB_PK = "jobPk"
 
-    /** 잡 스케쥴링 옵션 */
-    const val JOB_SCHEDULE_TIME: String = "jobScheduleTime"
+    /** 여러가지 용도로 사용되는 잡의 sk.  */
+    const val JOB_SK = "jobSk"
 
 }

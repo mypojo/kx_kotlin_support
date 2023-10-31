@@ -20,11 +20,11 @@ data class S3LogicInput(
     val logicOption: String = "{}",
 ) : SerialJsonObj {
 
-    override fun toJson(): String = SerialJsonSet.KSON_OTHER.encodeToString(this)
+    override fun toJson(): String = SerialJsonSet.KSON.encodeToString(this)
 
     companion object : SerialJsonCompanion {
 
-        override fun parseJson(json: String): S3LogicInput = SerialJsonSet.KSON_OTHER.decodeFromString<S3LogicInput>(json)
+        override fun parseJson(json: String): S3LogicInput = SerialJsonSet.KSON.decodeFromString<S3LogicInput>(json)
 
     }
 

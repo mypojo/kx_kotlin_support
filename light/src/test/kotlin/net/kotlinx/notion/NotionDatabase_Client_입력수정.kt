@@ -4,7 +4,6 @@ import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.ssm.find
 import net.kotlinx.aws.toAwsClient1
-import okhttp3.OkHttpClient
 import org.junit.jupiter.api.Test
 
 internal class NotionDatabase_Client_입력수정 {
@@ -16,8 +15,7 @@ internal class NotionDatabase_Client_입력수정 {
         }
     }
     val dbId = "48741c1766314c14938901047680703d"
-    val client = OkHttpClient()
-    val database = NotionDatabaseClient(client, secretValue)
+    val database = NotionDatabaseClient(secretValue)
 
     @Test
     fun `수정`() = runBlocking {

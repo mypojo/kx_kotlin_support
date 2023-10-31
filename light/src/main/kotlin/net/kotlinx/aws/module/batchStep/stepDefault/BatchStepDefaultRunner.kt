@@ -4,6 +4,7 @@ import com.amazonaws.services.lambda.runtime.Context
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
 import net.kotlinx.core.gson.GsonData
+import net.kotlinx.reflect.name
 
 /**
  * 배치스탬 기본 실행기
@@ -12,16 +13,18 @@ import net.kotlinx.core.gson.GsonData
  *           "method": "StepStart",
  *           "option.$": "$.option"
  *         }
- *
- *  이하 기본 제공되는 메소드들
- *         StepStart(config),
- *         StepList(config),
- *         StepEnd(config),
- *
  * */
-class BatchStepDefaultRunner(logics: List<LambdaLogicHandler>) : LambdaLogicHandler {
+class BatchStepDefaultRunner(block: BatchStepDefaultRunner.() -> Unit = {}) : LambdaLogicHandler {
 
-    private val methodMap: Map<String, LambdaLogicHandler> = logics.associateBy { v -> v::class.simpleName!! } //Capital 그대로 사용한다
+    /** 등록된 로직 */
+    var logics: List<LambdaLogicHandler> = listOf(
+        StepStart(),
+        StepList(),
+        StepEnd(),
+    )
+
+    /** 내부적으로 사용.decapital 로 네이밍해준다. */
+    private val methodMap: Map<String, LambdaLogicHandler> by lazy { logics.associateBy { v -> v::class.name() } }
 
     /** 핸들러 실행 */
     override suspend fun invoke(input: GsonData, context: Context?): Any? {
@@ -30,6 +33,10 @@ class BatchStepDefaultRunner(logics: List<LambdaLogicHandler>) : LambdaLogicHand
         val methodResult = methodLogic(input, context)
         checkNotNull(methodResult)
         return methodResult
+    }
+
+    init {
+        apply(block)
     }
 
 

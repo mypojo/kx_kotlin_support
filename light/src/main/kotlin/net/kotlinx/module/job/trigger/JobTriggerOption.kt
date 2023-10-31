@@ -18,9 +18,22 @@ class JobTriggerOption(
     /** 동기실행. (배치의 경우 컨테이너 올라갈때까지만 잠시 기다린다)  */
     var synch: Boolean = false
 
-    /** 어떤 방법으로 실행하려고 하는지? */
+    //==================================================== 이하 job 입력 전달값 ======================================================
+
+    /** 잡이 호출된 경로 */
     var jobExeFrom: JobExeFrom = JobExeFrom.ADMIN
 
-    /** 잡 옵션 (DDB에 직접 입력할때만 적용됨) */
+    /** 작업 요청자 (인덱스용) */
+    var memberId: String? = null
+
+    /** SFN ID */
+    var sfnId: String? = null
+
+    /** 잡 커스텀 옵션 */
     var jobOption: Any = "{}"
+
+    /** 실제 실행 */
+    suspend fun exe(): String {
+        return jobTriggerMethod.trigger(this)
+    }
 }

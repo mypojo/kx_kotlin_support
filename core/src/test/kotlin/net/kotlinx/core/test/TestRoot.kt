@@ -17,6 +17,8 @@ import java.io.IOException
  */
 abstract class TestRoot {
 
+    protected val log = KotlinLogging.logger {}
+
     /** 필요시 구현하기  */
     fun beforeDefault() {
         log.trace { "아무것도 하지않음" }
@@ -29,8 +31,8 @@ abstract class TestRoot {
 
     companion object {
 
-        val log = KotlinLogging.logger {}
         private lateinit var start: TimeStart
+        private val log = KotlinLogging.logger {}
 
         //==================================================== 기본 구현 ======================================================
         @BeforeAll

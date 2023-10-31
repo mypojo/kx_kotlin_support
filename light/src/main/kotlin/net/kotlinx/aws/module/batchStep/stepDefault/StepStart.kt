@@ -3,69 +3,103 @@ package net.kotlinx.aws.module.batchStep.stepDefault
 import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
 import com.amazonaws.services.lambda.runtime.Context
 import com.lectra.koson.obj
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import mu.KotlinLogging
+import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsInfoLoader
+import net.kotlinx.aws.AwsNaming
+import net.kotlinx.aws.dynamo.DynamoUtil
 import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
 import net.kotlinx.aws.lambdaCommon.handler.s3.S3LogicHandler
 import net.kotlinx.aws.module.batchStep.BatchStepConfig
+import net.kotlinx.aws.module.batchStep.BatchStepInput
 import net.kotlinx.aws.module.batchStep.BatchStepMode
 import net.kotlinx.aws.s3.toList
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.regex.RegexSet
+import net.kotlinx.core.serial.LocalDateTimeSerializer
+import net.kotlinx.core.serial.SerialJsonObj
+import net.kotlinx.core.serial.SerialJsonSet
 import net.kotlinx.core.string.retainFrom
+import net.kotlinx.module.job.Job
+import net.kotlinx.module.job.JobExeFrom
+import net.kotlinx.module.job.JobRepository
+import net.kotlinx.module.job.JobStatus
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.time.LocalDateTime
+import java.util.concurrent.TimeUnit
 
 /**
  * 시작시 메타데이터 처리
  *  */
-class StepStart(
-    private val config: BatchStepConfig,
-) : LambdaLogicHandler {
+class StepStart : LambdaLogicHandler, KoinComponent {
 
     private val log = KotlinLogging.logger {}
 
+    private val aws1: AwsClient1 by inject()
+    private val config: BatchStepConfig by inject()
+    private val awsInfoLoader: AwsInfoLoader by inject()
+    private val jobRepository: JobRepository by inject()
+
     override suspend fun invoke(input: GsonData, context: Context?): Any {
 
-        val context = BatchStepContext(input)
+        val stepInput = BatchStepInput.parseJson(input.toString())
+        val option = stepInput.option
 
-        val datas = config.aws.s3.listObjectsV2Paginated {
+        val datas = aws1.s3.listObjectsV2Paginated {
             this.bucket = config.workUploadBuket
-            this.prefix = "${config.workUploadInputDir}${context.optionInput.targetSfnId}/"
+            this.prefix = "${config.workUploadInputDir}${option.targetSfnId}/"
         }.toList()
-        log.debug { " -> [${config.workUploadBuket}/${config.workUploadInputDir}${context.optionInput.targetSfnId}] -> ${datas.size} 로드됨" }
 
-        return when (context.mode) {
-            BatchStepMode.Map -> {
-                StepStartContext(
-                    LocalDateTime.now(),
-                    datas.size,
-                    datas.first().substringAfterLast("/").retainFrom(RegexSet.NUMERIC).toInt(),
+        check(datas.isNotEmpty()) { " ${config.workUploadBuket}/${config.workUploadInputDir}${option.targetSfnId}/  -> 데이터가 존재하지 않습니다." }
+        log.debug { " -> [${config.workUploadBuket}/${config.workUploadInputDir}${option.targetSfnId}] -> ${datas.size} 로드됨" }
+
+        val job = Job(option.jobPk, option.jobSk) {
+            jobStatus = JobStatus.RUNNING
+            reqTime = LocalDateTime.now()
+            jobStatus = JobStatus.RUNNING
+            ttl = DynamoUtil.ttlFromNow(TimeUnit.DAYS, 7 * 2)
+            awsInfo = awsInfoLoader.load()
+
+            //파싱값 입력 4개
+            jobOption = input[AwsNaming.OPTION].str
+            jobExeFrom = JobExeFrom.SFN
+            sfnId = option.sfnId
+        }
+        jobRepository.putItem(job)
+        log.debug { "job [${job.toKeyString()}] 로그 insert" }
+
+        return StepStartContext(
+            LocalDateTime.now(),
+            datas.size,
+            datas.first().substringAfterLast("/").retainFrom(RegexSet.NUMERIC).toInt(),
+            when (stepInput.mode) {
+
+                BatchStepMode.MAP_INLINE -> {
+                    //전체 데이터 리스트를 넣어준다. -> sfn에서 읽어서 event로 전달해줌
                     datas.map {
                         obj {
                             S3LogicHandler.KEY to it
                         }.toString()
-                    } //전체 데이터 리스트를 넣어준다. -> sfn에서 읽어서 event로 전달해줌
-                )
-            }
+                    }
+                }
 
-            BatchStepMode.List -> {
-                StepStartContext(
-                    LocalDateTime.now(),
-                    datas.size,
-                    datas.first().substringAfterLast("/").retainFrom(RegexSet.NUMERIC).toInt(),
-                    emptyList()
-                )
+                BatchStepMode.LIST -> emptyList()
             }
+        )
 
-            else -> throw IllegalStateException("mode 가 없습니다. $input")
-        }
 
     }
 
 }
 
 /** 로그로 남길 기록 */
+@Serializable
 data class StepStartContext(
     /** 시작시간 */
+    @Serializable(LocalDateTimeSerializer::class)
     val startTime: LocalDateTime,
     /** 이번로드 전체수 */
     val total: Int,
@@ -73,7 +107,11 @@ data class StepStartContext(
     val first: Int,
     /**
      * MAP인경우 전체 데이터의 S3 key (SFN에서 이 경로로 읽어감)
-     * json 형식이어야함  {Key:...}
+     * array<String> 이며 문자는 json 형식이어야함  {Key:...}
      *  */
     val datas: List<String>,
-)
+) : SerialJsonObj {
+
+    override fun toJson(): String = SerialJsonSet.KSON.encodeToString(this)
+
+}

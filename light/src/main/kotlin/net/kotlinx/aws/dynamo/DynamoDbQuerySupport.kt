@@ -9,7 +9,8 @@ import aws.sdk.kotlin.services.dynamodb.paginators.queryPaginated
 
 //==================================================== 단일 쿼리 ======================================================
 
-suspend fun <T : DynamoData> DynamoDbClient.query(query: DynamoQuery, data: T): List<T> {
+suspend fun <T : DynamoData> DynamoDbClient.query(data: T,block: DynamoQuery.() -> Unit = {}): List<T> {
+    val query = DynamoQuery(block)
     val req = query.toQueryRequest(data)
     val firstScan = this.query(req).items!!
     if (firstScan.isEmpty()) return emptyList()

@@ -6,6 +6,8 @@ import net.kotlinx.core.gson.toGsonData
 import net.kotlinx.core.koson.addByType
 import net.kotlinx.okhttp.await
 import okhttp3.OkHttpClient
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 
 /**
@@ -14,12 +16,13 @@ import okhttp3.OkHttpClient
  * 각 기능은 필요할때 만들기
  *  */
 class NotionPageBlockClient(
-    private val client: OkHttpClient,
     /** 영구키임!! 주의! */
     private val secretValue: String,
-) {
+) : KoinComponent {
 
     private val log = KotlinLogging.logger {}
+
+    private val client: OkHttpClient by inject()
 
     /** 해당 페이지의 블록 조회  */
     suspend fun blocks(pageId: String, pageSize: Int = 100): List<NotionCell> {

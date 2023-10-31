@@ -1,6 +1,7 @@
 package net.kotlinx.core.gson
 
 import com.google.gson.FieldNamingPolicy
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.kotlinx.core.time.TimeFormat
 import java.time.LocalDateTime
@@ -19,7 +20,7 @@ object GsonSet {
      * 디폴트 변환용
      * date 기반의 기본조건(setDateFormat) 안씀
      *  */
-    val GSON by lazy {
+    val GSON: Gson by lazy {
         GsonBuilder().apply {
             setExclusionStrategies(NotExposeStrategy())
             registerTypeAdapter(Map::class.java, GsonAdapterUtil.MapAdapter()) //Lambda 기본 변환에 사용 (다른데는 쓸일 없음)
@@ -28,7 +29,7 @@ object GsonSet {
     }
 
     /** 이쁘게 */
-    val GSON_PRETTY by lazy {
+    val GSON_PRETTY: Gson by lazy {
         GsonBuilder().apply {
             setExclusionStrategies(NotExposeStrategy())
             setPrettyPrinting()
@@ -39,7 +40,7 @@ object GsonSet {
      * 이하 적용된것
      * AWS kinesis 입력데이터 ( athena table 데이터)
      *  */
-    val TABLE_UTC by lazy {
+    val TABLE_UTC: Gson by lazy {
         GsonBuilder().apply {
             setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             setExclusionStrategies(NotExposeStrategy())
@@ -52,7 +53,7 @@ object GsonSet {
      * 이하 적용된것
      * eventBridge event 적용
      *  */
-    val BEAN_UTC_ZONE by lazy {
+    val BEAN_UTC_ZONE: Gson by lazy {
         GsonBuilder().apply {
             setExclusionStrategies(NotExposeStrategy())
             registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeUtcZoneAdapter()) //날짜만 변경해줌

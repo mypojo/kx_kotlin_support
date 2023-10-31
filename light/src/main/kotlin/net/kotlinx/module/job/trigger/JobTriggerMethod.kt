@@ -1,27 +1,27 @@
 package net.kotlinx.module.job.trigger
 
-import aws.sdk.kotlin.services.sfn.model.ExecutionStatus
-import kotlinx.coroutines.delay
 import mu.KotlinLogging
+import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.batch.BatchUtil
 import net.kotlinx.aws.batch.submitJob
 import net.kotlinx.aws.batch.submitJobAndWaitStarting
 import net.kotlinx.aws.dynamo.DynamoUtil
 import net.kotlinx.aws.lambda.invokeAsynch
 import net.kotlinx.aws.lambda.invokeSynch
-import net.kotlinx.aws.sfn.listExecutions
-import net.kotlinx.aws.sfn.startExecution
-import net.kotlinx.core.exception.KnownException
+import net.kotlinx.core.gson.toGsonData
+import net.kotlinx.core.id.IdGenerator
 import net.kotlinx.module.job.Job
 import net.kotlinx.module.job.JobExeDiv
-import kotlin.time.Duration.Companion.seconds
+import net.kotlinx.module.job.JobRepository
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 /**
  * 개별 잡을 실제 실행시키는 로직
  * 새로은 실행 방법이 자유롭게 추가 가능해야한다.
  * 주의!! 설정 파일이지만, 의존 관계가 필요함으로 이미 의존성이 다 주입된 JobTrigger를 역참조 한다.
  *  */
-interface JobTriggerMethod {
+interface JobTriggerMethod : KoinComponent {
 
     /** 이름 */
     val name: String
@@ -29,51 +29,25 @@ interface JobTriggerMethod {
     /** 실행 구분 ex) 람다.. */
     val jobExeDiv: JobExeDiv
 
-    /** 실제 트리거 */
-    suspend fun trigger(op: JobTriggerOption, jobTrigger: JobTrigger, job: Job)
-
-    object NON : JobTriggerMethod {
-        override val name: String = "unknown"
-        override val jobExeDiv: JobExeDiv = JobExeDiv.LOCAL
-        override suspend fun trigger(op: JobTriggerOption, jobTrigger: JobTrigger, job: Job) = throw UnsupportedOperationException()
-    }
+    /**
+     * 실제 트리거
+     * @param op 실제 트리거 옵션
+     *  */
+    suspend fun trigger(op: JobTriggerOption): String
 
     object LOCAL : JobTriggerMethod {
         override val name: String = "local"
         override val jobExeDiv: JobExeDiv = JobExeDiv.LOCAL
-        override suspend fun trigger(op: JobTriggerOption, jobTrigger: JobTrigger, job: Job) {
-            jobTrigger.jobLocalExecutor.runJob(job)
+
+        val jobSerializer: JobSerializer by inject()
+        val jobLocalExecutor: JobLocalExecutor by inject()
+
+        override suspend fun trigger(op: JobTriggerOption): String {
+            val input = jobSerializer.toJson(op)
+            val job = jobSerializer.toJob(input.toString().toGsonData())!!
+            return jobLocalExecutor.runJob(job)
         }
     }
-
-}
-
-/** step function */
-class JobTriggerSfn(
-    /** 이름 */
-    override val name: String,
-    val machinesNameBuilder: (jobPk: String) -> String,
-) : JobTriggerMethod {
-
-    private val log = KotlinLogging.logger {}
-
-    override val jobExeDiv: JobExeDiv = JobExeDiv.STEP_FUNCTIONS
-
-    override suspend fun trigger(op: JobTriggerOption, jobTrigger: JobTrigger, job: Job) {
-        val machinesName: String = machinesNameBuilder(job.pk)
-        //중복실행 막음
-        val awsId = jobTrigger.aws.awsConfig.awsId!!
-        jobTrigger.aws.sfn.listExecutions(awsId, machinesName, ExecutionStatus.Running).also {
-            val executions = it.executions!!
-            log.debug { " -> 지금 실행중인 작업 : ${executions.size}" }
-            if (executions.isEmpty()) return@also
-
-            throw KnownException.ItemRetryException("[${machinesName}] 이미 작동중인 작업 ${executions.size}건이 존재합니다. 샘플링크 : ${executions.first().executionArn}")
-        }
-        val execution = jobTrigger.aws.sfn.startExecution(awsId, machinesName, op.jobOption)
-        log.info { "sfn 실행 : ${execution.executionArn}" }
-    }
-
 }
 
 /** 람다 */
@@ -88,22 +62,31 @@ class JobTriggerLambda(
 
     override val jobExeDiv: JobExeDiv = JobExeDiv.LAMBDA
 
-    override suspend fun trigger(op: JobTriggerOption, jobTrigger: JobTrigger, job: Job) {
-        val param = jobTrigger.jobSerializer.toJson(job)
+    private val jobSerializer: JobSerializer by inject()
+    private val idGenerator: IdGenerator by inject()
+    private val aws1: AwsClient1 by inject()
+    private val jobRepository: JobRepository by inject()
+
+    override suspend fun trigger(op: JobTriggerOption): String {
+        val jobSk = idGenerator.nextvalAsString()
+        val jobParam = jobSerializer.toJson(op, jobSk)
         if (op.synch) {
-            val resultText = jobTrigger.aws.lambda.invokeSynch(lambdaFunctionName, param)
-            log.debug { "람다 실행 - 동기화(${op.synch}) -> 결과 (${resultText.ok}) ->  결과문자열 ${resultText.result}" }
+            val resultText = aws1.lambda.invokeSynch(lambdaFunctionName, jobParam)
+            log.info { "람다 실행 [$jobParam] - 동기화(${op.synch}) -> 결과 (${resultText.ok}) ->  결과문자열 ${resultText.result}" }
         } else {
-            jobTrigger.aws.lambda.invokeAsynch(lambdaFunctionName, param)
+            aws1.lambda.invokeAsynch(lambdaFunctionName, jobParam)
+            log.info { "람다 실행 [$jobParam] - 동기화(${op.synch})" }
+
         }
         if (log.isDebugEnabled) {
-            log.debug { "잡 DDB 링크 -> ${job.toConsoleLink()}" }
+            val findJob = Job(op.jobDefinition.jobPk, jobSk)
             if (op.synch) {
-                jobTrigger.jobRepository.getItem(job)?.let {
+                jobRepository.getItem(findJob)?.let {
                     log.debug { "로그링크 : ${it.toLogLink()}" }
                 }
             }
         }
+        return jobParam.toString()
     }
 
 }
@@ -119,34 +102,26 @@ class JobTriggerBatch(
 ) : JobTriggerMethod {
 
     private val log = KotlinLogging.logger {}
-
     override val jobExeDiv: JobExeDiv = JobExeDiv.BATCH
-    override suspend fun trigger(op: JobTriggerOption, jobTrigger: JobTrigger, job: Job) {
 
-        val param = jobTrigger.jobSerializer.toJson(job)
+    private val jobSerializer: JobSerializer by inject()
+    private val idGenerator: IdGenerator by inject()
+    private val aws1: AwsClient1 by inject()
+
+    override suspend fun trigger(op: JobTriggerOption): String {
+        val jobSk = idGenerator.nextvalAsString()
+        val jobParam = jobSerializer.toJson(op, jobSk)
+        val findJob = Job(op.jobDefinition.jobPk, jobSk)
         if (op.synch) {
-            val jobDetail = jobTrigger.aws.batch.submitJobAndWaitStarting(jobQueueName, jobDefinitionName, param)
+            val jobDetail = aws1.batch.submitJobAndWaitStarting(jobQueueName, jobDefinitionName, jobParam)
             log.debug { "잡 UI 링크 -> ${BatchUtil.toBatchUiLink(jobDetail.jobId!!)}" }
-            log.debug { "잡 DDB 링크 -> ${job.toConsoleLink()}" }
-            while (true) {
-                delay(10.seconds.inWholeMilliseconds) //STARTING 에서 실제 도커 인스턴스가 올라가는데까지 시간이 걸림
-                val current = jobTrigger.jobRepository.getItem(job) ?: throw IllegalStateException("없을리가?")
-                if (current.jobStatus.readyToRun()) {
-                    log.debug { " -> 아직 준비중... ${current.jobStatus}" }
-                    continue
-                }
-                log.debug { "잡 준비완료. ${current.jobStatus}" }
-                current.awsInfo?.let {
-                    log.debug { "로그링크 : ${current.toLogLink()}" }
-                }
-                break
-            }
+            log.debug { "잡 DDB 링크 -> ${findJob.toConsoleLink()}" }
         } else {
-            val jobId = jobTrigger.aws.batch.submitJob(jobQueueName, jobDefinitionName, param)
+            val jobId = aws1.batch.submitJob(jobQueueName, jobDefinitionName, jobParam)
             log.debug { "잡 UI 링크 -> ${BatchUtil.toBatchUiLink(jobId)}" }
-            log.debug { "잡 DDB 링크 -> ${DynamoUtil.toConsoleLink(job.tableName, job)}" }
+            log.debug { "잡 DDB 링크 -> ${DynamoUtil.toConsoleLink(findJob.tableName, findJob)}" }
         }
-
+        return jobParam.toString()
     }
 
 }

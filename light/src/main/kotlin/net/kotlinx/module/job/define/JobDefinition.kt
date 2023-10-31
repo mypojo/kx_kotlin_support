@@ -1,13 +1,24 @@
 package net.kotlinx.module.job.define
 
 import net.kotlinx.core.dev.DeveloperData
-import net.kotlinx.core.string.decapital
 import net.kotlinx.module.job.JobTasklet
 import net.kotlinx.module.job.trigger.JobTriggerMethod
 import net.kotlinx.module.job.trigger.JobTriggerOption
+import net.kotlinx.reflect.name
+import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
+
+@DslMarker
+annotation class JobDefinitionDsl
+
+/** 잡 정의 등록 (초기화시 모두 생성해서 등록함) */
+fun Module.jobReg(block: JobDefinition.() -> Unit) {
+    val def = JobDefinition(block)
+    single(named(def.jobPk)) { def }
+}
 
 /** job ENUM 에서 이걸 구현하면 됨  */
 class JobDefinition(block: JobDefinition.() -> Unit = {}) {
@@ -16,7 +27,8 @@ class JobDefinition(block: JobDefinition.() -> Unit = {}) {
     lateinit var jobClass: KClass<out JobTasklet>
 
     /** 잡 이름. 전체 설정에서 유니크 해야함. 보통 jobClass 의 decapital()  */
-    lateinit var jobPk: String
+    val jobPk: String
+        get() = jobClass.name()
 
     /** 이름(한글) */
     lateinit var name: String
@@ -25,7 +37,7 @@ class JobDefinition(block: JobDefinition.() -> Unit = {}) {
     var jobScheduleType: JobScheduleType = JobScheduleType.DAY
 
     /** 설정된 기본 잡 실행 설정 (설정과 다르게 실행할수도 있음!) */
-    var jobTriggerMethod: JobTriggerMethod = JobTriggerMethod.NON
+    var jobTriggerMethod: JobTriggerMethod = JobTriggerMethod.LOCAL
 
     /** 잡 실행타입. */
     var jobExecuteType: JobExecuteType = JobExecuteType.NORMAL
@@ -50,7 +62,6 @@ class JobDefinition(block: JobDefinition.() -> Unit = {}) {
 
     init {
         block(this)
-        if (!this::jobPk.isInitialized) jobPk = jobClass.simpleName!!.decapital() //pk 없으면 기본값을 입력해줌
     }
 
     /** 설정에서 커스텀 옵션으로 변경함 */

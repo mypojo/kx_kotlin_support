@@ -8,17 +8,6 @@ class CommonFunctionHandlerTest : TestRoot() {
     @Test
     fun test() {
 
-        class Sample : CommonFunctionHandler() {
-
-            init {
-                regtiter {
-
-                }
-
-            }
-
-        }
-
 
     }
 

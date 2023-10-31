@@ -57,7 +57,7 @@ allprojects {
         testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.1") //최신버전
         testImplementation("io.mockk:mockk:1.13.8") //코틀린 모킹
 
-        testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter-kotlin:0.6.10")  //네이버 픽스쳐몽키.. 애매함
+        //testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter-kotlin:0.6.10")  //네이버 픽스쳐몽키.. 애매함 -> .jqwik-database 이파일 자꾸 생겨서 제거
 
 
         //코테스트 문제가 많아서 공통에서 제거함 -> 이유없이 메모리아웃 오류남
@@ -124,6 +124,7 @@ publishing {
 
             pub("heavy").run {
                 pub("heavy_boot3")
+                pub("heavy_notebook")
             }
         } else {
             println("pubConfig = $pubConfig")

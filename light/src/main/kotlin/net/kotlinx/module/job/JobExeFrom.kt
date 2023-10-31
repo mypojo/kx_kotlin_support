@@ -5,6 +5,9 @@ package net.kotlinx.module.job
  */
 enum class JobExeFrom {
 
+    /** 모름 */
+    UNKNOWN,
+
     /** 관리자의 강제 실행  */
     ADMIN,
 

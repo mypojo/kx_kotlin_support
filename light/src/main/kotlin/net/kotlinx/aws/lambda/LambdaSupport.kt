@@ -82,7 +82,7 @@ suspend fun LambdaClient.updateFunctionCode(functionName: String, s3Data: S3Data
  * alias 는  CDK에서 이미 만들어져있어야 하기 때문에 아마 없을리는 없지만 혹시나 해서 세트로 제작
  * 대부분 로컬에서 돌릴것임으로 로그를 println 로 남긴다.
  * */
-suspend fun LambdaClient.publishVersionAndUpdateAlias(functionName: String, alias: String) {
+suspend fun LambdaClient.publishVersionAndUpdateAlias(functionName: String, alias: String): String {
     val versionResponse = publishVersion(functionName)
     val version = versionResponse.version!!
 
@@ -95,10 +95,10 @@ suspend fun LambdaClient.publishVersionAndUpdateAlias(functionName: String, alia
     }
     println(" -> lambda [${functionName}:${version}] 스냅스타트 퍼블리싱 종료. $timeStart => alias [$alias] 갱신")
 
-    try {
-        updateAlias(functionName, version, alias)
+    return try {
+        updateAlias(functionName, version, alias).functionVersion!!
     } catch (e: ResourceNotFoundException) {
-        createAlias(functionName, version, alias)
+        createAlias(functionName, version, alias).functionVersion!!
     }
 }
 

@@ -54,4 +54,20 @@ class RetryTemplate(block: RetryTemplate.() -> Unit) : suspend (suspend () -> An
     /** 단축표현 */
     override suspend fun invoke(p1: suspend () -> Any?): Any? = withRetry { p1() }
 
+    companion object {
+
+        /** 모은 예외 리트라이 */
+        val ALL: (cause: Throwable) -> Boolean = { true }
+
+        /**
+         * 특정 예외에 해당되는경우 리트라이
+         * ex) RetryTemplate.match(ResourceConflictException::class.java)
+         * */
+        fun match(vararg targets: Class<*>): (cause: Throwable) -> Boolean = { cause ->
+            cause.causes().any { e ->
+                targets.any { it.isInstance(e) }
+            }
+        }
+    }
+
 }

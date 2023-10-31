@@ -11,9 +11,8 @@ dependencies {
     api(project(":heavy"))
     testApi(project(":core").dependencyProject.sourceSets["test"].output) //코어 테스트에 있는 공통 (testRoot 등)을 사용할 수 있게 해줌
 
-
     //==================================================== 노트북 ======================================================
-    implementation("org.jetbrains.kotlinx:dataframe:1727") //버전 이름이 이상하다.. 갑자기 이러네
+    api("org.jetbrains.kotlinx:dataframe:1727") //버전 이름이 이상하다.. 갑자기 이러네
 
 
 

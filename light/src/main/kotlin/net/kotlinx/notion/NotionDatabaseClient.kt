@@ -10,6 +10,8 @@ import net.kotlinx.core.string.toLocalDateTime
 import net.kotlinx.core.time.TimeStart
 import net.kotlinx.okhttp.await
 import okhttp3.OkHttpClient
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 
 /**
@@ -19,12 +21,13 @@ import okhttp3.OkHttpClient
  * 데이터베이스 ID 채번 후 해당 페이지로 가서 "연결" 을 선택 후 KEY를 채번한것과 연결 해주어야 한다.
  *  */
 class NotionDatabaseClient(
-    private val client: OkHttpClient,
     /** 영구키임!! 주의! */
     private val secretValue: String,
-) {
+) : KoinComponent {
 
     private val log = KotlinLogging.logger {}
+
+    private val client: OkHttpClient by inject()
 
     suspend fun insert(dbId: String, cells: List<NotionCell>) {
         val resp = client.await {

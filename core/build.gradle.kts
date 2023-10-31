@@ -25,7 +25,7 @@ dependencies {
     api("jakarta.validation:jakarta.validation-api:3.0.2")
 
     api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0") //자주 쓰니까 일단 넣음
-    //api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0") //LocalDatetime 등.. 상당히 별로임.. 일단 disable
+    //api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1") //LocalDatetime 등 serial & 멀티플랫폼 위해서 kotlin datetime 사용 -> 사용법 너무 틀려서 금지
 
     //==================================================== 로깅.. 맘에 안드네 ======================================================
     api("io.github.microutils:kotlin-logging-jvm:2.0.10") //slf4j의 래퍼. (로거 가져올때 사용)

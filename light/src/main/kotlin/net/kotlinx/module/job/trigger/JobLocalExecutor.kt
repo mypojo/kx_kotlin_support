@@ -6,28 +6,29 @@ import net.kotlinx.aws.AwsInfoLoader
 import net.kotlinx.aws.AwsInstanceType
 import net.kotlinx.core.lib.toSimpleString
 import net.kotlinx.module.job.*
-import net.kotlinx.module.job.define.JobDefinitionRepository
+import net.kotlinx.module.job.define.JobDefinitionUtil
 import net.kotlinx.reflect.newInstance
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.time.LocalDateTime
 
 /**
  * 실제 실행서버의 로컬 머신 기준으로 job을 실행한다.
  * 여기에서는 개발 환경을 구분하지 않는다.
  */
-class JobLocalExecutor(
-    private val jobRepository: JobRepository,
-    private val jobDefinitionRepository: JobDefinitionRepository,
-    private val eventBus: EventBus,
-    private val awsInfoLoader: AwsInfoLoader,
-) {
+class JobLocalExecutor : KoinComponent {
 
     private val log = KotlinLogging.logger {}
+
+    private val awsInfoLoader: AwsInfoLoader by inject()
+    private val jobRepository: JobRepository by inject()
+    private val eventBus: EventBus by inject()
 
     /**
      * @return pk 확인용 키 문자욜
      * */
     suspend fun runJob(job: Job): String {
-        val jobDef = jobDefinitionRepository.findById(job.pk)
+        val jobDef = JobDefinitionUtil.findById(job.pk)
         val jobService = jobDef.jobClass.newInstance()
         job.awsInfo = awsInfoLoader.load()
 
@@ -37,9 +38,20 @@ class JobLocalExecutor(
         }
 
         try {
-            when (jobService) {
-                is JobTasklet -> doInnerTasklet(job, jobService)
-            }
+
+            //==============  RUNNING 마킹 ===================
+            job.jobStatus = JobStatus.RUNNING
+            job.startTime = LocalDateTime.now()
+            jobRepository.updateItem(job, JobUpdateSet.START)
+
+            //==============  싦행  ===================
+            jobService.doRun(job)
+
+            //==============  결과 마킹 ===================
+            job.jobStatus = JobStatus.SUCCEEDED
+            job.endTime = LocalDateTime.now()
+            jobRepository.updateItem(job, JobUpdateSet.END)
+
             //실서버 강제호출의 경우 알람 전송
             if (job.awsInfo!!.instanceType == AwsInstanceType.BATCH) {
                 if (job.jobExeFrom == JobExeFrom.ADMIN) {
@@ -62,19 +74,5 @@ class JobLocalExecutor(
         return job.toKeyString()
     }
 
-    /** 리더 라이터가 없는 태스크릿  */
-    private suspend fun doInnerTasklet(job: Job, jobService: JobTasklet) {
-        //==============  RUNNING 마킹 ===================
-        job.jobStatus = JobStatus.RUNNING
-        job.startTime = LocalDateTime.now()
-        jobRepository.updateItem(job, JobUpdateSet.START)
-        //==============  싦행  ===================
-        jobService.doRun(job)
-
-        //==============  결과 마킹 ===================
-        job.jobStatus = JobStatus.SUCCEEDED
-        job.endTime = LocalDateTime.now()
-        jobRepository.updateItem(job, JobUpdateSet.END)
-    }
 
 }

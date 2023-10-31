@@ -34,7 +34,6 @@ class Job(
             this += Job::jobStatus.name to AttributeValue.S(jobStatus.name)
             this += Job::jobExeFrom.name to AttributeValue.S(jobExeFrom.name)
             this += Job::jobContext.name to AttributeValue.S(jobContext)
-            this += Job::jobExeFromName.name to AttributeValue.S(jobExeFromName)
             //==================================================== 공통 시스템 자동(필수) 입력값 ======================================================
             startTime?.let { this += Job::startTime.name to AttributeValue.S(it.toIso()) }
             updateTime?.let { this += Job::updateTime.name to AttributeValue.S(it.toIso()) }
@@ -43,7 +42,6 @@ class Job(
             jobErrMsg?.let { this += Job::jobErrMsg.name to AttributeValue.S(it) }
             awsInfo?.let { this += Job::awsInfo.name to AttributeValue.S(GsonSet.GSON.toJson(awsInfo)) }
 
-            jobComment?.let { this += Job::jobComment.name to AttributeValue.S(it) }
             jobOption?.let { this += Job::jobOption.name to AttributeValue.S(it) }
             sfnId?.let { this += Job::sfnId.name to AttributeValue.S(it) }
         }
@@ -59,7 +57,6 @@ class Job(
         jobStatus = map.findOrThrow(Job::jobStatus)
         jobExeFrom = map.findOrThrow(Job::jobExeFrom)
         jobContext = map.findOrThrow(Job::jobContext)
-        jobExeFromName = map.findOrThrow(Job::jobExeFromName)
 
         //==================================================== 공통 시스템 자동(필수) 입력값 ======================================================
         startTime = map.find(Job::startTime)
@@ -68,7 +65,6 @@ class Job(
 
         jobErrMsg = map.find(Job::jobErrMsg)
         awsInfo = map.findJson(Job::awsInfo)
-        jobComment = map.find(Job::jobComment)
         jobOption = map.find(Job::jobOption)
         sfnId = map.find(Job::sfnId)
 
@@ -76,11 +72,8 @@ class Job(
 
 
     //==================================================== 생성자 ======================================================
-    /** 리플렉션용 기본 생성자  */
+    /** 리플렉션용 기본 생성자. 일반 호출은 금지  */
     constructor() : this("", "")
-
-    /** sk에는 접두어를 붙여줌 */
-    constructor(pk: String, sk: Long) : this(pk, "$SK_PREF$sk")
 
     /** 조회 조건 입력시 */
     constructor(pk: String, sk: String = "", block: Job.() -> Unit) : this(pk, sk) {
@@ -103,9 +96,6 @@ class Job(
 
     /** 잡 실행 경로. (RMI 실행, 스케쥴링 실행..) */
     lateinit var jobExeFrom: JobExeFrom
-
-    /** 잡 실행 인스턴스 타입 / IP */
-    lateinit var jobExeFromName: String
 
     /** 작업 환경 확인용 이름  ex) vcpu2,4G..  */
     lateinit var jobEnv: String
@@ -133,32 +123,20 @@ class Job(
 
     //==================================================== AWS info ======================================================
 
-    /** AWS info. 시작되기 전까지는 null일 수 있음   */
+    /**
+     * AWS info.
+     * 혹시 런타임이 틀릴 수 있어서 실제 잡 시작할때 입력함
+     *  시작되기 전까지는 null일 수 있음.
+     *  */
     var awsInfo: AwsInfo? = null
 
-    /** SFN ID  */
+    /**
+     * SFN ID
+     * 일반 잡이 아니라 SFN 스텝 전체를 1개의 잡으로 입력
+     * */
     var sfnId: String? = null
 
-//    /** 실행중인 인스턴스 개별 타입  */
-//    var instanceType: AwsInstanceType? = null
-//
-//    /**
-//     * AWS의 주요 키값 정보
-//     * sfn : sfnUuid
-//     * lambda : awsLambdaFunctionName
-//     * batch : awsBatchJobId
-//     *  */
-//    var instanceName: String? = null
-//
-//    /** 로그 그룹  */
-//    var logGroupName: String? = null
-//
-//    /** 스트림 (API를 호출해야 알 수 있는것도 있음)  */
-//    var logStreamName: String? = null
-
     //==================================================== 공통 옵션 입력값 ======================================================
-    /** JOB 코멘트 (사용자 입력. 로직에서 사용안함. 업무 구분용)  */
-    var jobComment: String? = null
 
     /** JOB 옵션 (json형식). 해당 잡에서 필요한 설정/옵션 값을 입력. ex) 처리 타입, 시작 날짜 등등   */
     var jobOption: String? = null
@@ -166,7 +144,7 @@ class Job(
     //==================================================== 비연동값 ======================================================
 
     /**
-     * DDB에 값을 저장할것인지?.  이 값은 DDB에 저장하지 않음.
+     * DDB에 값을 저장할것인지?.  이 값이 false 이면 jobRepository에서 DDB에 저장하지 않음.
      * JobExecuteType 에 따라 false 로 변경
      *  */
     var persist: Boolean = true
@@ -189,6 +167,7 @@ class Job(
     fun toConsoleLink(): String = DynamoUtil.toConsoleLink(tableName, this)
 
     companion object {
+
         /** 테이블 이름을 여기서 지정 (한번만 지정 가능) */
         var TABLE_NAME: String = ""
             set(value) {
@@ -199,8 +178,6 @@ class Job(
         /** 아무것도 없으면 이거 입력  */
         const val DEFAULT_MEMBER = "system"
 
-        /** SK 구조 */
-        const val SK_PREF = "id#"
     }
 
 

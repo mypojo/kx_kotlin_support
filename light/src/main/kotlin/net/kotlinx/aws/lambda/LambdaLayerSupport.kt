@@ -1,6 +1,8 @@
 package net.kotlinx.aws.lambda
 
 import aws.sdk.kotlin.services.lambda.LambdaClient
+import aws.sdk.kotlin.services.lambda.listLayerVersions
+import aws.sdk.kotlin.services.lambda.model.LayerVersionsListItem
 import aws.sdk.kotlin.services.lambda.publishLayerVersion
 import aws.sdk.kotlin.services.lambda.updateFunctionConfiguration
 
@@ -15,6 +17,19 @@ suspend fun LambdaClient.publishLayerVersion(bucket: String, key: String, layerN
         }
     }
     return layer.layerVersionArn!!
+}
+
+/**
+ * 레이어 이름에 대해서, 각 최신 레이어 ARN을 얻어온다.
+ * updateFunctionLayers 호출할 용도로 사용됨
+ *  */
+suspend fun LambdaClient.listLayerVersions(layerNames: List<String>): List<LayerVersionsListItem> {
+    return layerNames.map {layerName ->
+        this.listLayerVersions {
+            this.layerName = layerName
+            this.maxItems = 1
+        }.layerVersions!!.first()
+    }
 }
 
 /**

@@ -15,6 +15,8 @@ import software.amazon.awscdk.services.s3.IBucket
  * JVM 레이어는 용량이 크기때문에 S3 권장!
  * 본문 함수가 50mb 이상이면 레이어로 빼야 직접 업데이트가 가능함
  * 레이어 jar는 CDK 실행전에 여기 미리 파일을 업로드 해놓아야함 (gradle 사용 추천)
+ *
+ * 주의!!! 그냥 함수 퍼블링하면 자동으로 레이어 생긴다. 굳이 CDK로 만들 필요 없음
  * */
 class CdkLambdaLayer(
     val project: CdkProject,
@@ -36,10 +38,6 @@ class CdkLambdaLayer(
     /** 코드 키 */
     lateinit var key: String
 
-    init {
-        block(this)
-    }
-
     /** 결과 레이어 */
     lateinit var layer: LayerVersion
 
@@ -51,6 +49,10 @@ class CdkLambdaLayer(
                 .compatibleRuntimes(listOf(runtime)) //17로 지정해도 11로 표기됨..  의미 없을듯
                 .build()
         )
+    }
+
+    init {
+        block(this)
     }
 
 }

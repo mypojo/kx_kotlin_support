@@ -9,6 +9,11 @@ import java.time.LocalDateTime
  *  */
 inline fun List<String>.toTextGrid(datas: List<Array<out Any?>>) = TextGrid(this, datas)
 
+
+/** 아테나 등 간단 출력시 활용 */
+inline fun List<List<String>>.print() = this[0].toTextGrid(this.drop(1).map { it.toTypedArray() }).print()
+
+
 /**
  *
  * j-text-util 이 한글 깨지고, 텍스트 리턴이 안되거 걍 새로 만들었다.

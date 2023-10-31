@@ -2,16 +2,17 @@ package net.kotlinx.aws.module.batchStep
 
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient1
-import net.kotlinx.aws.athena.AthenaModule
 import net.kotlinx.aws.s3.deleteDir
 import net.kotlinx.aws.sfn.SfnUtil
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 /**
- * S3 베이스의 설정파일
+ * BatchStep 설정파일
  * */
-class BatchStepConfig(block: BatchStepConfig.() -> Unit) {
+class BatchStepConfig(block: BatchStepConfig.() -> Unit) : KoinComponent {
 
-    lateinit var aws: AwsClient1
+    private val aws1: AwsClient1 by inject()
 
     /** 업로드 버킷 명 */
     lateinit var workUploadBuket: String
@@ -21,9 +22,6 @@ class BatchStepConfig(block: BatchStepConfig.() -> Unit) {
 
     /** 람다 이름. List 방식에서 직접 람다를 호출할때 사용함  */
     lateinit var lambdaFunctionName: String
-
-    /** 최종 리포트에 사용 */
-    lateinit var athenaModule: AthenaModule
 
     /** 업로드 인풋 경로 */
     var workUploadInputDir: String = "upload/sfnBatchModuleInput/"
@@ -35,7 +33,8 @@ class BatchStepConfig(block: BatchStepConfig.() -> Unit) {
         block(this)
     }
 
-    fun consoleLink(sfnId: String): String = SfnUtil.consoleLink(aws.awsConfig.awsId!!, stateMachineName, sfnId)
+    /** 콘솔링크 출력 */
+    fun consoleLink(sfnId: String): String = SfnUtil.consoleLink(aws1.awsConfig.awsId!!, stateMachineName, sfnId)
 
     /**
      * 업로드 디렉토리를 전부 삭제한다.
@@ -44,12 +43,12 @@ class BatchStepConfig(block: BatchStepConfig.() -> Unit) {
     suspend fun clear() {
 
         for (i in 0..100) {
-            val d1 = aws.s3.deleteDir(workUploadBuket, workUploadInputDir)
+            val d1 = aws1.s3.deleteDir(workUploadBuket, workUploadInputDir)
             log.warn { "sfnBatchModuleInput 파일 ${d1}건 삭제" }
             if (d1 <= 0) break
         }
         for (i in 0..100) {
-            val d2 = aws.s3.deleteDir(workUploadBuket, workUploadOutputDir)
+            val d2 = aws1.s3.deleteDir(workUploadBuket, workUploadOutputDir)
             log.warn { "sfnBatchModuleOutput 파일 ${d2}건 삭제" }
             if (d2 <= 0) break
         }

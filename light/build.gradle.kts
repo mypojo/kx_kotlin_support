@@ -24,6 +24,7 @@ dependencies {
 
     //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
     api("org.jetbrains.kotlin:kotlin-reflect:${providers["kotlinVersion"]}") // 리플렉션 약 3.1메가. 살짝 부담되긴 함.
+    api("io.insert-koin:koin-core:3.4.0") //kotlin DI 도구. 모듈 설정에는 이걸 적용하기로함.  실무에서는 spring 사용
 
     //==================================================== 기본 http 클라이언트 ======================================================
     api("com.squareup.okhttp3:okhttp:5.0.0-alpha.11") //https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp

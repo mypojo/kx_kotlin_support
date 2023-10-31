@@ -9,6 +9,8 @@ import net.kotlinx.core.time.toIso
 import net.kotlinx.core.time.toTimeString
 import net.kotlinx.google.calendar.GoogleCalendar
 import net.kotlinx.google.calendar.GoogleCalendarData
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -16,19 +18,15 @@ import java.time.temporal.ChronoUnit
  * 노션 DB 를 구글 캘린더로 변환해줌
  * ex) 5분에 한번씩 AWS Lambda로 동기화 -> 월비용
  *  */
-class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() -> Unit = {}) {
+class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() -> Unit = {}) : KoinComponent {
 
     private val log = KotlinLogging.logger {}
 
-    lateinit var googleCalendar: GoogleCalendar
+    private val googleCalendar: GoogleCalendar by inject()
+    private val notionDatabaseClient: NotionDatabaseClient by inject()
+    private val notionPageBlockClient: NotionPageBlockClient by inject()
 
     //==================================================== 노션 설정 ======================================================
-
-    /** 노션 클라이언트 */
-    lateinit var notionDatabaseClient: NotionDatabaseClient
-
-    /** 노션 클라이언트 */
-    lateinit var notionPageBlockClient: NotionPageBlockClient
 
     /** 노션 DB id */
     lateinit var notionDbId: String

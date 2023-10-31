@@ -12,3 +12,8 @@ inline fun CharSequence?.ifNullOrEmpty(block: () -> String): String {
         this.toString()
     }
 }
+
+inline fun <reified T : Enum<T>> enumValueOf(str: String?, nullValue: T): T = when (str) {
+    null -> nullValue
+    else -> enumValueOf<T>(str)
+}

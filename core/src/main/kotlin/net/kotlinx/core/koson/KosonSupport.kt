@@ -2,10 +2,14 @@ package net.kotlinx.core.koson
 
 import com.lectra.koson.*
 import net.kotlinx.core.gson.GsonData
+import net.kotlinx.core.gson.toGsonData
 
 
 /** 이런식으로 변환 가능하다. list map 할때 참고 */
 fun List<ObjectType>.toKsonArray(): ArrayType = arr[this]
+
+/** 단축 변환 */
+fun ObjectType.toGsonData(): GsonData = this.toString().toGsonData()
 
 /**
  * koson에 입력할때, KosonType을 받는 infix가 없음.. (왜없지? ㅠㅠ)

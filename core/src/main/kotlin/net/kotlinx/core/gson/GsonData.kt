@@ -1,6 +1,8 @@
 package net.kotlinx.core.gson
 
 import com.google.gson.*
+import mu.KotlinLogging
+import net.kotlinx.core.serial.SerialJsonObj
 
 inline fun String.toGsonData() = GsonData.parse(this)
 
@@ -54,6 +56,9 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 
     override fun toString(): String = delegate.toString()
 
+    /** 편의용 메소드 */
+    fun toPreety(): String = GsonSet.GSON_PRETTY.toJson(delegate)
+
     //==================================================== 편의용  ======================================================
 
     /**
@@ -95,6 +100,8 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 
     companion object {
 
+        private val log = KotlinLogging.logger {}
+
         /** NULL 대신 기본형을 리턴 */
         val EMPTY = GsonData(JsonNull.INSTANCE)
 
@@ -104,11 +111,18 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 
         /** json을 파싱할때 */
         fun parse(obj: Any?): GsonData {
-            if (obj == null) return EMPTY
-            if (obj is GsonData) return obj
-
-            val json = obj.toString()
-            return GsonData(JsonParser.parseString(json))
+            return try {
+                when (obj) {
+                    null -> EMPTY
+                    is GsonData -> obj
+                    is JsonElement -> GsonData(obj)
+                    is SerialJsonObj -> GsonData(JsonParser.parseString(obj.toJson()))
+                    else -> GsonData(JsonParser.parseString(obj.toString())) //koson 등등 다 해당
+                }
+            } catch (e: JsonSyntaxException) {
+                log.warn { "파싱데이터 -> `$obj`" }
+                throw e
+            }
         }
 
         /** 객체로 파싱할때 */

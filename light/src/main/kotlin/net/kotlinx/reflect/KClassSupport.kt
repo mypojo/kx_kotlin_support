@@ -1,9 +1,13 @@
 package net.kotlinx.reflect
 
+import net.kotlinx.core.string.decapital
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 //==================================================== 가능하면 리플렉션은 사용하지 말자! ======================================================
+
+/** 간단 이름을 리턴한다.(카멜) */
+fun KClass<*>.name(): String = this.simpleName!!.decapital()
 
 /** 새로운 인스턴스를 리턴한다. */
 inline fun <T : Any> KClass<T>.newInstance(): T = this.java.getDeclaredConstructor().newInstance() as T

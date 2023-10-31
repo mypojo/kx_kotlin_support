@@ -8,7 +8,7 @@ import software.amazon.awscdk.services.stepfunctions.State
 
 /**
  * SFN MAP 작업 : S3 list -> lambda
- * 다수의 데이터를 상태 관리하면서 대량처리할때 사용된다
+ * 병렬 작업하는애들 개별 상태관리 하지 않고, 인라인으로 관리함 (저렴)
  * */
 class CdkSfnMapInline(
     override val cdkSfn: CdkSfn,

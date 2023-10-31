@@ -3,36 +3,55 @@ package net.kotlinx.aws.module.batchStep.stepDefault
 import com.amazonaws.services.lambda.runtime.Context
 import com.lectra.koson.obj
 import mu.KotlinLogging
+import net.kotlinx.aws.athena.AthenaModule
 import net.kotlinx.aws.lambda.LambdaUtil
 import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
-import net.kotlinx.aws.module.batchStep.BatchStepConfig
-import net.kotlinx.aws.sfn.SfnUtil
+import net.kotlinx.aws.module.batchStep.BatchStepInput
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.string.toTextGrid
 import net.kotlinx.core.time.toTimeString
+import net.kotlinx.module.job.Job
+import net.kotlinx.module.job.JobRepository
+import net.kotlinx.module.job.JobStatus
+import net.kotlinx.module.job.JobUpdateSet
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import java.time.LocalDateTime
 
 
-class StepEnd(
-    private val config: BatchStepConfig,
-) : LambdaLogicHandler {
+class StepEnd : LambdaLogicHandler, KoinComponent {
 
     private val log = KotlinLogging.logger {}
 
+    private val athenaModule: AthenaModule by inject()
+    private val jobRepository: JobRepository by inject()
+
     override suspend fun invoke(input: GsonData, context: Context?): Any {
 
-        val context = BatchStepContext(input)
-        val sfnId = context.option[SfnUtil.SFN_ID].str!!
+        val stepInput = BatchStepInput.parseJson(input.toString())
+        val option = stepInput.option
+
         val query = """
                     SELECT file_name, COUNT(1) CNT,max(total_interval) total_interval,avg(interval) avg_interval,sum(length(output)) length
                     FROM d.batch_step
-                    where sfn_id = '$sfnId'
+                    where sfn_id = '${option.sfnId}'
                     group by file_name
                 """
-        val lines = config.athenaModule.readAll(query)
+        val lines = athenaModule.readAll(query)
         val header = lines[0]
         val datas = lines.subList(1, lines.size).map { it.toTypedArray() }
+
+        jobRepository.getItem(Job(option.jobPk, option.jobSk))!!.apply {
+            jobStatus = JobStatus.SUCCEEDED
+            endTime = LocalDateTime.now()
+            jobRepository.updateItem(this, JobUpdateSet.END)
+            log.debug { "job [${this.toKeyString()}] 로그 update" }
+        }
+
         return if (datas.isEmpty()) {
-            "데이터가 없습니다"
+            obj {
+                "msg" to "데이터가 없습니다"
+            }
         } else {
             header.toTextGrid(datas).print()
 

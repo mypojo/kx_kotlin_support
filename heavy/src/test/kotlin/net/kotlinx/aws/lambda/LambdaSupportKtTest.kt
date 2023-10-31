@@ -12,6 +12,20 @@ internal class LambdaSupportKtTest : TestRoot() {
     val functionName = "sin-chatgpt-prod"
 
     @Test
+    fun `레이어 - 리스팅`() {
+        runBlocking {
+            val versions = aws.lambda.listLayerVersions(
+                listOf(
+                    "sin-layer_v1-dev",
+                    "sin-layer_v2-dev",
+                    "sin-layer_v3-dev",
+                )
+            )
+            versions.map { it.layerVersionArn }.forEach { println(it) }
+        }
+    }
+
+    @Test
     fun `기본테스트`() {
         runBlocking {
             aws.lambda.updateFunctionCode("sin-job_lambda-prod", "463327615611.dkr.ecr.ap-northeast-2.amazonaws.com/sin-job", "local-2023-03-22_12-04")

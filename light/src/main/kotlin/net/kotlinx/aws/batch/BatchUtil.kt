@@ -14,23 +14,16 @@ object BatchUtil {
      * */
     const val BATCH_ARGS01 = "jobOption01"
 
-    /**
-     * 잡 옵션 -> jobOption01 과 머지됨.
-     * ex) sfn에서 사용 (동적으로 옵션 입력)
-     * */
-    const val BATCH_ARGS02 = "jobOption02"
+//    /**
+//     * 잡 옵션 -> jobOption01 과 머지됨.
+//     * ex) sfn에서 AWS BATCH 싦행시 동적으로 옵션 입력으로 사용
+//     * */
+//    const val BATCH_ARGS02 = "jobOption02"
 
     //==================================================== 내부 예약어 ======================================================
 
     /** AWS_BATCH_JOB_ID  */
     const val ENV_ID = "AWS_BATCH_JOB_ID"
-
-
-    /** 여러가지 용도로 사용되는 잡의 pk. 편의상 여기 둔다 */
-    const val JOB_PK = "jobPk"
-
-    /** 여러가지 용도로 사용되는 잡의 sk. 편의상 여기 둔다  */
-    const val JOB_SK = "jobSk"
 
 
     //==================================================== 유틸 ======================================================

@@ -5,7 +5,6 @@ package net.kotlinx.aws.lambdaCommon
 annotation class LambdaFunctionLogicDsl
 
 /** 각 람다 로직을 DSL로 정의 */
-@LambdaFunctionLogicDsl
 class LambdaFunctionLogic {
 
     /** 로직 설명 */

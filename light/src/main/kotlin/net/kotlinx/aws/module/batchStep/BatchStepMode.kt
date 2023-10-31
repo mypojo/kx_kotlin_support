@@ -6,11 +6,16 @@ package net.kotlinx.aws.module.batchStep
  * */
 enum class BatchStepMode {
 
-    /** 특정 경로의 S3 청크를 최대 40개씩 동시실행  */
-    Map,
+    /**
+     * CdkSfnMapInline 사용
+     * 파라메터에 포함(미리 로드)된 S3 청크들을 최대 40개씩 동시실행
+     *  */
+    MAP_INLINE,
 
-    /** 특정 경로의 S3를 리스트해서 최대 X개 동시실행 & wait */
-    List,
+    /**
+     * 실시간으로 특정 경로의 S3를 리스트 조회해서 최대 X개 동시실행 & wait
+     * */
+    LIST,
     ;
 
 

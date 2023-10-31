@@ -16,6 +16,8 @@ import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.s3.getObjectDownload
 import net.kotlinx.aws.s3.getObjectLines
 import net.kotlinx.core.concurrent.CoroutineSleepTool
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -26,7 +28,6 @@ import java.util.concurrent.TimeUnit
  * checkTimeout 등의 이유료 내장 코루틴을 사용함
  *  */
 class AthenaModule(
-    private val aws: AwsClient1,
     /** 데이터베이스 명 (기본스키마) */
     val database: String = "",
     /** 워크그룹 (쿼리 결과 위치 있어야함) */
@@ -35,9 +36,11 @@ class AthenaModule(
     private val checkIntervalMills: Long = TimeUnit.SECONDS.toMillis(1),
     /** 쿼리 체크 타임아웃 */
     private val checkTimeout: Long = TimeUnit.MINUTES.toMillis(10),
-) {
+) : KoinComponent {
 
     private val log = KotlinLogging.logger {}
+
+    private val aws: AwsClient1 by inject()
 
     /** 고정 실행 컨텍스트 미리 생성. (스키마 미 지정시 디폴트 스키마) */
     private val _queryExecutionContext = QueryExecutionContext { this.database = this@AthenaModule.database }

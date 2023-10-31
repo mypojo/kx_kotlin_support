@@ -72,10 +72,6 @@ class CdkLambda(
     /** 람다 로그설정 변경시, 별도 람다가 생겨서 보기싫게됨  */
     var logRetention = RetentionDays.SIX_MONTHS
 
-    init {
-        block(this)
-    }
-
     /** 결과 레이어 */
     var layers: List<ILayerVersion> = emptyList()
 
@@ -142,6 +138,10 @@ class CdkLambda(
                 .aliasName(aliasName)
                 .version(defaultFun.latestVersion).build()
         }
+    }
+
+    init {
+        block(this)
     }
 
 }

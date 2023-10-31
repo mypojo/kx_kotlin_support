@@ -23,6 +23,7 @@ data class WorkOutput(val date: String, val name: String, val startTime: String,
 
     val valid: Boolean
         get() = workSec >= 8.hours.inWholeSeconds
+
 }
 
 class WorkGroup(block: WorkGroup.() -> Unit = {}) {

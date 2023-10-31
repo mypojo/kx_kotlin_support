@@ -1,6 +1,5 @@
 package net.kotlinx.aws_cdk.component.sfnv2
 
-import com.lectra.koson.obj
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.batch.BatchUtil
 import software.amazon.awscdk.services.stepfunctions.State
@@ -19,8 +18,7 @@ class CdkSfnBatch(
      * @see net.kotlinx.aws_cdk.component.CdkBatchJobDefinition
      * */
     var input = mapOf(
-        BatchUtil.BATCH_ARGS01 to obj { AwsNaming.METHOD to name }.toString(), //첫번재 파라메터로 method 전달(로직 이름 or job 이라면 DDB PK)
-        "${BatchUtil.BATCH_ARGS02}.$" to "$.${AwsNaming.OPTION}", //두번째 파라메터로 SFN에 입력된 옵션을 넘김
+        BatchUtil.BATCH_ARGS01 to "$.${AwsNaming.OPTION}" //이거 하나로
     )
 
     override var suffix: String = ""

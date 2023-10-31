@@ -1,14 +1,14 @@
 package net.kotlinx.module.job.define
 
-import net.kotlinx.core.test.TestRoot
 import net.kotlinx.reflect.Bean
+import net.kotlinx.test.TestLight
 import org.junit.jupiter.api.Test
 
-class JobDefinitionRepositoryTest : TestRoot() {
+class JobDefinitionRepositoryTest : TestLight() {
 
     @Test
     fun test() {
-        val findById = MyJobDef.JOBS.findById("notionDatabaseToGoogleCalendarJob")
+        val findById = JobDefinitionUtil.findById("notionDatabaseToGoogleCalendarJob")
         Bean(findById).toTextGrid().print()
 
     }
