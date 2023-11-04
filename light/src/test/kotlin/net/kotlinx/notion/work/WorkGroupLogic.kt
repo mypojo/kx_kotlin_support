@@ -24,6 +24,8 @@ class WorkGroupLogic(block: WorkGroupLogic.() -> Unit = {}) : KoinComponent {
 
     lateinit var backupDir: File
 
+    lateinit var groups: List<WorkGroup>
+
     fun read(file: File): List<WorkOutput> {
         log.info { "파일 $file 처리..." }
         val worksOrg = file.readLines(CharSets.MS949).drop(2).map { it.split(",") }.map { WorkInput(it[0], it[1], it[4]) }
@@ -40,7 +42,7 @@ class WorkGroupLogic(block: WorkGroupLogic.() -> Unit = {}) : KoinComponent {
 
         log.trace { "팀 등록" }
         val workerNames = workOutputs.map { it.name }
-        val workGroup = GROUPS.first { g -> g.names.any { it in workerNames } }
+        val workGroup = groups.first { g -> g.names.any { it in workerNames } }
         workOutputs.onEach { it.workGroup = workGroup }
 
         log.trace { "연차 사용한사람 추가" }
