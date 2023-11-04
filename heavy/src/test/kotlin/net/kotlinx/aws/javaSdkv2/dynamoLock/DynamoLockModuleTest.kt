@@ -1,9 +1,6 @@
 package net.kotlinx.aws.javaSdkv2.dynamoLock
 
 import kotlinx.coroutines.runBlocking
-import net.kotlinx.aws.AwsConfig
-import net.kotlinx.aws.dynamo.getItem
-import net.kotlinx.aws.toAwsClient
 import net.kotlinx.core.concurrent.sleep
 import net.kotlinx.core.test.TestRoot
 import org.junit.jupiter.api.Test
@@ -11,13 +8,9 @@ import kotlin.time.Duration.Companion.seconds
 
 class DynamoLockModuleTest : TestRoot() {
 
-    val awsConfig = AwsConfig(profileName = "sin")
-
 
     @Test
     fun test() {
-
-        val aws = awsConfig.toAwsClient()
 
         val lockModule = DynamoLockModule {
             tableName = "dist_lock-dev"
@@ -63,8 +56,8 @@ class DynamoLockModuleTest : TestRoot() {
                 }
             } catch (e: DynamoLockModule.DynamoLockFailException) {
                 runBlocking {
-                    val existLock = aws.dynamo.getItem(e.req)!!
-                    log.warn { " 지금 선행되어있는락 때문에 실패!! ->  $existLock" }
+//                    val existLock = aws.dynamo.getItem(e.req)!!
+//                    log.warn { " 지금 선행되어있는락 때문에 실패!! ->  $existLock" }
                 }
             }
             log.info { "첫번째 락 종료" }
