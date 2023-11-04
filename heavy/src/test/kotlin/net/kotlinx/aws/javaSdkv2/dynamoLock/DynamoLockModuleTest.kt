@@ -3,7 +3,6 @@ package net.kotlinx.aws.javaSdkv2.dynamoLock
 import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.dynamo.getItem
-import net.kotlinx.aws.javaSdkv2.AwsJavaSdkV2Client
 import net.kotlinx.aws.toAwsClient
 import net.kotlinx.core.concurrent.sleep
 import net.kotlinx.core.test.TestRoot
@@ -20,7 +19,7 @@ class DynamoLockModuleTest : TestRoot() {
 
         val aws = awsConfig.toAwsClient()
 
-        val lockModule = DynamoLockModule(AwsJavaSdkV2Client(awsConfig).ddb) {
+        val lockModule = DynamoLockModule {
             tableName = "dist_lock-dev"
             leaseDuration = 2
             heartbeatPeriod = 1

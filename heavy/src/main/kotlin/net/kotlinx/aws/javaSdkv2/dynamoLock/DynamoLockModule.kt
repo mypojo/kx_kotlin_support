@@ -5,8 +5,10 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBLockClient
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBLockClientOptions
 import com.amazonaws.services.dynamodbv2.LockItem
 import com.amazonaws.services.dynamodbv2.model.LockNotGrantedException
+import net.kotlinx.aws.javaSdkv2.AwsJavaSdkV2Client
 import net.kotlinx.aws.javaSdkv2.toJavaAttributeValue
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.concurrent.TimeUnit
 
 /**
@@ -24,10 +26,9 @@ import java.util.concurrent.TimeUnit
  * 경고!  이 락은 재진입이 불가능하다. 락 호출전에 처리 단위끼리 모아서 처리할것!
  * 경고!  락 조회는 kotlin 버전으로 하면됨 (지금 누가 리소스를 선점하고있는지 보고싶을때)
  */
-class DynamoLockModule(
-    private val dynamoDbClient: DynamoDbClient,
-    block: DynamoLockModule.() -> Unit = {}
-) {
+class DynamoLockModule(block: DynamoLockModule.() -> Unit = {}) : KoinComponent {
+
+    private val awsv2: AwsJavaSdkV2Client by inject()
 
     //==================================================== 필수 ======================================================
     /** DDB 테이블명 */
@@ -54,7 +55,7 @@ class DynamoLockModule(
     /** 허트비트 체크 기간  */
     var heartbeatPeriod: Long = leaseDuration / 2
 
-    /** 
+    /**
      * 디폴트 추가 타임아웃
      * 락 대여기간 + 이 값 = 실제 타임아웃
      *  */
@@ -67,7 +68,7 @@ class DynamoLockModule(
     /** 락 클라이언트 생성 */
     private val lockClient: AmazonDynamoDBLockClient by lazy {
         AmazonDynamoDBLockClient(
-            AmazonDynamoDBLockClientOptions.builder(dynamoDbClient, tableName)
+            AmazonDynamoDBLockClientOptions.builder(awsv2.ddb, tableName)
                 .withPartitionKeyName(partitionKeyName)
                 .withSortKeyName(sortKeyName)
                 .withTimeUnit(timeUnit)

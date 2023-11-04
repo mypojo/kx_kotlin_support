@@ -4,6 +4,8 @@ import com.lectra.koson.obj
 import mu.KotlinLogging
 import net.kotlinx.okhttp.fetch
 import okhttp3.OkHttpClient
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 /**
  * 아이콘과 타이틀당 1개씩 만들어 사용하면 됨
@@ -12,18 +14,21 @@ import okhttp3.OkHttpClient
  * 두레이측에서는 약 1초 이내 여러개 보내면 무시해버리고 실제 전송이 되었는지 알려주지 않음.
  * 문의 결과 의도된 거라고 함.. 장난??
  */
-class DoorayMsgClient(
-    /** http 클라이언트 */
-    private val client: OkHttpClient,
-    /** 채팅방 -> 우상단 정보 -> 서비스 연동 -> 인커밍 훅 에서 복붙 */
-    val roomUri: String,
-    /** 기본 이름 */
-    val name: String = "두레이 봇",
-    /** 기본 아이콘 */
-    val icon: String = "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png",
-) {
+class DoorayMsgClient : KoinComponent {
 
     private val log = KotlinLogging.logger {}
+
+    /** http 클라이언트 */
+    private val client: OkHttpClient by inject()
+
+    /** 채팅방 -> 우상단 정보 -> 서비스 연동 -> 인커밍 훅 에서 복붙 */
+    lateinit var roomUri: String
+
+    /** 기본 이름 */
+    var name: String = "두레이 봇"
+
+    /** 기본 아이콘 */
+    var icon: String = "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png"
 
     /** 직접 전송  */
     fun sendDirect(message: String) {
