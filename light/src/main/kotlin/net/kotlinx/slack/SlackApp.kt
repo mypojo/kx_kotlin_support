@@ -14,6 +14,7 @@ import java.io.Closeable
  * https://slack.dev/java-slack-sdk/guides/web-api-basics
  * 볼트 프레임워크가 아닌 기본 API 사용.
  *
+ * https://api.slack.com/apps
  * #1. 슬랙 페이지 들어가서 앱 생성 (기존 설정 Manifest로 복사 가능)
  * #2. Settings -> Installed 하면 토큰 나옴 -> SSM에 저장
  * #3. 슬랙에서 채널 만들고 만들었던 앱 추가.
