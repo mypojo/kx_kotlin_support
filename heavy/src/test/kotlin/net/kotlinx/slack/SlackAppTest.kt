@@ -1,25 +1,19 @@
 package net.kotlinx.slack
 
-import net.kotlinx.aws.AwsConfig
-import net.kotlinx.aws.toAwsClient
+import net.kotlinx.aws.AwsClient1
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.gson.GsonSet
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestLight
 import org.junit.jupiter.api.Test
+import org.koin.core.component.get
 
-class SlackAppTest : TestRoot() {
-
-    val aws = AwsConfig(profileName = "sin").toAwsClient()
-
+class SlackAppTest : TestLight() {
 
     @Test
     fun test() {
-
-        val token = aws.ssmStore["/slack/nov/token"]!!
+        val token = get<AwsClient1>().ssmStore["/slack/token"]!!
         val app = SlackApp(token)
-        app.chatPostMessage("U037LL28D4P", "aaa")
-
-
+        app.chatPostMessage("#kx_alert", "aaav")
     }
 
     fun `슬랙봇 샘플`(): String {
@@ -33,7 +27,7 @@ class SlackAppTest : TestRoot() {
         log.info { "슬랙 메세지" }
         println(GsonSet.GSON_PRETTY.toJson(slackInput.delegate))
 
-        val token = aws.ssmStore["/slack/nov/token"]!!
+        val token = "xx"
         val slackApp = SlackApp(token)
 
         slackInput["event"].lett { event ->

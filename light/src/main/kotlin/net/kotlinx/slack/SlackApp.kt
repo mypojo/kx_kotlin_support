@@ -8,13 +8,16 @@ import net.kotlinx.core.gson.GsonData
 import java.io.Closeable
 
 /**
- * 확장함수로 해결이 불가능해서 래퍼로 만듬
+ * 확장함수로 해결이 불가능해서 래퍼로 만듬 (토큰!!)
  * https://api.slack.com/apps 여기서 앱 확인
  *
  * https://slack.dev/java-slack-sdk/guides/web-api-basics
  * 볼트 프레임워크가 아닌 기본 API 사용.
  *
- * OAuth & Permissions 에서 퍼미션 정한 후 토큰 발급받으면 됨. 해당 채털에 봇이 추가되어 있어야함
+ * #1. 슬랙 페이지 들어가서 앱 생성 (기존 설정 Manifest로 복사 가능)
+ * #2. Settings -> Installed 하면 토큰 나옴 -> SSM에 저장
+ * #3. 슬랙에서 채널 만들고 만들었던 앱 추가.
+ *
  * 요청 제한 있음. ->  해결하는 방법도 있음
  * => AsyncMethodsClient 는 메트릭 데이터를 매우 잘 고려합니다. 앱의 클라이언트가 이미 짧은 기간 내에 너무 많은 요청을 보낸 경우 속도 제한 오류를 피하기 위해 API 요청을 지연시킬 수 있습니다.
  */
