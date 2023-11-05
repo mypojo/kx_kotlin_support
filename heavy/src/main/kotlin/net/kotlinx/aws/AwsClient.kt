@@ -20,26 +20,26 @@ import net.kotlinx.aws.sm.SmStore
 /** 선형 구조임으로 조합보다는 상속이 더 좋은 선택 */
 class AwsClient(awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     //==================================================== 공통 ======================================================
-    val iam: IamClient by lazy { IamClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
-    val cost: CostExplorerClient by lazy { CostExplorerClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
-    val ses: SesClient by lazy { SesClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
-    val logs: CloudWatchLogsClient by lazy { CloudWatchLogsClient  { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
-    val elb: ElasticLoadBalancingV2Client by lazy { ElasticLoadBalancingV2Client  { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
+    val iam: IamClient by lazy { IamClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val cost: CostExplorerClient by lazy { CostExplorerClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val ses: SesClient by lazy { SesClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val logs: CloudWatchLogsClient by lazy { CloudWatchLogsClient  { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val elb: ElasticLoadBalancingV2Client by lazy { ElasticLoadBalancingV2Client  { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
 
     //==================================================== 저장소 ======================================================
-    val rds: RdsClient by lazy { RdsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
-    val sqs: SqsClient by lazy { SqsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
-    val sm: SecretsManagerClient by lazy { SecretsManagerClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
-    val event: EventBridgeClient by lazy { EventBridgeClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
+    val rds: RdsClient by lazy { RdsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val sqs: SqsClient by lazy { SqsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val sm: SecretsManagerClient by lazy { SecretsManagerClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val event: EventBridgeClient by lazy { EventBridgeClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
 
     //==================================================== 컴퓨팅 인프라 ======================================================
-    val ec2: Ec2Client by lazy { Ec2Client { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
-    val ecs: EcsClient by lazy { EcsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
+    val ec2: Ec2Client by lazy { Ec2Client { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val ecs: EcsClient by lazy { EcsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
 
     //==================================================== 코드 시리즈 ======================================================
-    val codeDeploy: CodeDeployClient by lazy { CodeDeployClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
-    val codeCommit: CodeCommitClient by lazy { CodeCommitClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
-    val ecr: EcrClient by lazy { EcrClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClientEngine = awsConfig.httpClientEngine; } }
+    val codeDeploy: CodeDeployClient by lazy { CodeDeployClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val codeCommit: CodeCommitClient by lazy { CodeCommitClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val ecr: EcrClient by lazy { EcrClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
 
     //==================================================== 모듈 설정 ======================================================
     val iamSecretUpdateModule: IamSecretUpdateModule by lazy { IamSecretUpdateModule(iam) }

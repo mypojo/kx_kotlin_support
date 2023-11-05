@@ -1,15 +1,15 @@
 package net.kotlinx.google.otp
 
-import org.apache.commons.codec.binary.Base32
 import java.security.SecureRandom
 import java.util.*
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
-
 /**
  * 현재시간 베이스로 작동되는 구글 OTP
  * 관리자 로그인 등에서 사용됨
+ *
+ *  => 수정해야함
  * */
 object GoogleOtp {
 
@@ -20,18 +20,18 @@ object GoogleOtp {
     fun generateSecretKey(keySize: Int = 20): String {
         return ByteArray(keySize).let {
             SecureRandom().nextBytes(it)
-            Base32().encodeToString(it)
+            Base64.getEncoder().encodeToString(it)!!
         }
     }
 
     fun checkCode(secretKey: String, otpCode: Long): Boolean {
         val wave: Long = Date().time / 30000
         var result = false
-        val codec = Base32()
-        val decodedKey = codec.decode(secretKey)
+        val decodedKey = Base64.getDecoder().decode(secretKey)!!
         val window = 3
         for (i in -window..window) {
             val hash: Long = verifyCode(decodedKey, wave + i)
+            println(hash)
             if (hash == otpCode) result = true
         }
         return result

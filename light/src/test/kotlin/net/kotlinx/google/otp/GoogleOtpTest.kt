@@ -8,13 +8,15 @@ class GoogleOtpTest : TestRoot() {
     @Test
     fun `키 생성`() {
 
+        val generateSecretKey = GoogleOtp.generateSecretKey()
+        println(generateSecretKey)
 
     }
 
     @Test
     fun `토큰 검증`() {
 
-        println(GoogleOtp.checkCode("OMUGBWFMJMHKWQ7IIOOKX6GEHWPGRL5M", 116260))
+        println(GoogleOtp.checkCode("UhiIgKAStJDUMwWf0fmVQymT0nk=", 377735))
 
     }
 

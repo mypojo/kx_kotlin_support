@@ -4,7 +4,9 @@ import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.AwsConfig
-import net.kotlinx.aws.s3.*
+import net.kotlinx.aws.s3.S3Data
+import net.kotlinx.aws.s3.getObjectLines
+import net.kotlinx.aws.s3.listDirs
 import net.kotlinx.aws.toAwsClient1
 import net.kotlinx.core.concurrent.collectToList
 import net.kotlinx.test.TestRoot
@@ -18,16 +20,16 @@ internal class AwsClient1_s3 : TestRoot() {
     @Test
     fun `프리사인_다운로드`() = runBlocking {
         S3Data.parse("s3://sin-autobid/athena/3eefab99-5ca7-447f-80c8-93ab1860e25a.csv").let {
-            val url = aws.s3.getObjectPresign(it.bucket, it.key)
-            println("프리사인 다운로드 url = $url")
+//            val url = aws.s3.getObjectPresign(it.bucket, it.key)
+//            println("프리사인 다운로드 url = $url")
         }
     }
 
     @Test
     fun `프리사인_업로드`() = runBlocking {
         S3Data.parse("s3://sin-autobid/athena/3eefab99-5ca7-447f-80c8-93ab1860e25a.csv").let {
-            val url = aws.s3.putObjectPresign(it.bucket, it.key)
-            println("프리사인 업로드 url = $url")
+//            val url = aws.s3.putObjectPresign(it.bucket, it.key)
+//            println("프리사인 업로드 url = $url")
         }
     }
 

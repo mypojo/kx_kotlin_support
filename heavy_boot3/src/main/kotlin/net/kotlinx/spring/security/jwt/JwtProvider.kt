@@ -7,9 +7,9 @@ import jakarta.validation.ValidationException
 import mu.KotlinLogging
 import net.kotlinx.core.time.toDate
 import org.springframework.security.core.userdetails.UserDetails
-import java.security.Key
 import java.time.LocalDateTime
 import java.util.*
+import javax.crypto.SecretKey
 import kotlin.time.Duration
 
 
@@ -17,21 +17,24 @@ import kotlin.time.Duration
  * https://jwt.io/
  *  */
 class JwtProvider(
-    secret: String,
-    private val tokenDuration: Duration
+    secretPlain: String,
+    private val tokenDuration: Duration,
 ) {
 
     private val log = KotlinLogging.logger {}
 
-    private val secretKey: Key = Base64.getDecoder().decode(secret).let { Keys.hmacShaKeyFor(it) }
+    /** 두번 변환해서 실제 키를 생성 */
+    private val secretKey: SecretKey = Base64.getEncoder().encodeToString(secretPlain.toByteArray()).let {
+        Keys.hmacShaKeyFor(it.toByteArray())
+    }
 
     /** 토큰으로 변환 */
-    fun <T : UserDetails> createToken(user: T, block: JwtBuilder.() -> Unit): String {
+    fun <T : UserDetails> createToken(user: T, block: JwtBuilder.() -> Unit = {}): String {
         return Jwts.builder()
-            .setSubject(user.username)
-            .signWith(secretKey, SignatureAlgorithm.HS512) //암호화 기본
-            .setExpiration(LocalDateTime.now().plusMinutes(tokenDuration.inWholeMinutes).toDate())
-            .setIssuedAt(Date())
+            .subject(user.username)
+            .signWith(secretKey, Jwts.SIG.HS512) //암호화 기본
+            .expiration(LocalDateTime.now().plusMinutes(tokenDuration.inWholeMinutes).toDate())
+            .issuedAt(Date())
             .apply {
                 block(this)
             }
@@ -40,11 +43,11 @@ class JwtProvider(
 
     /**인증 정보 조회  */
     fun parseToken(token: String) = try {
-        Jwts.parserBuilder()
-            .setSigningKey(secretKey)
+        Jwts.parser()
+            .verifyWith(secretKey)
             .build()
-            .parseClaimsJws(token)
-            .body
+            .parseSignedClaims(token)
+            .payload
     } catch (e: SecurityException) {
         log.info { " -> 입력 토큰 $token" }
         throw ValidationException("잘못된 JWT 서명입니다.", e)

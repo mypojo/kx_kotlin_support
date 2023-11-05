@@ -14,20 +14,21 @@ dependencies {
 
     //==================================================== 내부 의존성 ======================================================
     api(project(":heavy"))
+    api(project(":heavy_boot3"))
     testApi(project(":core").dependencyProject.sourceSets["test"].output) //코어 테스트에 있는 공통 (testRoot 등)을 사용할 수 있게 해줌
 
     //==================================================== 테스트용 도구 추가 ======================================================
 
-    implementation("com.google.ortools:ortools-java:9.6.2534") //구글 최적화도구 orTool https://developers.google.com/optimization/install/java/pkg_windows?hl=ko
+    implementation("com.google.ortools:ortools-java:_") //구글 최적화도구 orTool https://developers.google.com/optimization/install/java/pkg_windows?hl=ko
 
     //==================================================== 테스트 api   ======================================================
-    api("org.junit-pioneer:junit-pioneer:1.9.1")  //환경변수 테스트용 (실서버 job 실행 등)
-    api("org.junit.jupiter:junit-jupiter-api:5.9.1") //최신버전
-    api("io.mockk:mockk:1.13.8") //코틀린 모킹
+    api("org.junit-pioneer:junit-pioneer:_")  //환경변수 테스트용 (실서버 job 실행 등)
+    api("org.junit.jupiter:junit-jupiter-api:_") //최신버전
+    api("io.mockk:mockk:_") //코틀린 모킹
 
     //==================================================== 코테스트 단위테스트용 ======================================================
-    testImplementation("io.kotest:kotest-runner-junit5:5.5.4")
-    testImplementation("io.kotest:kotest-assertions-core:5.5.4")
+    testImplementation("io.kotest:kotest-runner-junit5:_")
+    testImplementation("io.kotest:kotest-assertions-core:_")
 
 
 
