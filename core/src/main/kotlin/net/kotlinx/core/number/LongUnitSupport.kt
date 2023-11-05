@@ -1,4 +1,4 @@
-package net.kotlinx.core.string
+package net.kotlinx.core.number
 
 
 const val SI_K: Long = 1024L

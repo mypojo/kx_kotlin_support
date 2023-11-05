@@ -78,6 +78,12 @@ allprojects {
             into("java/lib") //java 디렉토리 안에 연관 의존성 저장
         }
         archiveFileName = "allDependencies.zip"
+        doFirst {
+            println("용량확인..")
+            configurations.runtimeClasspath.get().sortedByDescending { it.length() }.take(20).forEach {
+                println(" -> ${it.length() / 1024 / 1024}  ${it.name}")
+            }
+        }
     }
 
 }
