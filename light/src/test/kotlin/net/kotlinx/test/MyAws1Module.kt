@@ -13,8 +13,8 @@ object MyAws1Module : KoinModule {
 
     override fun moduleConfig(profileName: String?): Module = module {
 
-        val awsConfig = AwsConfig(profileName = profileName)
-        single { awsConfig.toAwsClient1() }
+        single { AwsConfig(profileName = profileName) }
+        single { get<AwsConfig>().toAwsClient1() }
         single { AwsInfoLoader() }
         single { AthenaModule(workGroup = "workgroup-${MyEnv.SUFFIX}", database = MyEnv.SUFFIX.substring(0, 1)) }
     }

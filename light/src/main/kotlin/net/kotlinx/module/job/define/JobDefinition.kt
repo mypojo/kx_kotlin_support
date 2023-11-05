@@ -14,8 +14,8 @@ import kotlin.time.Duration.Companion.hours
 
 /** 잡 정의 등록 (초기화시 모두 생성해서 등록함) */
 fun Module.jobReg(block: JobDefinition.() -> Unit) {
-    val def = JobDefinition(block)
-    single(named(def.jobPk)) { def }
+    val defForPk = JobDefinition(block) //pk 확인을 위해서 그냥 생성한다.
+    single(named(defForPk.jobPk)) { JobDefinition(block) }  //named 지정하면서 생성은 안되네.. ㅠㅠ
 }
 
 /** job ENUM 에서 이걸 구현하면 됨  */
