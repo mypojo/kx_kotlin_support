@@ -4,7 +4,7 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.core.concurrent.coroutineExecute
 import net.kotlinx.core.regex.RegexSet
-import net.kotlinx.core.test.TestLevel02
+import net.kotlinx.test.TestLevel02
 import okhttp3.OkHttpClient
 import org.junit.jupiter.api.Test
 import java.io.File

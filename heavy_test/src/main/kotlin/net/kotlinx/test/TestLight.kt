@@ -1,6 +1,5 @@
 package net.kotlinx.test
 
-import net.kotlinx.core.test.TestRoot
 import org.koin.core.component.KoinComponent
 
 /**

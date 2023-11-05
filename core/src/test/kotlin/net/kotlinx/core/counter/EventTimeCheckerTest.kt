@@ -1,10 +1,10 @@
 package net.kotlinx.core.counter
 
 import net.kotlinx.core.number.toLocalDateTime
-import net.kotlinx.core.test.TestLevel02
-import net.kotlinx.core.test.TestRoot
 import net.kotlinx.core.time.toKr01
 import net.kotlinx.core.time.toTimeString
+import net.kotlinx.test.TestLevel02
+import net.kotlinx.test.TestRoot
 
 class EventTimeCheckerTest : TestRoot() {
 

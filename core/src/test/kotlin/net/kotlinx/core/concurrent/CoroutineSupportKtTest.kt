@@ -1,9 +1,9 @@
 package net.kotlinx.core.concurrent
 
 import kotlinx.coroutines.delay
-import net.kotlinx.core.test.TestLevel02
-import net.kotlinx.core.test.TestRoot
 import net.kotlinx.core.time.measureTimeString
+import net.kotlinx.test.TestLevel02
+import net.kotlinx.test.TestRoot
 import java.util.concurrent.Callable
 import kotlin.time.Duration.Companion.seconds
 

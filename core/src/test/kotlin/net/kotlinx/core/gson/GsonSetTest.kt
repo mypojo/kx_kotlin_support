@@ -1,7 +1,7 @@
 package net.kotlinx.core.gson
 
-import net.kotlinx.core.test.TestLevel01
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestLevel01
+import net.kotlinx.test.TestRoot
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 

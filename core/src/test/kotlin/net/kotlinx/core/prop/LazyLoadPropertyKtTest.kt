@@ -1,7 +1,7 @@
 package net.kotlinx.core.prop
 
-import net.kotlinx.core.test.TestRoot
 import net.kotlinx.core.time.TimeString
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
 class LazyLoadPropertyKtTest : TestRoot() {

@@ -4,7 +4,7 @@ import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.events.S3Event
 import com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotification
 import io.mockk.mockk
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junitpioneer.jupiter.SetEnvironmentVariable

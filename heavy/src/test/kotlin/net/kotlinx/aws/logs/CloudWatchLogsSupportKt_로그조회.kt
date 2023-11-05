@@ -4,9 +4,9 @@ import aws.sdk.kotlin.services.cloudwatchlogs.getLogEvents
 import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.toAwsClient
-import net.kotlinx.core.test.TestLevel03
-import net.kotlinx.core.test.TestRoot
 import net.kotlinx.core.time.toLong
+import net.kotlinx.test.TestLevel03
+import net.kotlinx.test.TestRoot
 import java.time.LocalDateTime
 
 class CloudWatchLogsSupportKt_로그조회 : TestRoot() {

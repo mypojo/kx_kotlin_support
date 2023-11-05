@@ -7,23 +7,19 @@ import net.kotlinx.notion.NotionDatabaseToGoogleCalendar
 import net.kotlinx.reflect.Bean
 import net.kotlinx.test.MyLightKoinStarter
 import net.kotlinx.test.TestLight
+import net.kotlinx.test.job.NotionDatabaseToGoogleCalendarJob
 import org.junit.jupiter.api.Test
-import org.koin.dsl.module
 
 class JobDefinitionRepositoryTest : TestLight() {
 
     init {
         MyLightKoinStarter.startup {
-            modules(
-                module {
-                    single {
-                        log.warn { "모킹객체로 오버라이드 됩니다.." }
-                        mockk<NotionDatabaseToGoogleCalendar> {
-                            every { runBlocking { updateOrInsert() } } answers { println("가짜로 업데이트 했어요") }
-                        }
-                    }
+            single {
+                log.warn { "모킹객체로 오버라이드 됩니다.." }
+                mockk<NotionDatabaseToGoogleCalendar> {
+                    every { runBlocking { updateOrInsert() } } answers { println("가짜로 업데이트 했어요") }
                 }
-            )
+            }
         }
     }
 

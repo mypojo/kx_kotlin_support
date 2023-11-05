@@ -1,8 +1,8 @@
 package net.kotlinx.aws.athena
 
-import net.kotlinx.core.test.TestRoot
 import net.kotlinx.core.time.toTimeString
 import net.kotlinx.core.time.toYmd
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get

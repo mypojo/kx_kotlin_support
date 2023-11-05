@@ -1,6 +1,6 @@
 package net.kotlinx.core.concurrent
 
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.util.concurrent.Callable
 

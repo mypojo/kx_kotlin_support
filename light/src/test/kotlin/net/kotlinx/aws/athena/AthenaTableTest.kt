@@ -3,7 +3,7 @@ package net.kotlinx.aws.athena//package net.kotlinx.aws.athena
 //import net.kotlinx.aws.AwsConfig
 //import net.kotlinx.aws.module.batchStep.BatchStepTable
 //import net.kotlinx.aws.toAwsClient
-//import net.kotlinx.core.test.TestRoot
+//import net.kotlinx.test.TestRoot
 //import org.junit.jupiter.api.Test
 //
 //class AthenaTableTest : TestRoot() {

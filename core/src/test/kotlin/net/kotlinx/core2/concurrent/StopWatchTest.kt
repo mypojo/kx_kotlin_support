@@ -1,7 +1,7 @@
 package net.kotlinx.core2.concurrent
 
 import net.kotlinx.core.concurrent.parallelExecute
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.util.concurrent.Callable
 import kotlin.random.Random

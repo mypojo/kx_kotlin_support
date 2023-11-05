@@ -2,7 +2,7 @@ package net.kotlinx.core.concurrent
 
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.util.concurrent.TimeUnit.SECONDS
 

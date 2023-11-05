@@ -3,7 +3,7 @@ package net.kotlinx.aws.lambda
 import com.lectra.koson.obj
 import net.kotlinx.aws.lambdaCommon.handler.s3.S3LogicHandler
 import net.kotlinx.aws.module.batchStep.stepDefault.StepStartContext
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 

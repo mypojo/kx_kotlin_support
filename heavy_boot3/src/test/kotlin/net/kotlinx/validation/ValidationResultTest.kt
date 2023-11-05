@@ -1,6 +1,6 @@
 package net.kotlinx.validation
 
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
 

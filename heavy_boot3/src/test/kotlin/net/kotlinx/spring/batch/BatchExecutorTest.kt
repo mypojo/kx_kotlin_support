@@ -1,7 +1,7 @@
 package net.kotlinx.spring.batch
 
-import net.kotlinx.core.test.TestRoot
 import net.kotlinx.spring.batch.component.toItemReader
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import org.springframework.batch.item.ItemWriter
 

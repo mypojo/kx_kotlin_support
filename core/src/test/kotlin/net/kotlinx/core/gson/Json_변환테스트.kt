@@ -4,8 +4,8 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.kotlinx.core.lib.ExceptionUtil
-import net.kotlinx.core.test.TestLevel01
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestLevel01
+import net.kotlinx.test.TestRoot
 
 class Json_변환테스트 : TestRoot() {
 

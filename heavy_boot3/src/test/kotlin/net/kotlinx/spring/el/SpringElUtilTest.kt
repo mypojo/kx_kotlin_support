@@ -1,8 +1,8 @@
 package net.kotlinx.spring.el
 
 import net.kotlinx.core.string.toTextGrid
-import net.kotlinx.core.test.TestRoot
 import net.kotlinx.core.time.TimeFormat
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 

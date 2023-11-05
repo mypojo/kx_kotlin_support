@@ -2,7 +2,7 @@ package net.kotlinx.aws.dynamo
 
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.toAwsClient1
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
 internal class DynamoIdSourceTest : TestRoot() {

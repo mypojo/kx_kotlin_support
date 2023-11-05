@@ -4,7 +4,7 @@ import aws.sdk.kotlin.services.sfn.model.ExecutionStatus
 import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.toAwsClient1
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
 class SfnSupportKtTest : TestRoot() {

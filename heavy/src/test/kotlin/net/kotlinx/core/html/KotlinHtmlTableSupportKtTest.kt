@@ -2,7 +2,7 @@ package net.kotlinx.core.html
 
 import kotlinx.html.*
 import kotlinx.html.stream.createHTML
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
 class KotlinHtmlTableSupportKtTest : TestRoot() {

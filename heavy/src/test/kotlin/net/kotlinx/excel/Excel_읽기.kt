@@ -1,7 +1,7 @@
 package net.kotlinx.excel
 
-import net.kotlinx.core.test.TestRoot
 import net.kotlinx.core.threadlocal.ResourceHolder
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.io.File
 

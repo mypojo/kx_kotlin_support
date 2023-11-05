@@ -5,7 +5,7 @@ import com.google.ortools.linearsolver.MPConstraint
 import com.google.ortools.linearsolver.MPObjective
 import com.google.ortools.linearsolver.MPSolver
 import com.google.ortools.linearsolver.MPVariable
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
 class OrToolTest : TestRoot() {

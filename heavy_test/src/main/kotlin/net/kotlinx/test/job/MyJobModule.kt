@@ -1,8 +1,11 @@
-package net.kotlinx.module.job.define
+package net.kotlinx.test.job
 
 import net.kotlinx.koin.KoinModule
 import net.kotlinx.module.job.Job
 import net.kotlinx.module.job.JobRepository
+import net.kotlinx.module.job.define.JobExecuteType
+import net.kotlinx.module.job.define.JobScheduleType
+import net.kotlinx.module.job.define.jobReg
 import net.kotlinx.module.job.trigger.JobLocalExecutor
 import net.kotlinx.module.job.trigger.JobSerializer
 import net.kotlinx.test.MyEnv

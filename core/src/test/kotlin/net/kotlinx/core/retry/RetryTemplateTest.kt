@@ -4,8 +4,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import net.kotlinx.core.concurrent.coroutineExecute
 import net.kotlinx.core.exception.KnownException
-import net.kotlinx.core.test.TestLevel02
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestLevel02
+import net.kotlinx.test.TestRoot
 import java.io.IOException
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds

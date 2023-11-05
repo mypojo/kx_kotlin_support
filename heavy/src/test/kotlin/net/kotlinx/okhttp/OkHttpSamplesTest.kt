@@ -1,9 +1,9 @@
 package net.kotlinx.okhttp
 
 import net.kotlinx.core.concurrent.coroutineExecute
-import net.kotlinx.core.test.TestRoot
 import net.kotlinx.core.time.TimeStart
 import net.kotlinx.core.time.measureTimeString
+import net.kotlinx.test.TestRoot
 import okhttp3.OkHttpClient
 import org.junit.jupiter.api.Test
 

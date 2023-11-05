@@ -131,6 +131,9 @@ class AthenaModule(
     /** 단건 처리 */
     fun readAll(athenaQuery: String): List<List<String>> = (startAndWaitAndExecute(listOf(AthenaReadAll(athenaQuery) {})).first() as AthenaReadAll).lines!!
 
+    /** 단건 처리 (DSL용) */
+    fun readAll(block: () -> String): List<List<String>> = readAll(block())
+
     /** 단건 처리 */
     fun execute(athenaQuery: String) = startAndWaitAndExecute(listOf(AthenaExecute(athenaQuery)))
 
@@ -156,4 +159,5 @@ class AthenaModule(
         }
         return querys
     }
+
 }

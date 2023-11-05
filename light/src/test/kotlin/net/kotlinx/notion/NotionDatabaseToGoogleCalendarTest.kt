@@ -1,7 +1,7 @@
 package net.kotlinx.notion
 
 import kotlinx.coroutines.runBlocking
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.io.File
 

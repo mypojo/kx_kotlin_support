@@ -2,7 +2,7 @@ package net.kotlinx.core.test.mockk
 
 import io.mockk.every
 import io.mockk.mockk
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
 /**

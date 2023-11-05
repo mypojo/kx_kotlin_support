@@ -1,5 +1,7 @@
-package net.kotlinx.aws.module.batchStep
+package net.kotlinx.test.batchStep
 
+import net.kotlinx.aws.module.batchStep.BatchStepConfig
+import net.kotlinx.aws.module.batchStep.BatchStepExecutor
 import net.kotlinx.aws.module.batchStep.stepDefault.BatchStepDefaultRunner
 import net.kotlinx.koin.KoinModule
 import net.kotlinx.test.MyEnv

@@ -1,7 +1,7 @@
 package net.kotlinx.aws.module.batchStep
 
 import net.kotlinx.aws.module.batchStep.stepDefault.StepStart
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.util.*
 

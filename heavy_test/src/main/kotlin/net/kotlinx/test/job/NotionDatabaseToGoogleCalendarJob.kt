@@ -1,4 +1,4 @@
-package net.kotlinx.module.job.define
+package net.kotlinx.test.job
 
 
 import kotlinx.coroutines.runBlocking

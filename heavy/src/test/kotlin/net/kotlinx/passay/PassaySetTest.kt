@@ -1,7 +1,7 @@
 package net.kotlinx.passay
 
 import net.kotlinx.core.string.toTextGrid
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import org.passay.PasswordData
 import org.passay.RuleResult

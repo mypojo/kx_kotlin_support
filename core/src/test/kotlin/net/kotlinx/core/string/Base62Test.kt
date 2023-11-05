@@ -1,7 +1,7 @@
 package net.kotlinx.core.string
 
-import net.kotlinx.core.test.TestLevel01
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestLevel01
+import net.kotlinx.test.TestRoot
 
 internal class Base62Test : TestRoot() {
 

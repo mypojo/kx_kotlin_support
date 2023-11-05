@@ -3,7 +3,7 @@ package net.kotlinx.core.gson
 import com.lectra.koson.arr
 import com.lectra.koson.obj
 import com.lectra.koson.rawJson
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
 internal class GsonDataTest : TestRoot() {

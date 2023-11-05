@@ -1,6 +1,6 @@
 package net.kotlinx.aws.athena
 
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 
 internal class AthenaS3PartitionModuleTest : TestRoot() {
 

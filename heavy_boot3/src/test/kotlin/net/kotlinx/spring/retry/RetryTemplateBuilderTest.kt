@@ -6,8 +6,8 @@ import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.dynamo.updateItemMap
 import net.kotlinx.aws.toAwsClient1
 import net.kotlinx.core.concurrent.parallelExecute
-import net.kotlinx.core.test.TestLevel03
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestLevel03
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.util.concurrent.Callable
 import kotlin.random.Random

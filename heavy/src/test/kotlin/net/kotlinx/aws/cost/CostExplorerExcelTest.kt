@@ -6,11 +6,11 @@ import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.iam.IamCredential
 import net.kotlinx.aws.toAwsClient
 import net.kotlinx.core.gson.GsonSet
-import net.kotlinx.core.test.TestRoot
 import net.kotlinx.core.threadlocal.ResourceHolder
 import net.kotlinx.core.time.toYmdF01
 import net.kotlinx.guava.fromJsonList
 import net.kotlinx.okhttp.OkHttpSamples
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.time.LocalDate

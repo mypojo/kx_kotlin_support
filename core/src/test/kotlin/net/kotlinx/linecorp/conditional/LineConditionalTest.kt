@@ -6,8 +6,8 @@ import com.linecorp.conditional.kotlin.and
 import com.linecorp.conditional.kotlin.coroutineCondition
 import kotlinx.coroutines.runBlocking
 import net.kotlinx.core.string.ResultText
-import net.kotlinx.core.test.TestLevel01
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestLevel01
+import net.kotlinx.test.TestRoot
 
 /**
  * https://github.com/line/conditional

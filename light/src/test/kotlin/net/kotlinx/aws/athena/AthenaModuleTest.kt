@@ -1,8 +1,8 @@
 package net.kotlinx.aws.athena
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import net.kotlinx.core.test.TestRoot
 import net.kotlinx.test.MyLightKoinStarter
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import kotlin.io.path.deleteExisting
 

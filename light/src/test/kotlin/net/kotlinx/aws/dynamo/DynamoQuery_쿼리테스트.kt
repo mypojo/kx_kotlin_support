@@ -1,6 +1,6 @@
 package net.kotlinx.aws.dynamo
 
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 
 
 internal class DynamoQuery_쿼리테스트 : TestRoot() {

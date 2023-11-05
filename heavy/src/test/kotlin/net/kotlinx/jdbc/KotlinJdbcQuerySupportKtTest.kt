@@ -5,7 +5,7 @@ import com.vladsch.kotlin.jdbc.sqlQuery
 import com.vladsch.kotlin.jdbc.using
 import net.kotlinx.aws.javaSdkv2.HikariIamDataSource
 import net.kotlinx.core.string.toTextGrid
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
 class KotlinJdbcQuerySupportKtTest : TestRoot() {

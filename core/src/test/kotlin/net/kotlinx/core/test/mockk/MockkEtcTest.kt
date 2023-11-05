@@ -3,7 +3,7 @@ package net.kotlinx.core.test.mockk
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime

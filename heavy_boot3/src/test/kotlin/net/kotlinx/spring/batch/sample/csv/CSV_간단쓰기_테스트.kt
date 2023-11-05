@@ -1,12 +1,11 @@
 package net.kotlinx.spring.batch.sample.csv
 
 import net.kotlinx.core.file.FileZipTemplate
-import net.kotlinx.core.test.TestRoot
 import net.kotlinx.core.threadlocal.ResourceHolder
 import net.kotlinx.spring.batch.BatchExecutor
 import net.kotlinx.spring.batch.component.toItemReader
 import net.kotlinx.spring.opencsv.CsvItemWriterTemplate
-
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.io.File
 

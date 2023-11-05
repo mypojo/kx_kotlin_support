@@ -1,8 +1,8 @@
 package net.kotlinx.core.calculator
 
 import net.kotlinx.core.counter.EventTimeChecker
-import net.kotlinx.core.test.TestLevel02
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestLevel02
+import net.kotlinx.test.TestRoot
 import kotlin.time.Duration.Companion.seconds
 
 class ProgressInlineCheckerTest : TestRoot() {

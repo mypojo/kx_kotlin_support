@@ -1,4 +1,4 @@
-package net.kotlinx.core.test
+package net.kotlinx.test
 
 import ch.qos.logback.classic.Level
 import mu.KotlinLogging

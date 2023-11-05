@@ -1,7 +1,7 @@
 package net.kotlinx.core.menu
 
 import net.kotlinx.core.string.toTextGrid
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
 /** 설정 확장 - 아이콘 추가 */

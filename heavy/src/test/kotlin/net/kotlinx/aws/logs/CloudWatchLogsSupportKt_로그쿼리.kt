@@ -6,10 +6,10 @@ import net.kotlinx.aws.toAwsClient
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.regex.RegexSet
 import net.kotlinx.core.string.toLocalDate
-import net.kotlinx.core.test.TestLevel03
-import net.kotlinx.core.test.TestRoot
 import net.kotlinx.core.time.TimeListUtil
 import net.kotlinx.core.time.toYmd
+import net.kotlinx.test.TestLevel03
+import net.kotlinx.test.TestRoot
 import java.time.LocalTime
 
 class CloudWatchLogsSupportKt_로그쿼리 : TestRoot() {

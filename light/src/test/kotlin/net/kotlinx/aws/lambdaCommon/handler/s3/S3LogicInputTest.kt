@@ -1,6 +1,6 @@
 package net.kotlinx.aws.lambdaCommon.handler.s3
 
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
 

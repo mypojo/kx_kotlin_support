@@ -1,7 +1,7 @@
 package net.kotlinx.okhttp
 
-import net.kotlinx.core.test.TestRoot
 import net.kotlinx.core.text.RegexParseSupport
+import net.kotlinx.test.TestRoot
 import okhttp3.OkHttpClient
 import org.junit.jupiter.api.Test
 

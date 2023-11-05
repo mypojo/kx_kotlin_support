@@ -6,8 +6,8 @@ import aws.sdk.kotlin.services.dynamodb.updateItem
 import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.toAwsClient1
-import net.kotlinx.core.test.TestLevel03
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestLevel03
+import net.kotlinx.test.TestRoot
 
 class DynamoDbSupportKtTest : TestRoot() {
 

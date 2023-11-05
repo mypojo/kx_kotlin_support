@@ -1,6 +1,6 @@
 package net.kotlinx.aws.lambdaCommon
 
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
 class CommonFunctionHandlerTest : TestRoot() {

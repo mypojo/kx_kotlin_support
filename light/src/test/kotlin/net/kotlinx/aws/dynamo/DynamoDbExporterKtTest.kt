@@ -8,7 +8,7 @@ import net.kotlinx.aws.athena.AthenaTable
 import net.kotlinx.aws.athena.AthenaTableFormat
 import net.kotlinx.aws.athena.AthenaTablePartitionType
 import net.kotlinx.aws.toAwsClient1
-import net.kotlinx.core.test.TestRoot
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
 class DynamoDbExporterKtTest : TestRoot() {
