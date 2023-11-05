@@ -7,9 +7,11 @@ import com.amazonaws.services.dynamodbv2.LockItem
 import com.amazonaws.services.dynamodbv2.model.LockNotGrantedException
 import net.kotlinx.aws.javaSdkv2.AwsJavaSdkV2Client
 import net.kotlinx.aws.javaSdkv2.toJavaAttributeValue
+import net.kotlinx.core.Kdsl
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.concurrent.TimeUnit
+
 
 /**
  * AWS에서 서버리스로 사용 가능한 분산 락 처리기
@@ -26,7 +28,12 @@ import java.util.concurrent.TimeUnit
  * 경고!  이 락은 재진입이 불가능하다. 락 호출전에 처리 단위끼리 모아서 처리할것!
  * 경고!  락 조회는 kotlin 버전으로 하면됨 (지금 누가 리소스를 선점하고있는지 보고싶을때)
  */
-class DynamoLockModule(block: DynamoLockModule.() -> Unit = {}) : KoinComponent {
+class DynamoLockModule : KoinComponent {
+
+    @Kdsl
+    constructor(block: DynamoLockModule.() -> Unit) {
+        apply(block)
+    }
 
     private val awsv2: AwsJavaSdkV2Client by inject()
 
@@ -60,10 +67,6 @@ class DynamoLockModule(block: DynamoLockModule.() -> Unit = {}) : KoinComponent 
      * 락 대여기간 + 이 값 = 실제 타임아웃
      *  */
     var defaultAdditionalTimeout: Long = 0
-
-    init {
-        block(this)
-    }
 
     /** 락 클라이언트 생성 */
     private val lockClient: AmazonDynamoDBLockClient by lazy {

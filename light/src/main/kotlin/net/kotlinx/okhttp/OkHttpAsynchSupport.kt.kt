@@ -1,6 +1,7 @@
 package net.kotlinx.okhttp
 
 import kotlinx.coroutines.suspendCancellableCoroutine
+import net.kotlinx.core.Kdsl
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -40,6 +41,7 @@ suspend fun Call.await(): Response {
 }
 
 /** 비동기 호출 */
+@Kdsl
 suspend fun OkHttpClient.await(block: OkHttpReq.() -> Unit): OkHttpResp {
     val req = OkHttpReq().apply(block)
     val resp = this.newCall(req.build()).await()

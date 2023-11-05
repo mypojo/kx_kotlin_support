@@ -10,7 +10,7 @@ apply {
 }
 
 //==================================================== 공통 ======================================================
-/** 그래들 표준 문법을 간단하게 변경해줌 */
+/** 그래들 표준 문법을 간단하게 변경해줌 ex) providers["kotlinVersion"] */
 operator fun ProviderFactory.get(name: String): String = this.gradleProperty(name).get()
 
 //==================================================== 프로젝트별 설정 ======================================================
@@ -31,10 +31,6 @@ dependencies {
     implementation("aws.smithy.kotlin:http-client-engine-okhttp-jvm:0.19.0") //http 설정에 필요  https://mvnrepository.com/artifact/aws.smithy.kotlin/http-client-engine-okhttp-jvm
 
     //==================================================== AWS 최소의존성 ======================================================
-    api("com.amazonaws:aws-lambda-java-core:1.2.2") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함
-    api("com.amazonaws:aws-lambda-java-events:3.11.0")  //핸들러에 매핑되는 이벤트 객
-    api("io.github.crac:org-crac:0.1.3")  //스냅스타트 후크 (클래스 로딩용)
-
     val awsVersion: String by project
     api("aws.sdk.kotlin:s3:$awsVersion")
     api("aws.sdk.kotlin:dynamodb:$awsVersion")
@@ -47,6 +43,11 @@ dependencies {
     api("aws.sdk.kotlin:ssm:$awsVersion") //용량 큼
     api("aws.sdk.kotlin:batch:$awsVersion") //걸리는데가 많아서 추가
 
+    //==================================================== AWS 람다 ======================================================
+    api("com.amazonaws:aws-lambda-java-core:1.2.2") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함
+    api("com.amazonaws:aws-lambda-java-events:3.11.0")  //핸들러에 매핑되는 이벤트 객
+    api("io.github.crac:org-crac:0.1.3")  //스냅스타트 후크 (클래스 로딩용)
+
     //====================================================커먼즈 ======================================================
     api("org.apache.commons:commons-text:1.10.0") // javacript 등의 이스케이핑에 사용된다. kotlin 네이티브가 없네..
 
@@ -56,8 +57,21 @@ dependencies {
     //==================================================== 슬랙 ======================================================
     api("com.slack.api:slack-api-client:1.29.1") //기본 API만 포함함
 
+    //==================================================== 구글 API ======================================================
+    //사용하기 키 발급받아서 사용하기 너무 불편함!! 일단 사용처는 없음
+    //implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0") //https://github.com/googleapis/google-auth-library-java  구글인증은 이걸로 다 바뀐듯함 -> 나는 안씀
+    implementation("com.google.gdata:core:1.47.1") //구글 기본세트
+
+    implementation("com.google.apis:google-api-services-oauth2:v2-rev151-1.25.0") //구글 기본세트
+    implementation("com.google.apis:google-api-services-calendar:v3-rev411-1.25.0") //캘린더
+    implementation("com.google.apis:google-api-services-sheets:v4-rev581-1.25.0") //구글시트
+
+    //==================================================== AWS CDK (그냥 여기 둔다) ======================================================
+    api("software.amazon.awscdk:aws-cdk-lib:2.93.0")   //https://mvnrepository.com/artifact/software.amazon.awscdk/aws-cdk-lib
+    //api("software.constructs:constructs:10.1.278") //CDK 추가 빌딩블럭
 }
 
+/** 실행파일 + 모든 의존성 */
 tasks.create("fatJar", Jar::class) {
     group = "build"
     description = "AWS 람다 all-in-one 빌드용 (전체 의존이 50mb 이내여야함)"
@@ -74,6 +88,7 @@ tasks.create("fatJar", Jar::class) {
 }
 
 /**
+ * 모든 의존성만
  * https://docs.aws.amazon.com/ko_kr/lambda/latest/dg/packaging-layers.html
  * */
 tasks.create("allDependencies", Zip::class) {

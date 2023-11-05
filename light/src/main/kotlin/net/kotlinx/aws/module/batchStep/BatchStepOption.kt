@@ -2,15 +2,14 @@ package net.kotlinx.aws.module.batchStep
 
 import kotlinx.serialization.Serializable
 import net.kotlinx.aws.module.batchStep.stepDefault.StepStartContext
+import net.kotlinx.core.Kdsl
 
-@DslMarker
-annotation class BatchStepOptionDsl
 
 /** 옵션 공통 */
 @Serializable
 class BatchStepOption {
 
-    @BatchStepOptionDsl
+    @Kdsl
     constructor(block: BatchStepOption.() -> Unit) {
         apply(block)
     }
@@ -41,13 +40,10 @@ class BatchStepOption {
 
 }
 
-@DslMarker
-annotation class BatchStepListOptionDsl
-
 @Serializable
 class BatchStepListOption {
 
-    @BatchStepListOptionDsl
+    @Kdsl
     constructor(block: BatchStepListOption.() -> Unit) {
         apply(block)
     }

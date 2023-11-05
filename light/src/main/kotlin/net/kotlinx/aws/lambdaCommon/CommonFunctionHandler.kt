@@ -5,6 +5,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.aws.lambda.LambdaHandlerUtil
+import net.kotlinx.core.Kdsl
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.lib.toSimpleString
 import net.kotlinx.core.threadlocal.ResourceHolder
@@ -23,7 +24,7 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
     protected val logics: MutableList<LambdaFunctionLogic> = mutableListOf()
 
     /** 로직 등록 */
-    @LambdaFunctionLogicDsl
+    @Kdsl
     fun regtiter(block: LambdaFunctionLogic.() -> Unit = {}) {
         logics += LambdaFunctionLogic().apply(block)
     }

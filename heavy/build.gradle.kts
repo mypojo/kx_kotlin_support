@@ -19,6 +19,7 @@ dependencies {
     //==================================================== 내부 의존성 ======================================================
     api(project(":light"))
     testApi(project(":core").dependencyProject.sourceSets["test"].output) //코어 테스트에 있는 공통 (testRoot 등)을 사용할 수 있게 해줌
+    testApi(project(":light").dependencyProject.sourceSets["test"].output) //코어 테스트에 있는 공통 (testRoot 등)을 사용할 수 있게 해줌
 
     //==================================================== 자바 표준 ======================================================
     api("jakarta.mail:jakarta.mail-api:2.1.2") //이메일 전송에 필요함
@@ -55,14 +56,15 @@ dependencies {
     //==================================================== AWS JAVA V2 client (레거시 호환) ======================================================
     val awsJavaV2Version: String by project
     implementation("software.amazon.awssdk:apache-client:$awsJavaV2Version") //기본 HTTP 클라이언트 (쓰던거 씀)
-    api("software.amazon.awssdk:dynamodb:$awsJavaV2Version") //DDB 분산락 작용용
+    implementation("software.amazon.awssdk:dynamodb:$awsJavaV2Version") //DDB 분산락 작용용
 
     //==================================================== AWS JAVA V2 RDS IAM ======================================================
     implementation("software.amazon.awssdk:rds:$awsJavaV2Version") //AWS SDK2 버전의 IAM 데이터소스 (코틀린 버전 없음)
     implementation("software.amazon.awssdk:sts:$awsJavaV2Version") //IAM 토큰 발행시 필요
 
     //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
-    implementation("org.jetbrains.exposed:exposed:${providers["exposedVersion"]}") //라이트 ORM
+    api("org.jetbrains.exposed:exposed:${providers["exposedVersion"]}") //라이트 ORM
+    api("org.jetbrains.kotlinx:dataframe:1727") //주피터 노트북 코틀린버전.  버전 이름이 이상하다.. 갑자기 이러네
 
     //==================================================== RDB ======================================================
     api("com.zaxxer:HikariCP:5.0.1")

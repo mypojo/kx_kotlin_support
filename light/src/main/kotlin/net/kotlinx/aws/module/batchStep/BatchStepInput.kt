@@ -3,12 +3,11 @@ package net.kotlinx.aws.module.batchStep
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
+import net.kotlinx.core.Kdsl
 import net.kotlinx.core.serial.SerialJsonCompanion
 import net.kotlinx.core.serial.SerialJsonObj
 import net.kotlinx.core.serial.SerialJsonSet
 
-@DslMarker
-annotation class BatchStepInputDsl
 
 /**
  * SFN 실행시 이거 거대로 입력 -> 이게 json으로 변환되서 SFN 실행 -> SFN(람다/배치) 에서 수신해서 다시 객체화
@@ -20,7 +19,7 @@ annotation class BatchStepInputDsl
 @Serializable
 class BatchStepInput : SerialJsonObj {
 
-    @BatchStepInputDsl
+    @Kdsl
     constructor(block: BatchStepInput.() -> Unit) {
         apply(block)
     }

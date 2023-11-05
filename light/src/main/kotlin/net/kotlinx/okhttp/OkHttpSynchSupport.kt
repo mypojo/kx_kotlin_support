@@ -1,5 +1,6 @@
 package net.kotlinx.okhttp
 
+import net.kotlinx.core.Kdsl
 import okhttp3.OkHttpClient
 import java.io.File
 import java.io.FileOutputStream
@@ -11,6 +12,7 @@ import java.io.FileOutputStream
 fun OkHttpClient.fetch(okHttpReq: OkHttpReq): OkHttpResp = this.newCall(okHttpReq.build()).execute().use { OkHttpResp(okHttpReq, it).load() }
 
 /** 동기화 호출 (DSL) */
+@Kdsl
 fun OkHttpClient.fetch(block: OkHttpReq.() -> Unit): OkHttpResp = this.fetch(OkHttpReq().apply(block))
 
 /** 동기화 다운로드 */

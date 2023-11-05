@@ -117,14 +117,9 @@ publishing {
 
         val pubConfig = System.getenv()["pubConfig"]
         if (pubConfig == null) {
-            pub("light").run {
-                pub("light_v1")
-                pub("aws_cdk")
-            }
-
+            pub("light")
             pub("heavy").run {
                 pub("heavy_boot3")
-                pub("heavy_notebook")
             }
         } else {
             println("pubConfig = $pubConfig")

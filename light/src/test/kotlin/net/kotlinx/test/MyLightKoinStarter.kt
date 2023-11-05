@@ -3,6 +3,7 @@ package net.kotlinx.test
 import mu.KotlinLogging
 import net.kotlinx.aws.module.batchStep.MyBatchStepModule
 import net.kotlinx.module.job.define.MyJobModule
+import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 
@@ -11,7 +12,10 @@ object MyLightKoinStarter {
 
     private val log = KotlinLogging.logger {}
 
-    fun startup(profile: String? = null) {
+    /**
+     * @param block 테스트용 모킹객체 등 오버라이드 설정용
+     * */
+    fun startup(profile: String? = null, block: KoinApplication.() -> Unit = {}) {
         stopKoin() //체크 없이 그냥 스탑해도 됨
         startKoin {
             log.warn { "test kotin [$profile] start.." }
@@ -23,6 +27,7 @@ object MyLightKoinStarter {
                 MyJobModule.moduleConfig(),
                 MyBatchStepModule.moduleConfig(profile),
             )
+            block()
         }
     }
 

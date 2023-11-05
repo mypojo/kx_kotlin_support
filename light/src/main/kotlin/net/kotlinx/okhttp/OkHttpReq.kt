@@ -1,5 +1,6 @@
 package net.kotlinx.okhttp
 
+import net.kotlinx.core.Kdsl
 import net.kotlinx.okhttp.OkHttpUtil.MEDIA_TYPE_JSON
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -26,6 +27,7 @@ class OkHttpReq {
     var body: Any? = null
 
     /** 쿼리파라메터 등이 필요할때는 간단하게 이걸 사용 */
+    @Kdsl
     fun url(path: String, block: HttpUrl.Builder.() -> Unit = {}) {
         url = path.toHttpUrl().newBuilder().apply(block).build().toString()
     }

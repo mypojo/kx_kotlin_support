@@ -6,7 +6,10 @@ import org.koin.mp.KoinPlatformTools
 
 interface KoinModule : KoinComponent {
 
-    /** 모듈 설정 네이밍 통일용 */
+    /**
+     * 모듈 설정 네이밍 통일용
+     * @param option 보통 profile 이름
+     * */
     fun moduleConfig(option: String? = null): Module
 
 }

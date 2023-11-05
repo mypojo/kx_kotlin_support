@@ -6,6 +6,7 @@ import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.lambdaCommon.handler.s3.S3LogicInput
 import net.kotlinx.aws.s3.putObject
 import net.kotlinx.aws.sfn.startExecution
+import net.kotlinx.core.Kdsl
 import net.kotlinx.core.calculator.ProgressInlineChecker
 import net.kotlinx.core.concurrent.coroutineExecute
 import net.kotlinx.core.time.measureTimeString
@@ -31,7 +32,7 @@ class BatchStepExecutor : KoinComponent {
      * 작업들 업로드 & SFN실행 한번에.
      * @param datas 각 단위는 5~8분 이내로 처리 가능한 사이즈가 좋아보임. (부득이하게 좀 길어져도 안전하도록)
      * */
-    @BatchStepInputDsl
+    @Kdsl
     suspend fun startExecution(datas: List<S3LogicInput>, block: BatchStepInput.() -> Unit = {}): BatchStepInput {
 
         val input = BatchStepInput(block)

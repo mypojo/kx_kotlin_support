@@ -23,12 +23,7 @@ include(
 //    "common",
     "core",
     "light",
-    "aws_cdk",
-
-    "light_v1",
-
     "heavy",
     "heavy_boot3",
-    "heavy_notebook", //코틀린 주피터 노트북
     "heavy_test", //무거운 의존성 별도분리. 테스트용
 )

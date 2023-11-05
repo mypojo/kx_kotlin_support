@@ -3,12 +3,19 @@ package net.kotlinx.aws.javaSdkv2.dynamoLock
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.aws.dynamo.DynamoData
 import net.kotlinx.aws.dynamo.findOrThrow
+import net.kotlinx.core.Kdsl
+
 
 /** 나머지 구현하기 */
-class DynamoLockReq(block: DynamoLockReq.() -> Unit = {}) : DynamoData {
+class DynamoLockReq : DynamoData {
 
     override lateinit var pk: String
     override lateinit var sk: String
+
+    @Kdsl
+    constructor(block: DynamoLockReq.() -> Unit) {
+        apply(block)
+    }
 
     //==================================================== 디폴트설정 ======================================================
 
@@ -33,11 +40,6 @@ class DynamoLockReq(block: DynamoLockReq.() -> Unit = {}) : DynamoData {
      *  */
     var comment: String = ""
 
-
-    init {
-        block(this)
-    }
-
     override fun toString(): String {
         return "[${pk}:${sk}] -> (${div}) $comment"
     }
@@ -54,14 +56,13 @@ class DynamoLockReq(block: DynamoLockReq.() -> Unit = {}) : DynamoData {
 
     /** 아무것도 하지않음 */
     override fun <T : DynamoData> fromAttributeMap(map: Map<String, AttributeValue>): T {
-        return DynamoLockReq{
+        return DynamoLockReq {
             pk = map.findOrThrow(DynamoLockReq::pk)
             sk = map.findOrThrow(DynamoLockReq::sk)
             div = map.findOrThrow(DynamoLockReq::div)
             comment = map.findOrThrow(DynamoLockReq::comment)
         } as T
     }
-
 
 
 }

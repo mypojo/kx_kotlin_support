@@ -1,9 +1,5 @@
 package net.kotlinx.aws.lambdaCommon
 
-/** this를 생략할 수 없게 해줌 -> 1뎁스에서만 DSL 사용 가능 */
-@DslMarker
-annotation class LambdaFunctionLogicDsl
-
 /** 각 람다 로직을 DSL로 정의 */
 class LambdaFunctionLogic {
 

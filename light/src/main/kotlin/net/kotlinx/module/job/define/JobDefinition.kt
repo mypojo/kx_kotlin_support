@@ -11,8 +11,6 @@ import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 
-@DslMarker
-annotation class JobDefinitionDsl
 
 /** 잡 정의 등록 (초기화시 모두 생성해서 등록함) */
 fun Module.jobReg(block: JobDefinition.() -> Unit) {
