@@ -28,12 +28,7 @@ import java.util.concurrent.TimeUnit
  * 경고!  이 락은 재진입이 불가능하다. 락 호출전에 처리 단위끼리 모아서 처리할것!
  * 경고!  락 조회는 kotlin 버전으로 하면됨 (지금 누가 리소스를 선점하고있는지 보고싶을때)
  */
-class DynamoLockModule : KoinComponent {
-
-    @Kdsl
-    constructor(block: DynamoLockModule.() -> Unit) {
-        apply(block)
-    }
+class DynamoLockModule @Kdsl constructor(block: DynamoLockModule.() -> Unit) : KoinComponent {
 
     private val awsv2: AwsJavaSdkV2Client by inject()
 
@@ -113,6 +108,10 @@ class DynamoLockModule : KoinComponent {
      * @param req 이걸로 DDB 조회해서 선행 락 확인 가능
      *  */
     class DynamoLockFailException(val req: DynamoLockReq, message: String) : LockNotGrantedException(message)
+
+    init {
+        apply(block)
+    }
 
 
 }

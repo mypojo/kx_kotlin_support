@@ -7,15 +7,10 @@ import net.kotlinx.core.Kdsl
 
 
 /** 나머지 구현하기 */
-class DynamoLockReq : DynamoData {
+class DynamoLockReq @Kdsl constructor(block: DynamoLockReq.() -> Unit) : DynamoData {
 
     override lateinit var pk: String
     override lateinit var sk: String
-
-    @Kdsl
-    constructor(block: DynamoLockReq.() -> Unit) {
-        apply(block)
-    }
 
     //==================================================== 디폴트설정 ======================================================
 
@@ -62,6 +57,10 @@ class DynamoLockReq : DynamoData {
             div = map.findOrThrow(DynamoLockReq::div)
             comment = map.findOrThrow(DynamoLockReq::comment)
         } as T
+    }
+
+    init {
+        apply(block)
     }
 
 
