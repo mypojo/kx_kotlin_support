@@ -27,7 +27,7 @@ dependencies {
     //==================================================== AWS ======================================================
     val awsVersion: String by project
     api("aws.sdk.kotlin:sts:$awsVersion")
-    api("aws.sdk.kotlin:iam:$awsVersion")
+    api("aws.sdk.kotlin:iam:$awsVersion") //용량 큼
     api("aws.sdk.kotlin:rds:$awsVersion")
     api("aws.sdk.kotlin:ecs:$awsVersion")  //ec2 생략
     api("aws.sdk.kotlin:ses:$awsVersion")

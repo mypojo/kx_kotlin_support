@@ -86,18 +86,3 @@ tasks.create("fatJar", Jar::class) {
         // 람다 디플로이 및 버전 갱신...
     }
 }
-
-/**
- * 모든 의존성만
- * https://docs.aws.amazon.com/ko_kr/lambda/latest/dg/packaging-layers.html
- * */
-tasks.create("allDependencies", Zip::class) {
-    group = "build"
-    description = "AWS 람다 레이어용 전체 의존성 압축파일 생성"
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    from(configurations.runtimeClasspath.get()) {
-        into("java/lib") //java 디렉토리 안에 연관 의존성 저장
-    }
-    archiveFileName = "allDependencies.zip"
-}
