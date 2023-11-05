@@ -38,7 +38,7 @@ class GoogleSecret(block: GoogleSecret.() -> Unit = {}) {
     /** 토큰에 부여받을 권한  */
     var scopes = listOf(
         SheetsScopes.SPREADSHEETS,
-        CalendarScopes.CALENDAR_EVENTS
+        CalendarScopes.CALENDAR
     )
 
     /** 시크릿을 저장할 디렉터리 */

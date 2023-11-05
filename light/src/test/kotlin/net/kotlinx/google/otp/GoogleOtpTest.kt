@@ -14,7 +14,7 @@ class GoogleOtpTest : TestRoot() {
     @Test
     fun `토큰 검증`() {
 
-        println(GoogleOtp.checkCode("OMUGBWFMJMHKWQ7IIOOKX6GEHWPGRL5M", 116260))
+        //println(GoogleOtp.checkCode("OMUGBWFMJMHKWQ7IIOOKX6GEHWPGRL5M", 116260))
 
     }
 

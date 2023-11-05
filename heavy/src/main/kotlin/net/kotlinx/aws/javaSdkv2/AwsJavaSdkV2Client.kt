@@ -22,7 +22,6 @@ class AwsJavaSdkV2Client(awsConfig: AwsConfig) {
      *  */
     val httpClient: SdkHttpClient by lazy {
         ApacheHttpClient.builder()
-            .maxConnections(awsConfig.httpMaxConnections)
             .connectionMaxIdleTime(awsConfig.connectionIdleTimeout.toJavaDuration())
             .connectionTimeout(awsConfig.httpConnectTimeout.toJavaDuration())
             .socketTimeout(awsConfig.httpSocketWriteTimeout.toJavaDuration()) //이게 맞는지는 모르겠음

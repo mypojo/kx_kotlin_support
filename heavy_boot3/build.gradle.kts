@@ -35,13 +35,12 @@ dependencies {
     implementation("org.hibernate.validator:hibernate-validator") //버전표기 X
 
     //==================================================== JWT 관련 ======================================================
-    val jwtVersion = "0.11.5"
-    implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtVersion")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
+    implementation("io.jsonwebtoken:jjwt-api:_")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:_")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:_")
 
     //==================================================== 배치 관련 ======================================================
-    implementation("com.opencsv:opencsv:5.8") //의존성 문제 보고됨
+    implementation("com.opencsv:opencsv:_") //의존성 문제 보고됨
 
 
 

@@ -32,7 +32,12 @@ node_modules/
 yarn.lock
 package-lock.json
 
+#### versionRefresh ####
+buildscan.log
+buildSrc
+
 #### 개인 관리 ####
 **/*_sin*
+
 
 

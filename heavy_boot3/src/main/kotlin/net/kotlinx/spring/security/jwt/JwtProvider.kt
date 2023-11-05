@@ -18,7 +18,7 @@ import kotlin.time.Duration
  *  */
 class JwtProvider(
     secret: String,
-    private val tokenDuration: Duration
+    private val tokenDuration: Duration,
 ) {
 
     private val log = KotlinLogging.logger {}

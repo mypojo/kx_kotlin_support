@@ -23,11 +23,11 @@ dependencies {
 
     //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
     api("org.jetbrains.kotlin:kotlin-reflect:${providers["kotlinVersion"]}") // 리플렉션 약 3.1메가. 살짝 부담되긴 함.
-    api("io.insert-koin:koin-core:3.4.0") //kotlin DI 도구. 모듈 설정에는 이걸 적용하기로함.  실무에서는 spring 사용
+    api("io.insert-koin:koin-core:_") //kotlin DI 도구. 모듈 설정에는 이걸 적용하기로함.  실무에서는 spring 사용
 
     //==================================================== 기본 http 클라이언트 ======================================================
-    api("com.squareup.okhttp3:okhttp:5.0.0-alpha.11") //https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
-    implementation("aws.smithy.kotlin:http-client-engine-okhttp-jvm:0.19.0") //http 설정에 필요  https://mvnrepository.com/artifact/aws.smithy.kotlin/http-client-engine-okhttp-jvm
+    api("com.squareup.okhttp3:okhttp:_") //https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+    implementation("aws.smithy.kotlin:http-client-engine-okhttp-jvm:_") //http 설정에 필요  https://mvnrepository.com/artifact/aws.smithy.kotlin/http-client-engine-okhttp-jvm
 
     //==================================================== AWS 최소의존성 ======================================================
     val awsVersion: String by project
@@ -43,31 +43,31 @@ dependencies {
     api("aws.sdk.kotlin:batch:$awsVersion") //걸리는데가 많아서 추가
 
     //==================================================== AWS 람다 ======================================================
-    api("com.amazonaws:aws-lambda-java-core:1.2.2") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함
-    api("com.amazonaws:aws-lambda-java-events:3.11.0")  //핸들러에 매핑되는 이벤트 객
-    api("io.github.crac:org-crac:0.1.3")  //스냅스타트 후크 (클래스 로딩용)
+    api("com.amazonaws:aws-lambda-java-core:_") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함
+    api("com.amazonaws:aws-lambda-java-events:_")  //핸들러에 매핑되는 이벤트 객
+    api("io.github.crac:org-crac:_")  //스냅스타트 후크 (클래스 로딩용)
 
     //====================================================커먼즈 ======================================================
-    api("org.apache.commons:commons-text:1.10.0") // javacript 등의 이스케이핑에 사용된다. kotlin 네이티브가 없네..
+    api("org.apache.commons:commons-text:_") // javacript 등의 이스케이핑에 사용된다. kotlin 네이티브가 없네..
 
     //==================================================== 구아바 (이정도는 괜찮겠지) ======================================================
-    api("com.google.guava:guava:${providers["guavaVersion"]}") //약 3mb
+    api("com.google.guava:guava:_") //약 3mb
 
     //==================================================== 슬랙 ======================================================
-    api("com.slack.api:slack-api-client:1.29.1") //기본 API만 포함함
+    api("com.slack.api:slack-api-client:_") //기본 API만 포함함
 
     //==================================================== 구글 API ======================================================
     //사용하기 키 발급받아서 사용하기 너무 불편함!! 일단 사용처는 없음
     //implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0") //https://github.com/googleapis/google-auth-library-java  구글인증은 이걸로 다 바뀐듯함 -> 나는 안씀
-    implementation("com.google.gdata:core:1.47.1") //구글 기본세트
+    implementation("com.google.gdata:core:_") //구글 기본세트
 
-    implementation("com.google.apis:google-api-services-oauth2:v2-rev151-1.25.0") //구글 기본세트
-    implementation("com.google.apis:google-api-services-calendar:v3-rev411-1.25.0") //캘린더
-    implementation("com.google.apis:google-api-services-sheets:v4-rev581-1.25.0") //구글시트
+    implementation("com.google.apis:google-api-services-oauth2:_") //구글 기본세트  v2-rev151-1.25.0
+    implementation("com.google.apis:google-api-services-calendar:_") //캘린더
+    implementation("com.google.apis:google-api-services-sheets:_") //구글시트
 
     //==================================================== AWS CDK (그냥 여기 둔다) ======================================================
-    api("software.amazon.awscdk:aws-cdk-lib:2.93.0")   //https://mvnrepository.com/artifact/software.amazon.awscdk/aws-cdk-lib
-    //api("software.constructs:constructs:10.1.278") //CDK 추가 빌딩블럭
+    api("software.amazon.awscdk:aws-cdk-lib:_")   //https://mvnrepository.com/artifact/software.amazon.awscdk/aws-cdk-lib
+    //api("software.constructs:constructs:10.1.278") //CDK 추가 빌딩블럭 -> 쓸만한게 없음
 }
 
 /** 실행파일 + 모든 의존성 */
