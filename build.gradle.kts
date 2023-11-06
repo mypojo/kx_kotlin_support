@@ -51,7 +51,8 @@ allprojects {
     dependencies {
         implementation(kotlin("stdlib"))
 
-        testImplementation(project(":work")) //공통 DI를 사용할 수 있게 해줌 -> notebook에서 사용하려면 test 폴더가 아닌 main에 있어야함
+        /** 공통 DI를 사용할 수 있게 해줌 -> notebook에서 사용하려면 test 폴더가 아닌 main에 있어야함 */
+        testImplementation(project(":work"))
     }
 
     /**

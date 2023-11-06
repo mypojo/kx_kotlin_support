@@ -2,9 +2,10 @@ package net.kotlinx.core.calculator
 
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.gson.GsonSet
+import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
-class BatchChunkTest {
+class BatchChunkTest : TestRoot() {
 
     data class Qq(
         val name: String,

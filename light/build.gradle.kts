@@ -22,7 +22,7 @@ dependencies {
     api(project(":core"))
 
     //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
-    api("org.jetbrains.kotlin:kotlin-reflect:${providers["kotlinVersion"]}") // 리플렉션 약 3.1메가. 살짝 부담되긴 함.
+    api("org.jetbrains.kotlin:kotlin-reflect:${providers["kotlinVersion"]}") // 리플렉션 약 3.1메가. 살짝 부담되긴 함.  코틀린 버전하고 같이 따라감
     api("io.insert-koin:koin-core:_") //kotlin DI 도구. 모듈 설정에는 이걸 적용하기로함.  실무에서는 spring 사용
 
     //==================================================== 기본 http 클라이언트 ======================================================
@@ -70,7 +70,7 @@ dependencies {
     //api("software.constructs:constructs:10.1.278") //CDK 추가 빌딩블럭 -> 쓸만한게 없음
 }
 
-/** 실행파일 + 모든 의존성 */
+/** 실행파일 + 모든 의존성. 이게 용량이 50mb 이하라면 다이렉트로 업로드 가능. */
 tasks.create("fatJar", Jar::class) {
     group = "build"
     description = "AWS 람다 all-in-one 빌드용 (전체 의존이 50mb 이내여야함)"
