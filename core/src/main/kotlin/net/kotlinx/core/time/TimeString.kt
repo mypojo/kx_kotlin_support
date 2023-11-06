@@ -1,6 +1,7 @@
 package net.kotlinx.core.time
 
 import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.system.measureTimeMillis
@@ -63,3 +64,15 @@ inline fun Long.toTimeString(): TimeString = TimeString(this)
 fun measureTimeString(block: suspend () -> Unit): TimeString = measureTimeMillis {
     runBlocking { block() }
 }.toTimeString()
+
+
+/** suspend 지원하는 시간 측정기 - 간단버전 */
+fun measureTime(block: suspend () -> Any?): Any? {
+    val log = KotlinLogging.logger {}
+    var result: Any? = null
+    val millis = measureTimeMillis {
+        result = runBlocking { block() }
+    }
+    log.debug { " -> ${millis.toTimeString()}" }
+    return result
+}

@@ -1,5 +1,7 @@
 package net.kotlinx.koin
 
+import net.kotlinx.module.job.Job
+import net.kotlinx.module.job.JobTasklet
 import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import org.koin.core.component.KoinComponent
@@ -24,12 +26,16 @@ internal class KoinTest : TestRoot(), KoinComponent {
         }
     }
 
-    class HelloSayer2(val name: String) {
+    class HelloSayer2(val name: String) :JobTasklet{
         fun sayHello() = "Hello! $name"
 
         init {
             println("생성됨22!!")
-            throw IllegalStateException()
+            //throw IllegalStateException()
+        }
+
+        override fun doRun(job: Job) {
+            println("xxxx")
         }
     }
 
@@ -61,7 +67,8 @@ internal class KoinTest : TestRoot(), KoinComponent {
             })
         }
 
-        val oldPoo = KoPoo()
+        val oldPoo :KoPoo by inject()
+        println("###")
         println(oldPoo.xxx.sayHello())
         println(oldPoo.helloSayer.sayHello())
         println(oldPoo.helloSayer.helloSayer3.sayHello())
@@ -100,6 +107,11 @@ internal class KoinTest : TestRoot(), KoinComponent {
         println(poo)
         println("===")
 
+        println("###")
+        println(oldPoo.xxx.sayHello())
+        println(oldPoo.helloSayer.sayHello())
+        println(oldPoo.helloSayer.helloSayer3.sayHello())
+
     }
 
     @Test
@@ -108,9 +120,10 @@ internal class KoinTest : TestRoot(), KoinComponent {
         startKoin {
             modules(module {
                 single { HelloSayer("테스트1") } bind KoinComponent::class
-                single { HelloSayer2("테스트2") }
+                single { HelloSayer2("테스트2") } bind JobTasklet::class
                 single(named("xx")) { HelloSayer3("테스트3") } bind KoinComponent::class
                 single(named("yy")) { HelloSayer3("테스트3") } bind KoinComponent::class
+
             })
         }
 
@@ -120,6 +133,9 @@ internal class KoinTest : TestRoot(), KoinComponent {
         println(getKoin().get<KoinComponent>(named("xx")))
         println(getKoin().get<KoinComponent>(named("xx")))
         println(getKoin().get<KoinComponent>(named("yy")))
+
+        val xx = get<JobTasklet>()
+        println(xx)
 
     }
 

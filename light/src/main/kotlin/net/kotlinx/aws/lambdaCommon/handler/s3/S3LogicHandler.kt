@@ -16,6 +16,8 @@ import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.lib.toSimpleString
 import net.kotlinx.core.time.TimeStart
 import net.kotlinx.core.time.toTimeString
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.io.File
 
 /**
@@ -28,9 +30,6 @@ import java.io.File
  * #3 결과를 S3에 업로드
  *  */
 class S3LogicHandler(
-    //private val bsConfig: BatchStepConfig,
-    /** AWS 클라이언트 */
-    private val aws: AwsClient1,
     /**
      * 버킷은 단일로 고정이다.
      * AWS에서 버킷을 전달 해주는지는 모름.. (해줄거 같은데..) 해주면 그때가서 수정 (수정 간단함)
@@ -38,10 +37,11 @@ class S3LogicHandler(
      *  */
     private val workBucket: String,
     block: S3LogicHandler.() -> Unit
-) : LambdaLogicHandler {
+) : LambdaLogicHandler, KoinComponent {
 
     private val log = KotlinLogging.logger {}
 
+    private val aws: AwsClient1 by inject()
 
     /** 커스텀 로직들 */
     val logicMap: MutableMap<String, S3Logic> = mutableMapOf()
@@ -93,6 +93,8 @@ class S3LogicHandler(
             log.warn { "###### 데이터 처리 실패!! -> $start / ${path.fileName} / ${e.toSimpleString()}" }
             return LambdaUtil.FAIL //리트라이 하지 않음으로 예외를 던지지 않고 실패 리턴함 (로그 지저분해짐)
         }
+
+        //일부러 한줄이 아니라 여러줄 형태로 기록한다. (한줄에 너무 많은 데이터가 있으면 사람이 읽기 힘들 수 있기 때문에)
         log.trace { "데이터 처리 성공 : ${outputData.size}건" }
         val interval = start.interval()
         val lines = outputData.map {

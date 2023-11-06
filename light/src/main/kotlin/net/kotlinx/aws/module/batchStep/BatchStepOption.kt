@@ -1,7 +1,6 @@
 package net.kotlinx.aws.module.batchStep
 
 import kotlinx.serialization.Serializable
-import net.kotlinx.aws.module.batchStep.stepDefault.StepStartContext
 import net.kotlinx.core.Kdsl
 
 
@@ -13,6 +12,9 @@ class BatchStepOption {
     constructor(block: BatchStepOption.() -> Unit) {
         apply(block)
     }
+
+    /** 모드 */
+    var mode: BatchStepMode = BatchStepMode.MAP_INLINE
 
     /** 잡 이름 (필수) */
     lateinit var jobPk: String
@@ -32,10 +34,6 @@ class BatchStepOption {
 
     /** LIST 모드일경우 옵션 */
     var listOption: BatchStepListOption? = null
-
-    //==================================================== 결과 매핑 ======================================================
-
-    val stepStart: StepStartContext? = null
 
 
 }

@@ -38,3 +38,19 @@ suspend fun <T> repeatCollectUntil(
     }
     return results
 }
+
+
+/**
+ * 최대 X회 까지 작업을 반복한다.
+ * ex) job이 종료되었는지 1분 주기로 체크
+ * @param maxTimes 무한루프 방지용
+ * @param block true 성공으로 간주하고 이면 중단한다.
+ * */
+suspend fun repeatUntil(maxTimes: Int, block: suspend (Int) -> Boolean): Int {
+    for (i in 0..maxTimes) {
+        val result = block(i)
+        if (result) return i
+    }
+    throw IllegalStateException("repeat maxTimes $maxTimes 를 초과했습니다.")
+}
+

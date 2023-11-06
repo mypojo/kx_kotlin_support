@@ -33,9 +33,7 @@ class BatchStepExecutor : KoinComponent {
      * @param datas 각 단위는 5~8분 이내로 처리 가능한 사이즈가 좋아보임. (부득이하게 좀 길어져도 안전하도록)
      * */
     @Kdsl
-    suspend fun startExecution(datas: List<S3LogicInput>, block: BatchStepInput.() -> Unit = {}): BatchStepInput {
-
-        val input = BatchStepInput(block)
+    suspend fun startExecution(datas: List<S3LogicInput>, input: BatchStepInput): BatchStepInput {
         val option = input.option
         if (option.retrySfnId == null) {
             upload(datas, option.targetSfnId)

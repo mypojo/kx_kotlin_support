@@ -6,10 +6,6 @@ plugins {
     id("io.spring.dependency-management")
 }
 
-//==================================================== 공통 ======================================================
-/** 그래들 표준 문법을 간단하게 변경해줌 */
-operator fun ProviderFactory.get(name: String): String = this.gradleProperty(name).get()
-
 //==================================================== 프로젝트별 설정 ======================================================
 
 apply(plugin = "io.spring.dependency-management")
@@ -21,7 +17,6 @@ dependencies {
 
     //==================================================== 내부 의존성 ======================================================
     api(project(":heavy"))
-    testApi(project(":core").dependencyProject.sourceSets["test"].output) //코어 테스트에 있는 공통 (testRoot 등)을 사용할 수 있게 해줌
 
     //==================================================== 스프링 부트 시리즈 (버전x) ======================================================
     implementation("org.springframework.boot:spring-boot-starter-web")

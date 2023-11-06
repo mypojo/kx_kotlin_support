@@ -9,20 +9,14 @@ apply {
     plugin("org.jetbrains.kotlin.plugin.serialization")
 }
 
-//==================================================== 공통 ======================================================
-/** 그래들 표준 문법을 간단하게 변경해줌 */
-operator fun ProviderFactory.get(name: String): String = this.gradleProperty(name).get()
-
 //==================================================== 프로젝트별 설정 ======================================================
 
 dependencies {
     //==================================================== 내부 의존성 ======================================================
     api(project(":light"))
-    testApi(project(":core").dependencyProject.sourceSets["test"].output) //코어 테스트에 있는 공통 (testRoot 등)을 사용할 수 있게 해줌
-    testApi(project(":light").dependencyProject.sourceSets["test"].output) //코어 테스트에 있는 공통 (testRoot 등)을 사용할 수 있게 해줌
 
     //==================================================== 자바 표준 ======================================================
-    api("jakarta.mail:jakarta.mail-api:2.1.2") //이메일 전송에 필요함
+    api("jakarta.mail:jakarta.mail-api:_") //이메일 전송에 필요함
 
     //==================================================== AWS ======================================================
     val awsVersion: String by project

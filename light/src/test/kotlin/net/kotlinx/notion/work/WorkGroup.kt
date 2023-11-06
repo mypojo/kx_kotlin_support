@@ -14,7 +14,8 @@ data class WorkOutput(val date: String, val name: String, val startTime: String,
         get() = when (workSec) {
             0L -> "연차"
             in 0..4.hours.inWholeSeconds -> "확인필요"
-            in 4..8.hours.inWholeSeconds -> "반차"
+            in 4..6.hours.inWholeSeconds -> "반차"
+            in 6..8.hours.inWholeSeconds -> "조기퇴근"
             else -> "정상"
         }
 

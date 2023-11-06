@@ -71,7 +71,7 @@ class StepList : LambdaLogicHandler, KoinComponent {
 
         log.info { "리스팅 종료. ${contents.size}건 -> $start" }
 
-        val stepStart = option.stepStart!!
+        val stepStart = StepStartContext.parseJson(input["option"]["stepStart"]["body"].toString())
         val currentNum = contents.firstOrNull()?.substringAfterLast("/")?.retainFrom(RegexSet.NUMERIC)?.toInt() ?: stepStart.first
         return ListFireAndForgetContext(
             when {
@@ -101,5 +101,7 @@ data class ListFireAndForgetContext(
     /** 진행상태 */
     val progress: String,
 ) : SerialJsonObj {
-    override fun toJson(): String = SerialJsonSet.KSON.encodeToString(this)
+    override fun toJson(): String = SerialJsonSet.KSON_OTHER.encodeToString(this)
+
+
 }

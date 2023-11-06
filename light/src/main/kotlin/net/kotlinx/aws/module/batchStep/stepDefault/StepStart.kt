@@ -19,6 +19,7 @@ import net.kotlinx.aws.s3.toList
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.regex.RegexSet
 import net.kotlinx.core.serial.LocalDateTimeSerializer
+import net.kotlinx.core.serial.SerialJsonCompanion
 import net.kotlinx.core.serial.SerialJsonObj
 import net.kotlinx.core.serial.SerialJsonSet
 import net.kotlinx.core.string.retainFrom
@@ -45,8 +46,7 @@ class StepStart : LambdaLogicHandler, KoinComponent {
 
     override suspend fun invoke(input: GsonData, context: Context?): Any {
 
-        val stepInput = BatchStepInput.parseJson(input.toString())
-        val option = stepInput.option
+        val option = BatchStepInput.parseJson(input.toString()).option
 
         val datas = aws1.s3.listObjectsV2Paginated {
             this.bucket = config.workUploadBuket
@@ -75,7 +75,7 @@ class StepStart : LambdaLogicHandler, KoinComponent {
             LocalDateTime.now(),
             datas.size,
             datas.first().substringAfterLast("/").retainFrom(RegexSet.NUMERIC).toInt(),
-            when (stepInput.mode) {
+            when (option.mode) {
 
                 BatchStepMode.MAP_INLINE -> {
                     //전체 데이터 리스트를 넣어준다. -> sfn에서 읽어서 event로 전달해줌
@@ -112,6 +112,10 @@ data class StepStartContext(
     val datas: List<String>,
 ) : SerialJsonObj {
 
-    override fun toJson(): String = SerialJsonSet.KSON.encodeToString(this)
+    override fun toJson(): String = SerialJsonSet.KSON_OTHER.encodeToString(this)
+
+    companion object : SerialJsonCompanion {
+        override fun parseJson(json: String): StepStartContext = SerialJsonSet.KSON_OTHER.decodeFromString(json)
+    }
 
 }

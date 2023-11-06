@@ -1,7 +1,6 @@
 package net.kotlinx.aws.module.batchStep
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import net.kotlinx.core.Kdsl
 import net.kotlinx.core.serial.SerialJsonCompanion
@@ -20,25 +19,24 @@ import net.kotlinx.core.serial.SerialJsonSet
 class BatchStepInput : SerialJsonObj {
 
     @Kdsl
-    constructor(block: BatchStepInput.() -> Unit) {
-        apply(block)
+            /** 내부 테스트용 */
+    constructor(method: String? = null, block: BatchStepOption.() -> Unit) {
+        this.method = method
+        option = BatchStepOption(block)
     }
 
-    /** 모드 */
-    var mode: BatchStepMode = BatchStepMode.MAP_INLINE
-
-    /** SFN에서 직접 전달해주는 메소드 */
+    /** SFN에서 직접 전달해주는 메소드. 혹시 받을 일이 있을까 해서 넣어둠 */
     var method: String? = null
 
-    /** LIST 용 옵션 */
-    lateinit var option: BatchStepOption
+    /** 실제 옵션 */
+    val option: BatchStepOption
 
     //==================================================== 변환 세트 ======================================================
 
-    override fun toJson(): String = SerialJsonSet.KSON.encodeToString(this)
+    override fun toJson(): String = SerialJsonSet.KSON_OTHER.encodeToString(this)
 
     companion object : SerialJsonCompanion {
-        override fun parseJson(json: String): BatchStepInput = SerialJsonSet.KSON.decodeFromString<BatchStepInput>(json)
+        override fun parseJson(json: String): BatchStepInput = SerialJsonSet.KSON_OTHER.decodeFromString<BatchStepInput>(json)
     }
 
 }

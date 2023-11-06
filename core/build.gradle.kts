@@ -2,12 +2,8 @@
 plugins {
     //코어 플러그인
     kotlin("jvm") //항상 최신버전 사용. 멀티플랫폼 버전과 동일함
-    kotlin("plugin.serialization") version "1.8.21"
+    kotlin("plugin.serialization")
 }
-
-//==================================================== 공통 ======================================================
-/** 그래들 표준 문법을 간단하게 변경해줌 */
-operator fun ProviderFactory.get(name: String): String = this.gradleProperty(name).get()
 
 //==================================================== 프로젝트별 설정 ======================================================
 
@@ -44,7 +40,6 @@ dependencies {
     api("io.github.microutils:kotlin-logging-jvm:_") //slf4j의 래퍼. (로거 가져올때 사용)
     api("ch.qos.logback:logback-classic:_") //slf4j의 실제 구현체 (레벨 설정에 참조해야함)
     implementation("org.codehaus.janino:janino:_") //logback 파일롤링 표현식 필터처리에 필요함
-
 
 }
 

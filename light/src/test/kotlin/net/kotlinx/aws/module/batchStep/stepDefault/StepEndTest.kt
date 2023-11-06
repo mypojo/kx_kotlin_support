@@ -3,7 +3,6 @@ package net.kotlinx.aws.module.batchStep.stepDefault
 import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.module.batchStep.BatchStepInput
 import net.kotlinx.aws.module.batchStep.BatchStepListOption
-import net.kotlinx.aws.module.batchStep.BatchStepOption
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.gson.toGsonData
 import net.kotlinx.reflect.name
@@ -16,22 +15,19 @@ class StepEndTest : TestLight() {
 
     companion object {
         init {
-            MyLightKoinStarter.startup("skale")
+            MyLightKoinStarter.startup("sin")
         }
     }
 
     @Test
     fun test() {
 
-        val input = BatchStepInput {
-            method = StepEnd::class.name()
-            option = BatchStepOption {
-                jobPk = "batchStepTest"
-                jobSk = "aaa"
-                sfnId = "7dde7369-4d9f-4dd9-a8f2-756d3cfd28ee"
-                listOption = BatchStepListOption {
-                    waitSeconds = 12
-                }
+        val input = BatchStepInput(StepEnd::class.name()) {
+            jobPk = "batchStepTest"
+            jobSk = "aaa"
+            sfnId = "7dde7369-4d9f-4dd9-a8f2-756d3cfd28ee"
+            listOption = BatchStepListOption {
+                waitSeconds = 12
             }
         }
 

@@ -23,6 +23,11 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
     /** 전체 내장 로직. 한번 람다 호출에 한개만 동작한다 */
     protected val logics: MutableList<LambdaFunctionLogic> = mutableListOf()
 
+    /** snapstart 등에서 리셋 */
+    fun clear(){
+        logics.clear()
+    }
+
     /** 로직 등록 */
     @Kdsl
     fun regtiter(block: LambdaFunctionLogic.() -> Unit = {}) {

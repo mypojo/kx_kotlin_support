@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Test
 
 class SfnSupportKtTest : TestRoot() {
 
-    val AWS = AwsConfig("skale").toAwsClient1()
+    val AWS = AwsConfig("sin").toAwsClient1()
 
     @Test
     fun test() {
         runBlocking {
-            val lists = AWS.sfn.listExecutions("289023186990", "skale-batchStep-dev", ExecutionStatus.Succeeded)
+            val lists = AWS.sfn.listExecutions("289023186990", "sin-batchStep-dev", ExecutionStatus.Succeeded)
             lists.executions!!.forEach {
                 println(it)
             }

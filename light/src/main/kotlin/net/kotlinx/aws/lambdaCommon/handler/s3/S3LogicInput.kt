@@ -1,7 +1,6 @@
 package net.kotlinx.aws.lambdaCommon.handler.s3
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import net.kotlinx.core.serial.SerialJsonCompanion
 import net.kotlinx.core.serial.SerialJsonObj
@@ -20,11 +19,11 @@ data class S3LogicInput(
     val logicOption: String = "{}",
 ) : SerialJsonObj {
 
-    override fun toJson(): String = SerialJsonSet.KSON.encodeToString(this)
+    override fun toJson(): String = SerialJsonSet.KSON_OTHER.encodeToString(this)
 
     companion object : SerialJsonCompanion {
 
-        override fun parseJson(json: String): S3LogicInput = SerialJsonSet.KSON.decodeFromString<S3LogicInput>(json)
+        override fun parseJson(json: String): S3LogicInput = SerialJsonSet.KSON_OTHER.decodeFromString<S3LogicInput>(json)
 
     }
 
