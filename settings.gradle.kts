@@ -44,5 +44,5 @@ include(
     "light", //람다용으로 의존성을 분리한것. GraalVM 활성화 전까지는 snapstart로 사용
     "heavy", //DB연결이 포함된 의존성
     "heavy_boot3", //스프링 부트3 의존성.
-    "heavy_test", //무거운 의존성 별도분리. 테스트용
+    "work", //로컬작업 및 테스트용
 )

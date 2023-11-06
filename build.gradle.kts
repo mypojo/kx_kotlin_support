@@ -2,7 +2,6 @@ plugins {
     //코어 플러그인
     kotlin("jvm") //항상 최신버전 사용. 멀티플랫폼 버전과 동일함
     `maven-publish` //메이븐 플러그인 배포
-    //id("de.fayard.refreshVersions")
 }
 
 //==================================================== 공통 ======================================================
@@ -11,7 +10,7 @@ operator fun ProviderFactory.get(name: String): String = this.gradleProperty(nam
 
 allprojects {
 
-    println("[$name] buildDir = $buildDir")
+    println("[$name] buildDir = ${layout.buildDirectory.get()}")
 
     apply {
         plugin("org.jetbrains.kotlin.jvm")
@@ -52,18 +51,7 @@ allprojects {
     dependencies {
         implementation(kotlin("stdlib"))
 
-        testApi(project(":heavy_test")) //공통 DI를 사용할 수 있게 해줌 -> notebook에서 사용하려면 test 폴더가 아닌 main에 있어야함
-
-//        //==================================================== 테스트 ======================================================
-//        testImplementation("org.junit-pioneer:junit-pioneer:1.9.1")  //환경변수 테스트용 (실서버 job 실행 등)
-//        testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.1") //최신버전
-//        testImplementation("io.mockk:mockk:1.13.8") //코틀린 모킹
-
-        //testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter-kotlin:0.6.10")  //네이버 픽스쳐몽키.. 애매함 -> .jqwik-database 이파일 자꾸 생겨서 제거
-
-        //코테스트 문제가 많아서 공통에서 제거함 -> 이유없이 메모리아웃 오류남
-//        testImplementation("io.kotest:kotest-runner-junit5:5.5.4")
-//        testImplementation("io.kotest:kotest-assertions-core:5.5.4")
+        testImplementation(project(":work")) //공통 DI를 사용할 수 있게 해줌 -> notebook에서 사용하려면 test 폴더가 아닌 main에 있어야함
     }
 
     /**

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-
-    <!-- 로그 설정은 다들 절대경로를 추천함.. -->
-    <include resource="logback-default.xml"/>
-
-    <logger name="net.kotlinx" level="DEBUG"/>
-
-</configuration>
