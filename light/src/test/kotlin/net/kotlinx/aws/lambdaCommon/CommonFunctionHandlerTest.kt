@@ -8,7 +8,7 @@ class CommonFunctionHandlerTest : TestRoot() {
     @Test
     fun test() {
 
-        
+
 
     }
 
