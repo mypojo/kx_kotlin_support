@@ -6,7 +6,6 @@ import aws.sdk.kotlin.services.codedeploy.CodeDeployClient
 import aws.sdk.kotlin.services.costexplorer.CostExplorerClient
 import aws.sdk.kotlin.services.ec2.Ec2Client
 import aws.sdk.kotlin.services.ecr.EcrClient
-import aws.sdk.kotlin.services.ecs.EcsClient
 import aws.sdk.kotlin.services.elasticloadbalancingv2.ElasticLoadBalancingV2Client
 import aws.sdk.kotlin.services.eventbridge.EventBridgeClient
 import aws.sdk.kotlin.services.iam.IamClient
@@ -34,7 +33,6 @@ class AwsClient(awsConfig: AwsConfig) : AwsClient1(awsConfig) {
 
     //==================================================== 컴퓨팅 인프라 ======================================================
     val ec2: Ec2Client by lazy { Ec2Client { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val ecs: EcsClient by lazy { EcsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
 
     //==================================================== 코드 시리즈 ======================================================
     val codeDeploy: CodeDeployClient by lazy { CodeDeployClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
