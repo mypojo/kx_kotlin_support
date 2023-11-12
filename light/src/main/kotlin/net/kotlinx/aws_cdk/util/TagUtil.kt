@@ -4,7 +4,10 @@ import software.amazon.awscdk.Tags
 import software.constructs.IConstruct
 
 
-/** 커스텀 태그 세트 */
+/**
+ * 커스텀 태그 세트
+ * 태그 시리즈가 언더스코어가 아니라서 이렇게 둠
+ *  */
 enum class TagSet {
 
     IamGroup,
@@ -18,6 +21,7 @@ enum class TagSet {
 object TagUtil {
 
     /** 권한 체크용 태그 key */
+    @Deprecated("어디쓰는지 까먹음")
     const val IAM_GROUP = "IamGroup"
 
 

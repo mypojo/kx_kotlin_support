@@ -29,7 +29,7 @@ object BatchStepTable {
             "sfn_id" to "string",
         )
         athenaTableFormat = AthenaTableFormat.Csv
-        athenaTablePartitionType = AthenaTablePartitionType.Projection
+        athenaTablePartitionType = AthenaTablePartitionType.PROJECTION
     }
 
 
