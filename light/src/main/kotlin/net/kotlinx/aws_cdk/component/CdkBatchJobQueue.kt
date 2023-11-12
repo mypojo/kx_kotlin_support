@@ -1,9 +1,7 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkDeploymentType
-import net.kotlinx.aws_cdk.CdkProject
-import net.kotlinx.core.DeploymentType
-import net.kotlinx.core.DeploymentType.DEV
+import net.kotlinx.aws_cdk.CdkInterface
+import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.batch.CfnComputeEnvironment
 import software.amazon.awscdk.services.batch.CfnJobQueue
@@ -11,13 +9,15 @@ import software.amazon.awscdk.services.batch.CfnJobQueue.ComputeEnvironmentOrder
 import software.amazon.awscdk.services.batch.CfnJobQueueProps
 
 /** enum 정의 */
-class CdkBatchJobQueue(
-    val project: CdkProject,
-    val name: String,
-    val priority: Int = 10,
-) : CdkDeploymentType {
+class CdkBatchJobQueue : CdkInterface {
 
-    override var deploymentType: DeploymentType = DEV
+    @Kdsl
+    constructor(block: CdkBatchJobQueue.() -> Unit = {}) {
+        apply(block)
+    }
+
+    lateinit var name: String
+    var priority: Int = 10
 
     /** 리소스 생성 이후에 주입 되어야 한다 */
     lateinit var evns: List<CfnComputeEnvironment>
@@ -26,7 +26,8 @@ class CdkBatchJobQueue(
     override val logicalName: String
         get() = "${project.projectName}-queue_${name}-${deploymentType.name.lowercase()}"
 
-    val arn: String = "arn:aws:batch:ap-northeast-2:${this.project.awsId}:job-queue/${logicalName}"
+    val arn: String
+        get() = "arn:aws:batch:ap-northeast-2:${project.awsId}:job-queue/${logicalName}"
 
     /** 결과 */
     lateinit var queue: CfnJobQueue

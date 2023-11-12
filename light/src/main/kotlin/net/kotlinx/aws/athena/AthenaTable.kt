@@ -1,5 +1,7 @@
 package net.kotlinx.aws.athena
 
+import net.kotlinx.core.Kdsl
+
 
 /**
  * 아테나 테이블 스키마 생성기
@@ -8,7 +10,12 @@ package net.kotlinx.aws.athena
  *
  * 네이밍 컨벤션 = mysql 표준인 소문자 언더스코어로 통일한다.
  *  */
-class AthenaTable(block: AthenaTable.() -> Unit = {}) {
+class AthenaTable {
+
+    @Kdsl
+    constructor(block: AthenaTable.() -> Unit = {}) {
+        apply(block)
+    }
 
     /**
      * 스키마
@@ -22,7 +29,7 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
     lateinit var schema: Map<String, Any>
 
     /** 파티션 타입 */
-    var athenaTablePartitionType: AthenaTablePartitionType = AthenaTablePartitionType.None
+    var athenaTablePartitionType: AthenaTablePartitionType = AthenaTablePartitionType.NONE
 
     /** 포맷 */
     var athenaTableFormat: AthenaTableFormat = AthenaTableFormat.IonDdb
@@ -61,10 +68,6 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
     /** 테이블 생성시에는 필요없음. 권한 부여용 */
     var database: String = ""
 
-    init {
-        block(this)
-    }
-
     fun drop(): String = "DROP TABLE IF EXISTS ${tableName};"
 
     fun create(): String {
@@ -79,7 +82,7 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
             // https://docs.aws.amazon.com/ko_kr/athena/latest/ug/partition-projection-supported-types.html
             // 프로젝션에 date 사용하는거 추가해야함
             // 프로젝션의 경우 basic_date=20210101  이런식으로 하지 않음 ( firehose 예제 참고)
-            AthenaTablePartitionType.Projection -> {
+            AthenaTablePartitionType.PROJECTION -> {
                 props = props + mapOf(
                     "projection.enabled" to "true",
                     "storage.location.template" to "${location}${partition.keys.joinToString("/") { "\${${it}}" }}/",
@@ -88,13 +91,14 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
 
             }
 
-            else -> {}
+            AthenaTablePartitionType.INDEX -> {}
+            AthenaTablePartitionType.NONE -> {}
         }
 
         val schemaText = schema.map { "    `${it.key}` ${toSchema(it.value)}" }.joinToString(",\n") //뎁스에 따라 표현 방식이 틀려진다.
         val partitionText = when {
-            partition.isNotEmpty() -> ""
-            athenaTablePartitionType == AthenaTablePartitionType.Index -> {
+            partition.isEmpty() -> ""
+            athenaTablePartitionType == AthenaTablePartitionType.INDEX -> {
                 "PARTITIONED BY (${partition.map { "${it.key} ${it.value}" }.joinToString(",")})"
             }
 
@@ -108,8 +112,9 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
             else -> "TBLPROPERTIES ( ${props.map { "   '${it.key}' = '${it.value}'" }.joinToString(",")} )"
         }
 
+        val tableDatabase = if (database.isEmpty()) "" else "${database}."
         return listOf(
-            "CREATE EXTERNAL TABLE ${tableName}(",
+            "CREATE EXTERNAL TABLE ${tableDatabase}${tableName}(",
             schemaText,
             ")",
             partitionText,
@@ -154,6 +159,13 @@ class AthenaTable(block: AthenaTable.() -> Unit = {}) {
 
     val float = "float"
     val double = "double"
+
+    /**
+     * 가장 기본적인 json 대체 내장타입
+     * 외부 데이터는 json으로 파싱해서 사용하면 되고
+     * 내부 1뎁스 데이터는 이거로 사용할것
+     *  */
+    val mapString = "map<string, string>"
 
 }
 

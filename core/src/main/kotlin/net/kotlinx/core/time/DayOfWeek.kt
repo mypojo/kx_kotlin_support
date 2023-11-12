@@ -13,7 +13,14 @@ enum class DayOfWeek(
     /** 1자리 한글이름  */
     val text: String
 ) {
-    MON(1, "월"), TUE(2, "화"), WED(3, "수"), THU(4, "목"), FRI(5, "금"), SAT(6, "토"), SUN(7, "일");
+    MON(1, "월"),
+    TUE(2, "화"),
+    WED(3, "수"),
+    THU(4, "목"),
+    FRI(5, "금"),
+    SAT(6, "토"),
+    SUN(7, "일"),
+    ;
 
     val isWeekend: Boolean
         get() = this == SAT || this == SUN

@@ -6,11 +6,14 @@ package net.kotlinx.aws.athena
  *
  * ex) 시계열의 경우 “날짜” 정도만 사용.
  * ex) 계정 & “월” 정도만 사용
+ *
+ * 주의!!! 인덱스끼리 상호 호환 안됨!
+ * -> INDEX 로 저장시 PROJECTION 으로 읽을 수 없음 (PROJECTION은 내부적으로 파라메터에 = 조회를 하기때문)
  * */
 enum class AthenaTablePartitionType {
 
     /** 파티션 없음 */
-    None,
+    NONE,
 
     /**
      * 1. 정규 파티션 사용. 예측 불가능한 값으로 파티셔닝 되고, 범위 조회를 해야하는 경우
@@ -18,7 +21,7 @@ enum class AthenaTablePartitionType {
      * 2. 느림 → 이틀치 데이터 조회시 5.5초
      * 3. 인덱스 안달면 파티션 조회에만 10초 이상 걸림 → 인덱스 걸면 2.2초
      * */
-    Index,
+    INDEX,
 
     /**
      * 1. where 조건으로, 파티션 추측해서 작동
@@ -31,7 +34,7 @@ enum class AthenaTablePartitionType {
      *
      *  "날짜" 를 string 으로 설정할 경우 between 등의 쿼리 문제없이 잘 작동함
      * */
-    Projection,
+    PROJECTION,
     ;
 
 

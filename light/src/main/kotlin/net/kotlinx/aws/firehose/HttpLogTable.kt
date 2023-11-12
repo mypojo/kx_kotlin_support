@@ -28,7 +28,7 @@ object HttpLogTable {
             "name" to "string",
         )
         athenaTableFormat = AthenaTableFormat.Parquet
-        athenaTablePartitionType = AthenaTablePartitionType.Projection
+        athenaTablePartitionType = AthenaTablePartitionType.PROJECTION
     }
 
 }

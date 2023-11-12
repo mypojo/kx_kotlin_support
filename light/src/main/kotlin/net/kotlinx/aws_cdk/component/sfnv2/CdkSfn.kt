@@ -1,9 +1,8 @@
 package net.kotlinx.aws_cdk.component.sfnv2
 
 import net.kotlinx.aws_cdk.CdkInterface
-import net.kotlinx.aws_cdk.CdkProject
 import net.kotlinx.aws_cdk.util.TagUtil
-import net.kotlinx.core.DeploymentType
+import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.Duration
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.events.EventPattern
@@ -24,11 +23,16 @@ import software.amazon.awscdk.services.stepfunctions.StateMachineProps
  * ID 중복 최소한만 고려 (화면에 안예쁘게 나옴)
  * ex)  {"jobOption":{"sfnId":"9a25f502-588c-42e6-8be5-00955f1a60ac","basicDate":"20230414"},"jobOptionText":"{\"sfnId\":\"9a25f502-588c-42e6-8be5-00955f1a60ac\",\"basicDate\":\"20230414\"}"}
  * */
-class CdkSfn(val project: CdkProject, val name: String, block: CdkSfn.() -> Unit) : CdkInterface {
+class CdkSfn : CdkInterface {
+
+    @Kdsl
+    constructor(block: CdkSfn.() -> Unit = {}) {
+        apply(block)
+    }
 
     //==================================================== 속성들 ======================================================
+    lateinit var name: String
     lateinit var stack: Stack
-    lateinit var deploymentType: DeploymentType
 
     override val logicalName: String
         get() = "${project.projectName}-$name-${deploymentType.name.lowercase()}"
@@ -46,14 +50,8 @@ class CdkSfn(val project: CdkProject, val name: String, block: CdkSfn.() -> Unit
     lateinit var jobDefinitionArn: String
     lateinit var jobQueueArn: String
 
-    init {
-        block(this)
-    }
-
     //==================================================== 단축 ======================================================
-
     fun lambda(name: String, block: CdkSfnLambda.() -> Unit = {}) = CdkSfnLambda(this, name).apply(block).convert()
-
     fun wait(name: String, block: CdkSfnWait.() -> Unit = {}) = CdkSfnWait(this, name).apply(block).convert()
     fun choice(name: String, block: CdkSfnChoice.() -> Unit = {}) = CdkSfnChoice(this, name).apply(block).convert()
     fun mapInline(name: String, block: CdkSfnMapInline.() -> Unit = {}) = CdkSfnMapInline(this, name).apply(block).convert()

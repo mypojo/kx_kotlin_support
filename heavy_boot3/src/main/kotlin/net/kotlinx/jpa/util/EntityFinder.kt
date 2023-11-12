@@ -126,18 +126,18 @@ data class EntityColumn(
 )
 
 enum class KColumnTypeGroup {
-    KString, KNumber, KEnum, KLocalDateTime, KLocalDate, KBoolean, KUnknown
+    STRING, NUMBER, ENUM, LOCAL_DATE_TIME, LOCAL_DATE, BOOLEAN, UNKNOWN
     ;
 
     companion object {
         fun from(columnType: KClass<*>): KColumnTypeGroup = when {
-            columnType == String::class -> KString
-            columnType.isSubclassOf(Number::class) -> KNumber
-            columnType.isSubclassOf(Enum::class) -> KEnum
-            columnType == java.time.LocalDateTime::class -> KLocalDateTime
-            columnType == java.time.LocalDate::class -> KLocalDate
-            columnType == Boolean::class -> KBoolean
-            else -> KUnknown
+            columnType == String::class -> STRING
+            columnType.isSubclassOf(Number::class) -> NUMBER
+            columnType.isSubclassOf(Enum::class) -> ENUM
+            columnType == java.time.LocalDateTime::class -> LOCAL_DATE_TIME
+            columnType == java.time.LocalDate::class -> LOCAL_DATE
+            columnType == Boolean::class -> BOOLEAN
+            else -> UNKNOWN
         }
     }
 }

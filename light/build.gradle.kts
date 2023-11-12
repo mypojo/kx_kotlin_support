@@ -41,6 +41,7 @@ dependencies {
     api("aws.sdk.kotlin:athena:$awsVersion")
     api("aws.sdk.kotlin:ssm:$awsVersion") //용량 큼
     api("aws.sdk.kotlin:batch:$awsVersion") //걸리는데가 많아서 추가
+    api("aws.sdk.kotlin:ecs:$awsVersion") //ECS 서비스 업데이트 때문에 여기 추가
 
     //==================================================== AWS 람다 ======================================================
     api("com.amazonaws:aws-lambda-java-core:_") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함

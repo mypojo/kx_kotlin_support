@@ -1,8 +1,8 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkDeploymentType
+import net.kotlinx.aws_cdk.CdkInterface
 import net.kotlinx.aws_cdk.util.TagUtil
-import net.kotlinx.core.DeploymentType
+import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.RemovalPolicy
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.dynamodb.*
@@ -10,16 +10,18 @@ import software.amazon.awscdk.services.dynamodb.*
 fun String.cdkDynamoAttS(): Attribute = Attribute.builder().name(this).type(AttributeType.STRING).build()
 fun String.cdkDynamoAttN(): Attribute = Attribute.builder().name(this).type(AttributeType.NUMBER).build()
 
-class CdkDynamoDb(
-    val tableName: String,
-    block: CdkDynamoDb.() -> Unit = {}
-) : CdkDeploymentType {
+class CdkDynamoDb : CdkInterface {
 
-    override var deploymentType: DeploymentType = DeploymentType.DEV
+    @Kdsl
+    constructor(block: CdkDynamoDb.() -> Unit = {}) {
+        apply(block)
+    }
 
     override val logicalName: String
         get() = "$tableName-${deploymentType.name.lowercase()}"
 
+    /** 테이블명 */
+    lateinit var tableName: String
     var billingMode = BillingMode.PAY_PER_REQUEST
     var removalPolicy = RemovalPolicy.RETAIN
 
@@ -28,11 +30,8 @@ class CdkDynamoDb(
     var ttl = "ttl"
     var pointInTimeRecovery = true
 
+    /** 결과 */
     lateinit var iTable: Table
-
-    init {
-        block(this)
-    }
 
     /** 아직 삭제 보호 모드 설정이 안된다. */
     fun create(stack: Stack, block: TableProps.Builder.() -> Unit = {}): CdkDynamoDb {
@@ -63,6 +62,7 @@ class CdkDynamoDb(
                 .sortKey(sk)
                 .build()
         )
+
         TagUtil.tag(iTable, deploymentType)
     }
 

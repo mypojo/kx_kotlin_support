@@ -1,8 +1,7 @@
 package net.kotlinx.aws_cdk.component
 
 import net.kotlinx.aws_cdk.CdkInterface
-import net.kotlinx.aws_cdk.CdkProject
-import net.kotlinx.core.DeploymentType
+import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.lambda.Code
 import software.amazon.awscdk.services.lambda.LayerVersion
@@ -18,13 +17,15 @@ import software.amazon.awscdk.services.s3.IBucket
  *
  * 주의!!! 그냥 함수 퍼블링하면 자동으로 레이어 생긴다. 굳이 CDK로 만들 필요 없음
  * */
-class CdkLambdaLayer(
-    val project: CdkProject,
-    val name: String,
-    block: CdkLambdaLayer.() -> Unit = {},
-) : CdkInterface {
+class CdkLambdaLayer : CdkInterface {
 
-    var deploymentType: DeploymentType = DeploymentType.DEV
+    @Kdsl
+    constructor(block: CdkLambdaLayer.() -> Unit = {}) {
+        apply(block)
+    }
+
+    /** 이름 */
+    lateinit var name: String
 
     override val logicalName: String
         get() = "${project.projectName}-layer_${name}-${deploymentType.name.lowercase()}"
@@ -49,10 +50,6 @@ class CdkLambdaLayer(
                 .compatibleRuntimes(listOf(runtime)) //17로 지정해도 11로 표기됨..  의미 없을듯
                 .build()
         )
-    }
-
-    init {
-        block(this)
     }
 
 }

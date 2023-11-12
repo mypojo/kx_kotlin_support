@@ -20,7 +20,6 @@ internal class CdkEventBridgeScheduleTest {
         println(inline.hour)
 
 
-
     }
 
 }

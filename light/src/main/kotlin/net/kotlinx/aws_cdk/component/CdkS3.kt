@@ -1,10 +1,8 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkDeploymentType
-import net.kotlinx.aws_cdk.CdkProject
+import net.kotlinx.aws_cdk.CdkEnum
 import net.kotlinx.aws_cdk.toCdk
 import net.kotlinx.aws_cdk.util.TagUtil
-import net.kotlinx.core.DeploymentType
 import software.amazon.awscdk.Duration
 import software.amazon.awscdk.RemovalPolicy
 import software.amazon.awscdk.Stack
@@ -13,13 +11,7 @@ import software.amazon.awscdk.services.s3.*
 /**
  * 디폴트로 자동 암호화임
  * */
-class CdkS3(
-    val project: CdkProject,
-    val name: String,
-    block: CdkS3.() -> Unit = {}
-) : CdkDeploymentType {
-
-    override var deploymentType: DeploymentType = DeploymentType.DEV
+class CdkS3(val name: String) : CdkEnum {
 
     /** 도메인 등은 이름 그대로를 버킷명으로 사용함 */
     var domain: Boolean = false
@@ -49,10 +41,6 @@ class CdkS3(
 
     /** 웹호스팅-문서 (S3를 기반으로 호스팅) */
     var websiteIndexDocument: String? = null
-
-    init {
-        block(this)
-    }
 
     fun create(stack: Stack, block: BucketProps.Builder.() -> Unit = {}): CdkS3 {
         val bucketProps = BucketProps.builder()

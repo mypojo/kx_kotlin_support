@@ -1,7 +1,6 @@
 package net.kotlinx.aws_cdk.component
 
 import net.kotlinx.aws_cdk.CdkInterface
-import net.kotlinx.aws_cdk.CdkProject
 import software.amazon.awscdk.CfnResource
 import software.amazon.awscdk.Duration
 import software.amazon.awscdk.RemovalPolicy
@@ -15,16 +14,15 @@ import software.amazon.awscdk.services.logs.RetentionDays
 import software.amazon.awscdk.services.rds.*
 
 /** 재작성 해야함. 샘플임. */
-class CdkRdsAuroraServerlessV2(
-    val project: CdkProject,
-    val name: String,
-) : CdkInterface {
+class CdkRdsAuroraServerlessV2 : CdkInterface {
 
     override val logicalName: String
         get() = "${project.projectName}-rds_${name}"
 
     lateinit var vpc: IVpc
     lateinit var securityGroup: ISecurityGroup
+
+    lateinit var name: String
 
     val maxConnection: Int = 300
 

@@ -1,9 +1,7 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkDeploymentType
-import net.kotlinx.aws_cdk.CdkProject
+import net.kotlinx.aws_cdk.CdkInterface
 import net.kotlinx.aws_cdk.util.TagUtil
-import net.kotlinx.core.DeploymentType
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.ec2.*
 import software.amazon.awscdk.services.iam.AnyPrincipal
@@ -14,13 +12,12 @@ import software.amazon.awscdk.services.iam.PolicyStatement
  * VPC 관련 설졍
  * 가능하면 한번에 서브넷을 구성하는게 좋고,
  * 그게 아니라면 좀 복잡해진다.. (수동으로 서브넷 나누고 할당 등..)
+ *
+ * koin 으로 등록해서 사용하자.
  *  */
-class CdkVpc(
-    val project: CdkProject,
-    override var deploymentType: DeploymentType = DeploymentType.DEV,
-    block: CdkVpc.() -> Unit = {}
-) : CdkDeploymentType {
+class CdkVpc : CdkInterface {
 
+    /** 이거 전체 회사내에서 안겹치게 잘 해야함!! (겹치면 피어링 안됨) */
     var vpcCidr: String = "10.1.0.0/16"
 
     /** 최초  */
@@ -34,10 +31,6 @@ class CdkVpc(
 
     val feer: IPeer
         get() = Peer.ipv4(iVpc.vpcCidrBlock)
-
-    init {
-        block(this)
-    }
 
     var subnetCnt: Int = subnetTypes.size * maxAzs //초기화 이후에 사용
 

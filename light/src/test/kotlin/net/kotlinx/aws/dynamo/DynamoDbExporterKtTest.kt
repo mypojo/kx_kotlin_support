@@ -37,7 +37,7 @@ class DynamoDbExporterKtTest : TestRoot() {
             bucket = "sin-work-dev"
             s3Key = "temp/ddb-export/job-dev/..."  //s3ResultPath
             athenaTableFormat = AthenaTableFormat.IonDdb
-            athenaTablePartitionType = AthenaTablePartitionType.None
+            athenaTablePartitionType = AthenaTablePartitionType.NONE
             ionFlatPath = "Item"
             schema = mapOf(
                 "pk" to string,

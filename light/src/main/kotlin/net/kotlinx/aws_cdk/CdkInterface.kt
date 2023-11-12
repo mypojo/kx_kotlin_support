@@ -1,5 +1,9 @@
 package net.kotlinx.aws_cdk
 
+import net.kotlinx.core.DeploymentType
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+
 
 /**
  * 작성 표준
@@ -13,9 +17,21 @@ package net.kotlinx.aws_cdk
  *  1. 같은 스택에서 create 한 객체인경우 -> load() 하지말고 그냥 사용
  *  2. 같은 스택에서 create 하지 않은 경우 -> load() 로 초기화 후 사용해야함 (cycle 에러남)
  *  */
-interface CdkInterface {
+interface CdkInterface : KoinComponent {
 
     /** CDK에 사용할 논리적 이름을 리턴한다. 동적으로 변경 가능 */
     val logicalName: String
 
+    val project: CdkProject
+        get() = get<CdkProject>()
+
+    val deploymentType: DeploymentType
+        get() = get<DeploymentType>()
+
 }
+
+/**
+ * 다른데서 다수 참조되기 때문에 설정 형식으로 미리 정의되는것들
+ * ex) S3,IAM,등등..
+ * */
+interface CdkEnum : CdkInterface
