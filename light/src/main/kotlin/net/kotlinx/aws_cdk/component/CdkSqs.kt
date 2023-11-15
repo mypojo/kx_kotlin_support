@@ -1,9 +1,7 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkDeploymentType
-import net.kotlinx.aws_cdk.CdkProject
+import net.kotlinx.aws_cdk.CdkEnum
 import net.kotlinx.aws_cdk.toCdk
-import net.kotlinx.core.DeploymentType
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.sqs.IQueue
 import software.amazon.awscdk.services.sqs.Queue
@@ -12,12 +10,7 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
 
 /** enum */
-class CdkSqs(
-    val project: CdkProject,
-    val name: String,
-) : CdkDeploymentType {
-
-    override var deploymentType: DeploymentType = DeploymentType.DEV
+class CdkSqs(val name: String) : CdkEnum {
 
     override val logicalName: String
         get() = "${project.projectName}-${name}-${deploymentType.name.lowercase()}"

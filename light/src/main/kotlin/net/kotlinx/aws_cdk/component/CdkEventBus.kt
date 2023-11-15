@@ -1,10 +1,8 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkDeploymentType
-import net.kotlinx.aws_cdk.CdkProject
+import net.kotlinx.aws_cdk.CdkInterface
 import net.kotlinx.aws_cdk.util.EventPatternUtil
 import net.kotlinx.aws_cdk.util.TagUtil
-import net.kotlinx.core.DeploymentType
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.events.*
 
@@ -12,11 +10,7 @@ import software.amazon.awscdk.services.events.*
 /**
  * 디폴트 말고 새로운 이벤트 버스 생성
  * */
-class CdkEventBus(
-    val project: CdkProject,
-) : CdkDeploymentType {
-
-    override var deploymentType: DeploymentType = DeploymentType.DEV
+class CdkEventBus : CdkInterface {
 
     override val logicalName: String
         get() = "${project.projectName}-eventbus-${deploymentType.name.lowercase()}"
@@ -38,7 +32,7 @@ class CdkEventBus(
             stack, eventDisRuleName, RuleProps.builder()
                 .enabled(true)
                 .ruleName(eventDisRuleName)
-                .description("AWS(eventbus) => ${project.projectName}(eventbus) / ${this.deploymentType}")
+                .description("AWS(eventbus) => ${project.projectName}(eventbus) / $deploymentType")
                 .targets(listOf(software.amazon.awscdk.services.events.targets.EventBus(iEventBus)))
                 .eventPattern(eventPattern)
                 .build()

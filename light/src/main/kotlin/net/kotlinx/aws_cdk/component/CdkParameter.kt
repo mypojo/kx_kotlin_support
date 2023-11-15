@@ -1,18 +1,13 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkDeploymentType
-import net.kotlinx.aws_cdk.CdkProject
+import net.kotlinx.aws_cdk.CdkEnum
 import net.kotlinx.aws_cdk.util.ParameterUtil
-import net.kotlinx.core.DeploymentType
 import software.amazon.awscdk.Stack
 
 /** enum */
 class CdkParameter(
-    val project: CdkProject,
     val name: String,
-) : CdkDeploymentType {
-
-    override var deploymentType: DeploymentType = DeploymentType.DEV
+) : CdkEnum {
 
     override val logicalName: String
         get() = "/cdk/${project.projectName}/${this.name}/${deploymentType.name.lowercase()}"

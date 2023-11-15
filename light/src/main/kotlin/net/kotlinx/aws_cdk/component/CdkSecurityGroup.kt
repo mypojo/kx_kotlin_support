@@ -1,7 +1,6 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkDeploymentType
-import net.kotlinx.aws_cdk.CdkProject
+import net.kotlinx.aws_cdk.CdkEnum
 import net.kotlinx.aws_cdk.util.TagUtil
 import net.kotlinx.core.DeploymentType
 import net.kotlinx.core.regex.RegexSet
@@ -11,13 +10,10 @@ import software.amazon.awscdk.services.ec2.*
 
 /** enum 설정 */
 class CdkSecurityGroup(
-    val project: CdkProject,
     val sgName: String,
     /** ID 하드코딩된 맵 (캐시 등의 이유로 name으로 조회가 안될때) */
     var idMap: Map<DeploymentType, String> = emptyMap()
-) : CdkDeploymentType {
-
-    override var deploymentType: DeploymentType = DeploymentType.DEV
+) : CdkEnum {
 
     override val logicalName: String
         get() = "${project.projectName}-sg_${sgName}-${deploymentType.name.lowercase()}"

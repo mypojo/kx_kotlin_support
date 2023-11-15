@@ -1,14 +1,18 @@
 package net.kotlinx.aws_cdk.component
 
+import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.iam.*
 
 /**
  * 자주 사용되는 IAM 정의해서 하드코딩 방지
  * */
-class CdkIamRole(
-    block: CdkIamRole.() -> Unit = {}
-) {
+class CdkIamRole {
+
+    @Kdsl
+    constructor(block: CdkIamRole.() -> Unit = {}) {
+        apply(block)
+    }
 
     /**
      * 대분류는 -, 소분류는 _ 로 분리
@@ -34,10 +38,6 @@ class CdkIamRole(
     /** 간단 변환 */
     fun managedPolicy(vararg name: String) {
         managedPolicy = name.map { ManagedPolicy.fromAwsManagedPolicyName(it) }
-    }
-
-    init {
-        block(this)
     }
 
     /** 권한 가져옴 (다른 스택에서) */

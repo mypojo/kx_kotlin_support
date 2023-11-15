@@ -14,6 +14,7 @@ import software.amazon.awscdk.services.events.RuleProps
  * 각종 스케쥴링 설정
  * 주의!! 이거 대신 스케쥴러 사용할것
  * */
+@Deprecated("신제품 출시로 더이상 사용하지 않음")
 class CdkEventBridgeSchedule(
     val project: CdkProject,
     val deploymentType: DeploymentType,

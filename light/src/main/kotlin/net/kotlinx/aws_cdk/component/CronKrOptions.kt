@@ -4,6 +4,7 @@ import software.amazon.awscdk.services.events.CronOptions
 import software.amazon.awscdk.services.events.Schedule
 
 /** 한국시간 입력기 */
+@Deprecated("신제품 출시로 더이상 사용하지 않음")
 class CronKrOptions {
 
     /** 한국 날짜 등록 */

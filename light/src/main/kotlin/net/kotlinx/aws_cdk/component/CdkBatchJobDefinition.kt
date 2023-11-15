@@ -1,11 +1,9 @@
 package net.kotlinx.aws_cdk.component
 
 import net.kotlinx.aws.batch.BatchUtil
-import net.kotlinx.aws_cdk.CdkDeploymentType
-import net.kotlinx.aws_cdk.CdkProject
+import net.kotlinx.aws_cdk.CdkEnum
 import net.kotlinx.aws_cdk.util.TagUtil
 import net.kotlinx.core.DeploymentType
-import net.kotlinx.core.DeploymentType.DEV
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.batch.CfnJobDefinition
 import software.amazon.awscdk.services.batch.CfnJobDefinitionProps
@@ -15,19 +13,17 @@ import kotlin.time.Duration.Companion.hours
 
 /** enum 정의 */
 class CdkBatchJobDefinition(
-    val project: CdkProject,
     val name: String,
     val vcpu: String,
     val memory: Long,
-) : CdkDeploymentType {
-
-    override var deploymentType: DeploymentType = DEV
+) : CdkEnum {
 
     /** VPC 이름 */
     override val logicalName: String
-        get() = "${project.projectName}-${name}-${deploymentType.name.lowercase()}" //가변으로 써도 됨
+        get() = "${project.projectName}-${name}-${deploymentType.name.lowercase()}"
 
-    val arn: String = "arn:aws:batch:ap-northeast-2:${project.awsId}:job-definition/${logicalName}"
+    val arn: String
+        get() = "arn:aws:batch:ap-northeast-2:${project.awsId}:job-definition/${logicalName}"
 
     lateinit var jobDef: CfnJobDefinition
     lateinit var ecrImage: EcrImage
@@ -52,6 +48,7 @@ class CdkBatchJobDefinition(
      * 2. 주석 풀고 다시 돌림 -> Job definitions 버전 올라가면서 활성화됨
      *  */
     fun create(stack: Stack, block: CfnJobDefinitionProps.Builder.() -> Unit = {}): CdkBatchJobDefinition {
+
         val props = CfnJobDefinitionProps.builder()
             .jobDefinitionName(logicalName)
             .platformCapabilities(listOf("FARGATE")) //파게이트만

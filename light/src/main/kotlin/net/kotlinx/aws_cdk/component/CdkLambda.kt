@@ -1,9 +1,9 @@
 package net.kotlinx.aws_cdk.component
 
 import net.kotlinx.aws_cdk.CdkInterface
-import net.kotlinx.aws_cdk.CdkProject
 import net.kotlinx.aws_cdk.util.TagUtil
 import net.kotlinx.core.DeploymentType
+import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.Duration
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.iam.IRole
@@ -24,13 +24,15 @@ fun IFunction.url(type: FunctionUrlAuthType = FunctionUrlAuthType.NONE) {
 /**
  * 람다 함수 정의 (일반 버전)
  * */
-class CdkLambda(
-    val project: CdkProject,
-    val name: String = "fn",
-    block: CdkLambda.() -> Unit = {},
-) : CdkInterface {
+class CdkLambda : CdkInterface {
 
-    var deploymentType: DeploymentType = DeploymentType.DEV
+    @Kdsl
+    constructor(block: CdkLambda.() -> Unit = {}) {
+        apply(block)
+    }
+
+    /** 함수이름 */
+    var name: String = "fn"
 
     override val logicalName: String
         get() = "${project.projectName}-${name}-${deploymentType.name.lowercase()}"
@@ -91,6 +93,7 @@ class CdkLambda(
     /** alias 버전은 ARN 으로 로드한다. */
     fun loadAlias(stack: Stack): CdkLambda {
         checkNotNull(aliasName)
+
         val arn = "arn:aws:lambda:${project.region}:${project.awsId}:function:${logicalName}:${aliasName}"
         aliasFun = Function.fromFunctionArn(stack, arn, arn)
         return this
@@ -138,10 +141,6 @@ class CdkLambda(
                 .aliasName(aliasName)
                 .version(defaultFun.latestVersion).build()
         }
-    }
-
-    init {
-        block(this)
     }
 
 }

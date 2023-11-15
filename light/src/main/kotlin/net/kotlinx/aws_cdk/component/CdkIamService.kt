@@ -30,6 +30,9 @@ enum class CdkIamService(
 
     /** SFN은 반쯤 어플리케이션으로 봐야할듯. S3,DDB 등 많은것을 다룸 */
     SFN("states"),
+
+    /** 스케쥴링 기능 */
+    SCHEDULER("scheduler"),
     ;
 
     val serviceName: String

@@ -1,9 +1,7 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkDeploymentType
-import net.kotlinx.aws_cdk.CdkProject
+import net.kotlinx.aws_cdk.CdkEnum
 import net.kotlinx.aws_cdk.util.TagUtil
-import net.kotlinx.core.DeploymentType
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.iam.AnyPrincipal
 import software.amazon.awscdk.services.iam.Effect
@@ -13,12 +11,7 @@ import software.amazon.awscdk.services.sns.Topic
 import software.amazon.awscdk.services.sns.TopicProps
 
 /** enum */
-class CdkTopic(
-    val project: CdkProject,
-    val topicName: String,
-) : CdkDeploymentType {
-
-    override var deploymentType: DeploymentType = DeploymentType.DEV
+class CdkTopic(val topicName: String) : CdkEnum {
 
     override val logicalName: String
         get() = "${project.projectName}-topic-${topicName}-${deploymentType.name.lowercase()}"

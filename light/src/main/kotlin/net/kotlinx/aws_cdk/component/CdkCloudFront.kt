@@ -1,7 +1,7 @@
 package net.kotlinx.aws_cdk.component
 
 import net.kotlinx.aws_cdk.CdkInterface
-import net.kotlinx.aws_cdk.CdkProject
+import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.certificatemanager.ICertificate
 import software.amazon.awscdk.services.cloudfront.BehaviorOptions
@@ -13,12 +13,14 @@ import software.amazon.awscdk.services.route53.targets.CloudFrontTarget
 import software.amazon.awscdk.services.s3.IBucket
 
 /** 단일사이트 클라우드프론트 샘플 */
-class CdkCloudFront(
-    val project: CdkProject,
-    val domain: String,
-    block: CdkCloudFront.() -> Unit = {}
-) : CdkInterface {
+class CdkCloudFront : CdkInterface {
 
+    @Kdsl
+    constructor(block: CdkCloudFront.() -> Unit = {}) {
+        apply(block)
+    }
+
+    lateinit var domain: String
     lateinit var iBucket: IBucket
     lateinit var iCertificate: ICertificate
 
@@ -28,10 +30,6 @@ class CdkCloudFront(
 
     /** 결과 */
     lateinit var distribution: Distribution
-
-    init {
-        block(this)
-    }
 
     fun create(stack: Stack, block: DistributionProps.Builder.() -> Unit = {}) {
         distribution = Distribution(

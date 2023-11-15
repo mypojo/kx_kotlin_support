@@ -1,7 +1,6 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkInterface
-import net.kotlinx.aws_cdk.CdkProject
+import net.kotlinx.aws_cdk.CdkEnum
 import net.kotlinx.core.DeploymentType
 import software.amazon.awscdk.Duration
 import software.amazon.awscdk.Stack
@@ -12,13 +11,12 @@ import software.amazon.awscdk.services.ecs.EcrImage
 
 /** enum 정의 */
 class CdkEcr(
-    val project: CdkProject,
     val name: String,
     val expires: Duration = Duration.days(30),
     val maxImageCount: Int = 200,
     val imageTagMutability: TagMutability = TagMutability.IMMUTABLE,
     val tagPrefixList: List<String> = DeploymentType.entries.map { it.name },
-) : CdkInterface {
+) : CdkEnum {
 
     override val logicalName: String
         get() = "${project.projectName}-${name}"

@@ -1,8 +1,7 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkDeploymentType
-import net.kotlinx.aws_cdk.CdkProject
-import net.kotlinx.core.DeploymentType
+import net.kotlinx.aws_cdk.CdkInterface
+import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.ec2.CfnPrefixList
 import software.amazon.awscdk.services.ec2.CfnPrefixList.EntryProperty
@@ -11,13 +10,15 @@ import software.amazon.awscdk.services.ec2.IPeer
 import software.amazon.awscdk.services.ec2.Peer
 
 /** enum 정의 */
-class CdkPrefixList(
-    val project: CdkProject,
-    val name: String,
-    block: CdkPrefixList.() -> Unit = {}
-) : CdkDeploymentType {
+class CdkPrefixList : CdkInterface {
 
-    override var deploymentType: DeploymentType = DeploymentType.DEV
+    @Kdsl
+    constructor(block: CdkPrefixList.() -> Unit = {}) {
+        apply(block)
+    }
+
+    /** 이름 */
+    lateinit var name: String
 
     lateinit var prefixDatas: Map<String, String>
 
@@ -29,10 +30,6 @@ class CdkPrefixList(
 
     val feer: IPeer
         get() = Peer.prefixList(prefixList.attrPrefixListId)
-
-    init {
-        block(this)
-    }
 
     /** 결과 */
     lateinit var prefixList: CfnPrefixList
