@@ -7,16 +7,12 @@ import net.kotlinx.core.gson.GsonData
 
 
 /**
- * EventBridge 스케줄링 등록 ->  람다 호출
- * ex) 잡 실행, 특정 로직 실행 등..
+ * AWS 스케쥴러 핸들러
+ * 파라메터 옵션조절 가능하지만 일단 바닐라로 사용함
  * */
-class EventbridgeScheduleHandler(
-    /**
-     * arn 기반으로 트리거
-     * ex) myproject-day_update-dev
-     * ex) {프로젝트명}_{jobDiv}-{deployment_div}
-     * */
-    private val block: suspend (eventName: String) -> Unit
+class SchedulerHandler(
+
+    private val block: suspend (groupName: String, scheduleName: String) -> Unit
 ) : LambdaLogicHandler {
 
     private val log = KotlinLogging.logger {}
@@ -25,22 +21,25 @@ class EventbridgeScheduleHandler(
         val detailType = input[DETAIL_TYPE].str ?: return null
         if (!detailType.startsWith(SCHEDULED_EVENT)) return null
 
-        //ex) arn:aws:events:ap-northeast-2:xxx:rule/xx-day_update-dev
+        //ex) arn:aws:scheduler:ap-northeast-2:99999999:schedule/{groupName}/{scheduleName}
         val resourceArn: String = input["resources"][0].str!!
         if (!resourceArn.startsWith(STARTS_WITH)) return null
 
-        val eventName: String = resourceArn.substringAfterLast("/")
-        log.debug { "[event] ARN = $resourceArn  =>  $eventName" }
+        val scheduleInfo = resourceArn.substringAfter("/").split("/")
+        check(scheduleInfo.size == 2)
+        log.debug { "[event] ARN = $resourceArn  =>  $scheduleInfo" }
 
-        block(eventName)
-        return eventName
+        block(scheduleInfo[0], scheduleInfo[1])
+        return scheduleInfo[1]
     }
 
     companion object {
         const val DETAIL_TYPE = "detail-type"
+
+        /** 이거 이름, 이벤트브릿지하고 동일함 */
         const val SCHEDULED_EVENT = "Scheduled Event"
 
-        const val STARTS_WITH = "arn:aws:events:"
+        const val STARTS_WITH = "arn:aws:scheduler:"
     }
 
 

@@ -5,6 +5,9 @@ import net.kotlinx.aws_cdk.CdkProject
 import net.kotlinx.aws_cdk.component.*
 import net.kotlinx.aws_cdk.util.IamCertType
 import net.kotlinx.aws_cdk.util.TagSet
+import net.kotlinx.core.Kdsl
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import software.amazon.awscdk.SecretValue
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.athena.CfnWorkGroup
@@ -20,10 +23,12 @@ import software.amazon.awscdk.services.iam.UserProps
  * 테이블별 권한부여, 비용분리 등의 기능 포함
  * 권한 샘플 참고용
  * */
-class AthenaIamUser(block: AthenaIamUser.() -> Unit = {}) {
+class AthenaIamUser : KoinComponent {
 
-    /** 프로젝트 */
-    lateinit var project: CdkProject
+    @Kdsl
+    constructor(block: AthenaIamUser.() -> Unit = {}) {
+        apply(block)
+    }
 
     /** 팀 이름 (IAM 그룹으로 만들어짐) */
     lateinit var teamName: String
@@ -58,10 +63,6 @@ class AthenaIamUser(block: AthenaIamUser.() -> Unit = {}) {
      *  */
     lateinit var userNames: List<String>
 
-    init {
-        block(this)
-    }
-
     val workgroupName: String
         get() = "workgroup-${teamName}"
 
@@ -72,6 +73,7 @@ class AthenaIamUser(block: AthenaIamUser.() -> Unit = {}) {
      * 태그 적용시 aws:PrincipalTag 를 사용할것
      *  */
     private fun createAthenaTablesStatement(): CdkPolicyStatement {
+        val project: CdkProject by inject()
         return CdkPolicyStatement {
             actions = listOf(
                 "glue:BatchGetPartition",

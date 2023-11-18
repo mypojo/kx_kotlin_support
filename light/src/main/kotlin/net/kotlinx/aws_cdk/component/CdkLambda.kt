@@ -1,9 +1,8 @@
 package net.kotlinx.aws_cdk.component
 
-import net.kotlinx.aws_cdk.CdkInterface
+import net.kotlinx.aws_cdk.CdkEnum
 import net.kotlinx.aws_cdk.util.TagUtil
 import net.kotlinx.core.DeploymentType
-import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.Duration
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.iam.IRole
@@ -24,15 +23,7 @@ fun IFunction.url(type: FunctionUrlAuthType = FunctionUrlAuthType.NONE) {
 /**
  * 람다 함수 정의 (일반 버전)
  * */
-class CdkLambda : CdkInterface {
-
-    @Kdsl
-    constructor(block: CdkLambda.() -> Unit = {}) {
-        apply(block)
-    }
-
-    /** 함수이름 */
-    var name: String = "fn"
+class CdkLambda(val name: String) : CdkEnum {
 
     override val logicalName: String
         get() = "${project.projectName}-${name}-${deploymentType.name.lowercase()}"

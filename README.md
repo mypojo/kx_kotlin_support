@@ -48,20 +48,30 @@ ________________________________________________________________________________
 프리사인 다운로드 url = https://...
 ```
 
-## VPC 인프라 생성 샘플코드(CDK)
+## CDK DSL 샘플코드. 기본설정은 주입되어 있기때문에 실제 관심 설정에만 집중할 수 있습니다.
 ```kotlin
-val project = CdkProject("aws-id-123456..", "myProject")
-val vpc = CdkVpc(project = project, deploymentType = DeploymentType.dev, vpcCidr = "10.111.0.0/16", cidrMask = 24)
-vpc.create(this)
-vpc.nacl(
-    this, PUBLIC, mapOf(
-        NaclUtil.portOpen(100, PortUtil.WEB_80),
-        NaclUtil.portOpen(101, PortUtil.WEB_443),
-        NaclUtil.portOpen(200, PortUtil.WEB_8080, CommonConfig.LOCAL_IP),
-        NaclUtil.DEFAULT_IN_TEMP,
-        NaclUtil.DEFAULT_OUT,
-    )
-)
+XXCdkKoinStarter.startup {
+    single { project }
+    single { DeploymentType.DEV }
+    single { MyVpc.createForKoin() }
+}
+
+XX02CoreStack(app, props)
+
+CdkSchedulerGroup {
+    this.stack = stack
+    this.groupName = "jobSchedule"
+    role = MyRole.APP_ADMIN.iRole
+    this.dlq = dlq.iQueue
+    this.targetArn = iFunction.functionArn
+    create()
+    schedule {
+        name = "job01"
+        description = "description..."
+        cronExpression = "05 * * * ? *"
+    }
+}
+
 ```
 
 

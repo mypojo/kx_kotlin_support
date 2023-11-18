@@ -52,9 +52,13 @@ class CdkSecurityGroup(
     }
 
     /** 네임으로 못찾을경우 임시 인식용 */
-    fun loadById(stack: Stack): ISecurityGroup {
-        val id = idMap[deploymentType]!!
+    fun load(stack: Stack, id: String): ISecurityGroup {
         return SecurityGroup.fromSecurityGroupId(stack, "sg_${this.sgName}-${deploymentType.name.lowercase()}", id)
+    }
+
+    /** 네임으로 못찾을경우 임시 인식용 */
+    fun loadById(stack: Stack): ISecurityGroup {
+        return load(stack, idMap[deploymentType]!!)
     }
 
 //    /**

@@ -112,6 +112,15 @@ suspend fun LambdaClient.publishVersion(functionName: String): PublishVersionRes
     this.description = "update ${LocalDateTime.now().toKr01()}"
 }
 
+/**
+ * 스냅 스타트 사용시, 과거 버전을 지우지 않으면 ???
+ * https://docs.aws.amazon.com/ko_kr/lambda/latest/dg/snapstart-activate.html
+ * 확인 필요
+ *  */
+suspend fun LambdaClient.deleteFunction(functionName: String): DeleteFunctionResponse = this.deleteFunction {
+    this.functionName = functionName
+}
+
 /** Alias 교체. (없으면 오류남) */
 suspend fun LambdaClient.updateAlias(functionName: String, functionVersion: String, alias: String): UpdateAliasResponse = this.updateAlias {
     this.functionName = functionName

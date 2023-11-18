@@ -2,6 +2,7 @@ package net.kotlinx.aws_cdk.component
 
 import net.kotlinx.aws_cdk.CdkInterface
 import net.kotlinx.aws_cdk.util.TagUtil
+import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.ec2.*
 import software.amazon.awscdk.services.iam.AnyPrincipal
@@ -16,6 +17,11 @@ import software.amazon.awscdk.services.iam.PolicyStatement
  * koin 으로 등록해서 사용하자.
  *  */
 class CdkVpc : CdkInterface {
+
+    @Kdsl
+    constructor(block: CdkVpc.() -> Unit = {}) {
+        apply(block)
+    }
 
     /** 이거 전체 회사내에서 안겹치게 잘 해야함!! (겹치면 피어링 안됨) */
     var vpcCidr: String = "10.1.0.0/16"

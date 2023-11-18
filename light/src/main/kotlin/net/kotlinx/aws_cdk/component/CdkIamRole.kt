@@ -91,3 +91,12 @@ class CdkIamRole {
     }
 
 }
+
+/** 자주 사용되는거 모음 */
+object CdkManagedPolicySet{
+
+    const val SCHEDULER = "AmazonEventBridgeSchedulerFullAccess"
+    const val SSM = "AmazonSSMManagedInstanceCore"
+    const val ECS = "service-role/AmazonECSTaskExecutionRolePolicy"
+
+}

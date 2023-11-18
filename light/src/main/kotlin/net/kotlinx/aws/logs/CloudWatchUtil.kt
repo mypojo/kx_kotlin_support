@@ -14,7 +14,12 @@ object CloudWatchUtil {
     fun toLogLink(logGroupName: String?, logStreamName: String?, region: String = AwsConfig.SEOUL): String {
         val escapedGroupName = (logGroupName ?: "").encodeUrl()
         val escapedStreamName = (logStreamName ?: "").encodeUrl()
-        return "https://$region.console.aws.amazon.com/cloudwatch/home?region=$region#logsV2:log-groups/log-group/$escapedGroupName/log-events/$escapedStreamName"
+
+        //AWS Lambda 스냅스타트의 경우 logStreamName 을 제공하지 앟아서
+        return when (escapedStreamName) {
+            "unknown" -> "https://$region.console.aws.amazon.com/cloudwatch/home?region=$region#logsV2:log-groups/log-group/$escapedGroupName"
+            else -> "https://$region.console.aws.amazon.com/cloudwatch/home?region=$region#logsV2:log-groups/log-group/$escapedGroupName/log-events/$escapedStreamName"
+        }
     }
 
     //==================================================== 시간 필터 ======================================================

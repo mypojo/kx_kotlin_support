@@ -1,7 +1,8 @@
 package net.kotlinx.aws_cdk.module
 
-import net.kotlinx.aws_cdk.CdkProject
+import net.kotlinx.aws_cdk.CdkInterface
 import net.kotlinx.core.DeploymentType
+import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.iam.IRole
 import software.amazon.awscdk.services.kinesisfirehose.CfnDeliveryStream
@@ -13,14 +14,20 @@ import software.amazon.awscdk.services.s3.IBucket
 /**
  * 직접 KDF를 호출하면 테이블에 데이터를 쌓아주는 KDF 스트림 생성
  *  */
-class KdfModule(
-    val project: CdkProject,
-    val stack: Stack,
-    val bucket: IBucket,
-    val role: IRole,
-    val deploymentType: DeploymentType,
-    val databaseName: String = project.projectName.substring(1),
-) {
+class KdfModule : CdkInterface {
+
+    @Kdsl
+    constructor(block: KdfModule.() -> Unit = {}) {
+        apply(block)
+    }
+
+    override val logicalName: String = throw UnsupportedOperationException()
+
+    lateinit var stack: Stack
+    lateinit var bucket: IBucket
+    lateinit var role: IRole
+
+    var databaseName: String = project.projectName.substring(1)
 
     /**
      * KDF 를 다이렉트로 파케이 변환
@@ -63,7 +70,8 @@ class KdfModule(
                                 .build()
                         )
                         .dynamicPartitioningConfiguration(
-                            DynamicPartitioningConfigurationProperty.builder().enabled(true).retryOptions(RetryOptionsProperty.builder().durationInSeconds(300).build()).build() //확인하지 못한 옵션
+                            DynamicPartitioningConfigurationProperty.builder().enabled(true).retryOptions(RetryOptionsProperty.builder().durationInSeconds(300).build())
+                                .build() //확인하지 못한 옵션
                         )
                         .processingConfiguration(
                             ProcessingConfigurationProperty.builder().enabled(true)

@@ -31,12 +31,13 @@ class AwsInfoLoader(block: AwsInfoLoader.() -> Unit = {}) : KoinComponent {
         return try {
             when (val instanceType = AwsInstanceTypeUtil.INSTANCE_TYPE) {
                 AwsInstanceType.LAMBDA -> {
-                    //람다의 경우 스냅스타트시 정상적으로 로드되지 못할 수 있다.
+                    //https://docs.aws.amazon.com/ko_kr/lambda/latest/dg/configuration-envvars.html
+                    //람다의 경우 스냅스타트시 로그 정보를 제공하지 않음
                     val lambdaName = System.getenv(AwsInstanceTypeUtil.AWS_LAMBDA_FUNCTION_NAME)
                     AwsInfo(
                         instanceType,
                         lambdaName,
-                        System.getenv("AWS_LAMBDA_LOG_GROUP_NAME") ?: "unknown",
+                        System.getenv("AWS_LAMBDA_LOG_GROUP_NAME") ?: "/aws/lambda/${lambdaName}",
                         System.getenv("AWS_LAMBDA_LOG_STREAM_NAME") ?: "unknown",
                     )
                 }

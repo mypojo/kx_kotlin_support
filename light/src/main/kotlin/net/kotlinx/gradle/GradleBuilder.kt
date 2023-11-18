@@ -96,6 +96,7 @@ class GradleBuilder(
     /** 레이어 리스트 */
     lateinit var layers: List<String>
 
+    /** 레이어배포의 경우 단계별로 진행해야 해서 여기 단축함수를 넣음 */
     fun updateLayer(layerName: String, zipFile: File) {
         runBlocking {
             val start = TimeStart()
@@ -113,6 +114,7 @@ class GradleBuilder(
         predicate = RetryTemplate.match(ResourceConflictException::class.java)
     }
 
+    /** 람다배포의 경우 단계별로 진행해야 해서 여기 단축함수를 넣음 */
     fun updateLambda(functionName: String, jarFile: File, alias: String? = null) {
         runBlocking {
             val layerArns = aws1.lambda.listLayerVersions(layers).map { it.layerVersionArn!! }
@@ -136,13 +138,8 @@ class GradleBuilder(
                     throw e
                 }
             }
-
-
         }
     }
-
-    //==================================================== 이하 도커 간단배포 ======================================================
-
 
     init {
         block(this)

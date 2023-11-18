@@ -95,7 +95,14 @@ class AthenaTable {
             AthenaTablePartitionType.NONE -> {}
         }
 
-        val schemaText = schema.map { "    `${it.key}` ${toSchema(it.value)}" }.joinToString(",\n") //뎁스에 따라 표현 방식이 틀려진다.
+        val schemaText = run {
+            //프로젝션인경우 본 데이터에 파티션 정보를 추가해야함. 향후 append가 쉽도록 접두어로 데이터 삽입
+            val schemaTarget = when (athenaTablePartitionType) {
+                AthenaTablePartitionType.PROJECTION -> partition + schema
+                else -> schema
+            }
+            schemaTarget.map { "    `${it.key}` ${toSchema(it.value)}" }.joinToString(",\n")
+        }
         val partitionText = when {
             partition.isEmpty() -> ""
             athenaTablePartitionType == AthenaTablePartitionType.INDEX -> {
