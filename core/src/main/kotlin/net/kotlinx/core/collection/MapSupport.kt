@@ -15,4 +15,4 @@ inline fun <K, V> Map<K, V>.pairs(): Array<Pair<K, V>> = entries.map { it.toPair
  * 딱 쿼리스트링만 필요할때 사용
  * 다른 이유라면 okHttp 를 사용하자.
  * */
-inline fun Map<String, String>.toQueryString(): String = this.map { (k, v) -> "$k=${v.encodeUrl()}" }.joinToString("&")
+inline fun Map<String, String>.toQueryString(sep: String = "&"): String = this.map { (k, v) -> "$k=${v.encodeUrl()}" }.joinToString(sep)

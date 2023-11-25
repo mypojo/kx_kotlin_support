@@ -55,7 +55,7 @@ class FunctionRouter(block: FunctionRouter.() -> Unit = {}) : LambdaLogicHandler
         LambdaUrlOutput(html, code.value)
     }
 
-    /** 기본 예외 처리기 */
+    /** 기본 500 예외 처리기 */
     var errorHandler: (LambdaUrlInput, Throwable) -> LambdaUrlOutput = { i, e ->
         val html = createHTML().html {
             setDefault("오류가 발생했습니다.")

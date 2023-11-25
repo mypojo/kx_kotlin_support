@@ -1,6 +1,11 @@
 package net.kotlinx.aws.athena
 
+import mu.KotlinLogging
+import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.s3.deleteDir
 import net.kotlinx.core.Kdsl
+import net.kotlinx.core.collection.toQueryString
+import net.kotlinx.koin.Koins
 
 
 /**
@@ -31,12 +36,14 @@ class AthenaTable {
     /** 파티션 타입 */
     var athenaTablePartitionType: AthenaTablePartitionType = AthenaTablePartitionType.NONE
 
+    /** 테이블 타입 */
+    var athenaTableType: AthenaTableType = AthenaTableType.EXTERNAL
+
     /** 포맷 */
     var athenaTableFormat: AthenaTableFormat = AthenaTableFormat.IonDdb
 
     /** 테이블명  */
     lateinit var tableName: String
-
 
     /** 버킷 명 */
     lateinit var bucket: String
@@ -68,11 +75,46 @@ class AthenaTable {
     /** 테이블 생성시에는 필요없음. 권한 부여용 */
     var database: String = ""
 
+
+    //==================================================== 데이터 편집 ======================================================
+
+    /** 해당 파티션 경로의 디렉토리를 삭제한다. */
+    suspend fun deleteaData(vararg partitionValue: String) {
+        check(athenaTableType == AthenaTableType.EXTERNAL) { "athenaTableType EXTERNAL 만 지원합니다." }
+
+        val dataPath = when (athenaTablePartitionType) {
+            AthenaTablePartitionType.PROJECTION -> {
+                check(partitionValue.isNotEmpty())
+                "${s3Key}${partitionValue.joinToString("/")}/"
+            }
+
+            AthenaTablePartitionType.INDEX -> {
+                check(partitionValue.isNotEmpty())
+                val pathKeys = partition.keys.take(partitionValue.size)
+                val pathMap = pathKeys.mapIndexed { index, s -> s to partitionValue[index] }.toMap()
+                "${s3Key}${pathMap.toQueryString("/")}/"
+            }
+
+            AthenaTablePartitionType.NONE -> {
+                check(partitionValue.isEmpty())
+                s3Key
+            }
+        }
+
+        val aws = Koins.get<AwsClient1>()
+        log.debug { " -> 테이블 $tableName 데이터 삭제 : $bucket $dataPath" }
+        aws.s3.deleteDir(bucket, dataPath)
+    }
+
+
+    //==================================================== 스키마 ======================================================
+
     fun drop(): String = "DROP TABLE IF EXISTS ${tableName};"
 
     fun create(): String {
 
         val location = "s3://${bucket}/${s3Key}"
+
         if (skipHeader) {
             props = props + mapOf("skip.header.line.count" to "1") //헤더 스킵 정보
         }
@@ -112,7 +154,19 @@ class AthenaTable {
             else -> ""
         }
 
+        //==================================================== 포맷정보 ======================================================
         val formatText = athenaTableFormat.toRowFormat(this).joinToString("\n")
+        when (athenaTableFormat) {
+            is AthenaTableFormat.Iceberg -> {
+                props = props + mapOf(
+                    "table_type" to "ICEBERG",
+                    "optimize_rewrite_delete_file_threshold" to "5", //임계값보다 적으면 파일이 재작성되지 않음
+                    //이하 설정은 일단 기본값 사용함.
+                )
+            }
+
+            else -> {} //아무것도 안함
+        }
 
         val propsText = when {
             props.isEmpty() -> ""
@@ -121,7 +175,7 @@ class AthenaTable {
 
         val tableDatabase = if (database.isEmpty()) "" else "${database}."
         return listOf(
-            "CREATE EXTERNAL TABLE ${tableDatabase}${tableName}(",
+            "CREATE ${athenaTableType.name} TABLE ${tableDatabase}${tableName}(",
             schemaText,
             ")",
             partitionText,
@@ -173,6 +227,10 @@ class AthenaTable {
      * 내부 1뎁스 데이터는 이거로 사용할것
      *  */
     val mapString = "map<string, string>"
+
+    companion object {
+        private val log = KotlinLogging.logger {}
+    }
 
 }
 
