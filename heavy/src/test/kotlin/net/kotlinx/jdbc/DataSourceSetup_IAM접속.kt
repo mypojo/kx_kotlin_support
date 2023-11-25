@@ -40,7 +40,7 @@ class DataSourceSetup_IAM접속 : TestRoot() {
             dataSourceSetupType = DataSourceSetupType.ID_PASS
             profile = projectName
             username = "admin"
-            password = "xxxxxx"
+            password = "xxxxxx "
             jdbcUrl = JdbcUrl {
                 host = "${profile}-dev.cluster-yy.ap-northeast-2.rds.amazonaws.com"
                 connectPort = 33061
