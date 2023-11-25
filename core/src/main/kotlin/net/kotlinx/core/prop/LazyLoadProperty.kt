@@ -32,7 +32,7 @@ fun <T> lzayLoadReset(clazz: Class<T>): Boolean {
 }
 
 /**
- * 늦은 초기화 & 해당 클래스로 캐시 등록을 해준다.
+ * 리셋이 가능한 늦은 초기화 & 해당 클래스로 캐시 등록을 해준다.
  * 싱글톤 전용임!!  클래스다 다르면 오버라이드됨
  *  */
 inline fun <reified T : Any> lazyLoad(noinline block: () -> T): LazyLoadProperty<T> = LazyLoadProperty(block, T::class.java)

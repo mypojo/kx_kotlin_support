@@ -18,6 +18,10 @@ import java.net.URLDecoder
  * 파이어호스 저장 시간을 한국시간으로 교체
  * CDK에 프리픽스 베이스로 S3 이벤트를 설정해야 한다.
  * net.kotlinx.aws1.s3.FirehoseKrHandler::handleRequest
+ *
+ * https://gist.github.com/sawyerh/f809cc6d539c54287fc87223fc6c0f9b
+ *
+ * @see net.kotlinx.aws.lambdaCommon.CommonFunctionHandler 단독 매핑 보다는 이걸 우선 사용할것
  */
 class FirehoseKrHandler : RequestHandler<S3Event, String> {
 

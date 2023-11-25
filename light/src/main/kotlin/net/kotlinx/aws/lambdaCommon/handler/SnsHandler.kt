@@ -1,6 +1,7 @@
 package net.kotlinx.aws.lambdaCommon.handler
 
 import com.amazonaws.services.lambda.runtime.Context
+import com.google.gson.JsonSyntaxException
 import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
 import net.kotlinx.core.gson.GsonData
 
@@ -20,8 +21,16 @@ class SnsHandler(
     override suspend fun invoke(input: GsonData, context: Context?): Any? {
         if (input[EVENT_SOURCE].str != SOURCE_SNS) return null
 
-        val body = input["Sns"]["Message"].str!!
-        block(GsonData.parse(body))
+        val sns = input["Sns"]
+
+        /** JSON 그 자체가 메세지인 경우가 있고, 단순 텍스트(Budget Notification 등)인 경우도 있다 */
+        val body = sns["Message"].str!!
+        try {
+            block(GsonData.parse(body))
+        } catch (e: JsonSyntaxException) {
+            //단순 문자열인경우 sns 그대로 전달
+            block(sns)
+        }
         return body
     }
 

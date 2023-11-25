@@ -1,6 +1,26 @@
 package net.kotlinx.core.html
 
 import kotlinx.html.*
+import kotlinx.html.stream.createHTML
+
+/**
+ * 간단 생성버전.
+ * body 부터 시작함
+ * 확장 고려 X
+ * */
+fun kotlinHtml(title: String, block: BODY.() -> Unit): String {
+    return "<!doctype html>" + createHTML().html {
+        setDefault(title) {
+            script {
+                src = "https://unpkg.com/htmx.org@1.8.6"
+            }
+        }
+        body {
+            block()
+        }
+    }
+}
+
 
 /** 프로젝트마다 오버라이드 해서 사용할것! */
 fun HTML.setDefault(title: String, block: HEAD.() -> Unit = {}) {

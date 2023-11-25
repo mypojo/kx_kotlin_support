@@ -8,6 +8,8 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.zip.GZIPOutputStream
 
+typealias Line = List<String>
+
 /**
  * 코틀린 오피셜 CSV
  * 코드 참고용

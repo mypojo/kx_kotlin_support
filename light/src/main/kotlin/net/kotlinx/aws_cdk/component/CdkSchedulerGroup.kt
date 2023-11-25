@@ -73,6 +73,12 @@ class CdkSchedulerGroup : CdkInterface {
         /** ON 여부 */
         var enabled: Boolean = true
 
+        /** 
+         * 입력 JSON
+         * 이게 없으면 디폴트(이벤트브릿지하고 비슷한 스키마)로 변경됨
+         * */
+        var inputJson: Any? = null
+
     }
 
     /** 실제 스케쥴 등록 */
@@ -95,6 +101,9 @@ class CdkSchedulerGroup : CdkInterface {
                                 .maximumRetryAttempts(0)
                                 .build()
                         )
+                        .apply {
+                            data.inputJson?.let { input(it.toString()) }
+                        }
                         .build()
                 )
                 .scheduleExpression("cron(${data.cronExpression})")

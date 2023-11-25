@@ -21,6 +21,10 @@ object CdkPolicyStatementSetAthena {
             "athena:StopQueryExecution",
             "athena:RunQuery",
             "athena:ListQueryExecutions",
+            //아테나 네임드쿼리
+            "athena:ListNamedQueries",
+            "athena:GetNamedQuery",
+            "athena:BatchGetNamedQuery",
         )
     }
 }
