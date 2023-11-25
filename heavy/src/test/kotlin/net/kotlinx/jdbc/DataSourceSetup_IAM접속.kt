@@ -20,7 +20,7 @@ class DataSourceSetup_IAM접속 : TestRoot() {
             profile = projectName
             username = "${profile}_dev"
             jdbcUrl = JdbcUrl {
-                host = "${profile}-dev.cluster-cxoltcrf7s91.ap-northeast-2.rds.amazonaws.com"
+                host = "${profile}-dev.cluster-yy.ap-northeast-2.rds.amazonaws.com"
                 connectPort = 33061
                 direct = false
                 database = username
@@ -40,9 +40,9 @@ class DataSourceSetup_IAM접속 : TestRoot() {
             dataSourceSetupType = DataSourceSetupType.ID_PASS
             profile = projectName
             username = "admin"
-            password = "5fKJ5U7S5x2DzI^brU793RBeUFbWTN"
+            password = "xxxxxx"
             jdbcUrl = JdbcUrl {
-                host = "${profile}-dev.cluster-cxoltcrf7s91.ap-northeast-2.rds.amazonaws.com"
+                host = "${profile}-dev.cluster-yy.ap-northeast-2.rds.amazonaws.com"
                 connectPort = 33061
                 direct = false
                 database = "${profile}_dev"
