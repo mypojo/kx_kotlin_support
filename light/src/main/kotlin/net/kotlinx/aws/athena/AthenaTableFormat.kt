@@ -70,6 +70,16 @@ sealed interface AthenaTableFormat {
         }
     }
 
+    /**
+     * 아이스버그!! 트랜잭션 필요하면 이거
+     * https://docs.aws.amazon.com/ko_kr/athena/latest/ug/querying-iceberg-creating-tables.html
+     * */
+    data object Iceberg : AthenaTableFormat {
+        override fun toRowFormat(table: AthenaTable): List<String> {
+            return emptyList() //별도 필요 없으음
+        }
+    }
+
     //==================================================== 벤더 지정 ======================================================
 
     /**
