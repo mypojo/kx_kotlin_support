@@ -4,7 +4,17 @@ import com.google.gson.*
 import mu.KotlinLogging
 import net.kotlinx.core.serial.SerialJsonObj
 
-inline fun String.toGsonData() = GsonData.parse(this)
+/** 간단 변환 */
+inline fun String.toGsonData(): GsonData = GsonData.parse(this)
+
+/** 간단 변환 */
+fun List<GsonData>.toGsonArray(): GsonData = GsonData.array().also { ar -> this.forEach { ar.add(it) } }
+
+/**
+ * 간단 변환을 문자열로 변경함
+ * ex) athena array<string> 으로 캐스팅
+ *  */
+fun List<GsonData>.toGsonArrayAsStr(): GsonData = GsonData.array().also { ar -> this.forEach { ar.add(it.toString()) } }
 
 /**
  * koson 은 특정값 읽기가 안됨 -> 간단 읽기 & 수정 용으로 작성
@@ -35,6 +45,19 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 
     /** 삭제. */
     fun remove(key: String): GsonData? = (delegate as? JsonObject)?.remove(key)?.let { GsonData(it) }
+
+    //==================================================== array 추가 ======================================================
+
+    fun add(data: String) = (delegate as? JsonArray)?.add(data)
+    fun add(data: Number) = (delegate as? JsonArray)?.add(data)
+    fun add(data: Boolean) = (delegate as? JsonArray)?.add(data)
+    fun add(data: GsonData) = (delegate as? JsonArray)?.add(data.delegate)
+
+    /** 추가 */
+    fun add(collection: Collection<GsonData>) = (delegate as? JsonArray)?.let { d -> collection.forEach { d.add(it.delegate) } }
+
+    /** 벌크추가 */
+    fun addAll(data: GsonData) = (delegate as? JsonArray)?.addAll(data.delegate as JsonArray)
 
     //==================================================== 기본 구현 ======================================================
 

@@ -8,7 +8,7 @@ import net.kotlinx.aws.athena.AthenaTablePartitionType
 object HttpLogTable {
 
     /** 결과 파일 저장 */
-    val result = AthenaTable {
+    val HTTP_RESULT = AthenaTable {
         tableName = "http_log"
         schema = mapOf(
             "basic_date" to "string",

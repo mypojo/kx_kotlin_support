@@ -3,9 +3,11 @@ package net.kotlinx.aws.module.batchStep.stepDefault
 import com.amazonaws.services.lambda.runtime.Context
 import com.lectra.koson.obj
 import mu.KotlinLogging
+import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.athena.AthenaModule
 import net.kotlinx.aws.lambda.LambdaUtil
 import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
+import net.kotlinx.aws.module.batchStep.BatchStepConfig
 import net.kotlinx.aws.module.batchStep.BatchStepInput
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.time.toTimeString
@@ -22,12 +24,19 @@ class StepEnd : LambdaLogicHandler, KoinComponent {
 
     private val log = KotlinLogging.logger {}
 
+    private val aws1: AwsClient1 by inject()
+    private val config: BatchStepConfig by inject()
     private val athenaModule: AthenaModule by inject()
     private val jobRepository: JobRepository by inject()
 
     override suspend fun invoke(input: GsonData, context: Context?): Any {
 
         val option = BatchStepInput.parseJson(input.toString()).option
+
+        val inputDatas = config.listInputs(option.targetSfnId)
+        if (inputDatas.isNotEmpty()) {
+            throw IllegalStateException("처리되지 못한 데이터들이 ${inputDatas.size}건 존재합니다..")
+        }
 
         val datas = athenaModule.readAll {
             """

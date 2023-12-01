@@ -1,8 +1,10 @@
 package net.kotlinx.aws.module.batchStep
 
+import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.s3.deleteDir
+import net.kotlinx.aws.s3.toList
 import net.kotlinx.aws.sfn.SfnUtil
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -35,6 +37,16 @@ class BatchStepConfig(block: BatchStepConfig.() -> Unit) : KoinComponent {
 
     /** 콘솔링크 출력 */
     fun consoleLink(sfnId: String): String = SfnUtil.consoleLink(aws1.awsConfig.awsId!!, stateMachineName, sfnId)
+
+    //==================================================== 편의셩 유틸 ======================================================
+
+    /** 인풋 데이터들을 리스팅한다 */
+    suspend fun listInputs(targetSfnId: String): List<String> {
+        return aws1.s3.listObjectsV2Paginated {
+            this.bucket = workUploadBuket
+            this.prefix = "${workUploadInputDir}${targetSfnId}/"
+        }.toList()
+    }
 
     /**
      * 업로드 디렉토리를 전부 삭제한다.

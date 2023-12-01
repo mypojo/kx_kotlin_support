@@ -47,3 +47,9 @@ fun <INPUT, RESULT> List<(INPUT) -> RESULT?>.invokeUntilNotNull(input: INPUT): R
     }
     return null
 }
+
+
+/**
+ * map을 flat 하게 해준다.
+ *  */
+fun <K, V> List<Map<K, V>>.flatten(): Map<K, V> = this.flatMap { it.entries }.associate { it.key to it.value }

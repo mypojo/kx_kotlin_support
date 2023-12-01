@@ -24,8 +24,8 @@ inline fun Long.toLocalDateTime(zone: ZoneId = TimeUtil.SEOUL): LocalDateTime = 
  *  */
 inline fun Long.toRate(sum: Long, scale: Int = 1): BigDecimal {
     if (sum == 0L) return BigDecimal.ZERO
-    return (this * 100.0 / sum).toRoundUp(scale)
+    return (this * 100.0 / sum).toRoundHalfUp(scale)
 }
 
 /** 만원단위 변환. 은근히 자주 사용됨 */
-inline fun Long.toManwon(scale: Int = 1): BigDecimal = (this / 10000.0).toRoundUp(scale)
+inline fun Long.toManwon(scale: Int = 1): BigDecimal = (this / 10000.0).toRoundHalfUp(scale)

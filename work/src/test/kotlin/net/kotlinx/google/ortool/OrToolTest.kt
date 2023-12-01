@@ -13,7 +13,6 @@ class OrToolTest : TestRoot() {
     @Test
     fun test() {
 
-
         Loader.loadNativeLibraries()
         // Create the linear solver with the GLOP backend.
         // Create the linear solver with the GLOP backend.

@@ -4,6 +4,7 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.kotlinx.core.time.TimeFormat
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 
@@ -16,22 +17,29 @@ import java.time.LocalDateTime
  */
 object GsonSet {
 
+    /** 기본적인것들 세팅 */
+    private fun GsonBuilder.applyDefaut() {
+        setExclusionStrategies(NotExposeStrategy())
+        registerTypeAdapter(GsonData::class.java, GsonAdapterUtil.GsonDataAdapter())
+        registerTypeAdapter(BigDecimal::class.java, GsonAdapterUtil.BigDecimalAdapter())
+    }
+
     /**
      * 디폴트 변환용
      * date 기반의 기본조건(setDateFormat) 안씀
      *  */
     val GSON: Gson by lazy {
         GsonBuilder().apply {
-            setExclusionStrategies(NotExposeStrategy())
-            registerTypeAdapter(Map::class.java, GsonAdapterUtil.MapAdapter()) //Lambda 기본 변환에 사용 (다른데는 쓸일 없음)
+            applyDefaut()
             registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeAdapter(TimeFormat.YMDHMS)) //날짜만 변경해줌
+            registerTypeAdapter(Map::class.java, GsonAdapterUtil.MapAdapter()) //Lambda 기본 변환에 사용 (다른데는 쓸일 없음)
         }.create()!!
     }
 
     /** 이쁘게 */
     val GSON_PRETTY: Gson by lazy {
         GsonBuilder().apply {
-            setExclusionStrategies(NotExposeStrategy())
+            applyDefaut()
             setPrettyPrinting()
         }.create()!!
     }
@@ -42,10 +50,9 @@ object GsonSet {
      *  */
     val TABLE_UTC: Gson by lazy {
         GsonBuilder().apply {
+            applyDefaut()
             setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            setExclusionStrategies(NotExposeStrategy())
-            registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeUtcAdapter()) //날짜만 변경해줌
-            registerTypeAdapter(GsonData::class.java, GsonAdapterUtil.GsonDataAdapter())
+            registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeUtcAdapter()) //날짜가 UTC
         }.create()!!
     }
 
@@ -55,9 +62,8 @@ object GsonSet {
      *  */
     val BEAN_UTC_ZONE: Gson by lazy {
         GsonBuilder().apply {
-            setExclusionStrategies(NotExposeStrategy())
-            registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeUtcZoneAdapter()) //날짜만 변경해줌
-            registerTypeAdapter(GsonData::class.java, GsonAdapterUtil.GsonDataAdapter())
+            applyDefaut()
+            registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeUtcZoneAdapter()) //날짜가 UTC_ZONE
         }.create()!!
     }
 

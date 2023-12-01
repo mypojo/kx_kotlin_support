@@ -78,42 +78,10 @@ allprojects {
 
 }
 
-//==================================================== 배포 ======================================================
-
-//메이븐 센트럴 배포
-//https://jitpack.io/#mypojo/kx_kotlin_support/-SNAPSHOT  이걸로 해도 됨 (직접 배포하는게 더 좋은듯)
-//publishing {
-//    publications {
-//        fun pub(projectName: String) {
-//            create<MavenPublication>("mavenCentral-${projectName}") {
-//                groupId = "net.kotlinx"
-//                artifactId = projectName
-//                from(project(":${projectName}").components["java"])
-//                pom {
-//                    name.set(projectName)
-//                    description.set("Kotlin Support Library")
-//                    url.set("https://github.com/mypojo/kx_kotlin_support")
-//                    licenses {
-//
-//                    }
-//                }
-//            }
-//        }
-//        //모든 의존성이 순서대로 다 있어야함
-//        pub("core1")
-//    }
-//    repositories {
-//        maven {
-//            url = uri("s01.oss.sonatype.org")
-//            credentials {
-//                username = providers["jatbrains.space.maven.username"]
-//                password = providers["jatbrains.space.maven.password"]
-//            }
-//        }
-//    }
-//}
-
-/** private 배포 */
+/**
+ * public 배포
+ * jitpack.io 으로 해도 되는데 직접 배포하는게 더 좋은듯
+ * */
 publishing {
     publications {
         fun pub(projectName: String) {
@@ -140,12 +108,26 @@ publishing {
     }
     repositories {
         maven {
-            url = uri("https://maven.pkg.jetbrains.space/november/p/ost/kotlin-support")
+            val name = providers["repsy.maven.username"]
+            url = uri("https://repo.repsy.io/mvn/${name}/kotlin_support")
             credentials {
-                username = providers["jatbrains.space.maven.username"]
-                password = providers["jatbrains.space.maven.password"]
+                username = name
+                password = providers["repsy.maven.password"]
             }
         }
     }
 }
+
+///** space private 배포 (public 유료라서 일단 중단) */
+//publishing {
+//    repositories {
+//        maven {
+//            url = uri("https://maven.pkg.jetbrains.space/november/p/ost/kotlin-support")
+//            credentials {
+//                username = providers["jatbrains.space.maven.username"]
+//                password = providers["jatbrains.space.maven.password"]
+//            }
+//        }
+//    }
+//}
 

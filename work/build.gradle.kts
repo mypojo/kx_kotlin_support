@@ -21,10 +21,18 @@ dependencies {
 
     //api("com.navercorp.fixturemonkey:fixture-monkey-starter-kotlin:0.6.10")  //네이버 픽스쳐몽키.. 애매함 -> .jqwik-database 이파일 자꾸 생겨서 제거
 
+    //==================================================== 머신러닝 ======================================================
+    api("org.deeplearning4j:deeplearning4j-core:_")  //https://deeplearning4j.konduit.ai/
+    api("org.deeplearning4j:deeplearning4j-nlp:_") //NLP(Natural Language Processing, 자연어 처리)
+    api("org.nd4j:nd4j-native-platform:_")  //ND4J는 다차원 행렬 계산을 실행하는 API를 제공
+
+
+
     //==================================================== 코테스트 단위테스트용 ======================================================
     //코테스트 문제가 많아서 공통에서 제거함 -> 이유없이 메모리아웃 오류남
-    testImplementation("io.kotest:kotest-runner-junit5:_")
-    testImplementation("io.kotest:kotest-assertions-core:_")
+    //코테스트 넘으면 너무 느려져서 일단 제거
+//    testImplementation("io.kotest:kotest-runner-junit5:_")
+//    testImplementation("io.kotest:kotest-assertions-core:_")
 
 
 }

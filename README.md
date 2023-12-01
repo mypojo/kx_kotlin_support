@@ -6,6 +6,8 @@ kotlin용 각종 도구 모음입니다.
 - 구글 / 노션 API 샘플
 - Spring / Hibernate 샘플
 
+[![License](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/license/mit-0/)
+
 ## AWS client 샘플
 
 ```kotlin

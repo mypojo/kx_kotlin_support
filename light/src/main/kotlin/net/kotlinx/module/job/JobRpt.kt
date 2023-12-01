@@ -1,12 +1,10 @@
 package net.kotlinx.module.job
 
 import net.kotlinx.aws.fargate.FargateUtil
+import net.kotlinx.core.number.toRoundHalfUp
 import java.math.BigDecimal
-import java.math.RoundingMode
 import java.time.LocalDateTime
 
-/** 반올림 */
-inline fun Double.toRoundUp(scale: Int): BigDecimal = this.toBigDecimal().setScale(scale, RoundingMode.HALF_UP)
 
 data class JobSta(
     val job: Job,
@@ -38,7 +36,7 @@ inline fun Collection<Job>.toJobSta(): JobSta {
         sumOfDuration,
         sumOfDuration / jobs.size,
         jobs.mapNotNull { it.toIntervalMills() }.maxOf { it },
-        (FargateUtil.cost(1.0, 2.0, monthTime) * 1400 / 10000).toRoundUp(1),
+        (FargateUtil.cost(1.0, 2.0, monthTime) * 1400 / 10000).toRoundHalfUp(1),
     )
 }
 

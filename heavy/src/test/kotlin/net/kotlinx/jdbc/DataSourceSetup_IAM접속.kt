@@ -57,6 +57,7 @@ class DataSourceSetup_IAM접속 : TestRoot() {
     }
 
     private fun doTest(dataSource: HikariDataSource) {
+
         using(session(dataSource)) { session ->
             val query = sqlQuery("select member_id,member_name,last_login_time from member limit ?", 3000)
             val queryResult = session.listAny(query)

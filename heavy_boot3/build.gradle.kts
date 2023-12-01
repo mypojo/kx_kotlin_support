@@ -19,6 +19,7 @@ dependencies {
     api(project(":heavy"))
 
     //==================================================== 스프링 부트 시리즈 (버전x) ======================================================
+    //이하 api 로 정의시 하위 프로젝트에서 문제 발생함!.
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-batch")

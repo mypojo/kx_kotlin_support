@@ -1,6 +1,5 @@
 package net.kotlinx.aws.module.batchStep.stepDefault
 
-import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
 import com.amazonaws.services.lambda.runtime.Context
 import com.lectra.koson.obj
 import kotlinx.serialization.Serializable
@@ -15,7 +14,6 @@ import net.kotlinx.aws.lambdaCommon.handler.s3.S3LogicHandler
 import net.kotlinx.aws.module.batchStep.BatchStepConfig
 import net.kotlinx.aws.module.batchStep.BatchStepInput
 import net.kotlinx.aws.module.batchStep.BatchStepMode
-import net.kotlinx.aws.s3.toList
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.regex.RegexSet
 import net.kotlinx.core.serial.LocalDateTimeSerializer
@@ -47,14 +45,10 @@ class StepStart : LambdaLogicHandler, KoinComponent {
     override suspend fun invoke(input: GsonData, context: Context?): Any {
 
         val option = BatchStepInput.parseJson(input.toString()).option
+        val inputDatas = config.listInputs(option.targetSfnId)
 
-        val datas = aws1.s3.listObjectsV2Paginated {
-            this.bucket = config.workUploadBuket
-            this.prefix = "${config.workUploadInputDir}${option.targetSfnId}/"
-        }.toList()
-
-        check(datas.isNotEmpty()) { " ${config.workUploadBuket}/${config.workUploadInputDir}${option.targetSfnId}/  -> 데이터가 존재하지 않습니다." }
-        log.debug { " -> [${config.workUploadBuket}/${config.workUploadInputDir}${option.targetSfnId}] -> ${datas.size} 로드됨" }
+        check(inputDatas.isNotEmpty()) { " ${config.workUploadBuket}/${config.workUploadInputDir}${option.targetSfnId}/  -> 데이터가 존재하지 않습니다." }
+        log.debug { " -> [${config.workUploadBuket}/${config.workUploadInputDir}${option.targetSfnId}] -> ${inputDatas.size} 로드됨" }
 
         val job = Job(option.jobPk, option.jobSk) {
             jobStatus = JobStatus.RUNNING
@@ -73,13 +67,13 @@ class StepStart : LambdaLogicHandler, KoinComponent {
 
         return StepStartContext(
             LocalDateTime.now(),
-            datas.size,
-            datas.first().substringAfterLast("/").retainFrom(RegexSet.NUMERIC).toInt(),
+            inputDatas.size,
+            inputDatas.first().substringAfterLast("/").retainFrom(RegexSet.NUMERIC).toInt(),
             when (option.mode) {
 
                 BatchStepMode.MAP_INLINE -> {
                     //전체 데이터 리스트를 넣어준다. -> sfn에서 읽어서 event로 전달해줌
-                    datas.map {
+                    inputDatas.map {
                         obj {
                             S3LogicHandler.KEY to it
                         }.toString()

@@ -1,25 +1,36 @@
 package net.kotlinx.core.concurrent
 
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlin.time.Duration
 
+
 /**
- * 간단한 코루틴 실행기.
+ * 간단한 코루틴 실행기 (스코프 있는경우)
+ * 근데 굳이 이렇게 할 필요없이 새로 열어도 잘 작동함
+ * */
+suspend fun <T> List<suspend () -> T>.coroutineExecute(scope: CoroutineScope, maxConcurrency: Int = Int.MAX_VALUE): List<T> {
+    val gate = Semaphore(maxConcurrency)
+    return this.map {
+        scope.async {
+            gate.withPermit { it() }
+        }
+    }.map {
+        it.await()
+    }
+}
+
+
+/**
+ * 간단한 코루틴 실행기. (CoroutineScope를 새로실행)
  * 리턴받을게 있다면 async & await
  * Semaphore로 인한 약간의 지연은 무시한다
- *
- * 경고!! CoroutineScope를 따로 전달받지 않고, 새로 열어준다
  * */
 fun <T> List<suspend () -> T>.coroutineExecute(maxConcurrency: Int = Int.MAX_VALUE): List<T> {
     val gate = Semaphore(maxConcurrency)
     val list = this
-
     return runBlocking {
         return@runBlocking list.map {
             async {
@@ -63,6 +74,6 @@ suspend fun <T, R> Flow<T>.collectToList(block: (T) -> R): List<R> {
 }
 
 /** 간단 delay. */
-suspend fun Duration.delay(){
+suspend fun Duration.delay() {
     delay(this)
 }

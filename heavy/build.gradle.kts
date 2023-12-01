@@ -67,7 +67,7 @@ dependencies {
     api("com.zaxxer:HikariCP:_")
 
     //==================================================== 기타 ======================================================
-    implementation("org.passay:passay:_") //패스워드 간단 검증
+    api("org.passay:passay:_") //패스워드 간단 검증
 
     api("com.jcraft:jsch:_") //SFTP 모듈
     api("org.apache.poi:poi-ooxml:_") //엑셀
@@ -76,6 +76,6 @@ dependencies {
 
     //==================================================== RDB 도구 ======================================================
     //implementation("io.zeko:zeko-sql-builder:1.4.0") //스키마 정의 없는 SQL 빌더 (비정형 쿼리용 or 간단 람다 API 쿼리)
-    implementation("com.vladsch.kotlin-jdbc:kotlin-jdbc:_") //깃에서 주워옴. JDBC 간단래퍼
+    api("com.vladsch.kotlin-jdbc:kotlin-jdbc:_") //깃에서 주워옴. JDBC 간단래퍼
 
 }
