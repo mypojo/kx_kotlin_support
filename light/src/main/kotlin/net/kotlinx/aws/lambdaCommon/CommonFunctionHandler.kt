@@ -71,7 +71,7 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
             }
         } catch (e: Throwable) {
             //오류 발생시에만 data 로그 출력
-            log.warn { "오류!! ${e.toSimpleString()} -> 입력이벤트출력 $data" }
+            log.warn { "오류!! ${e.toSimpleString()} -> 입력이벤트 = $data" }
             throw e
         }
         throw IllegalStateException("매칭되는 로직이 없습니다! $data")

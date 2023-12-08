@@ -10,6 +10,7 @@ import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
 import net.kotlinx.aws.module.batchStep.BatchStepConfig
 import net.kotlinx.aws.module.batchStep.BatchStepInput
 import net.kotlinx.core.gson.GsonData
+import net.kotlinx.core.retry.RetryTemplate
 import net.kotlinx.core.time.toTimeString
 import net.kotlinx.module.job.Job
 import net.kotlinx.module.job.JobRepository
@@ -29,6 +30,10 @@ class StepEnd : LambdaLogicHandler, KoinComponent {
     private val athenaModule: AthenaModule by inject()
     private val jobRepository: JobRepository by inject()
 
+    var retry = RetryTemplate {
+        predicate = RetryTemplate.ALL
+    }
+
     override suspend fun invoke(input: GsonData, context: Context?): Any {
 
         val option = BatchStepInput.parseJson(input.toString()).option
@@ -38,13 +43,15 @@ class StepEnd : LambdaLogicHandler, KoinComponent {
             throw IllegalStateException("StepEnd 감지 : 처리되지 못한 데이터파일 ${inputDatas.size}건")
         }
 
-        val datas = athenaModule.readAll {
-            """
+        val datas = retry.withRetry {
+            athenaModule.readAll {
+                """
                 SELECT COUNT(1) CNT,sum(total_interval) total_interval,avg(total_interval) avg_interval,sum(total_size) total_size
                 FROM batch_step
                 where sfn_id = '${option.sfnId}'
                 """
-        }.drop(1)[0]
+            }.drop(1)[0]
+        }
 
         val resultJson = when {
             datas.isEmpty() -> obj {
