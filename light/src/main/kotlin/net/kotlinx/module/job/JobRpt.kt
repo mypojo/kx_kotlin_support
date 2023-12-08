@@ -1,7 +1,7 @@
 package net.kotlinx.module.job
 
 import net.kotlinx.aws.fargate.FargateUtil
-import net.kotlinx.core.number.toRoundHalfUp
+import net.kotlinx.core.number.halfUp
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -36,7 +36,7 @@ inline fun Collection<Job>.toJobSta(): JobSta {
         sumOfDuration,
         sumOfDuration / jobs.size,
         jobs.mapNotNull { it.toIntervalMills() }.maxOf { it },
-        (FargateUtil.cost(1.0, 2.0, monthTime) * 1400 / 10000).toRoundHalfUp(1),
+        (FargateUtil.cost(1.0, 2.0, monthTime) * 1400 / 10000).halfUp(1),
     )
 }
 

@@ -3,10 +3,33 @@ package net.kotlinx.core.gson
 import com.lectra.koson.arr
 import com.lectra.koson.obj
 import com.lectra.koson.rawJson
+import net.kotlinx.core.number.halfUp
+import net.kotlinx.core.string.print
 import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
 internal class GsonDataTest : TestRoot() {
+
+
+    @Test
+    fun `그리드`() {
+        val array = GsonData.array {
+            add(GsonData.obj {
+                put("a", 12)
+                put("b", 33)
+            })
+            add(GsonData.obj {
+                put("a", 12)
+                put("b", 234)
+            })
+            add(GsonData.obj {
+                put("a", 121.123.toBigDecimal().halfUp(-1))
+                put("b", "xxx")
+            })
+        }
+        array.print()
+        array.take(2).print()
+    }
 
     @Test
     fun `기본테스트`() {

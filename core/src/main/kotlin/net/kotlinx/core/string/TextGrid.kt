@@ -1,5 +1,6 @@
 package net.kotlinx.core.string
 
+import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.time.toKr01
 import java.time.LocalDateTime
 
@@ -9,9 +10,35 @@ import java.time.LocalDateTime
  *  */
 inline fun List<String>.toTextGrid(datas: List<Array<out Any?>>) = TextGrid(this, datas)
 
-
 /** 아테나 등 간단 출력시 활용 */
-inline fun List<List<String>>.print() = this[0].toTextGrid(this.drop(1).map { it.toTypedArray() }).print()
+fun GsonData.print() {
+    check(this.delegate.isJsonArray)
+    if (this.empty) return //비어있을때 예외처리하지 않음
+    val first = this[0].entryMap()
+    val datas = this.map { it.entryMap().values.map { g -> g.str }.toTypedArray() }
+    first.keys.toList().toTextGrid(datas).print()
+}
+
+inline fun <reified T> List<T>.print() {
+    val list = this
+    when (T::class) {
+        List::class -> {
+            val real = list as List<List<String>>
+            real[0].toTextGrid(real.drop(1).map { it.toTypedArray() }).print()
+        }
+
+        GsonData::class -> {
+            val real = list as List<GsonData>
+            if (real.isEmpty()) return //비어있을때 예외처리하지 않음
+            val first = real[0].entryMap()
+            val datas = real.map { it.entryMap().values.map { g -> g.str }.toTypedArray() }
+            first.keys.toList().toTextGrid(datas).print()
+        }
+
+        else -> throw IllegalArgumentException("${T::class} is not required")
+    }
+
+}
 
 
 /**

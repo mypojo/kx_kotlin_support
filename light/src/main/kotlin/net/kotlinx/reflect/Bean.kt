@@ -1,7 +1,10 @@
 package net.kotlinx.reflect
 
+import mu.KotlinLogging
+import net.kotlinx.core.concurrent.parallelExecute
 import net.kotlinx.core.string.TextGrid
 import net.kotlinx.core.string.toTextGrid
+import java.util.concurrent.Callable
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KProperty
@@ -11,6 +14,10 @@ fun List<Bean>.toTextGrid(): TextGrid {
     val header = this.first().toHeader()
     return header.toTextGrid(this.map { it.toArray() })
 }
+
+/** CSV 등에서 간단 변환 */
+inline fun <reified T : Any> List<List<String>>.fromLines(): List<T> =
+    this.map { Callable { Bean.fromLine(T::class, it) } }.parallelExecute(Runtime.getRuntime().availableProcessors())
 
 /**
  * 데이터를 가져오고 수정하는 간단 리플렉션 빈
@@ -77,17 +84,25 @@ class Bean(
 
     companion object {
 
+        private val log = KotlinLogging.logger {}
+
         /**
          * CSV 등에서 객체를 생성할때 사용함
          * 수신 객체는 단순한 dto 여야 함
          *  */
         fun <T : Any> fromLine(to: KClass<T>, lines: List<String>): T {
-            val constructor = to.constructors.firstOrNull { it.parameters.size == lines.size }
-            checkNotNull(constructor) { "클래스 [${to.simpleName}] 에 입력인자 길이 ${lines.size} 와 일치하는 생성자가 존재하지 않습니다. " }
+            try {
+                val constructor = to.constructors.firstOrNull { it.parameters.size == lines.size }
+                checkNotNull(constructor) { "클래스 [${to.simpleName}] 에 입력인자 길이 ${lines.size} 와 일치하는 생성자가 존재하지 않습니다. " }
 
-            val args = constructor.parameters.mapIndexed { index, param -> param.type.from(lines[index]) }
-            return constructor.call(*args.toTypedArray())
+                val args = constructor.parameters.mapIndexed { index, param -> param.type.from(lines[index]) }
+                return constructor.call(*args.toTypedArray())
+            } catch (e: Exception) {
+                log.warn { "파싱 실패!! $to from $lines" }
+                throw e
+            }
         }
+
 
     }
 

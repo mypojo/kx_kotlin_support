@@ -133,7 +133,9 @@ class CostExplorerExcel(block: CostExplorerExcel.() -> Unit = {}) {
         val gridEndRowNum = groupByProject.size + 1
         groupByProject.entries.forEachIndexed { i, e ->
             val groupByTime = e.value.groupBy { it.timeSeries }
-            val values = totalMonths.map { time -> groupByTime[time]!!.sumOf { it.costValue!! }.toWon() }
+            println(totalMonths)
+            println(groupByTime)
+            val values = totalMonths.map { time -> groupByTime[time]?.sumOf { it.costValue!! }?.toWon() ?: 0 }
             val row = i + 1 + 1 //헤더 + 0부터 시작
             val line = listOf(
                 e.key!!,

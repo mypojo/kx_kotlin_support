@@ -21,10 +21,10 @@ class SfnSupportKtTest : TestRoot() {
 
             lists.executions!!.first().executionArn
 
-            val desc = AWS.sfn.describeExecution(lists.executions!!.first().executionArn!!)
-            println(desc)
-            println(desc.input)
-            println(desc.inputDetails)
+//            val desc = AWS.sfn.describeExecution(lists.executions!!.first().executionArn!!)
+//            println(desc)
+//            println(desc.input)
+//            println(desc.inputDetails)
 
         }
     }

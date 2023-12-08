@@ -27,8 +27,9 @@ class CostExplorerExcelTest : TestRoot() {
         val tagRequired = setOf("catson")
 
         if (!dataFile.exists()) {
+            log.info { "cost 데이터를 로드합니다.." }
             runBlocking {
-                val profileNames = IamCredential().profileNames.filter { it !in setOf("sin") }
+                val profileNames = IamCredential().profileNames.filter { it !in setOf("sin") } - listOf("kx")
                 val datas = profileNames.flatMap { profileName ->
                     val client = AwsConfig(profileName = profileName).toAwsClient()
                     val byService = try {
@@ -54,6 +55,8 @@ class CostExplorerExcelTest : TestRoot() {
                 }
                 dataFile.writeText(GsonSet.GSON.toJson(datas)) //일단 json을 기록
             }
+        }else{
+            log.warn { "cost 데이터를 재사용합니다.." }
         }
 
         val lines = GsonSet.GSON.fromJsonList<CostExplorerLine>(dataFile.readText())

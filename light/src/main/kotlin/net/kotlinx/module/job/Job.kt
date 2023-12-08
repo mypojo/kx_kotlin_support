@@ -44,6 +44,7 @@ class Job(
 
             jobOption?.let { this += Job::jobOption.name to AttributeValue.S(it) }
             sfnId?.let { this += Job::sfnId.name to AttributeValue.S(it) }
+            jobEnv?.let { this += Job::jobEnv.name to AttributeValue.S(it) }
         }
     }
 
@@ -67,6 +68,7 @@ class Job(
         awsInfo = map.findJson(Job::awsInfo)
         jobOption = map.find(Job::jobOption)
         sfnId = map.find(Job::sfnId)
+        jobEnv = map.find(Job::jobEnv)
 
     } as T
 
@@ -98,7 +100,7 @@ class Job(
     lateinit var jobExeFrom: JobExeFrom
 
     /** 작업 환경 확인용 이름  ex) vcpu2,4G..  */
-    lateinit var jobEnv: String
+    var jobEnv: String? = null
 
     /** JOB context (json형식). 중단 인덱스, 블락수 등의 컨텍스트 입력 . 강제 업데이트 함으로 null 아님  */
     var jobContext: String = "{}"

@@ -5,6 +5,7 @@ import aws.sdk.kotlin.services.sfn.model.DescribeExecutionResponse
 import aws.sdk.kotlin.services.sfn.model.ExecutionStatus
 import aws.sdk.kotlin.services.sfn.model.ListActivitiesResponse
 import aws.sdk.kotlin.services.sfn.model.ListExecutionsResponse
+import net.kotlinx.aws.AwsConfig
 
 /** 결과 리턴 최대치 */
 private const val MAX_RESULTS = 1000
@@ -40,9 +41,9 @@ suspend fun SfnClient.listExecutions(awsId: String, stateMachineName: String, ex
     }
 }
 
-/** 샘플 참고용 */
-suspend fun SfnClient.describeExecution(executionArn: String): DescribeExecutionResponse {
+/** 결과 간단 가져오기 등. */
+suspend fun SfnClient.describeExecution(awsConfig: AwsConfig, stateMachineName: String, sfnId: String): DescribeExecutionResponse {
     return this.describeExecution {
-        this.executionArn = executionArn
+        this.executionArn = "arn:aws:states:${awsConfig.region}:${awsConfig.awsId}:execution:${stateMachineName}:${sfnId}"
     }
 }

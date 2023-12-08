@@ -11,11 +11,9 @@ import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
 import net.kotlinx.aws.s3.getObjectText
 import net.kotlinx.aws.s3.putObject
 import net.kotlinx.aws.with
-import net.kotlinx.core.csv.CsvUtil
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.lib.toSimpleString
 import net.kotlinx.core.time.TimeStart
-import net.kotlinx.core.time.toTimeString
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
@@ -60,7 +58,7 @@ class S3LogicHandler(
     private val workDir = File(AwsInstanceTypeUtil.INSTANCE_TYPE.root, S3LogicHandler::class.simpleName).apply { mkdirs() }
 
     /** 직접 호출 */
-    suspend fun execute(input: S3LogicInput): List<S3LogicOutput> {
+    suspend fun execute(input: S3LogicInput): S3LogicOutput {
         val stepLogic = logicMap[input.logicName] ?: throw IllegalArgumentException("${input.logicName} not found")
         log.debug { " -> ${stepLogic.id} 실행" }
         return stepLogic.runtime.executeLogic(input)
@@ -87,30 +85,30 @@ class S3LogicHandler(
 
         log.trace { "데이터 처리.." }
         val path = S3LogicPath(s3InputDataKey)
-        val outputData = try {
+        val s3LogicOutput = try {
             execute(input)
         } catch (e: Exception) {
-            log.warn { "###### 데이터 처리 실패!! -> $start / ${path.fileName} / ${e.toSimpleString()}" }
-            return LambdaUtil.FAIL //리트라이 하지 않음으로 예외를 던지지 않고 실패 리턴함 (로그 지저분해짐)
+            //리트라이 하지 않음으로 예외를 던지지 않고 실패 리턴함 (로그 지저분해짐)
+            if (log.isDebugEnabled) {
+                e.printStackTrace()
+            }
+            log.warn { "###### 데이터 처리 실패!! 알람 보내지 않고 넘어감 -> $start / ${path.fileName} / ${e.toSimpleString()}" }
+            return LambdaUtil.FAIL
         }
 
-        //일부러 한줄이 아니라 여러줄 형태로 기록한다. (한줄에 너무 많은 데이터가 있으면 사람이 읽기 힘들 수 있기 때문에)
-        log.trace { "데이터 처리 성공 : ${outputData.size}건" }
-        val interval = start.interval()
-        val lines = outputData.map {
-            listOf(
-                path.pathId,
-                path.fileName,
-                input.datas.size, //전체 처리 수
-                interval, //전체 걸린시간
-                it.input,
-                it.result,
-                it.durationMills //개별 시간을 기록함
-            )
+
+        val resultJson = GsonData.obj().apply {
+            put("sfn_id", path.pathId)
+            put("file_name", path.fileName)
+            put("total_size", input.datas.size)
+            put("total_interval", start.interval())  //전체 걸린시간
+            put("input", s3LogicOutput.input)
+            put("output", s3LogicOutput.result)
         }
 
-        val outFile = File(workDir, "${path.fileName}.csv.gz")
-        CsvUtil.writeAllGzip(outFile, lines)
+        val outFile = File(workDir, "${path.fileName}.json")
+        outFile.writeText(resultJson.toString())
+
         val outputKey = "${path.outputDir}${path.pathId}/${outFile.name}"
         log.trace { "결과파일 생성.. $outputKey" }
         aws.s3.with { putObject(workBucket, outputKey, outFile) }
@@ -122,14 +120,10 @@ class S3LogicHandler(
                 this.key = path.s3InputDataKey
             }
         }
-        val average = outputData.map { it.durationMills }.average().toLong().toTimeString()
-        log.info { "데이터 처리성공. ${path.fileName} ${lines.size}건 -> $start / 개별처리평균 $average" }
-        return obj {
-            "fileName" to path.fileName
-            "size" to lines.size
-            "totalDuration" to start.toString()
-            "eachDuration" to average.toString()
-        }
+        log.info { "데이터 처리성공. ${path.fileName} ${input.datas.size}건 -> $start" }
+
+        //이하 객체가 너무 크면, 다음 오루가 날 수 있으니 주의  -> returned a result with a size exceeding the maximum number of bytes service limit.
+        return obj { "ok" to path.fileName }
     }
 
     companion object {

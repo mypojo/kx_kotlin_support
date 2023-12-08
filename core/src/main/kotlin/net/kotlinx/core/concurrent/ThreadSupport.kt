@@ -5,7 +5,8 @@ import java.util.concurrent.Executors
 import kotlin.time.Duration
 
 /**
- * 간단한 작업 실행용. 해보니 Callable 을 단축 하는건 크게 의미 없음..
+ * 간단한 작업 실행용.
+ * readCsvLines 한 데이터를 vo로 변환시 이걸 사용하면 30초 -> 10초 정도로 줄어들 수 있음
  * @see Runtime.getRuntime().availableProcessors()
  *  */
 fun <T> List<Callable<T>>.parallelExecute(threadCnt: Int = this.size): List<T> {

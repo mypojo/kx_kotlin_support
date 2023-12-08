@@ -6,6 +6,12 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 
+/**
+ * @see BigDecimal.halfUp
+ *  */
+inline fun Long.halfUp(scale: Int): BigDecimal = this.toBigDecimal().halfUp(scale)
+
+
 /** coerceAtLeast 단어가 너무 헷갈려서 재정의함 */
 inline fun Long.maxWith(compare: Long): Long = this.coerceAtLeast(compare)
 
@@ -24,8 +30,14 @@ inline fun Long.toLocalDateTime(zone: ZoneId = TimeUtil.SEOUL): LocalDateTime = 
  *  */
 inline fun Long.toRate(sum: Long, scale: Int = 1): BigDecimal {
     if (sum == 0L) return BigDecimal.ZERO
-    return (this * 100.0 / sum).toRoundHalfUp(scale)
+    return (this * 100.0 / sum).halfUp(scale)
+}
+
+/** 기본 div는 이미 있음 */
+inline fun Long.div2(value: Long): Long {
+    if (value == 0L) return 0L
+    return this / value
 }
 
 /** 만원단위 변환. 은근히 자주 사용됨 */
-inline fun Long.toManwon(scale: Int = 1): BigDecimal = (this / 10000.0).toRoundHalfUp(scale)
+inline fun Long.toManwon(scale: Int = 1): BigDecimal = (this / 10000.0).halfUp(scale)

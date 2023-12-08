@@ -1,8 +1,10 @@
 package net.kotlinx.core.time
 
+import net.kotlinx.core.string.toLocalDate
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
+
 
 /**
  * 모르는건 기본 API 먼저 확인할것
@@ -68,21 +70,39 @@ object TimeUtil {
         return DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(time)
     }
 
+    /** 간단버전 */
+    fun between(range: Pair<String, String>): List<String> = between(range.first.toLocalDate(), range.second.toLocalDate()).map { it.toYmd() }
 
-    //    /** 동일시간 포함, period 간격 만큼의 DateTime을 리턴한다.
-    //     * ex) List<DateTime> times = between(start,end,Period.days(1));
-    //     * 년월일의 경우 시작,종료 일자가 포함된다.  */
-    //    public static List<DateTime> between(BaseDateTime start,BaseDateTime end,ReadablePeriod period){
-    //        Preconditions.checkArgument(start.isBefore(end) || start.isEqual(end),"start는 end보다 작거나 같아야 합니다");
-    //        DateTime startTime = start.toDateTime();
-    //        List<DateTime> times = Lists.newArrayList();
-    //
-    //        while(startTime.isBefore(end) || startTime.isEqual(end)){
-    //            times.add(startTime);
-    //            startTime = startTime.plus(period);
-    //        }
-    //        return times;
-    //    }
+    /** 향후 kotlin의 LocalDate 로 변경하기위해서 임시로만 작업함 */
+    fun between(start: LocalDate, end: LocalDate): List<LocalDate> {
+        check(start <= end) { "시작 날짜보다 종료 날짜가 더 커야합니다" }
+        val list = mutableListOf<LocalDate>()
+        var current = start
+        while (true) {
+            list.add(current)
+            if (current >= end) break
+            current = current.plusDays(1)
+        }
+        return list
+    }
+
+
+//    /**
+//     * 동일시간 포함, period 간격 만큼의 DateTime을 리턴한다.
+//     * ex) List<DateTime> times = between(start,end,Period.days(1));
+//     * 년월일의 경우 시작,종료 일자가 포함된다.  </DateTime>
+//     * */
+//    fun between(start: BaseDateTime, end: BaseDateTime?, period: ReadablePeriod?): List<DateTime> {
+//        Preconditions.checkArgument(start.isBefore(end) || start.isEqual(end), "start는 end보다 작거나 같아야 합니다")
+//        var startTime: DateTime = start.toDateTime()
+//        val times: MutableList<DateTime> = Lists.newArrayList()
+//        while (startTime.isBefore(end) || startTime.isEqual(end)) {
+//            times.add(startTime)
+//            startTime = startTime.plus(period)
+//        }
+//        return times
+//    }
+
     //
     //    /** 배열을 간단하게 포매팅 할때 사용된다.
     //     * ex) List<String> dates =  FluentIterable.from(times).transform(formatFuction(JodaUtil.YMD)).toList(); */
@@ -95,17 +115,19 @@ object TimeUtil {
     //        };
     //    }
     //
-    //    /** 위를 이용한 샘플  .toSet() 등을 하길 바람 */
-    //    public static List<String> betweenDate(String startDate,String endDate){
-    //        Preconditions.checkState(!Strings.isNullOrEmpty(startDate),"startDate is required");
-    //        Preconditions.checkState(!Strings.isNullOrEmpty(endDate),"endDate is required");
-    //        LocalDate start = JodaUtil.toLocalDate(startDate);
-    //        LocalDate end = JodaUtil.toLocalDate(endDate);
-    //        //크기 비교는 안함
-    //        List<DateTime> between = JodaUtil.between(start.toDateTimeAtCurrentTime(), end.toDateTimeAtCurrentTime(), Period.days(1));
-    //        //return FluentIterable.from(between).transform(formatFuction(JodaUtil.YMD)). toList(); //다운그레이드
-    //        return FluentIterable.from(between).transform(formatFuction(JodaUtil.YMD)).toList();
-    //    }
+
+//    /** 위를 이용한 샘플  .toSet() 등을 하길 바람 */
+//    public static List<String> betweenDate(String startDate,String endDate){
+//        Preconditions.checkState(!Strings.isNullOrEmpty(startDate),"startDate is required");
+//        Preconditions.checkState(!Strings.isNullOrEmpty(endDate),"endDate is required");
+//        LocalDate start = JodaUtil.toLocalDate(startDate);
+//        LocalDate end = JodaUtil.toLocalDate(endDate);
+//        //크기 비교는 안함
+//        List<DateTime> between = JodaUtil.between(start.toDateTimeAtCurrentTime(), end.toDateTimeAtCurrentTime(), Period.days(1));
+//        //return FluentIterable.from(between).transform(formatFuction(JodaUtil.YMD)). toList(); //다운그레이드
+//        return FluentIterable.from(between).transform(formatFuction(JodaUtil.YMD)).toList();
+//    }
+
     //
     //    public static List<String> betweenMonth(String startMonth,String endMonth){
     //        Preconditions.checkState(!Strings.isNullOrEmpty(startMonth),"startMonth is required");

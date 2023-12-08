@@ -23,12 +23,11 @@ object BatchStepTable {
             "total_size" to "int",
             "input" to "string",
             "output" to "string",
-            "interval" to "bigint",
         )
         partition = mapOf(
             "sfn_id" to "string",
         )
-        athenaTableFormat = AthenaTableFormat.Csv
+        athenaTableFormat = AthenaTableFormat.Json
         athenaTablePartitionType = AthenaTablePartitionType.PROJECTION
     }
 

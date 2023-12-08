@@ -125,7 +125,10 @@ class AthenaModule(
         fun isOk(): Boolean = currentQueryExecution?.status?.state in setOf(Succeeded)
     }
 
-    /** 단건 처리 */
+    /**
+     * 단건 처리
+     * ex) Koins.get<AthenaModule>().download(sql).renameTo(rptFile)
+     *  */
     fun download(athenaQuery: String): File = (startAndWaitAndExecute(listOf(AthenaDownload(athenaQuery) {})).first() as AthenaDownload).file!!
 
     /** 단건 처리 */

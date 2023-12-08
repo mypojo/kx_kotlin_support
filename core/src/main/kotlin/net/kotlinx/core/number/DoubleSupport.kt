@@ -1,10 +1,8 @@
 package net.kotlinx.core.number
 
 import java.math.BigDecimal
-import java.math.RoundingMode
 
 /**
- * 반올림
- * ex) 비율을 구하는 경우 ( A * 100.0 / B).toRate(1)
+ * @see BigDecimal.halfUp
  *  */
-inline fun Double.toRoundHalfUp(scale: Int): BigDecimal = this.toBigDecimal().setScale(scale, RoundingMode.HALF_UP)
+inline fun Double.halfUp(scale: Int): BigDecimal = this.toBigDecimal().halfUp(scale)

@@ -45,7 +45,7 @@ object GsonAdapterUtil {
         }
 
         override fun serialize(src: BigDecimal?, type: Type, context: JsonSerializationContext): JsonElement {
-            return JsonPrimitive(src)
+            return JsonPrimitive(src?.toPlainString()) //scale 을 -1 로 잡으면 1.2E+2 이런식으로 표시되는것을 방지
         }
     }
 

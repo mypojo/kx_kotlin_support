@@ -20,6 +20,7 @@ enum class AthenaTablePartitionType {
      *     1. ex) “날짜” / “사용자ID” 로 파티셔닝 → “날짜” 별 전체 사용자 ID를 조회 해야함
      * 2. 느림 → 이틀치 데이터 조회시 5.5초
      * 3. 인덱스 안달면 파티션 조회에만 10초 이상 걸림 → 인덱스 걸면 2.2초
+     * insert into로 들어가는건 다 이걸로 해야함!!
      * */
     INDEX,
 
@@ -33,6 +34,7 @@ enum class AthenaTablePartitionType {
      *     1. 날짜별 수백 mb 넘어가지 않는 한 이게 효율적.
      *
      *  "날짜" 를 string 으로 설정할 경우 between 등의 쿼리 문제없이 잘 작동함
+     *  S3를 직접 업로드 하는건 대부분 이걸로 해야함!!
      * */
     PROJECTION,
     ;

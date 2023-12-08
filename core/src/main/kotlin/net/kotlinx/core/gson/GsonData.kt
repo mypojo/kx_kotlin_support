@@ -1,11 +1,15 @@
 package net.kotlinx.core.gson
 
 import com.google.gson.*
+import com.lectra.koson.KosonType
 import mu.KotlinLogging
 import net.kotlinx.core.serial.SerialJsonObj
 
 /** 간단 변환 */
 inline fun String.toGsonData(): GsonData = GsonData.parse(this)
+
+/** 간단 변환 */
+inline fun KosonType.toGsonData(): GsonData = GsonData.parse(this)
 
 /** 간단 변환 */
 fun List<GsonData>.toGsonArray(): GsonData = GsonData.array().also { ar -> this.forEach { ar.add(it) } }
@@ -128,8 +132,13 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
         /** NULL 대신 기본형을 리턴 */
         val EMPTY = GsonData(JsonNull.INSTANCE)
 
-        fun obj(): GsonData = GsonData(JsonObject())
-        fun array(): GsonData = GsonData(JsonArray())
+        /** 객체형 생성. koson 사용해도 무방 */
+        fun obj(block: GsonData.() -> Unit = {}): GsonData = GsonData(JsonObject()).apply(block)
+
+        /** array 생성. koson 사용해도 무방 */
+        fun array(block: GsonData.() -> Unit = {}): GsonData = GsonData(JsonArray()).apply(block)
+
+        /** 빈값 리턴 */
         fun empty(): GsonData = EMPTY
 
         /** json을 파싱할때 */

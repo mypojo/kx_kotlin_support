@@ -1,6 +1,8 @@
 package net.kotlinx.aws.module.batchStep
 
 import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
+import aws.sdk.kotlin.services.sfn.describeExecution
+import aws.sdk.kotlin.services.sfn.model.DescribeExecutionResponse
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.s3.deleteDir
@@ -46,6 +48,13 @@ class BatchStepConfig(block: BatchStepConfig.() -> Unit) : KoinComponent {
             this.bucket = workUploadBuket
             this.prefix = "${workUploadInputDir}${targetSfnId}/"
         }.toList()
+    }
+
+    /** 간단 결과 리턴 */
+    suspend fun describeExecution(sfnId: String): DescribeExecutionResponse {
+        return aws1.sfn.describeExecution {
+            this.executionArn = "arn:aws:states:${aws1.awsConfig.region}:${aws1.awsConfig.awsId}:execution:${stateMachineName}:${sfnId}"
+        }
     }
 
     /**

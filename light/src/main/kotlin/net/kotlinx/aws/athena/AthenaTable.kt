@@ -72,7 +72,7 @@ class AthenaTable {
     /** ION에서 강제로 falt 하게 지정할 path */
     var ionFlatPath: String? = "Item"
 
-    /** 테이블 생성시에는 필요없음. 권한 부여용 */
+    /** 테이블 생성시에는 대부분 필요없음 (기본 스키마) */
     var database: String = ""
 
 

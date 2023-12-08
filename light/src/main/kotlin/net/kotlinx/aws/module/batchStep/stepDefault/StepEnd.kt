@@ -35,32 +35,35 @@ class StepEnd : LambdaLogicHandler, KoinComponent {
 
         val inputDatas = config.listInputs(option.targetSfnId)
         if (inputDatas.isNotEmpty()) {
-            throw IllegalStateException("처리되지 못한 데이터들이 ${inputDatas.size}건 존재합니다..")
+            throw IllegalStateException("StepEnd 감지 : 처리되지 못한 데이터파일 ${inputDatas.size}건")
         }
 
         val datas = athenaModule.readAll {
             """
-                    SELECT file_name, COUNT(1) CNT,max(total_interval) total_interval,avg(interval) avg_interval,sum(length(output)) length
-                    FROM batch_step
-                    where sfn_id = '${option.sfnId}'
-                    group by file_name
+                SELECT COUNT(1) CNT,sum(total_interval) total_interval,avg(total_interval) avg_interval,sum(total_size) total_size
+                FROM batch_step
+                where sfn_id = '${option.sfnId}'
                 """
-        }.drop(1)
+        }.drop(1)[0]
 
         val resultJson = when {
             datas.isEmpty() -> obj {
-                "msg" to "데이터가 없습니다"
+                throw IllegalStateException("결과 데이터가 존재하지 않습니다!!")
             }
 
             else -> {
-                val sumOfInterval = datas.sumOf { it[2].toLong() }
+                val fileCnt = datas[0].toLong()
+                val sumOfInterval = datas[1].toLong()
+                val avgOfInterval = datas[2].toDouble()
+                val totalCnt = datas[3].toLong()
                 val cost = sumOfInterval / 1000 * LambdaUtil.COST_GI_PER_SEC / 4 * 1350
                 log.info { "WAS lambda 과금 ${cost}원" }
                 obj {
-                    "lambda-누적시간" to sumOfInterval.toTimeString()
-                    "lambda-누적시간(비용)" to "${cost}원"
-                    "lambda-개별평군처리시간" to datas.map { it[3].toDouble() }.average().toLong().toTimeString()
-                    "결과데이터 문자열수" to datas.sumOf { it[4].toLong() }
+                    "데이터크기" to "${totalCnt}건"
+                    "분할파일" to "${fileCnt}개"
+                    "누적시간합계" to sumOfInterval.toTimeString()
+                    "평균처리시간" to avgOfInterval.toLong().toTimeString()
+                    "람다비용(시간)" to "${cost}원"
                 }
             }
         }

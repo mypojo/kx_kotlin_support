@@ -1,7 +1,10 @@
 package net.kotlinx.core.gson
 
+import net.kotlinx.core.number.halfUp
 import net.kotlinx.test.TestLevel01
 import net.kotlinx.test.TestRoot
+import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -24,6 +27,13 @@ class GsonSetTest : TestRoot() {
             name = "할매"
             age = 132
         }
+    }
+
+    @Test
+    fun `asd`() {
+        val halfUp = BigDecimal(345453435.toDouble() / 123123).halfUp(1)
+        println(halfUp)
+        println(halfUp.toPlainString())
     }
 
     @TestLevel01

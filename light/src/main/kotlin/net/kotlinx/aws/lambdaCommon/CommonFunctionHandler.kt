@@ -66,7 +66,7 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
 
                 log.info { "람다로직 종료 ${logic.handler::class.simpleName} 적용" }
                 val lambdaMap = LambdaHandlerUtil.anyToLambdaMap(result)
-                log.debug { " -> 결과 $lambdaMap" }
+                log.trace { " -> 결과 $lambdaMap" } //양이 매우 클 수 있음
                 return lambdaMap
             }
         } catch (e: Throwable) {
