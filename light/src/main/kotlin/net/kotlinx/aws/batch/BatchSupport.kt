@@ -11,7 +11,7 @@ import aws.sdk.kotlin.services.batch.submitJob
 import mu.KotlinLogging
 import net.kotlinx.core.concurrent.CoroutineSleepTool
 import net.kotlinx.core.time.TimeFormat
-import java.util.concurrent.TimeUnit.SECONDS
+import kotlin.time.Duration.Companion.seconds
 
 private val log = KotlinLogging.logger {}
 
@@ -50,7 +50,7 @@ suspend fun BatchClient.submitJob(jobQueueName: String, jobPk: String, jobParam:
 /** 파게이트를 할당받을때까지 기다린다. (로그스트림 네임을 얻기 위함)  */
 suspend fun BatchClient.submitJobAndWaitStarting(jobQueueName: String, jobPk: String, jobParam: Any, limit: Int = 99): JobDetail {
     val jobId: String = this.submitJob(jobQueueName, jobPk, jobParam)
-    val sleepTool = CoroutineSleepTool(SECONDS.toMillis(1))
+    val sleepTool = CoroutineSleepTool(1.seconds)
     for (i in 0..limit) {
         sleepTool.checkAndSleep()
         val jobDetail: JobDetail = this.describeJob(jobId) ?: throw IllegalStateException("job not found")

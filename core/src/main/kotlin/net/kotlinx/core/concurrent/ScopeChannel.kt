@@ -9,6 +9,7 @@ import mu.KotlinLogging
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
+import kotlin.time.Duration.Companion.milliseconds
 
 /** 가능한 모든 요소를 가져온다. (suspend xx) 어차피 인메모리라 limit 없음. */
 fun <E> ReceiveChannel<E>.tryReceiveAvailable(): List<E> {
@@ -70,7 +71,7 @@ class ScopeChannel(
     private val channel: Channel<String> = Channel(capacity)
 
     /** 대기도구 */
-    private val sleeper: CoroutineSleepTool = CoroutineSleepTool(delay)
+    private val sleeper: CoroutineSleepTool = CoroutineSleepTool(delay.milliseconds)
 
     /** 동시성 실행 제한기 */
     private val semaphore = Semaphore(maxConcurrency)
@@ -84,7 +85,7 @@ class ScopeChannel(
     fun close(cause: Throwable? = null): Boolean = channel.close(cause)
 
     suspend fun startMonitoring(monitoringDelay: Long = TimeUnit.SECONDS.toMillis(5)) {
-        val monitoringSleeper = CoroutineSleepTool(monitoringDelay)
+        val monitoringSleeper = CoroutineSleepTool(monitoringDelay.milliseconds)
         scope.launch(context) {
             log.debug { "모니터링 시작.." }
             while (!channel.isClosedForReceive) { //모두 처리될때까지 수행함

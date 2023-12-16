@@ -2,6 +2,7 @@ package net.kotlinx.core.concurrent
 
 import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicLong
+import kotlin.time.Duration
 
 /**
  * 주기만큼 주기적으로 슬립할때 사용
@@ -10,9 +11,7 @@ import java.util.concurrent.atomic.AtomicLong
  *
  * 첫 체크는 슬립하지않고 통과함으로 for문의 맨 앞에 놓을것.
  */
-class CoroutineSleepTool(
-    private val minInterval: Long,
-) {
+class CoroutineSleepTool(private val duration: Duration) {
 
     private var before: Long = 0
     val cnt:AtomicLong = AtomicLong()
@@ -21,7 +20,7 @@ class CoroutineSleepTool(
         cnt.incrementAndGet()
         if (before != 0L) {
             val interval = System.currentTimeMillis() - before
-            val currentInterval = minInterval
+            val currentInterval = duration.inWholeMilliseconds
             val sleep = currentInterval - interval
             if (sleep > 0) delay(sleep)
         }

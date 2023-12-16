@@ -47,7 +47,7 @@ class CostExplorerLine(block: CostExplorerLine.() -> Unit = {}) {
 
 fun GetCostAndUsageResponse.toLines(groupBy: GroupDefinitionType): List<CostExplorerLine> {
     return this.resultsByTime!!.flatMap { resultByTime ->
-        val startDate: String = resultByTime.timePeriod!!.start!!
+        val startDate: String = resultByTime.timePeriod!!.start
         val yyyymm = startDate.substring(0, 7) //일단 모든 타임 페리오드는 월단이라고 간주하고 잘라준다.
         resultByTime.groups!!.map { group ->
             CostExplorerLine {

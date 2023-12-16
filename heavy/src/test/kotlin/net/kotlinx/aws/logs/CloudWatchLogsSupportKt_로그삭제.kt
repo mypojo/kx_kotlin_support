@@ -8,13 +8,15 @@ import net.kotlinx.test.TestRoot
 
 class CloudWatchLogsSupportKt_로그삭제 : TestRoot() {
 
-    val aws = AwsConfig("sin").toAwsClient()
+    val projectName = "sin"
+
+    val aws = AwsConfig(projectName).toAwsClient()
 
     @TestLevel03
     fun test() {
 
         runBlocking {
-            aws.logs.cleanLogStream("/aws/lambda/sin-fn-dev")
+            aws.logs.cleanLogStream("/aws/lambda/${projectName}-fn-dev")
         }
 
     }

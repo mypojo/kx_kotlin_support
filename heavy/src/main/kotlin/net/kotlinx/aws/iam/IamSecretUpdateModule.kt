@@ -43,7 +43,7 @@ class IamSecretUpdateModule(
      * */
     fun checkAndUpdate(userName: String, duration: Duration) = runBlocking {
 
-        val allKeys = iamClient.listAccessKeys { this.userName = userName }.accessKeyMetadata!!.map { AwsIamKey(it, duration) }
+        val allKeys = iamClient.listAccessKeys { this.userName = userName }.accessKeyMetadata.map { AwsIamKey(it, duration) }
         if (log.isDebugEnabled) {
             listOf("키(교체 전)", "상태", "생성시간", "생성시간 비고", "오버시간").toTextGrid(
                 allKeys.map {
@@ -73,7 +73,7 @@ class IamSecretUpdateModule(
 
         check(invalid.key.accessKeyId == oldKey.first) { "저장된 키와 invalid 키가 동일해야 합니다." }
 
-        val newKey = iamClient.createAccessKey { this.userName = userName }.let { it.accessKey!!.accessKeyId!! to it.accessKey!!.secretAccessKey!! }
+        val newKey = iamClient.createAccessKey { this.userName = userName }.let { it.accessKey!!.accessKeyId to it.accessKey!!.secretAccessKey }
         log.info { " -> 키가 교체되어 저장됩니다. ${oldKey.first} => ${newKey.first} / 확인 :  $credential" }
         credential.replaceKey(newKey)
 

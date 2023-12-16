@@ -69,6 +69,9 @@ dependencies {
     //==================================================== AWS CDK (그냥 여기 둔다) ======================================================
     api("software.amazon.awscdk:aws-cdk-lib:_")   //https://mvnrepository.com/artifact/software.amazon.awscdk/aws-cdk-lib
     //api("software.constructs:constructs:10.1.278") //CDK 추가 빌딩블럭 -> 쓸만한게 없음
+
+    //==================================================== 기타 ======================================================
+    api("gov.nist.math:jama:1.0.3") //https://mvnrepository.com/artifact/gov.nist.math/jama 회귀분석 패키지
 }
 
 /** 실행파일 + 모든 의존성. 이게 용량이 50mb 이하라면 다이렉트로 업로드 가능. */

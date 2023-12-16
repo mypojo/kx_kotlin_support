@@ -8,9 +8,8 @@ import kotlin.math.pow
 
 /**
  * 간단한 선형회귀
- * SimplePolynomialRegression 다항 회귀 (곡선) 는 힘들듯..
  *  */
-class SimpleLinearRegression(private val xs: List<Long>, private val ys: List<Long>) {
+class LinearRegression(private val xs: List<Long>, private val ys: List<Long>) {
 
     init {
         check(xs.size == ys.size)

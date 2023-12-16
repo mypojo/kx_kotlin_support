@@ -17,7 +17,7 @@ class RetryTemplate(block: RetryTemplate.() -> Unit) : suspend (suspend () -> An
     private val log = KotlinLogging.logger {}
 
     /** 오류 시 기다릴 시간. multiplier 설정은 나중에 하자.   */
-    var interval: Duration = 0.seconds
+    var interval: Duration = 1.seconds
 
     /** 리트라이 수 */
     var retries: Int = 3

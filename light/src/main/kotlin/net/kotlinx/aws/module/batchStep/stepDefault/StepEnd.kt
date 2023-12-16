@@ -19,6 +19,7 @@ import net.kotlinx.module.job.JobUpdateSet
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.LocalDateTime
+import kotlin.time.Duration.Companion.seconds
 
 
 class StepEnd : LambdaLogicHandler, KoinComponent {
@@ -31,6 +32,7 @@ class StepEnd : LambdaLogicHandler, KoinComponent {
     private val jobRepository: JobRepository by inject()
 
     var retry = RetryTemplate {
+        interval = 3.seconds
         predicate = RetryTemplate.ALL
     }
 

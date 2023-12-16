@@ -27,7 +27,7 @@ suspend fun SqsClient.sendBatch(queueUrl: String, messages: Collection<String>):
                     this.messageBody = it.value
                 }
             }
-        }.failed?.map { it.message!! } ?: emptyList()
+        }.failed.map { it.message!! }
     }
 }
 
@@ -46,7 +46,7 @@ suspend fun SqsClient.deleteMessageBatch(queueUrl: String, messages: Collection<
                     this.receiptHandle = it.value.receiptHandle
                 }
             }
-        }.failed?.map { msgMap[it.id]!! } ?: emptyList() //id만 전달되서 일케 처리했음
+        }.failed.map { msgMap[it.id]!! } //id만 전달되서 일케 처리했음
     }
 }
 

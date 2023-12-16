@@ -5,6 +5,7 @@ import aws.sdk.kotlin.services.athena.model.QueryExecution
 import aws.sdk.kotlin.services.athena.model.QueryExecutionContext
 import aws.sdk.kotlin.services.athena.model.QueryExecutionState
 import aws.sdk.kotlin.services.athena.model.QueryExecutionState.*
+import aws.sdk.kotlin.services.athena.model.TooManyRequestsException
 import aws.sdk.kotlin.services.athena.startQueryExecution
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -16,10 +17,13 @@ import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.s3.getObjectDownload
 import net.kotlinx.aws.s3.getObjectLines
 import net.kotlinx.core.concurrent.CoroutineSleepTool
+import net.kotlinx.core.retry.RetryTemplate
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
-import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 
 /**
@@ -33,14 +37,19 @@ class AthenaModule(
     /** 워크그룹 (쿼리 결과 위치 있어야함) */
     val workGroup: String = "primary",
     /** 쿼리 종료되었는지 체크를 시도하는 간격 */
-    private val checkIntervalMills: Long = TimeUnit.SECONDS.toMillis(1),
+    private val checkInterval: Duration = 1.seconds,
     /** 쿼리 체크 타임아웃 */
-    private val checkTimeout: Long = TimeUnit.MINUTES.toMillis(10),
+    private val checkTimeout: Duration = 10.minutes,
 ) : KoinComponent {
 
     private val log = KotlinLogging.logger {}
 
     private val aws: AwsClient1 by inject()
+
+    /** 기본 리트라이 */
+    var retry: RetryTemplate = RetryTemplate {
+        predicate = RetryTemplate.match(TooManyRequestsException::class.java) //InvalidRequestException 아님!
+    }
 
     /** 고정 실행 컨텍스트 미리 생성. (스키마 미 지정시 디폴트 스키마) */
     private val _queryExecutionContext = QueryExecutionContext { this.database = this@AthenaModule.database }
@@ -48,7 +57,7 @@ class AthenaModule(
     /** 코루틴 기반 아테나 쿼리 실행 래퍼 */
     private inner class AthenaExecution(private val athenaQuery: AthenaQuery) {
 
-        private val sleepTool = CoroutineSleepTool(checkIntervalMills)
+        private val sleepTool = CoroutineSleepTool(checkInterval)
 
         /** 최초 실행시 서정 */
         private var startExecutionId: String? = null
@@ -60,11 +69,14 @@ class AthenaModule(
         suspend fun start() {
             sleepTool.checkAndSleep() //첫 슬립 무시
             try {
-                startExecutionId = aws.athena.startQueryExecution {
-                    this.queryString = athenaQuery.query
-                    this.workGroup = this@AthenaModule.workGroup
-                    this.queryExecutionContext = _queryExecutionContext
-                }.queryExecutionId!!
+                retry.withRetry {
+                    startExecutionId = aws.athena.startQueryExecution {
+                        this.queryString = athenaQuery.query
+                        this.workGroup = this@AthenaModule.workGroup
+                        this.queryExecutionContext = _queryExecutionContext
+                        this.clientRequestToken = athenaQuery.token
+                    }.queryExecutionId!!
+                }
             } catch (e: Exception) {
                 log.warn { "쿼리 오류 : ${athenaQuery.query}" }
                 throw e
@@ -130,6 +142,15 @@ class AthenaModule(
      * ex) Koins.get<AthenaModule>().download(sql).renameTo(rptFile)
      *  */
     fun download(athenaQuery: String): File = (startAndWaitAndExecute(listOf(AthenaDownload(athenaQuery) {})).first() as AthenaDownload).file!!
+
+    /** 간단 샘플 */
+    fun downloadIfEmpty(file: File, block: () -> String) :File{
+        if (!file.exists()) {
+            log.warn { " -> 파일을 다운로드합니다.. $file" }
+            download(block()).renameTo(file)
+        }
+        return file
+    }
 
     /** 단건 처리 */
     fun readAll(athenaQuery: String): List<List<String>> = (startAndWaitAndExecute(listOf(AthenaReadAll(athenaQuery) {})).first() as AthenaReadAll).lines!!

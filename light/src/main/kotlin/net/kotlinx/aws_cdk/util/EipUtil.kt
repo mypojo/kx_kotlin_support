@@ -20,8 +20,8 @@ object EipUtil : KoinComponent {
         val deploymentType: DeploymentType by inject()
         val logicalName = "${name}-${deploymentType.name.lowercase()}"
         val eip = CfnEIP(stack, logicalName)
-        ip?.let { it.put(stack, eip.attrPublicIp) }
-        id?.let { it.put(stack, eip.attrAllocationId) }
+        ip?.put(stack, eip.attrPublicIp)
+        id?.put(stack, eip.attrAllocationId)
         TagUtil.name(eip, logicalName)
         return eip
     }

@@ -9,9 +9,7 @@ import kotlin.time.Duration
  *
  * 첫 체크는 슬립하지않고 통과함으로 for문의 맨 앞에 놓을것.
  */
-class ThreadSleepTool(
-    private val duration: Duration,
-) {
+class ThreadSleepTool(private val duration: Duration) {
 
     private var before: Long = 0
 

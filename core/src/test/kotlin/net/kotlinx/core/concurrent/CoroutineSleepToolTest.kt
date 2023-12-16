@@ -4,7 +4,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
-import java.util.concurrent.TimeUnit.SECONDS
+import kotlin.time.Duration.Companion.seconds
 
 internal class CoroutineSleepToolTest : TestRoot() {
 
@@ -14,7 +14,7 @@ internal class CoroutineSleepToolTest : TestRoot() {
         runBlocking {
             (1..3).forEach { sec ->
                 launch {
-                    val sleepTool = CoroutineSleepTool(SECONDS.toMillis(sec.toLong()))
+                    val sleepTool = CoroutineSleepTool(sec.seconds)
 
                     for (i in (1..3)) {
                         sleepTool.checkAndSleep()

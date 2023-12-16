@@ -3,9 +3,12 @@ package net.kotlinx.aws.athena
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.s3.deleteDir
+import net.kotlinx.aws.s3.putObject
 import net.kotlinx.core.Kdsl
 import net.kotlinx.core.collection.toQueryString
 import net.kotlinx.koin.Koins
+import java.io.File
+import kotlin.time.Duration.Companion.days
 
 
 /**
@@ -75,13 +78,45 @@ class AthenaTable {
     /** 테이블 생성시에는 대부분 필요없음 (기본 스키마) */
     var database: String = ""
 
+    //==================================================== 간단설정 ======================================================
+    fun formatIcebug() {
+        athenaTableFormat = AthenaTableFormat.Iceberg
+        athenaTableType = AthenaTableType.INTERNAL
+        athenaTablePartitionType = AthenaTablePartitionType.INDEX
+    }
+
+    //==================================================== 아이스버그 전용 ======================================================
+    /**
+     * 보존 기한 이후의 삭제처리된 데이터를 실제로 삭제한다.
+     * https://docs.aws.amazon.com/ko_kr/athena/latest/ug/querying-iceberg-data-optimization.html
+     * */
+    fun icebugVacuum() {
+        check(athenaTableFormat == AthenaTableFormat.Iceberg)
+        val athenaModule = Koins.get<AthenaModule>()
+        athenaModule.execute("VACUUM $tableName")
+    }
+
+    /** 레이아웃을 최적화해서 재구성한다 */
+    fun icebugOptimize() {
+        check(athenaTableFormat == AthenaTableFormat.Iceberg)
+        val athenaModule = Koins.get<AthenaModule>()
+        athenaModule.execute("OPTIMIZE $tableName REWRITE DATA USING BIN_PACK  where 1=1;")
+    }
+
 
     //==================================================== 데이터 편집 ======================================================
 
     /** 해당 파티션 경로의 디렉토리를 삭제한다. */
     suspend fun deleteaData(vararg partitionValue: String) {
         check(athenaTableType == AthenaTableType.EXTERNAL) { "athenaTableType EXTERNAL 만 지원합니다." }
+        val dataPath = getDataPath(partitionValue)
+        val aws = Koins.get<AwsClient1>()
+        log.debug { " -> 테이블 $tableName 데이터 삭제 : $bucket $dataPath" }
+        aws.s3.deleteDir(bucket, dataPath)
+    }
 
+    /** 데이터 경로 가져오기 */
+    private fun getDataPath(partitionValue: Array<out String>): String {
         val dataPath = when (athenaTablePartitionType) {
             AthenaTablePartitionType.PROJECTION -> {
                 check(partitionValue.isNotEmpty())
@@ -100,10 +135,22 @@ class AthenaTable {
                 s3Key
             }
         }
+        return dataPath
+    }
+
+    suspend fun insertData(file: File, vararg partitionValue: String) {
+        check(athenaTableType == AthenaTableType.EXTERNAL) { "athenaTableType EXTERNAL 만 지원합니다." }
+        val dataPath = getDataPath(partitionValue)
 
         val aws = Koins.get<AwsClient1>()
-        log.debug { " -> 테이블 $tableName 데이터 삭제 : $bucket $dataPath" }
-        aws.s3.deleteDir(bucket, dataPath)
+        log.debug { " -> 테이블 $tableName 데이터 업로드 : $bucket $dataPath" }
+        aws.s3.putObject(bucket, "${dataPath}${file.name}", file)
+    }
+
+    /** 삭제 후 입력 */
+    suspend fun deleteAndinsertData(file: File, vararg partitionValue: String) {
+        deleteaData(*partitionValue)
+        insertData(file, *partitionValue)
     }
 
 
@@ -145,10 +192,14 @@ class AthenaTable {
             }
             schemaTarget.map { "    `${it.key}` ${toSchema(it.value)}" }.joinToString(",\n")
         }
-        val partitionText = when {
-            partition.isEmpty() -> ""
-            athenaTablePartitionType == AthenaTablePartitionType.INDEX -> {
-                "PARTITIONED BY (${partition.map { "${it.key} ${it.value}" }.joinToString(",")})"
+        val partitionText = when (athenaTablePartitionType) {
+            AthenaTablePartitionType.INDEX -> {
+                when (athenaTableFormat) {
+                    /** 아이스버그의 경우 일반 컬럼에 파티션 데이터가 있어야 한다. */
+                    AthenaTableFormat.Iceberg -> if (partition.isEmpty()) "" else "PARTITIONED BY (${partition.map { "${it.value}" }.joinToString(",")})"
+
+                    else -> if (partition.isEmpty()) "" else "PARTITIONED BY (${partition.map { "${it.key} ${it.value}" }.joinToString(",")})"
+                }
             }
 
             else -> ""
@@ -159,8 +210,10 @@ class AthenaTable {
         when (athenaTableFormat) {
             is AthenaTableFormat.Iceberg -> {
                 props = props + mapOf(
+                    //https://docs.aws.amazon.com/ko_kr/athena/latest/ug/querying-iceberg-creating-tables.html
                     "table_type" to "ICEBERG",
                     "optimize_rewrite_delete_file_threshold" to "5", //임계값보다 적으면 파일이 재작성되지 않음
+                    "vacuum_max_snapshot_age_seconds" to "${14.days.inWholeSeconds}", //vacuum 명령으로 몇일치 삭제데이터의 마커만 남기고 다 삭제할지? 기본값은 5일 -> 2주로 수정
                     //이하 설정은 일단 기본값 사용함.
                 )
             }
@@ -175,7 +228,7 @@ class AthenaTable {
 
         val tableDatabase = if (database.isEmpty()) "" else "${database}."
         return listOf(
-            "CREATE ${athenaTableType.name} TABLE ${tableDatabase}${tableName}(",
+            "CREATE ${athenaTableType.schema} TABLE ${tableDatabase}${tableName}(",
             schemaText,
             ")",
             partitionText,

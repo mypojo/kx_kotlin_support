@@ -11,7 +11,17 @@ class LongSupportKtTest : TestRoot(){
     fun test() {
 
 
+        println("aaa/asd".removeSuffix("/"))
+
         println(1681869805.seconds.inWholeMilliseconds.toLocalDateTime().toKr01())
+
+
+        println((9 / 20+1))
+        println((19 / 20+1))
+        println((29 / 20+1))
+        println((39 / 20+1))
+        println((49 / 20+1))
+        println((59 / 20+1))
 
 
     }
