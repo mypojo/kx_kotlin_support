@@ -171,63 +171,64 @@ class CostExplorerExcel(block: CostExplorerExcel.() -> Unit = {}) {
         )
 
         groupByProject.entries.forEach { entry ->
-
             rptConfigs.forEach { config ->
-                log.debug { " -> ${config.value}별 시트 생성.." }
-
-                //항목이 너무 많기때문에 1달러 안되는애들은 무시
-                val targeteList: List<CostExplorerLine> = entry.value.filter { it.groupDefinitionType == config.key.value }.filter { it.costValue!! >= limitCost }
-                val keyNames = targeteList.map { it.key!! }.distinct().sorted().toList()
-                if (keyNames.isEmpty()) return@forEach //태그기반 리포트 등은 없을 수 있음
-
-                val sheet = excel.createSheet("${entry.key}_${config.value}")
-                sheet.addHeader(
-                    listOf(
-                        "Month",
-                        //헤더 네임은 태그 접두어 제거
-                        keyNames.map { key ->
-                            when {
-                                key.contains("$") -> key.substringAfter("$").ifNullOrEmpty { "-" }
-                                else -> key
-                            }
-                        },
-                        "월비용(만원)",
-                    ).flattenAny().convertHeader()
-                )
-
-                val startCol = StringIntUtil.intToUpperAlpha(2)
-                val endCol = StringIntUtil.intToUpperAlpha(keyNames.size + 1)
-                val lastMonth = TimeFormat.YM_F01[LocalDate.now().minusMonths(1)]
-                totalMonths.forEachIndexed { i, month ->
-                    val groupByService = targeteList.filter { it.timeSeries == month }.associateBy { it.key!! }
-
-                    val values = keyNames.map { v -> groupByService[v]?.costValue?.toWon() ?: 0.0 }
-                    val row = i + 1 + 1 //헤더 + 0부터 시작
-
-                    val isLastMonth = month == lastMonth
-                    val line = listOf(
-                        when (isLastMonth) {
-                            true -> XlsComment(month) {
-                                this.comments = listOf("지난달 데이터")
-                            }
-
-                            false -> month
-                        },
-                        values,
-                        XlsFormula("ROUND(SUM(${startCol}${row}:${endCol}${row}) ,0)"),
-                    ).flattenAny()
-
-                    if (isLastMonth) {
-                        sheet.customRowStyleSet[row - 1] = sheet.excel.style.green
-                    }
-                    sheet.writeLine(line)
-
-                }
+                eachProjectWrite(config, entry)
             }
-
-
         }
 
+    }
+
+    private fun eachProjectWrite(config: Map.Entry<GroupDefinitionType, String>, entry: Map.Entry<String?, List<CostExplorerLine>>) {
+        log.debug { " -> ${config.value}별 시트 생성.." }
+
+        //항목이 너무 많기때문에 1달러 안되는애들은 무시
+        val targeteList: List<CostExplorerLine> = entry.value.filter { it.groupDefinitionType == config.key.value }.filter { it.costValue!! >= limitCost }
+        val keyNames = targeteList.map { it.key!! }.distinct().sorted().toList()
+        if (keyNames.isEmpty()) return //태그기반 리포트 등은 없을 수 있음
+
+        val sheet = excel.createSheet("${entry.key}_${config.value}")
+        sheet.addHeader(
+            listOf(
+                "Month",
+                //헤더 네임은 태그 접두어 제거
+                keyNames.map { key ->
+                    when {
+                        key.contains("$") -> key.substringAfter("$").ifNullOrEmpty { "-" }
+                        else -> key
+                    }
+                },
+                "월비용(만원)",
+            ).flattenAny().convertHeader()
+        )
+
+        val startCol = StringIntUtil.intToUpperAlpha(2)
+        val endCol = StringIntUtil.intToUpperAlpha(keyNames.size + 1)
+        val lastMonth = TimeFormat.YM_F01[LocalDate.now().minusMonths(1)]
+        totalMonths.forEachIndexed { i, month ->
+            val groupByService = targeteList.filter { it.timeSeries == month }.associateBy { it.key!! }
+
+            val values = keyNames.map { v -> groupByService[v]?.costValue?.toWon() ?: 0.0 }
+            val row = i + 1 + 1 //헤더 + 0부터 시작
+
+            val isLastMonth = month == lastMonth
+            val line = listOf(
+                when (isLastMonth) {
+                    true -> XlsComment(month) {
+                        this.comments = listOf("지난달 데이터")
+                    }
+
+                    false -> month
+                },
+                values,
+                XlsFormula("ROUND(SUM(${startCol}${row}:${endCol}${row}) ,0)"),
+            ).flattenAny()
+
+            if (isLastMonth) {
+                sheet.customRowStyleSet[row - 1] = sheet.excel.style.green
+            }
+            sheet.writeLine(line)
+
+        }
     }
 }
 

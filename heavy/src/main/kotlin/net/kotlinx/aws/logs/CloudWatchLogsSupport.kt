@@ -34,13 +34,3 @@ suspend fun CloudWatchLogsClient.cleanLogStream(logGroupName: String, interval: 
     }
     log.info { "deleteLogStream completed" }
 }
-
-/**
- * 로그를 스캔한다.
- * 람다 snapstart에서 logStreamName 을 확인할 수 없기 때문에 검색 후 해당 위치로 이동하도록 조치함
- *  */
-suspend fun CloudWatchLogsClient.cleanLogStreamasd(logGroupName: String, interval: Long = 200) {
-    this.queryAndWait {
-
-    }
-}

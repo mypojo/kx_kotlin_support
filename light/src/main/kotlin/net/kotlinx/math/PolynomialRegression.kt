@@ -5,7 +5,6 @@ import Jama.QRDecomposition
 import mu.KotlinLogging
 import net.kotlinx.core.number.halfUp
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.pow
 
 /**
@@ -37,8 +36,7 @@ class PolynomialRegression(
     x: DoubleArray, y: DoubleArray, // degree of the polynomial regression
     private var degree: Int, // name of the predictor variable
     private val variableName: String = "n"
-) :
-    Comparable<PolynomialRegression?> {
+) {
 
     private val beta: Matrix // the polynomial regression coefficients
     private val sse: Double // sum of squares due to error
@@ -157,23 +155,6 @@ class PolynomialRegression(
         for (j in degree downTo 0) y = beta(j) + (x * y)
         return y
     }
-
-    override fun compareTo(that: PolynomialRegression?): Int {
-        val epsilon = 1E-5
-        val maxDegree = max(degree().toDouble(), that!!.degree().toDouble()).toInt()
-        for (j in maxDegree downTo 0) {
-            var term1 = 0.0
-            var term2 = 0.0
-            if (this.degree() >= j) term1 = this.beta(j)
-            if (that.degree() >= j) term2 = that.beta(j)
-            if (abs(term1) < epsilon) term1 = 0.0
-            if (abs(term2) < epsilon) term2 = 0.0
-            if (term1 < term2) return -1
-            else if (term1 > term2) return +1
-        }
-        return 0
-    }
-
 
     /**
      * Returns a string representation of the polynomial regression model.

@@ -21,7 +21,7 @@ data class JobSta(
     val sumOfCost: BigDecimal,
 )
 
-inline fun Collection<Job>.toJobSta(): JobSta {
+fun Collection<Job>.toJobSta(): JobSta {
     val jobs = this
     val sumOfDuration = jobs.sumOf { it.toIntervalMills() ?: 0 }
     val monthTime = (sumOfDuration / 7 * 30.5).toLong()
