@@ -28,6 +28,7 @@ inline fun <reified T> GsonData.fromJsonList(gson: Gson = GsonSet.GSON): List<T>
  *
  * 실무용 + 소스 참고용
 </T></T> */
+@Suppress("UNCHECKED_CAST")
 object TypeTokenUtil {
 
     /** List<T> 타입 리턴  </T> */
@@ -88,7 +89,7 @@ object TypeTokenUtil {
      * Multimap<String></String>, T> 인 타입 리턴
      * ex) TypeTokenUtil.multimapType(Long.class) => com.google.common.collect.Multimap<java.lang.String></java.lang.String>, java.lang.Long>
      */
-    fun <T> multimapType(type: Type?): Type {
+    fun <T> multimapType(type: Type): Type {
         return object : TypeToken<Multimap<String?, T>?>() {}.where(object : TypeParameter<T>() {}, TypeToken.of(type) as TypeToken<T>).type
     }
 }

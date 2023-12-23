@@ -48,6 +48,7 @@ class Job(
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : DynamoData> fromAttributeMap(map: Map<String, AttributeValue>): T = Job(
         map[DynamoDbBasic.PK]!!.asS(), map[DynamoDbBasic.SK]!!.asS()
     ).apply {

@@ -195,7 +195,7 @@ class PolynomialRegression(
             val yy = y.map { it.toDouble() }.toDoubleArray()
             val degree1 = PolynomialRegression(xx, yy, 1)
             val degree2 = PolynomialRegression(xx, yy, 2)
-            log.debug { " => r2 diff -> d1 ${(degree1.r2() * 100).halfUp(1)} vs d2 ${(degree2.r2() * 100).halfUp(1)}" }
+            log.trace { " => r2 diff -> d1 ${(degree1.r2() * 100).halfUp(1)} vs d2 ${(degree2.r2() * 100).halfUp(1)}" }
             return listOf(degree1, degree2).maxBy { it.r2() }
         }
 

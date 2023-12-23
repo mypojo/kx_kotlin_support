@@ -72,7 +72,7 @@ class WorkGroupLogic(block: WorkGroupLogic.() -> Unit = {}) : KoinComponent {
         val notionLines = database.queryAll(dbId, filter)
         if (notionLines.isNotEmpty()) {
             log.warn { "기존파일 ${notionLines.size}건 삭제!" }
-            notionLines.forEach { database.delete(dbId, it.id) }
+            notionLines.forEach { database.delete(it.id) }
         }
 
         log.info { "${workOutputs.size}건 입력됨.." }

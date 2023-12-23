@@ -42,6 +42,7 @@ dependencies {
     api("aws.sdk.kotlin:ssm:$awsVersion") //용량 큼
     api("aws.sdk.kotlin:batch:$awsVersion") //걸리는데가 많아서 추가
     api("aws.sdk.kotlin:ecs:$awsVersion") //ECS 서비스 업데이트 때문에 여기 추가
+    api("aws.sdk.kotlin:cloudwatchlogs:$awsVersion") //로그 조회기능때문에 위로 이동
 
     //==================================================== AWS 람다 ======================================================
     api("com.amazonaws:aws-lambda-java-core:_") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함
@@ -56,6 +57,7 @@ dependencies {
 
     //==================================================== 슬랙 ======================================================
     api("com.slack.api:slack-api-client:_") //기본 API만 포함함
+    api("com.slack.api:slack-api-model-kotlin-extension:_") //코틀린 확장
 
     //==================================================== 구글 API ======================================================
     //사용하기 키 발급받아서 사용하기 너무 불편함!! 일단 사용처는 없음
@@ -72,6 +74,8 @@ dependencies {
 
     //==================================================== 기타 ======================================================
     api("gov.nist.math:jama:1.0.3") //https://mvnrepository.com/artifact/gov.nist.math/jama 회귀분석 패키지
+    api("net.lingala.zip4j:zip4j:_") //zip 압축 & 암호설정 패키지. 200kb
+
 }
 
 /** 실행파일 + 모든 의존성. 이게 용량이 50mb 이하라면 다이렉트로 업로드 가능. */

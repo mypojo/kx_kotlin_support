@@ -51,12 +51,16 @@ class NotionDatabaseClient(
         log.trace { " -> notion update 성공" }
     }
 
-    /** 사실 삭제 아니고 아카이브 */
-    suspend fun delete(dbId: String, pageId: String) {
+    /**
+     * 사실 삭제 아니고 아카이브
+     * dbId 가 필요하지 않는게 맞는지 확인 필요!!
+     *  */
+    suspend fun delete(pageId: String) {
         val resp = client.await {
             url = "https://api.notion.com/v1/pages/${pageId}"
             method = "PATCH"
             header = toHeader()
+
             body = obj {
                 "archived" to true
             }

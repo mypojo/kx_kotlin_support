@@ -1,6 +1,5 @@
 package net.kotlinx.aws
 
-import aws.sdk.kotlin.services.cloudwatchlogs.CloudWatchLogsClient
 import aws.sdk.kotlin.services.codecommit.CodeCommitClient
 import aws.sdk.kotlin.services.codedeploy.CodeDeployClient
 import aws.sdk.kotlin.services.costexplorer.CostExplorerClient
@@ -22,7 +21,6 @@ class AwsClient(awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     val iam: IamClient by lazy { IamClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
     val cost: CostExplorerClient by lazy { CostExplorerClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
     val ses: SesClient by lazy { SesClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val logs: CloudWatchLogsClient by lazy { CloudWatchLogsClient  { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
     val elb: ElasticLoadBalancingV2Client by lazy { ElasticLoadBalancingV2Client  { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
 
     //==================================================== 저장소 ======================================================

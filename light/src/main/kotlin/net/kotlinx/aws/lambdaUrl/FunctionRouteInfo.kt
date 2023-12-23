@@ -14,7 +14,7 @@ class FunctionRouteInfo {
     var desc: List<String> = emptyList()
 
     /** 처리 */
-    lateinit var process: (LambdaUrlInput) -> LambdaUrlOutput
+    lateinit var process:suspend (LambdaUrlInput) -> LambdaUrlOutput
 
 
 }

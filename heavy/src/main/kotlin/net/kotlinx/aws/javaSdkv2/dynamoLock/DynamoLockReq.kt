@@ -51,6 +51,7 @@ class DynamoLockReq @Kdsl constructor(block: DynamoLockReq.() -> Unit) : DynamoD
 
     /** 아무것도 하지않음 */
     override fun <T : DynamoData> fromAttributeMap(map: Map<String, AttributeValue>): T {
+        @Suppress("UNCHECKED_CAST")
         return DynamoLockReq {
             pk = map.findOrThrow(DynamoLockReq::pk)
             sk = map.findOrThrow(DynamoLockReq::sk)

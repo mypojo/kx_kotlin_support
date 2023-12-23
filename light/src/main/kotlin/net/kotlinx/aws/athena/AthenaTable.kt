@@ -184,26 +184,26 @@ class AthenaTable {
             AthenaTablePartitionType.NONE -> {}
         }
 
-        val schemaText = run {
-            //프로젝션인경우 본 데이터에 파티션 정보를 추가해야함. 향후 append가 쉽도록 접두어로 데이터 삽입
-            val schemaTarget = when (athenaTablePartitionType) {
-                AthenaTablePartitionType.PROJECTION -> partition + schema
-                else -> schema
-            }
-            schemaTarget.map { "    `${it.key}` ${toSchema(it.value)}" }.joinToString(",\n")
-        }
-        val partitionText = when (athenaTablePartitionType) {
-            AthenaTablePartitionType.INDEX -> {
-                when (athenaTableFormat) {
-                    /** 아이스버그의 경우 일반 컬럼에 파티션 데이터가 있어야 한다. */
-                    AthenaTableFormat.Iceberg -> if (partition.isEmpty()) "" else "PARTITIONED BY (${partition.map { "${it.value}" }.joinToString(",")})"
+        val schemaText = schema.map { "    `${it.key}` ${toSchema(it.value)}" }.joinToString(",\n")
+        val partitionText = when (athenaTableFormat) {
+            /** 아이스버그의 경우 일반 컬럼에 파티션 데이터가 있어야 한다. */
+            AthenaTableFormat.Iceberg -> if (partition.isEmpty()) "" else "PARTITIONED BY (${partition.map { "${it.value}" }.joinToString(",")})"
 
-                    else -> if (partition.isEmpty()) "" else "PARTITIONED BY (${partition.map { "${it.key} ${it.value}" }.joinToString(",")})"
-                }
-            }
-
-            else -> ""
+            else -> if (partition.isEmpty()) "" else "PARTITIONED BY (${partition.map { "${it.key} ${it.value}" }.joinToString(",")})"
         }
+
+//        val partitionText = when (athenaTablePartitionType) {
+//            AthenaTablePartitionType.INDEX -> {
+//                when (athenaTableFormat) {
+//                    /** 아이스버그의 경우 일반 컬럼에 파티션 데이터가 있어야 한다. */
+//                    AthenaTableFormat.Iceberg -> if (partition.isEmpty()) "" else "PARTITIONED BY (${partition.map { "${it.value}" }.joinToString(",")})"
+//
+//                    else -> if (partition.isEmpty()) "" else "PARTITIONED BY (${partition.map { "${it.key} ${it.value}" }.joinToString(",")})"
+//                }
+//            }
+//
+//            else -> ""
+//        }
 
         //==================================================== 포맷정보 ======================================================
         val formatText = athenaTableFormat.toRowFormat(this).joinToString("\n")

@@ -41,4 +41,4 @@ class LazySsmProperty : KoinComponent {
 /**
  * SSM 파라메터 이용
  *  */
-inline fun lazySsm(): LazySsmProperty = LazySsmProperty()
+fun lazySsm(): LazySsmProperty = LazySsmProperty()

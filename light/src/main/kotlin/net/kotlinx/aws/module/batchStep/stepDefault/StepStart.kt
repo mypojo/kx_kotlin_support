@@ -47,7 +47,9 @@ class StepStart : LambdaLogicHandler, KoinComponent {
         val option = BatchStepInput.parseJson(input.toString()).option
         val inputDatas = config.listInputs(option.targetSfnId)
 
-        check(inputDatas.isNotEmpty()) { " ${config.workUploadBuket}/${config.workUploadInputDir}${option.targetSfnId}/  -> 데이터가 존재하지 않습니다." }
+        if(inputDatas.isNotEmpty()){
+            log.warn { " ${config.workUploadBuket}/${config.workUploadInputDir}${option.targetSfnId}/  -> 데이터가 존재하지 않습니다. (retry일 경우에만 데이터가 없어도 됨)"  }
+        }
         log.debug { " -> [${config.workUploadBuket}/${config.workUploadInputDir}${option.targetSfnId}] -> ${inputDatas.size} 로드됨" }
 
         val job = Job(option.jobPk, option.jobSk) {
@@ -68,7 +70,7 @@ class StepStart : LambdaLogicHandler, KoinComponent {
         return StepStartContext(
             LocalDateTime.now(),
             inputDatas.size,
-            inputDatas.first().substringAfterLast("/").retainFrom(RegexSet.NUMERIC).toInt(),
+            inputDatas.firstOrNull()?.substringAfterLast("/")?.retainFrom(RegexSet.NUMERIC)?.toInt() ?: 0 ,
             when (option.mode) {
 
                 BatchStepMode.MAP_INLINE -> {

@@ -50,7 +50,7 @@ class StepEnd : LambdaLogicHandler, KoinComponent {
                 """
                 SELECT COUNT(1) CNT,sum(total_interval) total_interval,avg(total_interval) avg_interval,sum(total_size) total_size
                 FROM batch_step
-                where sfn_id = '${option.sfnId}'
+                where sfn_id = '${option.targetSfnId}'
                 """
             }.drop(1)[0]
         }

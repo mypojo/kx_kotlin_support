@@ -18,6 +18,7 @@ import java.util.*
  * 경로 붙일때 마지막에 "/"  이거 넣지 말것!
  * 데이터가 너무 많을경우 sftp.cd(dir); 이후 antPAth로 검색도 가능하다.
  */
+@Suppress("UNCHECKED_CAST")
 class Sftp(
     private val sftpConfig: SftpConfig,
     private val config: Properties = Properties(),

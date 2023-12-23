@@ -10,7 +10,7 @@ import java.io.File
  * https://docs.aws.amazon.com/ko_kr/lambda/latest/dg/configuration-envvars.html
  * 대문자로 했어야 하는데.. 일단 그냥 둠
  */
-enum class AwsInstanceType(val root: File?) {
+enum class AwsInstanceType(val root: File) {
 
     //==================================================== 서버리스 제품 ======================================================
     /** AWS LAMBDA  */

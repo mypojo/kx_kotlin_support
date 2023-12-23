@@ -35,6 +35,12 @@ class BatchStepOption {
     /** LIST 모드일경우 옵션 */
     var listOption: BatchStepListOption? = null
 
+    /**
+     * SFN 단위로 공통 적용되는 옵션 입력
+     * ex) basicDate
+     *  */
+    var sfnOption: String = "{}"
+
 
 }
 

@@ -1,34 +1,18 @@
 package net.kotlinx.slack
 
+import net.kotlinx.aws.AwsClient1
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.gson.GsonSet
 import net.kotlinx.test.TestLight
-import org.junit.jupiter.api.Test
+import org.koin.core.component.get
 
 
-class SlackAppTest : TestLight() {
+class SlackApp_응답봇Test : TestLight() {
 
-    @Test
-    fun 이미지전송() {
-//        val token = get<AwsClient1>().ssmStore["/slack/token"]!!
-//        val app = SlackApp(token)
-//        app.chatPostMessage {
-//            channel("#kx_alert")
-//            text("이미지 테스트")
-//            attachments(
-//                listOf(
-//                    Attachment().apply {
-//                        this.text = "샘플"
-//                        this.fallback = "샘플 이미지"
-//                        this.imageUrl = "https://img.freepik.com/premium-vector/online-shop-ads-banner-template_653829-11.jpg?w=1380"
-//                        this.thumbUrl = "https://img.freepik.com/premium-vector/online-shop-ads-banner-template_653829-11.jpg?w=1380"
-//                    }
-//                )
-//            )
-//        }
-    }
+    val token = get<AwsClient1>().ssmStore["/slack/token"]!!
+    val app = SlackApp(token)
 
-    fun `스래드 전송`(): String {
+    fun `스래드 수신`(): String {
 
         val slackInput = GsonData.obj()
         slackInput["challenge"].lett {

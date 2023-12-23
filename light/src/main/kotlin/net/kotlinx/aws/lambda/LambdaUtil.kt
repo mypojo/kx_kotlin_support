@@ -35,6 +35,7 @@ object LambdaUtil {
     const val SERVICE_ON = "serviceOn"
 
     /** URL 직접호출시 쿼리스트링을 추출한다. */
+    @Suppress("UNCHECKED_CAST")
     fun queryString(event: Map<String, Any>): Map<String, *> = event["queryStringParameters"] as Map<String, *>
 
 }

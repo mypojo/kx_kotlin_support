@@ -17,7 +17,6 @@ object BatchStepTable {
         tableName = "batch_step"
         s3Key = "upload/sfnBatchModuleOutput/"
         schema = mapOf(
-            "sfn_id" to "string",
             "file_name" to "string",
             "total_interval" to "bigint",
             "total_size" to "int",

@@ -44,4 +44,4 @@ class S3Property(private val path: S3Data) : KoinComponent {
 /**
  * SSM 파라메터 이용
  *  */
-inline fun lazyS3(path: S3Data): S3Property = S3Property(path)
+fun lazyS3(path: S3Data): S3Property = S3Property(path)

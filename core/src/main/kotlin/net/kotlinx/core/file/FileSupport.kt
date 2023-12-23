@@ -8,6 +8,6 @@ import java.io.File
  *  */
 fun File.slash(name: String): File {
     this.mkdirs()
-    check(this.isDirectory)
+    check(this.isDirectory) { "이 파일은 디렉토리가 아닙니다. $this" }
     return File(this, name)
 }

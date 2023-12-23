@@ -1,7 +1,15 @@
 package net.kotlinx.slack
 
-/** 인용구  */
+//https://api.slack.com/reference/surfaces/formatting
+
+/** 코드 */
+fun String.slackCode(): String = "`${this}`"
+
+/** 코드블럭  */
 fun String.slackQuote(): String = "```${this}```"
+
+/** Block quotes  */
+fun String.slackBlockQuote(): String = ">${this}"
 
 /** 멘션 (@붙여서 알람 주는거)  */
 fun String.slackMention(): String = "<@${this}>"

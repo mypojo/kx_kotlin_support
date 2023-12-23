@@ -11,9 +11,9 @@ object CloudWatchUtil {
      * 클라우드와치 로그 링크를 리턴
      * 이 뒤에 필터를 붙일 수 있다. (별도의 특문 없이 그대로 + 하면됨)
      */
-    fun toLogLink(logGroupName: String?, logStreamName: String?, region: String = AwsConfig.SEOUL): String {
-        val escapedGroupName = (logGroupName ?: "").encodeUrl()
-        val escapedStreamName = (logStreamName ?: "").encodeUrl()
+    fun toLogLink(logGroupName: String, logStreamName: String?, region: String = AwsConfig.SEOUL): String {
+        val escapedGroupName = logGroupName.encodeUrl()
+        val escapedStreamName = (logStreamName ?: "unknown").encodeUrl()
 
         //AWS Lambda 스냅스타트의 경우 logStreamName 을 제공하지 앟아서
         return when (escapedStreamName) {

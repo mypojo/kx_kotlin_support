@@ -2,6 +2,7 @@ package net.kotlinx.aws
 
 import aws.sdk.kotlin.services.athena.AthenaClient
 import aws.sdk.kotlin.services.batch.BatchClient
+import aws.sdk.kotlin.services.cloudwatchlogs.CloudWatchLogsClient
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import aws.sdk.kotlin.services.ecs.EcsClient
 import aws.sdk.kotlin.services.firehose.FirehoseClient
@@ -25,6 +26,7 @@ open class AwsClient1(val awsConfig: AwsConfig) {
     val firehose: FirehoseClient by lazy { FirehoseClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
     val dynamo: DynamoDbClient by lazy { DynamoDbClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
     val lambda: LambdaClient by lazy { LambdaClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val logs: CloudWatchLogsClient by lazy { CloudWatchLogsClient  { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
 
     //==================================================== 컴퓨팅 인프라 ======================================================
     val sfn: SfnClient by lazy { SfnClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }

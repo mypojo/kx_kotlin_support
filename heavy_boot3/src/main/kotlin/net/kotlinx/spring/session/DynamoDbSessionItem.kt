@@ -25,6 +25,7 @@ class DynamoDbSessionItem(
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : DynamoData> fromAttributeMap(map: Map<String, AttributeValue>): T = DynamoDbSessionItem(map[DynamoDbBasic.SK]!!.asS()).apply {
         ttl = map.findOrThrow(DynamoDbSessionItem::ttl)
         data = map[DynamoDbSessionItem::data.name]!!.asB()

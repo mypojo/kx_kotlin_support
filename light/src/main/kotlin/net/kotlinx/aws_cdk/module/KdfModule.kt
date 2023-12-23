@@ -1,3 +1,5 @@
+@file:Suppress("UNREACHABLE_CODE")
+
 package net.kotlinx.aws_cdk.module
 
 import net.kotlinx.aws_cdk.CdkInterface

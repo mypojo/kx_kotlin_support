@@ -34,7 +34,7 @@ class EventWebPublishFilter(
             if (skipCondition) return@pub null
 
             event.eventMills = System.currentTimeMillis() - startTime
-            event.logLink = awsInfoLoader.load().toLogLink(startTime.toLocalDateTime()) //웹 진입 시작시간기준 링크생성
+            event.logLink = awsInfoLoader.load().toLogLinkNotNull(startTime.toLocalDateTime()) //웹 진입 시작시간기준 링크생성
 
 //            //web 전용
 //            val id: Long = Holder.getWebMemberVo().getMember().getId()

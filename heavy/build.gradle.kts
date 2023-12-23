@@ -30,7 +30,6 @@ dependencies {
     api("aws.sdk.kotlin:secretsmanager:$awsVersion")
     api("aws.sdk.kotlin:ec2:$awsVersion") //용량 큼
     api("aws.sdk.kotlin:ecr:$awsVersion")
-    api("aws.sdk.kotlin:cloudwatchlogs:$awsVersion")
 
     //덜중요한것들
     api("aws.sdk.kotlin:costexplorer:$awsVersion") //계정당 비용 확인용

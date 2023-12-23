@@ -6,6 +6,7 @@ import net.kotlinx.core.gson.GsonSet
 import net.kotlinx.core.id.IdGenerator
 import net.kotlinx.koin.KoinModule
 import net.kotlinx.notion.NotionDatabaseClient
+import net.kotlinx.slack.SlackApp
 import okhttp3.OkHttpClient
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -18,6 +19,10 @@ object MyLightModule : KoinModule {
 
         //==================================================== 기본 ======================================================
         single { OkHttpClient() }
+        single {
+            val token = get<AwsClient1>().ssmStore["/slack/token"]!!
+            SlackApp(token)
+        }
         single { GsonSet.GSON }
         single { EventBus() }
         single {

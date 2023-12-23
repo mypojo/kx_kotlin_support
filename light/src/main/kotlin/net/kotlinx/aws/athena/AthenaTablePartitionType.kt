@@ -9,6 +9,9 @@ package net.kotlinx.aws.athena
  *
  * 주의!!! 인덱스끼리 상호 호환 안됨!
  * -> INDEX 로 저장시 PROJECTION 으로 읽을 수 없음 (PROJECTION은 내부적으로 파라메터에 = 조회를 하기때문)
+ *
+ *
+ * INDEX & PROJECTION 둘다, 파티션이 뒤에 붙어서 나오게됨
  * */
 enum class AthenaTablePartitionType {
 

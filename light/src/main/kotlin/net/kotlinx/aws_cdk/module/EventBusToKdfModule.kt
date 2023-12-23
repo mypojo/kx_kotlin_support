@@ -28,6 +28,8 @@ enum class EventLogType {
 /**
  * 이벤트버스로 이벤트를 던지면 KDF 로 전송되어 athena 테이블위치로 데이터가 기록됨
  * https://www.notion.so/mypojo/CDK-4049f46c6c9c4649a098ced3325781ab  정리
+ *
+ * ==> 작업중단!!
  *  */
 class EventLogModule(
     val project: CdkProject,

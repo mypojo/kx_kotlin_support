@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package net.kotlinx.aws_cdk.component
 
 import software.amazon.awscdk.services.events.CronOptions

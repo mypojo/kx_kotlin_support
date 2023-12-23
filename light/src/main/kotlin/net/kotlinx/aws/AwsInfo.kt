@@ -20,8 +20,8 @@ data class AwsInfo(
      * 클라우드와치 로그 링크를 리턴
      * 이 뒤에 필터를 붙일 수 있다.
      */
-    fun toLogLink(startTime: LocalDateTime? = null): String {
-        if (!instanceType.isLogLinkAble()) return "instanceType (${instanceType}) -> loglink is not available"
+    fun toLogLink(startTime: LocalDateTime? = null): String? {
+        if (!instanceType.isLogLinkAble()) return null
         val basicLink = CloudWatchUtil.toLogLink(logGroupName, logStreamName)
         val filter = when {
             !instanceType.isLogLinkWithTime() -> ""
@@ -30,5 +30,7 @@ data class AwsInfo(
         }
         return basicLink + filter
     }
+
+    fun toLogLinkNotNull(startTime: LocalDateTime? = null): String = toLogLink(startTime) ?: "instanceType (${instanceType}) -> loglink is not available"
 
 }
