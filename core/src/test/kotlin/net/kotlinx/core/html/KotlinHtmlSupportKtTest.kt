@@ -11,6 +11,14 @@ import org.junit.jupiter.api.Test
 class KotlinHtmlSupportKtTest : TestRoot() {
 
     @Test
+    fun style() {
+        val html = kotlinHtml("디자인테스트") {
+
+        }
+        println(html)
+    }
+
+    @Test
     fun test() {
 
         val headers = listOf("이름", "소속", "나이", "실행")

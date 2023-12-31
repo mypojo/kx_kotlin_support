@@ -6,10 +6,10 @@ import mu.KotlinLogging
 import net.kotlinx.core.serial.SerialJsonObj
 
 /** 간단 변환 */
-inline fun String.toGsonData(): GsonData = GsonData.parse(this)
+fun String.toGsonData(): GsonData = GsonData.parse(this)
 
 /** 간단 변환 */
-inline fun KosonType.toGsonData(): GsonData = GsonData.parse(this)
+fun KosonType.toGsonData(): GsonData = GsonData.parse(this)
 
 /** 간단 변환 */
 fun List<GsonData>.toGsonArray(): GsonData = GsonData.array().also { ar -> this.forEach { ar.add(it) } }
@@ -132,7 +132,10 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
         /** NULL 대신 기본형을 리턴 */
         val EMPTY = GsonData(JsonNull.INSTANCE)
 
-        /** 객체형 생성. koson 사용해도 무방 */
+        /**
+         * 객체형 생성. koson 사용해도 무방
+         * koson 하고 자동완성이 겹쳐서 이름 변경함..
+         * */
         fun obj(block: GsonData.() -> Unit = {}): GsonData = GsonData(JsonObject()).apply(block)
 
         /** array 생성. koson 사용해도 무방 */

@@ -53,6 +53,7 @@ class HtmxButtonGet {
      * 데이터 가져올때 여기 인자를 추가로 파라메터로 전송함
      * 형식은 CSS 셀렉터
      * ex) [id='ta-NV_DATALAB_CAT_POP_KWD']
+     * ex) [id='searchInput'],[id='searchDays']
      *  */
     var include: String? = null
 

@@ -37,7 +37,9 @@ fun HTML.setDefault(title: String, block: HEAD.() -> Unit = {}) {
         }
         title { +title }
         style {
-            +DEFAULT_TABLE.trimIndent()
+            unsafe {
+                +DEFAULT_TABLE.trimIndent()
+            }
         }
         block()
     }

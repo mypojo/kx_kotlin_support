@@ -9,7 +9,7 @@ import org.koin.dsl.module
 /** 해당 패키지의 기본적인 의존성 주입 */
 object MyAwsModule : KoinModule {
 
-    override fun moduleConfig(profileName: String?): Module = module {
+    override fun moduleConfig(option: String?): Module = module {
 
         single { get<AwsConfig>().toAwsClient() }
     }

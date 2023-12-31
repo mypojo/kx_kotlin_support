@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong
 /** 해당 패키지의 기본적인 의존성 주입 */
 object MyLightModule : KoinModule {
 
-    override fun moduleConfig(profileName: String?): Module = module {
+    override fun moduleConfig(option: String?): Module = module {
 
         //==================================================== 기본 ======================================================
         single { OkHttpClient() }

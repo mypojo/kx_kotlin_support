@@ -58,7 +58,11 @@ class AthenaTable {
      *  */
     lateinit var s3Key: String
 
-    /** 파티션 정보 */
+    /**
+     * 파티션 정보
+     * ice버그의 경우 value에 함수형을 입력할 수 있음
+     *  -> https://docs.aws.amazon.com/ko_kr/athena/latest/ug/querying-iceberg-creating-tables.html 참고
+     *  */
     var partition: Map<String, String> = emptyMap()
 
     /** 헤더가 있으면 true로 지정할것 */
@@ -79,7 +83,7 @@ class AthenaTable {
     var database: String = ""
 
     //==================================================== 간단설정 ======================================================
-    fun formatIcebug() {
+    fun icebugTable() {
         athenaTableFormat = AthenaTableFormat.Iceberg
         athenaTableType = AthenaTableType.INTERNAL
         athenaTablePartitionType = AthenaTablePartitionType.INDEX
@@ -90,14 +94,14 @@ class AthenaTable {
      * 보존 기한 이후의 삭제처리된 데이터를 실제로 삭제한다.
      * https://docs.aws.amazon.com/ko_kr/athena/latest/ug/querying-iceberg-data-optimization.html
      * */
-    fun icebugVacuum() {
+    fun icebugDoVacuum() {
         check(athenaTableFormat == AthenaTableFormat.Iceberg)
         val athenaModule = Koins.get<AthenaModule>()
         athenaModule.execute("VACUUM $tableName")
     }
 
     /** 레이아웃을 최적화해서 재구성한다 */
-    fun icebugOptimize() {
+    fun icebugDoOptimize() {
         check(athenaTableFormat == AthenaTableFormat.Iceberg)
         val athenaModule = Koins.get<AthenaModule>()
         athenaModule.execute("OPTIMIZE $tableName REWRITE DATA USING BIN_PACK  where 1=1;")
@@ -108,7 +112,6 @@ class AthenaTable {
 
     /** 해당 파티션 경로의 디렉토리를 삭제한다. */
     suspend fun deleteaData(vararg partitionValue: String) {
-        check(athenaTableType == AthenaTableType.EXTERNAL) { "athenaTableType EXTERNAL 만 지원합니다." }
         val dataPath = getDataPath(partitionValue)
         val aws = Koins.get<AwsClient1>()
         log.debug { " -> 테이블 $tableName 데이터 삭제 : $bucket $dataPath" }
@@ -117,6 +120,7 @@ class AthenaTable {
 
     /** 데이터 경로 가져오기 */
     private fun getDataPath(partitionValue: Array<out String>): String {
+        check(athenaTableType == AthenaTableType.EXTERNAL) { "athenaTableType EXTERNAL 테이블만 지원합니다." }
         val dataPath = when (athenaTablePartitionType) {
             AthenaTablePartitionType.PROJECTION -> {
                 check(partitionValue.isNotEmpty())
@@ -139,7 +143,6 @@ class AthenaTable {
     }
 
     suspend fun insertData(file: File, vararg partitionValue: String) {
-        check(athenaTableType == AthenaTableType.EXTERNAL) { "athenaTableType EXTERNAL 만 지원합니다." }
         val dataPath = getDataPath(partitionValue)
 
         val aws = Koins.get<AwsClient1>()
@@ -156,7 +159,10 @@ class AthenaTable {
 
     //==================================================== 스키마 ======================================================
 
-    fun drop(): String = "DROP TABLE IF EXISTS ${tableName};"
+    fun drop(): String {
+        check(athenaTableType == AthenaTableType.EXTERNAL) { "EXTERNAL 테이블이 아니라면 직접 drop 해주세요 (위험합니다)" }
+        return "DROP TABLE IF EXISTS ${tableName};"
+    }
 
     fun create(): String {
 
@@ -184,9 +190,16 @@ class AthenaTable {
             AthenaTablePartitionType.NONE -> {}
         }
 
+        /**
+         * 아이스버그인경우라도, 수동으로 스키마 입력해야함 -> 컬럼 정의와 PK 정의(버킷팅 등)가 틀릴 수 있음
+         * */
         val schemaText = schema.map { "    `${it.key}` ${toSchema(it.value)}" }.joinToString(",\n")
+
         val partitionText = when (athenaTableFormat) {
-            /** 아이스버그의 경우 일반 컬럼에 파티션 데이터가 있어야 한다. */
+            /**
+             * 아이스버그의 경우 일반 컬럼에 파티션 데이터가 있어야 한다.
+             * https://docs.aws.amazon.com/ko_kr/athena/latest/ug/querying-iceberg-creating-tables.html
+             * */
             AthenaTableFormat.Iceberg -> if (partition.isEmpty()) "" else "PARTITIONED BY (${partition.map { "${it.value}" }.joinToString(",")})"
 
             else -> if (partition.isEmpty()) "" else "PARTITIONED BY (${partition.map { "${it.key} ${it.value}" }.joinToString(",")})"

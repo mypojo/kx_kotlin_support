@@ -45,6 +45,12 @@ class CdkSchedulerGroup : CdkInterface {
     /** dlq */
     lateinit var dlq: IQueue
 
+    /**
+     * 기본으로 리트라이 안함!
+     * 참고로 스케줄링, 람다 등에서 리트라이 설정 가능 ->  각각 3번씩 리트라이하는 경우 최대 9번 리트라이됨
+     *  */
+    var retryCnt: Int = 0
+
     fun create(): CdkSchedulerGroup {
         scheduleGroup = CfnScheduleGroup(stack, logicalName, CfnScheduleGroupProps.builder().name(logicalName).build())
         TagUtil.tag(scheduleGroup, deploymentType)
@@ -98,7 +104,7 @@ class CdkSchedulerGroup : CdkInterface {
                         .retryPolicy(
                             //디폴트로  1일 185 times 이 설정되기 때문에 0으로 변경한다.
                             CfnSchedule.RetryPolicyProperty.builder()
-                                .maximumRetryAttempts(0)
+                                .maximumRetryAttempts(retryCnt)
                                 .build()
                         )
                         .apply {

@@ -8,7 +8,12 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import java.time.LocalDate
 
+fun main(args: Array<String>) {
+    println("==")
+}
+
 internal class AthenaPartitionSqlBuilderTest : TestRoot(), KoinComponent {
+
 
     @Test
     fun `파티션_LIMIT`() {

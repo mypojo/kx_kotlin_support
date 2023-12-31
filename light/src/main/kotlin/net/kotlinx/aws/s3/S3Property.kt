@@ -18,7 +18,6 @@ class S3Property(private val path: S3Data) : KoinComponent {
     lateinit var value: File
 
     operator fun getValue(thisRef: File?, property: KProperty<*>): File {
-
         if (value.exists()) {
             log.debug { " -> File이 이미 존재합니다. 로드 스킵!! $path" }
         }else{

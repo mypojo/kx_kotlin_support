@@ -65,6 +65,14 @@ class CdkLambda(val name: String) : CdkEnum {
     /** 람다 로그설정 변경시, 별도 람다가 생겨서 보기싫게됨  */
     var logRetention = RetentionDays.SIX_MONTHS
 
+    /**
+     * 기본으로 리트라이 안함!  0~2 설정.
+     * 비동기일때만 작동 ex) 스케쥴링
+     * 약 1~2분 후에 재시도
+     * 참고로 스케줄링, 람다 등에서 리트라이 설정 가능 ->  각각 3번씩 리트라이하는 경우 최대 9번 리트라이됨
+     *  */
+    var retryCnt: Int = 0
+
     /** 결과 레이어 */
     var layers: List<ILayerVersion> = emptyList()
 
@@ -107,6 +115,8 @@ class CdkLambda(val name: String) : CdkEnum {
                         DeploymentType::class.simpleName to deploymentType.name //여기는 또 map이다.. MSA의 단점을 이렇게 보여주는듯.
                     )
                 )
+                .retryAttempts(retryCnt)
+                //.maxEventAge()  //동시성이 충분하지 못할경우 대기시간.. 필요없음
                 .apply {
                     if (layers.isNotEmpty()) {
                         layers(layers)

@@ -10,7 +10,7 @@ import kotlin.math.pow
 object Base62Util {
 
     /** 자주 사용되는 기본 문자욜 */
-    val BASE62_CHARACTERS: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+    private val BASE62_CHARACTERS: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
     private val BASE = BASE62_CHARACTERS.size.toLong()
 
     /** 랜덤한 문자열 리턴 */

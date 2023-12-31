@@ -39,7 +39,7 @@ class SlackSimpleAlert : SlackMessage {
 
             exception?.let {
                 section {
-                    markdownText("${it::class.simpleName!!.slackCode()} ${it.message?.abbr(50, "..") ?: "empty message"} ")
+                    markdownText("${it::class.simpleName!!.slackCode()} ${it.message?.abbr(200, "..") ?: "empty message"} ")
                 }
             }
 

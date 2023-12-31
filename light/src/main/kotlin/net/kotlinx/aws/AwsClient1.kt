@@ -17,6 +17,9 @@ import net.kotlinx.aws.ssm.SsmStore
  * 기본 AWS 설정
  * http 엔진 설정이 빠져있는데 문제시 적당한거 넣기
  * 중요!!! http 커넥션에서 use 키워드 의미없어보임. 그냥 람다 코루틴에서 오류나는건 리트라이 하자.
+ *
+ * 성능 최적화 관련
+ * 토큰 발급을 백그라운드에서 하면 최적화 가능할듯..
  *  */
 open class AwsClient1(val awsConfig: AwsConfig) {
 

@@ -18,10 +18,10 @@ typealias Line = List<String>
 object CsvUtil {
 
     /** 한글 엑셀 리더 */
-    inline fun ms949Reader(): CsvReader = csvReader { charset = "MS949"; delimiter = ',' }
+    fun ms949Reader(): CsvReader = csvReader { charset = "MS949"; delimiter = ',' }
 
     /** 한글 엑셀 리더 */
-    inline fun ms949Writer(): CsvWriter = csvWriter { charset = "MS949"; delimiter = ',' }
+    fun ms949Writer(): CsvWriter = csvWriter { charset = "MS949"; delimiter = ',' }
 
     /** gzip 파일 간단 쓰기 ex) S3 athena */
     fun writeAllGzip(file: File, lines: List<List<Any?>>) {

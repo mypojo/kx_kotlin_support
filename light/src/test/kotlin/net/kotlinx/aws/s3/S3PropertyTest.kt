@@ -1,12 +1,13 @@
 package net.kotlinx.aws.s3
 
-import net.kotlinx.aws.ssm.lazySsm
 import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
+import java.io.File
 
-class S3PropertyTest : TestRoot(){
+class S3PropertyTest : TestRoot() {
 
-    var demo: String by lazySsm()
+
+    var workFile: File by S3Property(S3Data.parse(""))
 
     @Test
     fun test() {

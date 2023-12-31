@@ -1,3 +1,5 @@
+@file:Suppress("OPT_IN_USAGE")
+
 package net.kotlinx.core.concurrent
 
 import kotlinx.coroutines.*
