@@ -2,8 +2,10 @@ package net.kotlinx.slack.template
 
 import com.slack.api.model.block.LayoutBlock
 import com.slack.api.model.kotlin_extension.block.withBlocks
+import mu.KotlinLogging
 import net.kotlinx.core.Kdsl
 import net.kotlinx.core.dev.DeveloperData
+import net.kotlinx.core.number.ifFalse
 import net.kotlinx.core.string.abbr
 import net.kotlinx.slack.*
 
@@ -18,8 +20,13 @@ class SlackSimpleAlert : SlackMessage {
     }
 
     override fun send(): String {
-
-        mainMsg = ":warning: [$source] 에러 :warning:"
+        this::mainMsg.isInitialized.ifFalse {
+            log.trace { "기본 메세지 입력" }
+            mainMsg = when {
+                exception != null -> ":warning: [$source] 에러 :warning:"
+                else -> ":white_check_mark: [$source] 메세지 :white_check_mark:"
+            }
+        }
         blocks = withBlocks {
 
             header { text(mainMsg) }
@@ -89,6 +96,10 @@ class SlackSimpleAlert : SlackMessage {
 
     /** 본문 텍스트 - Code blocks */
     var body: List<String> = emptyList()
+
+    companion object {
+        private val log = KotlinLogging.logger {}
+    }
 
 
 }

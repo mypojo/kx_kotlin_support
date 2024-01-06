@@ -6,6 +6,9 @@ import java.io.FileOutputStream
 import java.util.zip.GZIPOutputStream
 
 
+/** 단일 파일 압축 */
+fun File.gzip(): File = FileGzipUtil.gzip(this)
+
 /**
  * 스트림 압축은 GzipResourceSupport 참고
  * */

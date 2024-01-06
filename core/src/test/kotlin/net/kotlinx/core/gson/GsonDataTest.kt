@@ -4,7 +4,7 @@ import com.lectra.koson.arr
 import com.lectra.koson.obj
 import com.lectra.koson.rawJson
 import net.kotlinx.core.number.halfUp
-import net.kotlinx.core.string.print
+import net.kotlinx.string.print
 import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 

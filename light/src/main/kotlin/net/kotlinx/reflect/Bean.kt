@@ -9,11 +9,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KProperty
 
-/** 간단 그리드 출력 */
-fun List<Bean>.toTextGrid(): TextGrid {
-    val header = this.first().toHeader()
-    return header.toTextGrid(this.map { it.toArray() })
-}
 
 /** CSV 등에서 간단 변환 */
 inline fun <reified T : Any> List<List<String>>.fromLines(): List<T> =

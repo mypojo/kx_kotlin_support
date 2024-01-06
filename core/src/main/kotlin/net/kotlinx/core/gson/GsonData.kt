@@ -5,6 +5,12 @@ import com.lectra.koson.KosonType
 import mu.KotlinLogging
 import net.kotlinx.core.serial.SerialJsonObj
 
+/** 간단 변환. 없으면 빈거 리턴 */
+fun String?.toGsonDataOrEmpty(): GsonData{
+    if(this.isNullOrBlank()) return GsonData.empty()
+    return this.toGsonData()
+}
+
 /** 간단 변환 */
 fun String.toGsonData(): GsonData = GsonData.parse(this)
 

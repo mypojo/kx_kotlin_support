@@ -10,6 +10,7 @@ import java.util.zip.ZipOutputStream
 
 /**
  * File관련이 너무 커져서 별도로 뺌
+ * 좀더 복잡한건 이거 쓰지말고 Zip4jModule 참고할것
  */
 object FileZipUtil {
 

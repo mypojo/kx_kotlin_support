@@ -8,8 +8,10 @@ import kotlin.reflect.KProperty
 
 
 /**
- * /로 시작하는경우 파라메터 스토어로 간주하고 로드함
- * 별도 동기화 하지 않음
+ * 설정 객체 등에서 사용하는 늦은 SSM 로드기
+ * 1. get() 사용시 실제 데이터가 있다면 그거 리턴
+ * 2. 없다면 SSM에서 최초 한번 데이터를 가져와서 채워주고 리턴
+ * 별도 JVM 동기화 하지 않음
  * */
 class LazySsmProperty : KoinComponent {
 
