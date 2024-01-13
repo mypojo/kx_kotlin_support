@@ -121,6 +121,7 @@ class AthenaModule(
                     val outputLocation = currentQueryExecution!!.resultConfiguration!!.outputLocation!!
                     val s3Data = S3Data.parse(outputLocation)
                     val writeFile = File(AwsInstanceTypeUtil.INSTANCE_TYPE.root, outputLocation.substringAfterLast("/"))
+                    log.debug { " -> s3 athena 결과 다운로드 : $outputLocation -> $writeFile" }
                     aws.s3.getObjectDownload(s3Data.bucket, s3Data.key, writeFile)
                     athenaQuery.file = writeFile
                     athenaQuery.callback.invoke(writeFile) //임시파일 삭제는 각 로직에서

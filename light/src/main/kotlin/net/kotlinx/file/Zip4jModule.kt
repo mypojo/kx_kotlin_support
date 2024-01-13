@@ -6,6 +6,28 @@ import net.lingala.zip4j.model.ZipParameters
 import net.lingala.zip4j.model.enums.EncryptionMethod
 import java.io.File
 
+/** 단일 파일 압축 */
+fun File.zip4j(password: String? = null): File {
+    val file = this
+    val ziped = Zip4jModule {
+        this.files = listOf(file)
+        this.password = password
+        zip()
+    }
+    return ziped.targetZipFile
+}
+
+/** 단일 파일 압축해제 */
+fun File.unzip4j(password: String? = null): File {
+    val file = this
+    val ziped = Zip4jModule {
+        this.targetZipFile = file
+        this.password = password
+        unzip()
+    }
+    return ziped.targetZipFile.parentFile
+}
+
 
 /**
  * 압축파일 읽고 쓰기
@@ -30,6 +52,13 @@ class Zip4jModule {
 
     /** 압축 */
     fun zip() {
+
+        //targetZipFile 생략 가능!
+        if (!this::targetZipFile.isInitialized) {
+            check(files.size == 1) { "zip 결과파일 네임은 압축대상이 1개 일때만 생략 가능합니다." }
+            targetZipFile = File(files.first().absolutePath + ".zip")
+        }
+
         val zipParameters = ZipParameters()
         val zipFile: ZipFile = when (password) {
             null -> ZipFile(targetZipFile)
