@@ -3,6 +3,9 @@ package net.kotlinx.core.prop
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
+/**
+ * 리셋 가능한 늦은 초기화.
+ *  */
 class LazyLoadProperty<T : Any>(val initBlock: () -> T, val clazz: Class<T>) {
 
     operator fun <R> provideDelegate(ref: R, prop: KProperty<*>): ReadOnlyProperty<R, T> = delegate()

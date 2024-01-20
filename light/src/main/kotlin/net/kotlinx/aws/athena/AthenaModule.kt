@@ -138,14 +138,16 @@ class AthenaModule(
         fun isOk(): Boolean = currentQueryExecution?.status?.state in setOf(Succeeded)
     }
 
+    //==================================================== 간단실행 ======================================================
+
     /**
      * 단건 처리
      * ex) Koins.get<AthenaModule>().download(sql).renameTo(rptFile)
      *  */
-    fun download(athenaQuery: String): File = (startAndWaitAndExecute(listOf(AthenaDownload(athenaQuery) {})).first() as AthenaDownload).file!!
+    fun download(athenaQuery: String): File = runBlocking { startAndWait(AthenaDownload(athenaQuery)).file!! }
 
     /** 간단 샘플 */
-    fun downloadIfEmpty(file: File, block: () -> String) :File{
+    fun downloadIfEmpty(file: File, block: () -> String): File {
         if (!file.exists()) {
             log.warn { " -> 파일을 다운로드합니다.. $file" }
             download(block()).renameTo(file)
@@ -154,21 +156,41 @@ class AthenaModule(
     }
 
     /** 단건 처리 */
-    fun readAll(athenaQuery: String): List<List<String>> = (startAndWaitAndExecute(listOf(AthenaReadAll(athenaQuery) {})).first() as AthenaReadAll).lines!!
+    fun readAll(athenaQuery: String): List<List<String>> = runBlocking { startAndWait(AthenaReadAll(athenaQuery)).lines!! }
 
     /** 단건 처리 (DSL용) */
     fun readAll(block: () -> String): List<List<String>> = readAll(block())
 
-    /** 단건 처리 */
-    fun execute(athenaQuery: String) = startAndWaitAndExecute(listOf(AthenaExecute(athenaQuery)))
+    /**
+     * 단건 처리
+     * sqls.map { suspend { athenaModule.execute(it) } }.coroutineExecute()
+     *  */
+    fun execute(athenaQuery: String): AthenaExecute = runBlocking { startAndWait(AthenaExecute(athenaQuery)) }
+
+    /** 내부 간단 실행기 */
+    suspend fun <T : AthenaQuery> startAndWait(query: T): T {
+        withTimeout(checkTimeout) {
+            val execution = AthenaExecution(query)
+            execution.start()
+            while (true) {
+                val ok = execution.checkAndExecute()
+                if (ok) break
+            }
+        }
+        return query
+    }
+
+    //==================================================== 폐기 ======================================================
 
     /** 모든 쿼리 로직을 동시에 처리 (동시 실행 제한수 주의) */
+    @Deprecated("일반 코루틴 사용하세요!!")
     fun startAndWaitAndExecute(querys: List<AthenaQuery>): List<AthenaQuery> {
         runBlocking { startExecute(querys) }
         return querys
     }
 
-    /** suspend 용 */
+    /** 정상 작동하긴 하지만, 코루틴 로직이 여기 있을 필요가 없음. */
+    @Deprecated("일반 코루틴 사용하세요!!")
     suspend fun startExecute(querys: List<AthenaQuery>): List<AthenaQuery> {
         val list = querys.map { AthenaExecution(it) }
         withTimeout(checkTimeout) {

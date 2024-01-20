@@ -16,8 +16,7 @@ import kotlin.reflect.KProperty
 
 
 /**
- * S3를 사용해서 로드
- * 테스트 필요!!
+ * 각종 리소스에서 늦은 로드를 해주는 프로퍼티
  *  */
 class FileLazyLoadProperty(private val configFile: File, private val path: String) : KoinComponent {
 
@@ -70,5 +69,10 @@ class FileLazyLoadProperty(private val configFile: File, private val path: Strin
     }
 }
 
-/** 늦은 초기화 */
-fun File.lazyLoad(path: String): FileLazyLoadProperty = FileLazyLoadProperty(this, path)
+//==================================================== 간단호출 ======================================================
+
+/** 늦은 초기화  & 중위함수 지원 */
+infix fun File.lazyLoad(path: String): FileLazyLoadProperty = FileLazyLoadProperty(this, path)
+
+/** 늦은 초기화  & 중위함수 지원 */
+infix fun File.lazyLoad(path: S3Data): FileLazyLoadProperty = FileLazyLoadProperty(this, path.toFullPath())

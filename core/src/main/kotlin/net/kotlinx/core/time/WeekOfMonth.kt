@@ -9,14 +9,19 @@ import java.time.LocalDate
  * ex) 8월 1일이 화요일~일요일 이라면 8월 1일은 8월 1주차가 아니라 7월의 마지막 주차임
  *
  */
-class WeekOfMonth(date: LocalDate) {
+class WeekOfMonth(date: LocalDate = LocalDate.now()) {
 
     /** 월 */
-    private val month: Int
+    val month: Int
+
     /** 주차 */
-    private val weekOfMonth: Int
+    val weekOfMonth: Int
+
     /** 입력한 값이 속한 주의 월요일  */
-    private val startDate: LocalDate
+    val startDate: LocalDate
+
+    /** 입력한 값이 속한 주의 일요일  */
+    val endDate: LocalDate
 
     init {
         val day = date.dayOfMonth //날짜
@@ -30,7 +35,9 @@ class WeekOfMonth(date: LocalDate) {
         this.month = month.value
         weekOfMonth = value / 7 + 1
         startDate = date.minusDays((dow - 1).toLong())
+        endDate = startDate.plusDays(6)
+
     }
 
-    override fun toString(): String = "${month}월 ${weekOfMonth}주차"
+    override fun toString(): String = "${month}월 ${weekOfMonth}주차 ($startDate ~ $endDate)"
 }

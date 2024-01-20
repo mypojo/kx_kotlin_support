@@ -15,13 +15,13 @@ import org.koin.dsl.module
 
 internal class KoinJobTest : TestRoot(), KoinComponent {
 
-    class A1() : JobTasklet {
+    class A1 : JobTasklet {
         override fun doRun(job: Job) {
             TODO("Not yet implemented")
         }
     }
 
-    class A2() : JobTasklet {
+    class A2 : JobTasklet {
         override fun doRun(job: Job) {
             TODO("Not yet implemented")
         }
@@ -49,6 +49,11 @@ internal class KoinJobTest : TestRoot(), KoinComponent {
                     )
                 }
             })
+
+            infix fun String.aaa(aa:String):String = aa + "#"
+
+
+
 
             println("시작")
 

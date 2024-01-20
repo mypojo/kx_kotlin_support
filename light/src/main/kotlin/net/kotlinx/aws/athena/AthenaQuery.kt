@@ -40,7 +40,7 @@ data class AthenaDownload(
     /** 쿼리 */
     override val query: String,
     /** 파일 다운로드 (스트림 처리용) */
-    var callback: (File) -> Unit
+    var callback: (File) -> Unit = {}
 ) : AthenaQuery {
     /** 결과 */
     var file: File? = null

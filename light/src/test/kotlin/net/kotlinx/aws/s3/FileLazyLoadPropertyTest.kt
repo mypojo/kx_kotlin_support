@@ -20,7 +20,7 @@ class FileLazyLoadPropertyTest : TestLight() {
 
     private val workspace = ResourceHolder.getWorkspace().slash("demo")
 
-    private var fileS3: File by workspace.lazyLoad("s3://$temp-work-dev/upload/iii/00000.txt.json")
+    private var fileS3: File by workspace lazyLoad "s3://$temp-work-dev/upload/iii/00000.txt.json"
     private var fileHttp: File by workspace.lazyLoad("http://xx/yy.txt")
 
     @Test
