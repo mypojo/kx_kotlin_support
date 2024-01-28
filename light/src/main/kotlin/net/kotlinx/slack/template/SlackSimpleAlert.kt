@@ -31,7 +31,7 @@ class SlackSimpleAlert : SlackMessage {
 
             header { text(mainMsg) }
 
-            val workDivLinkText = if (workDivLink == null) workDiv else "${workDiv.slackLink(workDivLink!!)}"
+            val workDivLinkText = if (workDivLink == null) workDiv else workDiv.slackLink(workDivLink!!)
             val slackIdsText = if (developers.isEmpty()) "" else ":hot_face: ${developers.joinToString(" / ") { it.slackId!!.slackMention() }}"
             val workLocationLinkText = if (workLocationLink == null) "" else ":floppy_disk: ${"상세로그보기".slackLink(workLocationLink!!)}"
 

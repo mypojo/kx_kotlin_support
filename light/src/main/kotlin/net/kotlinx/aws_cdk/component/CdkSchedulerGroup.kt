@@ -79,11 +79,18 @@ class CdkSchedulerGroup : CdkInterface {
         /** ON 여부 */
         var enabled: Boolean = true
 
-        /** 
+        /**
          * 입력 JSON
          * 이게 없으면 디폴트(이벤트브릿지하고 비슷한 스키마)로 변경됨
          * */
         var inputJson: Any? = null
+
+        /**
+         * 이거 설정시 시작시점 + 이구간 이내에서 실행됨
+         * ex) 15분의 유연한 시간 창을 구성하면 예약된 시간 이후 15분 이내에 대상이 호출
+         * 15분~30분 정도가 적당한듯
+         *  */
+        var flexibleTimeWindowMin: Number? = null
 
     }
 
@@ -115,6 +122,11 @@ class CdkSchedulerGroup : CdkInterface {
                 .scheduleExpression("cron(${data.cronExpression})")
                 .scheduleExpressionTimezone(timezone)
                 .state(if (data.enabled) "ENABLED" else "DISABLED")
+                .apply {
+                    data.flexibleTimeWindowMin?.let {
+                        flexibleTimeWindow(CfnSchedule.FlexibleTimeWindowProperty.builder().mode("FLEXIBLE").maximumWindowInMinutes(it).build())
+                    }
+                }
                 .build()
         )
     }

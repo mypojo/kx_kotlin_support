@@ -200,7 +200,7 @@ class AthenaTable {
              * 아이스버그의 경우 일반 컬럼에 파티션 데이터가 있어야 한다.
              * https://docs.aws.amazon.com/ko_kr/athena/latest/ug/querying-iceberg-creating-tables.html
              * */
-            AthenaTableFormat.Iceberg -> if (partition.isEmpty()) "" else "PARTITIONED BY (${partition.map { "${it.value}" }.joinToString(",")})"
+            AthenaTableFormat.Iceberg -> if (partition.isEmpty()) "" else "PARTITIONED BY (${partition.map { it.value }.joinToString(",")})"
 
             else -> if (partition.isEmpty()) "" else "PARTITIONED BY (${partition.map { "${it.key} ${it.value}" }.joinToString(",")})"
         }
@@ -280,6 +280,7 @@ class AthenaTable {
     /** YYYY-MM-DD HH:MM:SS.SSS */
     val timestamp = "timestamp"
 
+    /** icebug는 지원안함!! 주의!!  */
     val tinyint = "tinyint"
     val int = "int"
     val bigint = "bigint"

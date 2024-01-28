@@ -1,6 +1,7 @@
 package net.kotlinx.aws.module.batchStep.stepDefault
 
 import com.amazonaws.services.lambda.runtime.Context
+import com.lectra.koson.ObjectType
 import com.lectra.koson.obj
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient1
@@ -55,24 +56,30 @@ class StepEnd : LambdaLogicHandler, KoinComponent {
             }.drop(1)[0]
         }
 
-        val resultJson = when {
+        val resultJson: ObjectType = when {
             datas.isEmpty() -> obj {
                 throw IllegalStateException("결과 데이터가 존재하지 않습니다!!")
             }
 
             else -> {
                 val fileCnt = datas[0].toLong()
-                val sumOfInterval = datas[1].toLong()
-                val avgOfInterval = datas[2].toDouble()
-                val totalCnt = datas[3].toLong()
-                val cost = sumOfInterval / 1000 * LambdaUtil.COST_GI_PER_SEC / 4 * 1350
-                log.info { "WAS lambda 과금 ${cost}원" }
-                obj {
-                    "데이터크기" to "${totalCnt}건"
-                    "분할파일" to "${fileCnt}개"
-                    "누적시간합계" to sumOfInterval.toTimeString()
-                    "평균처리시간" to avgOfInterval.toLong().toTimeString()
-                    "람다비용(시간)" to "${cost}원"
+                if (fileCnt == 0L) {
+                    obj {
+                        "데이터크기" to "0건"
+                    }
+                } else {
+                    val sumOfInterval = datas[1].toLong()
+                    val avgOfInterval = datas[2].toDouble()
+                    val totalCnt = datas[3].toLong()
+                    val cost = sumOfInterval / 1000 * LambdaUtil.COST_GI_PER_SEC / 4 * 1350
+                    log.info { "WAS lambda 과금 ${cost}원" }
+                    obj {
+                        "데이터크기" to "${totalCnt}건"
+                        "분할파일" to "${fileCnt}개"
+                        "누적시간합계" to sumOfInterval.toTimeString()
+                        "평균처리시간" to avgOfInterval.toLong().toTimeString()
+                        "람다비용(시간)" to "${cost.toLong()}원"
+                    }
                 }
             }
         }

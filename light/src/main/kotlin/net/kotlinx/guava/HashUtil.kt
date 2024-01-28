@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package net.kotlinx.guava
 
 import com.google.common.base.Charsets

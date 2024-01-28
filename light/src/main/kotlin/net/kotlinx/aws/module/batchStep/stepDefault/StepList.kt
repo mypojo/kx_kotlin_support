@@ -30,6 +30,9 @@ import org.koin.core.component.inject
  * S3 리스팅후 동시성 한도까지만 동시에 호출 (모든 람다 트리거 = IP분산) -> 대기 반복.
  * S3가 다 삭제되면 처리 종료
  * 람다에에는 반드시 타임아웃이 걸려있어야함
+ *
+ * 1. 가능하면 쓰지말고
+ * 2. 써야 한다면 list 구할때 해시 분할하게 작업할것!  ex) 10개중  1,3,5 ->2,4,6  이런식으로 처리해야 중복 방지가능
  *  */
 class StepList : LambdaLogicHandler, KoinComponent {
 
