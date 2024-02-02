@@ -10,14 +10,4 @@ object NumberUtil {
     }
 
 
-    fun split(){
-
-
-
-
-
-
-    }
-
-
 }

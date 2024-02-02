@@ -71,7 +71,7 @@ class StepEnd : LambdaLogicHandler, KoinComponent {
                     val sumOfInterval = datas[1].toLong()
                     val avgOfInterval = datas[2].toDouble()
                     val totalCnt = datas[3].toLong()
-                    val cost = sumOfInterval / 1000 * LambdaUtil.COST_GI_PER_SEC / 4 * 1350
+                    val cost = 1.0 * sumOfInterval / 1000 * LambdaUtil.COST_GI_PER_SEC / 4 * 1350  //256mb 기준
                     log.info { "WAS lambda 과금 ${cost}원" }
                     obj {
                         "데이터크기" to "${totalCnt}건"

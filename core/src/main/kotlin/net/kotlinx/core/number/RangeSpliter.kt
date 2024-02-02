@@ -7,6 +7,7 @@ import java.math.RoundingMode
 /**
  * range 구간을 분리해주는 도구
  * ex) 1억개의 데이터를 20개씩 3분할 하고싶음
+ * ex) 100만개의 데이터를 주 7회, 매일 10분할 해서 랜덤 처리하고싶음
  *  */
 class RangeSpliter {
 
@@ -30,11 +31,12 @@ class RangeSpliter {
     /**
      * 전체 스탭에 대해서 엔빵한 레인지 범위를 돌려준다.
      * 애매하게 남으면 마지막 데이터가 좀 줄어들 수 있음
+     * @return hash or rownum range
      *  */
     operator fun get(index: Int): LongRange {
 
         check(stepCnt > 0)
-        check(index < stepCnt) { "index 는 stepCnt 보다 작아야 합니다." }
+        check(index < stepCnt) { "index($index) 는 stepCnt($stepCnt) 보다 작아야 합니다." }
 
         val dataSize = minmax.last - minmax.first
 
@@ -44,7 +46,7 @@ class RangeSpliter {
         log.trace { "벨리데이션 체크" }
         val stepCycle = index / hashSize
         if (stepCycle >= cycleCnt) {
-            log.debug { "stepCycle($stepCycle) 이 ($cycleCnt)을 같거나 커서 빈값을 리턴합니다" }
+            log.trace { "stepCycle($stepCycle) 이 ($cycleCnt)을 같거나 커서 빈값을 리턴합니다" }
             return 0..0L
         }
         val stepIndex = index % hashSize

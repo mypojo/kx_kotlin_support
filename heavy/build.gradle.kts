@@ -65,6 +65,13 @@ dependencies {
     implementation("com.mysql:mysql-connector-j:_") //이걸로 해야 IAM JDBC 연결됨.. 마리아로 하면 안됨. 뭐 추가옵션이 있는듯. (왜??)
     api("com.zaxxer:HikariCP:_")
 
+    //==================================================== RDB 도구 ======================================================
+    //implementation("io.zeko:zeko-sql-builder:1.4.0") //스키마 정의 없는 SQL 빌더 (비정형 쿼리용 or 간단 람다 API 쿼리)
+    api("com.vladsch.kotlin-jdbc:kotlin-jdbc:_") //깃에서 주워옴. JDBC 간단래퍼
+    implementation("com.linecorp.kotlin-jdsl:jpql-dsl:_")  //라인에서 만든 코틀린 JPQL
+    implementation("com.linecorp.kotlin-jdsl:jpql-render:_")  //JPQL 쿼리를 문자열로 렌더링
+
+
     //==================================================== 기타 ======================================================
     api("org.passay:passay:_") //패스워드 간단 검증
 
@@ -72,9 +79,5 @@ dependencies {
     api("org.apache.poi:poi-ooxml:_") //엑셀
 
     implementation("commons-codec:commons-codec:_") //구글 OTP 모듈
-
-    //==================================================== RDB 도구 ======================================================
-    //implementation("io.zeko:zeko-sql-builder:1.4.0") //스키마 정의 없는 SQL 빌더 (비정형 쿼리용 or 간단 람다 API 쿼리)
-    api("com.vladsch.kotlin-jdbc:kotlin-jdbc:_") //깃에서 주워옴. JDBC 간단래퍼
 
 }
