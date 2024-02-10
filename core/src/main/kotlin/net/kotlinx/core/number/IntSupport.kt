@@ -11,3 +11,9 @@ inline fun Int.isPrimeNum(): Boolean {
     }
     return false
 }
+
+/** coerceAtLeast 단어가 너무 헷갈려서 재정의함 */
+fun Int.maxWith(compare: Int): Int = this.coerceAtLeast(compare)
+
+/** coerceAtLeast 단어가 너무 헷갈려서 재정의함 */
+fun Int.minWith(compare: Int): Int = this.coerceAtMost(compare)

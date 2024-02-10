@@ -35,10 +35,12 @@ class HttpDomainConverter {
      * ex) 네이버의 비즈센터 URL을 정규화 시킴
      *  */
     fun normalize(url: String): String {
-        val httpUrl = url.toHttpUrl()
+
+        val updatedUrl = if(url.startsWith("http"))  url else "https://${url}" //http가 없을경우 강제로 붙여줌
+        val httpUrl = updatedUrl.toHttpUrl()
 
         val host = run {
-            val host1 = httpUrl.host
+            val host1 = httpUrl.host //무조건 소문자로 변환됨
             val host2 = if (toKr) fromPunycode(host1) else host1
             host2
         }

@@ -8,3 +8,12 @@ fun Collection<Any>.flattenAny(): List<Any> = this.flatMap {
     if (it is Iterable<*>) it
     else listOf(it)
 }.filterNotNull()
+
+
+/** 둘 사이에 다른점을 리턴 */
+fun <T> Collection<T>.diff(other: Collection<T>): Set<T> {
+    val a = this.toSet()
+    val b = other.toSet()
+    val sum = (a + b)
+    return (sum - a) + (sum - b)
+}
