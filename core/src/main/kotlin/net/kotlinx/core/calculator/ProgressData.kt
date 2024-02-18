@@ -53,7 +53,8 @@ class ProgressData(
 
     override fun toString(): String {
         val remainTimeStr = if (progressRate <= 0.1.toBigDecimal()) "unknown" else remainTime.toTimeString().toString()
-        return "${completed.toString().padStart(total.toString().length)}/${total} (${progressRate.toString().padStart(3)}%) => 남은시간 $remainTimeStr"
+        return " => ${completed.toString().padStart(total.toString().length)}/${total} (${progressRate.toString().padStart(3)}%)" +
+                " [진행시간 ${progressTime.toTimeString()}] [남은예상시간 ${remainTimeStr}]"
     }
 
     /** 예상 종료 시간 (잘 안씀) */

@@ -1,7 +1,6 @@
 package net.kotlinx.core.calculator
 
 import net.kotlinx.core.counter.EventTimeChecker
-import net.kotlinx.core.time.toTimeString
 import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicLong
 
@@ -20,7 +19,7 @@ class ProgressInlineChecker(
     private val progressStartTime = LocalDateTime.now()
 
     /** 단일 JVM에서 진행할때 사용 */
-    fun check(delta: Long = 1, block: (ProgressData) -> Unit = DEFAULT_LOGGER) {
+    fun check(delta: Long = 1, block: (ProgressData) -> Unit = { println(it) }) {
 
         check(delta > 0)
 
@@ -36,11 +35,12 @@ class ProgressInlineChecker(
         )
     }
 
-    companion object {
-        val DEFAULT_LOGGER: (ProgressData) -> Unit = {
-            println(" => ${it.completed} / ${it.total} (${it.progressRate}%) [진행시간 ${it.progressTime.toTimeString()}] [남은예상시간 ${it.remainTime.toTimeString()}]")
-        }
-    }
+//    companion object {
+//        val DEFAULT_LOGGER: (ProgressData) -> Unit = {
+//            //println(" => ${it.completed} / ${it.total} (${it.progressRate}%) [진행시간 ${it.progressTime.toTimeString()}] [남은예상시간 ${it.remainTime.toTimeString()}]")
+//            println(it)
+//        }
+//    }
 
 }
 

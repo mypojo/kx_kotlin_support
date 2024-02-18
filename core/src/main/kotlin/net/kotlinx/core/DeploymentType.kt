@@ -5,6 +5,7 @@ import mu.KotlinLogging
 /**
  * AWS 실제 인프라가 구성되는 배포 타입.
  * 샘플로 사용
+ * https://en.wikipedia.org/wiki/Deployment_environment
  */
 enum class DeploymentType {
     /**
