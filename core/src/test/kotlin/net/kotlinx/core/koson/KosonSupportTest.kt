@@ -10,12 +10,20 @@ import net.kotlinx.core.threadlocal.ResourceHolder
 import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
-class KosonSupportKtTest : TestRoot(){
+class KosonSupportTest : TestRoot() {
+
+
+    @Test
+    fun aaa() {
+        val obj = obj {
+            "text" to "테스트값"
+        }
+        println(obj)
+    }
 
 
     @Test
     fun test() {
-
 
         val obj = obj {
             "text" to "\"테스트값"
@@ -33,7 +41,7 @@ class KosonSupportKtTest : TestRoot(){
 
 
         val file = ResourceHolder.getWorkspace().slash("temp").slash("temp.csv")
-        file. writeCsvLines(csvLines)
+        file.writeCsvLines(csvLines)
 
         val readLines = file.readCsvLines()
         readLines.forEach {

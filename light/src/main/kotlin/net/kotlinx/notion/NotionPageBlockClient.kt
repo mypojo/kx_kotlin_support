@@ -1,9 +1,9 @@
 package net.kotlinx.notion
 
+import com.lectra.koson.Koson
 import com.lectra.koson.obj
 import mu.KotlinLogging
 import net.kotlinx.core.gson.toGsonData
-import net.kotlinx.core.koson.addByType
 import net.kotlinx.okhttp.await
 import okhttp3.OkHttpClient
 import org.koin.core.component.KoinComponent
@@ -25,7 +25,7 @@ class NotionPageBlockClient(
     private val client: OkHttpClient by inject()
 
     /** 해당 페이지의 블록 조회  */
-    suspend fun blocks(pageId: String, pageSize: Int = 100): List<NotionCell> {
+    suspend fun blocks(pageId: String, pageSize: Int = 100): List<NotionBlock> {
 
         val resp = client.await {
             url = "https://api.notion.com/v1/blocks/${pageId}/children?page_size=${pageSize}"
@@ -41,28 +41,24 @@ class NotionPageBlockClient(
 
         val result = resp.respText.toGsonData()
         val blocks = result["results"].mapNotNull { body ->
-            val blockId = body["id"].str!!
-            when (val type = body["type"].str!!) {
-                "paragraph" -> {
-                    val richTexts = body["paragraph"]["rich_text"]
-                    if (richTexts.empty) null else {
-                        val cellType = NotionCellType.rich_text
-                        val value = cellType.fromNotionJson(body[type][NotionCellType.rich_text.name])
-                        NotionCell(blockId, cellType, value)
-                    }
-                }
-
-                else -> null
+            try {
+                NotionBlock(body)
+            } catch (e: IllegalArgumentException) {
+                log.warn { "알수없는 형식 : $body" }
+                null
             }
         }
         return blocks
     }
 
-    /** 해당 페이지의 블록 조회  */
-    suspend fun update(cell: NotionCell) {
+    /**
+     * 해당 페이지의 블록 텍스트 업데이트
+     * 향후 더 필요시 모듈화
+     *  */
+    suspend fun updateParagraph(blociId: String, block: Koson.() -> Unit) {  //paragraph: () -> ObjectType,
 
         val resp = client.await {
-            url = "https://api.notion.com/v1/blocks/${cell.name}" //페이지 사이즈 고정
+            url = "https://api.notion.com/v1/blocks/${blociId}" //페이지 사이즈 고정
             method = "PATCH"
             header = mapOf(
                 "Authorization" to "Bearer $secretValue",
@@ -71,7 +67,7 @@ class NotionPageBlockClient(
             )
             body = obj {
                 "paragraph" to obj {
-                    addByType(cell.type.name, cell.notionJson)
+                    apply(block)
                 }
             }
         }

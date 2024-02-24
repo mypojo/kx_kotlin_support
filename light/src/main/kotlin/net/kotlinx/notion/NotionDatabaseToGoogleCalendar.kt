@@ -1,7 +1,6 @@
 package net.kotlinx.notion
 
 import mu.KotlinLogging
-import net.kotlinx.core.string.toLocalDate
 import net.kotlinx.core.string.toLocalDateTime
 import net.kotlinx.core.time.TimeStart
 import net.kotlinx.core.time.toF01
@@ -83,7 +82,7 @@ class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() ->
 
         //먼저 마지막 수정 시간을 스캔한다. 페이지의 가장 첫 라인 사용.
         val synchInfoCell = notionPageBlockClient.blocks(notionPageId, 1).first()
-        val lastSynchTime = fromBlock(synchInfoCell.value)
+        val lastSynchTime = fromBlock(synchInfoCell.cell!!.viewText)
 
         val scanStartTime = lastSynchTime.plusSeconds(1) //1초 이후로 스캔
         val scanEndTime = LocalDateTime.now()
@@ -93,36 +92,36 @@ class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() ->
         val notionRows = notionDatabaseClient.queryAll(notionDbId, filter)
         notionRows.forEach { notionRow ->
 
-            val dateCell = notionRow.colimns.firstOrNull { it.name == date } ?: throw IllegalStateException("date column is required")
-            val titleCell = notionRow.colimns.firstOrNull { it.name == title } ?: throw IllegalStateException("title column is required")
-            val descCell = notionRow.colimns.firstOrNull { it.name == desc } ?: throw IllegalStateException("desc column is required")
-            val dateValue = when {
-                dateCell.value.contains("~") -> {
-                    val range = dateCell.value.split("~").map { it.trim() }
-                    range[0].toLocalDate() to range[1].toLocalDate()
-                }
-
-                else -> dateCell.value.toLocalDate() to dateCell.value.toLocalDate()
-            }
-
-            val calendarId = notionRow.colimns.firstOrNull { it.name == type }?.let { calendarTypeIdMap[it.value] } ?: calendarDefaultId
-
-            val calendarData = GoogleCalendarData {
-                this.title = titleCell.value
-                this.desc = descCell.value
-                this.date = dateValue
-            }
-
-            val gceId = notionRow.colimns.firstOrNull { it.name == gceid }?.value ?: throw IllegalStateException("gceid column is required")
-            if (gceId.isEmpty()) {
-                synchInsert(calendarId, calendarData, notionRow.id)
-            } else {
-                synchUpdate(calendarId, calendarData, gceId, notionRow.id)
-            }
+//            val dateCell = notionRow.colimns.firstOrNull { it.name == date } ?: throw IllegalStateException("date column is required")
+//            val titleCell = notionRow.colimns.firstOrNull { it.name == title } ?: throw IllegalStateException("title column is required")
+//            val descCell = notionRow.colimns.firstOrNull { it.name == desc } ?: throw IllegalStateException("desc column is required")
+//            val dateValue = when {
+//                dateCell.value.contains("~") -> {
+//                    val range = dateCell.value.split("~").map { it.trim() }
+//                    range[0].toLocalDate() to range[1].toLocalDate()
+//                }
+//
+//                else -> dateCell.value.toLocalDate() to dateCell.value.toLocalDate()
+//            }
+//
+//            val calendarId = notionRow.colimns.firstOrNull { it.name == type }?.let { calendarTypeIdMap[it.value] } ?: calendarDefaultId
+//
+//            val calendarData = GoogleCalendarData {
+//                this.title = titleCell.value
+//                this.desc = descCell.value
+//                this.date = dateValue
+//            }
+//
+//            val gceId = notionRow.colimns.firstOrNull { it.name == gceid }?.value ?: throw IllegalStateException("gceid column is required")
+//            if (gceId.isEmpty()) {
+//                synchInsert(calendarId, calendarData, notionRow.id)
+//            } else {
+//                synchUpdate(calendarId, calendarData, gceId, notionRow.id)
+//            }
         }
 
         //노션 블럭정보 업데이트
-        notionPageBlockClient.update(NotionCell(synchInfoCell.name, NotionCellType.rich_text, toBlock(scanEndTime)))
+        //notionPageBlockClient.update(NotionCell2(synchInfoCell.cell!!.id, NotionCellType.rich_text, toBlock(scanEndTime)))
 
         log.info {
             val duration = ChronoUnit.MILLIS.between(scanStartTime, scanEndTime).toTimeString()
@@ -135,7 +134,7 @@ class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() ->
         //노션에 구글 캘린더 ID를 업데이트함
         notionDatabaseClient.update(
             notionDbId, notionPageId, listOf(
-                NotionCell(gceid, NotionCellType.rich_text, calendarData.eventId),
+                NotionCell2(gceid, NotionCellType.rich_text, calendarData.eventId),
             )
         )
         log.debug { " -> [${calendarData.title}] insert" }

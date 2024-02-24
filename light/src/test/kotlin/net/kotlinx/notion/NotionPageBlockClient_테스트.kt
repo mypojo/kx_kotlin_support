@@ -4,11 +4,8 @@ import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.ssm.find
 import net.kotlinx.aws.toAwsClient1
-import net.kotlinx.core.string.toLocalDateTime
-import net.kotlinx.core.time.toF01
 import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
 
 class NotionPageBlockClient_테스트 : TestRoot() {
 
@@ -26,8 +23,7 @@ class NotionPageBlockClient_테스트 : TestRoot() {
         runBlocking {
             val blocks = page.blocks("4b18e3f52ce84487b64acab8ab2b5837", 1)
             blocks.forEach {
-                log.info { "value = ${it.value}" }
-                log.info { "value = ${it.value.split("=")[1].trim().toLocalDateTime()}" }
+                log.info { "value = ${it.body}" }
             }
         }
 
@@ -40,14 +36,14 @@ class NotionPageBlockClient_테스트 : TestRoot() {
     @Test
     fun 블록수정() {
         runBlocking {
-            val page = NotionPageBlockClient(secretValue)
-            page.update(
-                NotionCell(
-                    "f9405aee-1811-4618-8466-0aa6832e2cf0",
-                    NotionCellType.rich_text,
-                    "최근동기화시간 = ${LocalDateTime.now().toF01()}"
-                )
-            )
+//            val page = NotionPageBlockClient(secretValue)
+//            page.update(
+//                NotionCell2(
+//                    "f9405aee-1811-4618-8466-0aa6832e2cf0",
+//                    NotionCellType.rich_text,
+//                    "최근동기화시간 = ${LocalDateTime.now().toF01()}"
+//                )
+//            )
         }
     }
 

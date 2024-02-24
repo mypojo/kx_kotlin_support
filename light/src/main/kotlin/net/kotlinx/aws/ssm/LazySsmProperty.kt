@@ -71,4 +71,6 @@ class LazySsmProperty : KoinComponent {
 /**
  * SSM 파라메터 이용
  *  */
-fun lazySsm(): LazySsmProperty = LazySsmProperty()
+fun lazySsm(initValue: String? = null): LazySsmProperty = LazySsmProperty().also { p ->
+    initValue?.let { p.value = initValue }
+}

@@ -6,8 +6,8 @@ import mu.KotlinLogging
 import net.kotlinx.core.serial.SerialJsonObj
 
 /** 간단 변환. 없으면 빈거 리턴 */
-fun String?.toGsonDataOrEmpty(): GsonData{
-    if(this.isNullOrBlank()) return GsonData.empty()
+fun String?.toGsonDataOrEmpty(): GsonData {
+    if (this.isNullOrBlank()) return GsonData.empty()
     return this.toGsonData()
 }
 
@@ -126,6 +126,11 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
         is JsonPrimitive -> 1
         is JsonNull -> 0
         else -> throw IllegalStateException("${delegate::class.simpleName} is not required")
+    }
+
+    val isArray: Boolean = when (delegate) {
+        is JsonArray -> true
+        else -> false
     }
 
     /** 간단버전 */

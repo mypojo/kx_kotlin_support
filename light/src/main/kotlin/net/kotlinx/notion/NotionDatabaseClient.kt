@@ -1,11 +1,12 @@
 package net.kotlinx.notion
 
+import com.lectra.koson.KosonType
 import com.lectra.koson.ObjectType
 import com.lectra.koson.obj
 import mu.KotlinLogging
 import net.kotlinx.core.collection.repeatCollectUntil
 import net.kotlinx.core.gson.GsonData
-import net.kotlinx.core.koson.addByType
+import net.kotlinx.core.koson.rawKeyValue
 import net.kotlinx.core.string.toLocalDateTime
 import net.kotlinx.core.time.TimeStart
 import net.kotlinx.okhttp.await
@@ -29,7 +30,7 @@ class NotionDatabaseClient(
 
     private val client: OkHttpClient by inject()
 
-    suspend fun insert(dbId: String, cells: List<NotionCell>) {
+    suspend fun insert(dbId: String, cells: List<NotionCell2>) {
         val resp = client.await {
             url = "https://api.notion.com/v1/pages"
             method = "POST"
@@ -40,7 +41,19 @@ class NotionDatabaseClient(
         log.trace { " -> notion insert 성공" }
     }
 
-    suspend fun update(dbId: String, pageId: String, cells: List<NotionCell>) {
+    suspend fun insert(dbId: String, cells: Map<String, KosonType>) {
+        val resp = client.await {
+            url = "https://api.notion.com/v1/pages"
+            method = "POST"
+            header = toHeader()
+            body = toBody(dbId, cells)
+            println(body)
+        }
+        check(resp.response.code == 200) { "${resp.response.code} ${resp.respText}" }
+        log.trace { " -> notion insert 성공" }
+    }
+
+    suspend fun update(dbId: String, pageId: String, cells: List<NotionCell2>) {
         val resp = client.await {
             url = "https://api.notion.com/v1/pages/${pageId}"
             method = "PATCH"
@@ -94,19 +107,7 @@ class NotionDatabaseClient(
                 val createdTime = line["created_time"].str!!.toLocalDateTime().plusHours(9)
                 val lastEditedTime = line["last_edited_time"].str!!.toLocalDateTime().plusHours(9)
 
-                val columns = line["properties"].entryMap().map {
-                    try {
-                        val type = it.value["type"].str!!
-                        val cellType = enumValueOf<NotionCellType>(type)
-                        val typeValue = it.value[type]
-                        val value = cellType.fromNotionJson(typeValue)
-                        log.trace { " -> json $cellType -> $typeValue" }
-                        NotionCell(it.key, cellType, value)
-                    } catch (e: Exception) {
-                        log.warn { " -> $it" }
-                        throw e
-                    }
-                }
+                val columns = line["properties"].entryMap().map { it.key to NotionCell(it.value) }.toMap()
                 NotionRow(id, createdTime, lastEditedTime, columns)
             }
             log.debug { " -> DB[${dbId}] 데이터로드 ${lines.size}건 -> $start" }
@@ -115,12 +116,21 @@ class NotionDatabaseClient(
         }.flatten()
     }
 
-    private fun toBody(dbId: String, cells: List<NotionCell>) = obj {
+    private fun toBody(dbId: String, cells: Map<String, KosonType>) = obj {
         "parent" to obj {
             "database_id" to dbId
         }
         "properties" to obj {
-            cells.forEach { addByType(it.name, it.notionJson) }
+            cells.forEach { rawKeyValue(it.key, it.value) }
+        }
+    }
+
+    private fun toBody(dbId: String, cells: List<NotionCell2>) = obj {
+        "parent" to obj {
+            "database_id" to dbId
+        }
+        "properties" to obj {
+            cells.forEach { rawKeyValue(it.name, it.notionJson) }
         }
     }
 

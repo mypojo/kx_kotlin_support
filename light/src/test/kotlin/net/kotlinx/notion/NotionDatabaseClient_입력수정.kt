@@ -6,7 +6,7 @@ import net.kotlinx.aws.ssm.find
 import net.kotlinx.aws.toAwsClient1
 import org.junit.jupiter.api.Test
 
-internal class NotionDatabase_Client_입력수정 {
+internal class NotionDatabaseClient_입력수정 {
 
     val aws = AwsConfig().toAwsClient1()
     val secretValue by lazy {
@@ -22,8 +22,8 @@ internal class NotionDatabase_Client_입력수정 {
         val pageId = "d4be02858e7f4dd4a21e893f64df8ab8"
         database.update(
             dbId, pageId, listOf(
-                NotionCell("gceId", NotionCellType.rich_text, "xxxxxxxxxxx"),
-                NotionCell("별점", NotionCellType.number, "2"),
+                NotionCell2("gceId", NotionCellType.rich_text, "xxxxxxxxxxx"),
+                NotionCell2("별점", NotionCellType.number, "2"),
             )
         )
 
@@ -31,14 +31,12 @@ internal class NotionDatabase_Client_입력수정 {
 
     @Test
     fun `입력`() = runBlocking {
-        database.insert(
-            dbId, listOf(
-                NotionCell("이벤트명", NotionCellType.rich_text, "테스트입력"),
-                NotionCell("gceId", NotionCellType.rich_text, "aabbcc"),
-                NotionCell("링크", NotionCellType.url, "https://www.coupang.com/"),
-                NotionCell("별점", NotionCellType.number, "1"),
-            )
+
+        val data = mapOf(
+            "파일명" to NotionCellBuilder.richText("test.txt"),
+            "처리상태" to NotionCellBuilder.richText("처리중"),
         )
+        database.insert(dbId,data)
 
     }
 

@@ -3,7 +3,7 @@ package net.kotlinx.notion.work
 import mu.KotlinLogging
 import net.kotlinx.core.string.CharSets
 import net.kotlinx.core.string.toLocalTime
-import net.kotlinx.notion.NotionCell
+import net.kotlinx.notion.NotionCell2
 import net.kotlinx.notion.NotionCellType
 import net.kotlinx.notion.NotionDatabaseClient
 import net.kotlinx.notion.NotionFilterSet
@@ -66,7 +66,7 @@ class WorkGroupLogic(block: WorkGroupLogic.() -> Unit = {}) : KoinComponent {
         val basicDate = workOutputs.minOf { it.date }!!
         val filter = NotionFilterSet.eq(
             listOf(
-                NotionCell("날짜", NotionCellType.date, basicDate),
+                NotionCell2("날짜", NotionCellType.date, basicDate),
             )
         )
         val notionLines = database.queryAll(dbId, filter)
@@ -79,14 +79,14 @@ class WorkGroupLogic(block: WorkGroupLogic.() -> Unit = {}) : KoinComponent {
         workOutputs.forEach { work ->
             database.insert(
                 dbId, listOf(
-                    NotionCell("팀", NotionCellType.select, work.workGroup.groupName),
-                    NotionCell("날짜", NotionCellType.date, work.date),
-                    NotionCell("이름", NotionCellType.rich_text, work.name),
-                    NotionCell("출근", NotionCellType.rich_text, work.startTime),
-                    NotionCell("퇴근", NotionCellType.rich_text, work.endTime),
-                    NotionCell("체류시간", NotionCellType.rich_text, work.workTimeString),
-                    NotionCell("정상근무", NotionCellType.checkbox, "${work.valid}"),
-                    NotionCell("근무타입", NotionCellType.select, work.workType),
+                    NotionCell2("팀", NotionCellType.select, work.workGroup.groupName),
+                    NotionCell2("날짜", NotionCellType.date, work.date),
+                    NotionCell2("이름", NotionCellType.rich_text, work.name),
+                    NotionCell2("출근", NotionCellType.rich_text, work.startTime),
+                    NotionCell2("퇴근", NotionCellType.rich_text, work.endTime),
+                    NotionCell2("체류시간", NotionCellType.rich_text, work.workTimeString),
+                    NotionCell2("정상근무", NotionCellType.checkbox, "${work.valid}"),
+                    NotionCell2("근무타입", NotionCellType.select, work.workType),
                 )
             )
         }

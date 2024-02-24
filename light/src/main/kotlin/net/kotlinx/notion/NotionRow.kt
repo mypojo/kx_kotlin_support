@@ -7,5 +7,5 @@ data class NotionRow(
     val id:String,
     val createdTime: LocalDateTime,
     val lastEditedTime: LocalDateTime,
-    val colimns: List<NotionCell>,
+    val colimns: Map<String,NotionCell>,
 )
