@@ -53,7 +53,7 @@ dependencies {
 
     //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
     api("org.jetbrains.exposed:exposed:_") //라이트 ORM
-    api("org.jetbrains.kotlinx:dataframe:1727") //주피터 노트북 코틀린버전.  버전 이름이 이상하다.. 갑자기 이러네
+    api("org.jetbrains.kotlinx:dataframe:_") //주피터 노트북 코틀린버전.  리프레시 버전 적용
 
     //==================================================== AWS JAVA V2 RDS IAM ======================================================
     implementation("software.amazon.awssdk:rds:$awsJavaV2Version") //AWS SDK2 버전의 IAM 데이터소스 (코틀린 버전 없음)
