@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test
 
 class RegexParseSupportTest : TestRoot(), RegexParseSupport {
 
-
     @Test
     fun test() {
 

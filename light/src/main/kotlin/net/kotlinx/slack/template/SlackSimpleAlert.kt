@@ -32,13 +32,12 @@ class SlackSimpleAlert : SlackMessage {
             header { text(mainMsg) }
 
             val workDivLinkText = if (workDivLink == null) workDiv else workDiv.slackLink(workDivLink!!)
-            val slackIdsText = if (developers.isEmpty()) "" else ":hot_face: ${developers.joinToString(" / ") { it.slackId!!.slackMention() }}"
-            val workLocationLinkText = if (workLocationLink == null) "" else ":floppy_disk: ${"상세로그보기".slackLink(workLocationLink!!)}"
+            val workLocationLinkText = if (workLocationLink == null) workLocation else workLocation.slackLink(workLocationLink!!)
+            val slackIdsText = if (developers.isEmpty()) "" else ":smile: ${developers.joinToString(" / ") { it.slackId!!.slackMention() }}"
 
             /** 기본 메세지 */
             val defaultMessages = listOf(
-                ":id: $workDivLinkText  $slackIdsText",
-                ":computer: $workLocation  $workLocationLinkText",
+                ":id: $workDivLinkText :computer: $workLocationLinkText  $slackIdsText",
             )
             section {
                 markdownText(defaultMessages.joinToString("\n"))
@@ -70,19 +69,34 @@ class SlackSimpleAlert : SlackMessage {
     override var blocks: List<LayoutBlock> = emptyList()
     override var threadTs: String? = null
 
-    /** 알림 소스 (프로젝트 명..) */
+    /**
+     * 알림 소스
+     * ex) 프로젝트 명
+     * */
     lateinit var source: String
 
-    /** 작업 구분 */
+    /**
+     * 작업 구분
+     * ex) job 이름 등.
+     * */
     lateinit var workDiv: String
 
-    /** 작업 구분의 링크 (DDB 정보).. */
+    /**
+     * 작업 구분의 링크
+     * ex) 작업 스펙 명세서, 작업의 실행 DDB 정보 링크..
+     * */
     var workDivLink: String? = null
 
-    /** 작업 위치 (하드웨어 정보) */
+    /**
+     * 작업 위치
+     * ex) 하드웨어 정보, lambda, AWS BATCh, ECS 등등..
+     * */
     lateinit var workLocation: String
 
-    /** 작업 위치 로그 (클라우드와치 링크 등..) */
+    /**
+     * 작업 위치 로그
+     * ex) 클라우드와치 링크
+     * */
     var workLocationLink: String? = null
 
     /** 담당자 개발자들 */
@@ -91,10 +105,16 @@ class SlackSimpleAlert : SlackMessage {
     /** 에러 */
     var exception: Throwable? = null
 
-    /** 설명문구 -  Block quotes */
+    /**
+     * 설명문구 -  Block quotes
+     * 링크 삽입 가능!!
+     *  */
     var descriptions: List<String> = emptyList()
 
-    /** 본문 텍스트 - Code blocks */
+    /**
+     * 본문 텍스트 - Code blocks
+     * 링크 삽입 불가능함!! 주로 코드나 표, SQL 문구 등 표기용
+     * */
     var body: List<String> = emptyList()
 
     companion object {
