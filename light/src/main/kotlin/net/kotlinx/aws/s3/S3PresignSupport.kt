@@ -20,7 +20,7 @@ suspend fun S3Client.presignGetObject(bucket: String, key: String, duration: Dur
 }
 
 /**
- * presign 업로드 URL을 리턴해준다.
+ * presign 업로드 URL을 리턴해준다.  1개 파일당 1개가 매핑되니 주의!
  * metadata 를 사용해서 DDB를 사용하지 않고도 각종 파라메터 정보를 선입력 가능하다.
  * 참고!!  업로드 크기 체크는 불가능하다. -> 하지만 AWS는 업로드 공짜임으로 람다를 이용해서 삭제 해주면 된다.
  *  */

@@ -11,3 +11,18 @@ fun File.slash(name: String): File {
     check(this.isDirectory) { "이 파일은 디렉토리가 아닙니다. $this" }
     return File(this, name)
 }
+
+
+/** 해당 디렉토리의 모든 파일 가져옴 */
+fun File.listAllFiles(): List<File> {
+    check(this.isDirectory) { "이 파일은 디렉토리가 아닙니다. $this" }
+    val files = mutableListOf<File>()
+    for (file in this.listFiles()) {
+        if (file.isFile) {
+            files.add(file)
+        } else if (file.isDirectory) {
+            files.addAll(file.listAllFiles())
+        }
+    }
+    return files
+}

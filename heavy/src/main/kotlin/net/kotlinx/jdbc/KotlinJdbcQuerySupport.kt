@@ -23,6 +23,7 @@ fun Session.listAny(query: SqlQuery): QueryResult {
         metaData = row.metaDataOrNull()
         (1..metaData.columnCount).map { row.anyOrNull(it) }
     }
+    if (results.isEmpty()) throw IllegalArgumentException("결과가 존재하지 않습니다. $query")
     val headers = (1..metaData.columnCount).map { metaData.getColumnName(it) }
     return QueryResult(headers, results)
 }

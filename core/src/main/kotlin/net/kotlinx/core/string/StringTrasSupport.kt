@@ -29,4 +29,18 @@ fun String.encodeUrl(): String = URLEncoder.encode(this, "UTF-8")
 fun String.decodeUrl(): String = URLDecoder.decode(this, "UTF-8")
 
 /** 전체가 숫자인지? 간단 테스트 메소드 */
-inline fun String.isNumeric(): Boolean = RegexSet.NUMERIC.matches(this)
+fun String.isNumeric(): Boolean = RegexSet.NUMERIC.matches(this)
+
+//==================================================== 프리미티브 변환 ======================================================
+
+/**
+ * @return boolean변환.  변환이 안될경우 null
+ *  */
+fun String.toBoolean(): Boolean? {
+    val value = this.lowercase()
+    return when (value) {
+        in setOf("yes", "true", "on", "1", "t", "o") -> true
+        in setOf("no", "false", "off", "0", "f", "x") -> false
+        else -> null
+    }
+}

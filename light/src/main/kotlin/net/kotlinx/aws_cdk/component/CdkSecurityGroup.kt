@@ -46,7 +46,7 @@ class CdkSecurityGroup(
      * 이거로 안되면 ID 하드코딩으로 찾으면 됨
      *  */
     fun load(stack: Stack, vpc: IVpc): CdkSecurityGroup {
-        val queryString = "*${logicalName}**".retainFrom(RegexSet.ALPAH_NUMERIC_HAN).lowercase() //이거 이름으로 캐싱되니 주의! 삭제된게 자꾸 나온다면 검색어를 수정해야함
+        val queryString = "*${logicalName}**".retainFrom(RegexSet.ALPAH_NUMERIC.HAN).lowercase() //이거 이름으로 캐싱되니 주의! 삭제된게 자꾸 나온다면 검색어를 수정해야함
         iSecurityGroup = SecurityGroup.fromLookupByName(stack, sgName, queryString, vpc)
         return this
     }

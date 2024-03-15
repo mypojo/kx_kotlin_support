@@ -26,22 +26,15 @@ class BeanTest : TestRoot() {
         var tag: String? = null
     }
 
-    data class PooDto3 (
+    data class PooDto3(
         var name: String? = null,
         var age: Int? = null,
         var tag: String? = null,
     )
 
 
-    lateinit var aa:String
-
     @Test
     fun test() {
-
-        if(aa==null){
-            aa = "aaa"
-        }
-        println(aa)
 
 
         val p1 = Poo1("홍길동").apply {
@@ -55,6 +48,7 @@ class BeanTest : TestRoot() {
             it.put("age", 878)
             println(it["age"])
             check(it["age"] == 878)
+            println(it.get(Poo1::name))
         }
 
         Bean(p1).convert(PooDto1::class).also {

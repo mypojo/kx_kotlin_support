@@ -50,9 +50,10 @@ internal class KoinJobTest : TestRoot(), KoinComponent {
                 }
             })
 
-            infix fun String.aaa(aa:String):String = aa + "#"
+            infix fun String.aaa(aa: String): String = aa + "#"
 
 
+            println("aaa" aaa "bbb")
 
 
             println("시작")
