@@ -1,5 +1,6 @@
 package net.kotlinx.spring.batch.component
 
+import net.kotlinx.core.Kdsl
 import org.springframework.batch.item.file.MultiResourceItemWriter
 import org.springframework.batch.item.file.ResourceAwareItemWriterItemStream
 import org.springframework.batch.item.file.ResourceSuffixCreator
@@ -9,9 +10,12 @@ import java.io.File
 /**
  * MultiResourceItemWriter 가 빌더를 제공하지 않아서 샘플로 만들었음
  */
-class MultiResourceItemWriterBuilder(
-    val block: MultiResourceItemWriterBuilder.() -> Unit
-) {
+class MultiResourceItemWriterBuilder {
+
+    @Kdsl
+    constructor(block: MultiResourceItemWriterBuilder.() -> Unit = {}) {
+        apply(block)
+    }
 
     /** 편의상 일반 인터페이스로 지정함. 사실 ResourceAwareItemWriterItemStream 가 와야한다.   */
     lateinit var itemWriter: ResourceAwareItemWriterItemStream<*>
@@ -33,7 +37,6 @@ class MultiResourceItemWriterBuilder(
 
     /**  빌드  */
     fun <T> build(): MultiResourceItemWriter<T> {
-        block(this)
         workspace.mkdirs()
         check(workspace.isDirectory)
         return MultiResourceItemWriter<T>().apply {

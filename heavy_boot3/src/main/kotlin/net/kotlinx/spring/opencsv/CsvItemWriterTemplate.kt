@@ -1,6 +1,7 @@
 package net.kotlinx.spring.opencsv
 
 import mu.KotlinLogging
+import net.kotlinx.core.Kdsl
 import net.kotlinx.spring.batch.component.MultiResourceItemWriterBuilder
 import net.kotlinx.spring.resource.toGzipOutputStreamResource
 import org.springframework.batch.item.ItemWriter
@@ -8,11 +9,15 @@ import java.io.File
 
 /**
  * 자주 사용되는 CsvItemWriter 템플릿
+ * 옵션을 조절해야 할경우 MultiResourceItemWriterBuilder 등을 직접 사용할것
  * @see net.kotlinx.core.file.FileZipTemplate 이거하고 같이 사용
  */
-class CsvItemWriterTemplate(
-    val block: CsvItemWriterTemplate.() -> Unit
-) {
+class CsvItemWriterTemplate {
+
+    @Kdsl
+    constructor(block: CsvItemWriterTemplate.() -> Unit = {}) {
+        apply(block)
+    }
 
     //==================================================== 설정 ======================================================
     /**
@@ -30,7 +35,6 @@ class CsvItemWriterTemplate(
 
     /** 빌드 */
     fun build(): ItemWriter<Array<String>> {
-        block(this)
         return when {
 
             //MS949 -> 사람이 읽는용. 파일이 N개 까지 생길 수 있음 -> FileZipModule 로 압축할것
