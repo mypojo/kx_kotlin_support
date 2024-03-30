@@ -7,6 +7,7 @@ import kotlinx.html.h1
 import kotlinx.html.html
 import kotlinx.html.stream.createHTML
 import mu.KotlinLogging
+import net.kotlinx.aws.lambda.LambdaMapResult
 import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
 
 import net.kotlinx.core.gson.GsonData
@@ -33,7 +34,7 @@ class FunctionRouter(block: FunctionRouter.() -> Unit = {}) : LambdaLogicHandler
     //==================================================== 예외 처리기 ======================================================
 
     /** 기본 인증실패 처리기 */
-    var authFailHandler: (LambdaUrlInput, String) -> LambdaUrlOutput = { _, msg ->
+    var authFailHandler: (LambdaUrlInput, String) -> LambdaMapResult = { _, msg ->
         val html = createHTML().html {
             setDefault("잘못된 요청입니다")
             body {
@@ -44,7 +45,7 @@ class FunctionRouter(block: FunctionRouter.() -> Unit = {}) : LambdaLogicHandler
     }
 
     /** 기본 낫파운드 처리기 */
-    var notFoundHandler: (LambdaUrlInput) -> LambdaUrlOutput = {
+    var notFoundHandler: (LambdaUrlInput) -> LambdaMapResult = {
         val code = HttpStatusCode.NotFound
         val html = createHTML().html {
             setDefault("${code.value} [${code.description}] 잘못된 요청입니다")
@@ -56,7 +57,7 @@ class FunctionRouter(block: FunctionRouter.() -> Unit = {}) : LambdaLogicHandler
     }
 
     /** 기본 500 예외 처리기 */
-    var errorHandler: (LambdaUrlInput, Throwable) -> LambdaUrlOutput = { i, e ->
+    var errorHandler: (LambdaUrlInput, Throwable) -> LambdaMapResult = { i, e ->
         val html = createHTML().html {
             setDefault("오류가 발생했습니다.")
             body {

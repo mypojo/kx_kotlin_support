@@ -3,6 +3,7 @@ package net.kotlinx.aws.lambdaCommon
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.RequestHandler
 import kotlinx.coroutines.runBlocking
+import kotlinx.html.MetaHttpEquiv.contentType
 import mu.KotlinLogging
 import net.kotlinx.aws.lambda.LambdaHandlerUtil
 import net.kotlinx.core.Kdsl
@@ -24,7 +25,7 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
     protected val logics: MutableList<LambdaFunctionLogic> = mutableListOf()
 
     /** snapstart 등에서 리셋 */
-    fun clear(){
+    fun clear() {
         logics.clear()
     }
 
@@ -34,8 +35,23 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
         logics += LambdaFunctionLogic().apply(block)
     }
 
-    /** 예외 처리 핸들러 */
-    lateinit var errorhandler: (GsonData, Throwable) -> Map<String, Any>
+    /**
+     * 예외 처리 핸들러.
+     * 실사용시는 반드시 오버라이드 할것!
+     *  */
+    var errorhandler: (GsonData, Throwable) -> Map<String, Any> = { data: GsonData, e: Throwable ->
+        e.printStackTrace()
+        mapOf(
+            "statusCode" to 500,
+            "headers" to mapOf(
+                "content-type" to contentType
+            ),
+            "body" to mapOf(
+                "error" to e.toSimpleString(),
+                "stackTrace" to e.stackTraceToString(),
+            ),
+        )
+    }
 
     /**
      * 각종 기능을 순서대로 체크 후 실행한다.

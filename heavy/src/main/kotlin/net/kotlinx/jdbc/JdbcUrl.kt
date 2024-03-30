@@ -1,8 +1,8 @@
 package net.kotlinx.jdbc
 
-import net.kotlinx.aws.ssm.lazySsm
 import net.kotlinx.core.Kdsl
 import net.kotlinx.core.collection.toQueryString
+import net.kotlinx.props.lazyLoadString
 
 class JdbcUrl {
 
@@ -15,7 +15,7 @@ class JdbcUrl {
     var direct: Boolean = true
 
     /** 엔드포인트 주소 or SSM 경로 */
-    var host: String by lazySsm()
+    var host: String by lazyLoadString()
 
     /** JDBC URL 뒤에 붙는 그거 */
     lateinit var database: String

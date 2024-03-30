@@ -1,7 +1,6 @@
 package net.kotlinx.okhttp
 
 import net.kotlinx.core.Kdsl
-import net.kotlinx.okhttp.OkHttpUtil.MEDIA_TYPE_JSON
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType
@@ -18,7 +17,7 @@ class OkHttpReq {
     var method: String = "GET"
 
     /** 미디어 */
-    var mediaType: MediaType = MEDIA_TYPE_JSON
+    var mediaType: MediaType = OkHttpMediaType.JSON
 
     /** 헤더 */
     var header: Map<String, String> = emptyMap()

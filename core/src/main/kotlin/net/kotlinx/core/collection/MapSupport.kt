@@ -15,4 +15,13 @@ fun <K, V> Map<K, V>.pairs(): Array<Pair<K, V>> = entries.map { it.toPair() }.to
  * 딱 쿼리스트링만 필요할때 사용
  * 다른 이유라면 okHttp 를 사용하자.
  * */
-fun Map<String, String>.toQueryString(sep: String = "&"): String = this.map { (k, v) -> "$k=${v.encodeUrl()}" }.joinToString(sep)
+fun Map<String, String?>.toQueryString(sep: String = "&"): String = this.map { (k, v) -> "$k=${v?.encodeUrl() ?: ""}" }.joinToString(sep)
+
+
+/**
+ * 비어있지 않은경우 ? 를 포함해서 전달해준다.
+ *  */
+fun Map<String, String?>.toFullQueryString(): String = when (this.isEmpty()) {
+    true -> ""
+    false -> "?${this.toQueryString("&")}" //http의 경우 & 고정
+}

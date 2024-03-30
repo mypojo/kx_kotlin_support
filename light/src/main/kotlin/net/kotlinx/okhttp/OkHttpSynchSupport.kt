@@ -18,7 +18,7 @@ fun OkHttpClient.fetch(block: OkHttpReq.() -> Unit): OkHttpResp = this.fetch(OkH
 /** 동기화 다운로드 */
 fun OkHttpClient.download(file: File, block: OkHttpReq.() -> Unit): OkHttpResp {
     val okHttpReq = OkHttpReq().apply {
-        mediaType = OkHttpUtil.MEDIA_TYPE_IMAGE  //기본 미디어타입 변경해줌
+        mediaType = OkHttpMediaType.IMAGE  //기본 미디어타입 변경해줌
     }.apply(block)
     return this.newCall(okHttpReq.build()).execute().use { response ->
         //파일 다운로드

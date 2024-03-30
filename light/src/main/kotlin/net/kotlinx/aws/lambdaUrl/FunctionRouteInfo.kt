@@ -1,5 +1,7 @@
 package net.kotlinx.aws.lambdaUrl
 
+import net.kotlinx.aws.lambda.LambdaMapResult
+
 
 /** 라우터 정보 */
 class FunctionRouteInfo {
@@ -14,7 +16,7 @@ class FunctionRouteInfo {
     var desc: List<String> = emptyList()
 
     /** 처리 */
-    lateinit var process:suspend (LambdaUrlInput) -> LambdaUrlOutput
+    lateinit var process: suspend (LambdaUrlInput) -> LambdaMapResult
 
 
 }

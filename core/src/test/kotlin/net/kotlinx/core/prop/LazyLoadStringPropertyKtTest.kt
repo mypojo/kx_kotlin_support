@@ -4,7 +4,7 @@ import net.kotlinx.core.time.TimeString
 import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 
-class LazyLoadPropertyKtTest : TestRoot() {
+class LazyLoadStringPropertyKtTest : TestRoot() {
 
     val demo: String by lazyLoad {
         log.info { "초기화됩니다!!" }

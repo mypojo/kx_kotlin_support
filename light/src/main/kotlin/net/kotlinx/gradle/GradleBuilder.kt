@@ -19,6 +19,8 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * 코드빌드용 설정데이터
  * 그래들 빌드파일에 사용됨 (그래들 의존성은 없음)
+ *
+ * 나중에 cc로 변경하기
  *  */
 class GradleBuilder(
     val awsId: String,

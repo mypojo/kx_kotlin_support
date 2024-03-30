@@ -4,7 +4,8 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 /**
- * 리셋 가능한 늦은 초기화.
+ * 기존 LazyLoad와 동일한 기능을 하면서, 리셋 가능한 기능을 추가했음
+ * 특정 클래스가 아닌 Any를 사용할 수 있음
  *  */
 class LazyLoadProperty<T : Any>(val initBlock: () -> T, val clazz: Class<T>) {
 

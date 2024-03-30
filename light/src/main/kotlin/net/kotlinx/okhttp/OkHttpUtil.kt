@@ -1,7 +1,6 @@
 package net.kotlinx.okhttp
 
 import net.kotlinx.core.regex.RegexSet
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -10,12 +9,6 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
 object OkHttpUtil : KoinComponent {
-
-    /** 디폴트 미디어타입 */
-    val MEDIA_TYPE_JSON = "application/json; charset=utf-8".toMediaType()
-
-    /** 미디어타입 이미지 */
-    val MEDIA_TYPE_IMAGE = "image/jpeg".toMediaType()
 
     /**  베이스 버퍼 사이즈  */
     const val BUFFER_SIZE = 4096

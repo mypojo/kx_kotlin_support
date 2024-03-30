@@ -2,9 +2,9 @@ package net.kotlinx.jdbc
 
 import com.zaxxer.hikari.HikariDataSource
 import net.kotlinx.aws.javaSdkv2.HikariIamDataSource
-import net.kotlinx.aws.ssm.lazySsm
 import net.kotlinx.core.DeploymentType
 import net.kotlinx.core.Kdsl
+import net.kotlinx.props.lazyLoadString
 import org.koin.core.component.KoinComponent
 
 class DataSourceSetup : KoinComponent {
@@ -36,7 +36,7 @@ class DataSourceSetup : KoinComponent {
     lateinit var username: String
 
     /**  비밀번호 SSM (ID/PASS 방식일경우 필수) */
-    var password: String by lazySsm()
+    var password: String by lazyLoadString()
 
     /** 생성 */
     fun createDataSource(block: HikariDataSource.() -> Unit = {}): HikariDataSource {

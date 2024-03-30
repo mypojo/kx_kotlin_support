@@ -110,7 +110,17 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
     /** 편의용 메소드 */
     fun toPreety(): String = GsonSet.GSON_PRETTY.toJson(delegate)
 
-    //==================================================== 편의용  ======================================================
+    /**
+     * 편의용 메소드
+     * */
+    fun toMap(): Map<String, String?> = when (delegate) {
+        is JsonObject -> entryMap().map { it.key to it.value.str }.toMap()
+        is JsonArray -> throw IllegalStateException("JsonArray 는 map으로 변환될 수 없습니다.")
+        is JsonPrimitive -> throw IllegalStateException("JsonPrimitive 는 map으로 변환될 수 없습니다.")
+        else -> emptyMap()
+    }
+
+//==================================================== 편의용  ======================================================
 
     /**
      * get 호출시 null 이 무조건 아니기 때문에 빈값을 체크하기위한 let 대용으로 사용됨
