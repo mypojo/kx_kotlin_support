@@ -22,11 +22,11 @@ suspend fun <T> List<suspend () -> T>.coroutineExecute(scope: CoroutineScope, ma
     }
 }
 
-
 /**
  * 간단한 코루틴 실행기. (CoroutineScope를 새로실행)
  * 리턴받을게 있다면 async & await
  * Semaphore로 인한 약간의 지연은 무시한다
+ * ex) OkHttp 의 await 사용.  참고로 fetch 로 하면 적용안됨 주의!!
  * */
 fun <T> List<suspend () -> T>.coroutineExecute(maxConcurrency: Int = Int.MAX_VALUE): List<T> {
     val gate = Semaphore(maxConcurrency)

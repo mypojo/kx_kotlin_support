@@ -62,7 +62,7 @@ class Sftp(
 
     fun ls(dir: String, isDir: Boolean): List<String> {
         val filelist: List<ChannelSftp.LsEntry> = channel.ls(dir) as List<ChannelSftp.LsEntry>
-        log.trace("{}개의 파일 검색 from {}", filelist.size, dir)
+        log.trace("ls {}개의 파일 검색 from {}", filelist.size, dir)
         val paths: MutableList<String> = Lists.newArrayList()
         for (entry in filelist) {
             val attrs = entry.attrs
@@ -78,7 +78,7 @@ class Sftp(
 
     private fun listFiles(result: MutableList<SftpRemoteFile>, dir: String) {
         val filelist: List<ChannelSftp.LsEntry> = channel.ls(dir) as List<ChannelSftp.LsEntry>
-        log.trace("{}개의 파일 검색 from {}", filelist.size, dir)
+        log.trace("listFiles {}개의 파일 검색 from {}", filelist.size, dir)
         for (entry in filelist) {
             val attrs = entry.attrs
             if (attrs.isLink) continue  //링크가 뭔지 몰라도 스킵

@@ -18,6 +18,11 @@ import net.kotlinx.core.string.ResultText
 
 /**
  * 간단 라우터 등록기
+ * http 요청에 응답한다. ex) API Gateway or 람다 URL
+ * 해당 람다에는 이거 하나만 보통 등록된다.
+ *
+ * 주의!
+ *
  *  */
 class FunctionRouter(block: FunctionRouter.() -> Unit = {}) : LambdaLogicHandler {
 
@@ -44,7 +49,10 @@ class FunctionRouter(block: FunctionRouter.() -> Unit = {}) : LambdaLogicHandler
         LambdaUrlOutput(html, HttpStatusCode.Forbidden.value) //403
     }
 
-    /** 기본 낫파운드 처리기 */
+    /**
+     * 기본 낫파운드 처리기
+     * 기본 처리기로 동작한다. 이거 하나만 있을때도 있음
+     *  */
     var notFoundHandler: (LambdaUrlInput) -> LambdaMapResult = {
         val code = HttpStatusCode.NotFound
         val html = createHTML().html {
@@ -58,6 +66,7 @@ class FunctionRouter(block: FunctionRouter.() -> Unit = {}) : LambdaLogicHandler
 
     /** 기본 500 예외 처리기 */
     var errorHandler: (LambdaUrlInput, Throwable) -> LambdaMapResult = { i, e ->
+        e.printStackTrace()
         val html = createHTML().html {
             setDefault("오류가 발생했습니다.")
             body {

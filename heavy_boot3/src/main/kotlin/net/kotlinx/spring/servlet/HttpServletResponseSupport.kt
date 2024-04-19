@@ -1,6 +1,6 @@
 package net.kotlinx.spring.servlet
 
-import aws.smithy.kotlin.runtime.util.encodeBase64
+import aws.smithy.kotlin.runtime.text.encoding.encodeBase64
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 import net.kotlinx.core.string.encodeUrl

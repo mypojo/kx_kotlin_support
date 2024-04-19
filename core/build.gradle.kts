@@ -11,6 +11,9 @@ tasks.getByName<Test>("test") {
     //코테스트 샘플 실행 제거
     exclude("**/string/**") //코테스트 제외
     exclude("**/concurrent/**") //코테스트 제외
+    useJUnitPlatform{
+        includeTags("TestLevel01")
+    }
 }
 
 dependencies {
@@ -39,7 +42,9 @@ dependencies {
     //==================================================== 로깅.. 맘에 안드네 ======================================================
     api("io.github.microutils:kotlin-logging-jvm:_") //slf4j의 래퍼. (로거 가져올때 사용)
     api("ch.qos.logback:logback-classic:_") //slf4j의 실제 구현체 (레벨 설정에 참조해야함)
-    implementation("org.codehaus.janino:janino:_") //logback 파일롤링 표현식 필터처리에 필요함
+    api("org.codehaus.janino:janino:_") //logback 파일롤링 표현식 필터처리에 필요함
+
+    testImplementation("io.kotest:kotest-runner-junit5:_") //kotest 의존성 추가.  현재버전의경우 scan 이슈가 있어서 프로퍼티 설정 해줘야함
 
 }
 

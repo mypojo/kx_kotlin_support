@@ -2,6 +2,13 @@ package net.kotlinx.core.string
 
 object CharUtil {
 
+    /**
+     * 문자열이 잘못된 인코딩으로 적용되었는지 간이 체크
+     * � 문자가 포함되었는지 여부로 체크한다.
+     *  */
+    fun isValid(text: String): Boolean = !text.contains('\uFFFD')
+
+
     //    /**
     //     * 자바는 유니코드를 사용함으로 모두 2byte로 처리하지만 다른 시스템 기준으로 바이트를 산정할때 사용한다.
     //     * 한글 1자 2byte 기타 1byte 로 계산 (UTF-8인 오라클은 3byte)

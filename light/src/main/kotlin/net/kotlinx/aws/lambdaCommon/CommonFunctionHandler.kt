@@ -39,7 +39,7 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
      * 예외 처리 핸들러.
      * 실사용시는 반드시 오버라이드 할것!
      *  */
-    var errorhandler: (GsonData, Throwable) -> Map<String, Any> = { data: GsonData, e: Throwable ->
+    var errorhandler: (GsonData, Throwable) -> Map<String, Any> = { _: GsonData, e: Throwable ->
         e.printStackTrace()
         mapOf(
             "statusCode" to 500,

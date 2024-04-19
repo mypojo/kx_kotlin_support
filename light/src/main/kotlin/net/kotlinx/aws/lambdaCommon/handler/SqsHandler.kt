@@ -19,7 +19,7 @@ class SqsHandler(
     override suspend fun invoke(input: GsonData, context: Context?): Any? {
         if (input[EVENT_SOURCE].str != SOURCE_SQS) return null
 
-        val body: String = input["body"] as String? ?: "{}"
+        val body: String = input["body"].str ?: "{}"
         val sqsBody: GsonData = GsonData.parse(body)
         block(sqsBody)
         return "body"

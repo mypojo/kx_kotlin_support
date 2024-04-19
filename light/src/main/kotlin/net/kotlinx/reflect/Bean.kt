@@ -40,7 +40,7 @@ class Bean(
     operator fun get(name: String): Any? = props[name]?.getter?.call(data)
 
     /** 프로퍼티로부터 직접 호출 */
-    fun get(prp: KProperty<*>): Any? = prp.getter?.call(data)
+    fun get(prp: KProperty<*>): Any? = prp.getter.call(data)
 
     fun put(name: String, value: Any?) {
         mutableProps[name]?.setter?.call(data, value)

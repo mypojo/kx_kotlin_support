@@ -55,10 +55,11 @@ class CoroutineSupportKt_스코프테스트 : TestRoot() {
 
             launch {
                 log.info { "실행 A" }
+                1.seconds.delay()
 
                 listOf("멍멍", "야옹").map {
                     suspend {
-                        log.info { "실행 $it .." }
+                        log.info { "실행 $it .." }  //딜레이가 있지만 동시에 출력되어야함
                         3.seconds.delay()
                     }
                 }.coroutineExecute(this)

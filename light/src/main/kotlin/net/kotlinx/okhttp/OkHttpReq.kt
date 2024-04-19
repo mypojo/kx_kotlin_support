@@ -1,11 +1,13 @@
 package net.kotlinx.okhttp
 
 import net.kotlinx.core.Kdsl
+import net.kotlinx.core.string.CharSets
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.nio.charset.Charset
 
 /** 직렬화 가능한 요청 객체 : 응답이 텍스트인경우 */
 class OkHttpReq {
@@ -24,6 +26,12 @@ class OkHttpReq {
 
     /** post 등 */
     var body: Any? = null
+
+    /**
+     * 이게 null이 아닌경우 body를 toString() 할때 해당 인코딩으로 응답을 강제변환
+     * 일반적으로 content-type 에 인코딩을 명시하지 않은애들 MS949로 바꿀때 사용
+     *  */
+    var defaultChsrSet: Charset? = CharSets.MS949
 
     /** 쿼리파라메터 등이 필요할때는 간단하게 이걸 사용 */
     @Kdsl

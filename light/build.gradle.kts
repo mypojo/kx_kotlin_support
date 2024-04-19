@@ -72,6 +72,10 @@ dependencies {
     api("software.amazon.awscdk:aws-cdk-lib:_")   //https://mvnrepository.com/artifact/software.amazon.awscdk/aws-cdk-lib
     //api("software.constructs:constructs:10.1.278") //CDK 추가 빌딩블럭 -> 쓸만한게 없음
 
+    //==================================================== OPEN-AI ======================================================
+    implementation("com.aallam.openai:openai-client:_") //open API (챗GPT) kotlin client
+    implementation("io.ktor:ktor-client-okhttp:_") //open API 의 JVM http 엔진. 나는 okhttp 사용
+
     //==================================================== 기타 ======================================================
     api("gov.nist.math:jama:1.0.3") //https://mvnrepository.com/artifact/gov.nist.math/jama 회귀분석 패키지
     api("net.lingala.zip4j:zip4j:_") //zip 압축 & 암호설정 패키지. 200kb

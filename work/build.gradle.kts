@@ -32,7 +32,7 @@ dependencies {
     //==================================================== 코테스트 단위테스트용 ======================================================
     //코테스트 문제가 많아서 공통에서 제거함 -> 이유없이 메모리아웃 오류남
     //코테스트 넘으면 너무 느려져서 일단 제거
-//    testImplementation("io.kotest:kotest-runner-junit5:_")
+    //testImplementation("io.kotest:kotest-runner-junit5:_")
 //    testImplementation("io.kotest:kotest-assertions-core:_")
 
 

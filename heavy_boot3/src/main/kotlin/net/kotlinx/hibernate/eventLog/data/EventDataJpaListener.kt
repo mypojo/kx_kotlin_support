@@ -76,7 +76,7 @@ open class EventDataJpaListener : AbstractJpaPostListener() {
                 id = event.id.toString()
                 g1 = event.persister.entityName
                 g2 = DIV_INSERT
-                x = GsonData.EMPTY
+                x = GsonData.empty()
                 y = GsonData.fromObj(event.entity)
             }
         }
@@ -87,8 +87,8 @@ open class EventDataJpaListener : AbstractJpaPostListener() {
                 id = event.id.toString()
                 g1 = event.persister.entityName
                 g2 = DIV_DELETE
-                x = GsonData.EMPTY
-                y = GsonData.EMPTY
+                x = GsonData.empty()
+                y = GsonData.empty()
             }
         }
     }

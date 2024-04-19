@@ -40,12 +40,12 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
     /** GsonVo 리턴. null을 리턴하지 않기 때문에 get().get() 식의 체인이 가능하다.  */
     operator fun get(key: String): GsonData = when (delegate) {
         is JsonObject -> GsonData(delegate[key] ?: JsonNull.INSTANCE)
-        else -> EMPTY
+        else -> empty()
     }
 
     operator fun get(index: Int): GsonData = when (delegate) {
         is JsonArray -> GsonData(delegate[index] ?: JsonNull.INSTANCE)
-        else -> EMPTY
+        else -> empty()
     }
 
     operator fun plus(data: GsonData): GsonData = when (delegate) {
@@ -156,6 +156,16 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
         else -> throw IllegalStateException("${delegate::class.simpleName} is not required")
     }
 
+    val isPrimitive: Boolean = when (delegate) {
+        is JsonPrimitive -> true
+        else -> false
+    }
+
+    val isObject: Boolean = when (delegate) {
+        is JsonObject -> true
+        else -> false
+    }
+
     val isArray: Boolean = when (delegate) {
         is JsonArray -> true
         else -> false
@@ -171,8 +181,8 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 
         private val log = KotlinLogging.logger {}
 
-        /** NULL 대신 기본형을 리턴. 위험하니 수정 금지해야함!! */
-        val EMPTY = GsonData(JsonNull.INSTANCE)
+//        /** NULL 대신 기본형을 리턴. 위험하니 수정 금지해야함!! */
+//        val EMPTY = GsonData(JsonNull.INSTANCE)
 
         /**
          * 객체형 생성. koson 사용해도 무방
@@ -184,17 +194,26 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
         fun array(block: GsonData.() -> Unit = {}): GsonData = GsonData(JsonArray()).apply(block)
 
         /** 빈값 리턴 */
-        fun empty(): GsonData = EMPTY
+        fun empty(): GsonData = GsonData(JsonNull.INSTANCE)
 
         /** json을 파싱할때 */
         fun parse(obj: Any?): GsonData {
             return try {
                 when (obj) {
-                    null -> EMPTY
+                    null -> empty()
                     is GsonData -> obj
                     is JsonElement -> GsonData(obj)
                     is SerialJsonObj -> GsonData(JsonParser.parseString(obj.toJson()))
-                    else -> GsonData(JsonParser.parseString(obj.toString())) //koson 등등 다 해당
+                    is Number -> GsonData(JsonPrimitive(obj)) //프리미티브로 전환
+                    else -> {
+                        //기본 String 이나 koson 등등 다 해당
+                        val text = obj.toString()
+                        try {
+                            GsonData(JsonParser.parseString(text)) //koson 등등 다 해당
+                        } catch (e: JsonSyntaxException) {
+                            GsonData(JsonPrimitive(text)) //json 형식이 아니면 프리미티브로 입력
+                        }
+                    }
                 }
             } catch (e: JsonSyntaxException) {
                 log.warn { "파싱데이터 -> `$obj`" }

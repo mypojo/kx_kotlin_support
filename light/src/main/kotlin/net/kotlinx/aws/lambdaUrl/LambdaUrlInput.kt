@@ -34,6 +34,8 @@ class LambdaUrlInput(
     val ua: String = headers["user-agent"].str ?: ""
 
     companion object {
+
+        /** HTTP 요청인지 체크를 겸한다. */
         fun extractPath(input: GsonData): String? = input["rawPath"].str ?: input["path"].str
     }
 }

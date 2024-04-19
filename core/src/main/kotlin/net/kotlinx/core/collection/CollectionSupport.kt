@@ -22,4 +22,4 @@ fun <T> Collection<T>.diff(other: Collection<T>): Set<T> {
  * 없길래 추가함.
  * 문자열이 비어있지 않은것만 필터링
  *  */
-fun <T> Collection<T>.mapNotEmpty(transform: (T) -> String): Collection<String> = this.map(transform).filter { !it.isNullOrEmpty() }
+fun <T> Collection<T>.mapNotEmpty(transform: (T) -> String?): Collection<String> = this.mapNotNull(transform).filter { it.isNotEmpty() }

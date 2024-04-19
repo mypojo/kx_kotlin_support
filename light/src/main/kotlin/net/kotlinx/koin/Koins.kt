@@ -3,7 +3,12 @@ package net.kotlinx.koin
 import org.koin.mp.KoinPlatform
 
 
-/** 간단 유틸 */
+/**
+ * koin은 보조 DI로 만 쓰세요
+ *
+ * 본격적으로 DI를 사용하려면 다른 제품을 사용하세요
+ * https://github.com/kosi-libs/Kodein
+ * */
 object Koins {
 
     inline fun <reified T : Any> get() = KoinPlatform.getKoin().get<T>()

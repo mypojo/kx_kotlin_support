@@ -22,7 +22,7 @@ class GsonView(val data: Any, val ok: Boolean = true) : View {
 
     var gson: Gson = GsonSet.GSON
 
-    override fun render(model: MutableMap<String, *>, request: HttpServletRequest, response: HttpServletResponse) {
+    override fun render(model: MutableMap<String, *>?, request: HttpServletRequest, response: HttpServletResponse) {
         val validJson = when (data) {
             is String -> data
             is GsonData -> data.toString()

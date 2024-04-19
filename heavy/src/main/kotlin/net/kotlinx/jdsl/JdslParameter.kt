@@ -1,6 +1,7 @@
 package net.kotlinx.jdsl
 
 import com.linecorp.kotlinjdsl.dsl.jpql.Jpql
+import com.linecorp.kotlinjdsl.querymodel.jpql.expression.Expression
 import com.linecorp.kotlinjdsl.querymodel.jpql.expression.Expressions
 import com.linecorp.kotlinjdsl.querymodel.jpql.path.Path
 import com.linecorp.kotlinjdsl.querymodel.jpql.predicate.Predicate
@@ -17,33 +18,26 @@ import kotlin.reflect.KCallable
  *
  * Property 대신 path 기준으로 작성함 ( camp.user.name 이런식으로 3depth 인 경우도 있음)
  *
- * 여기 없는거는 커스텀하게 만들면됨 (let 구문으로 null 리턴하면 알아서 조건 제거해줌)
+ * 여기 없는거는 커스텀하게 만들면됨 (원래 로직에서 let 구문으로 null 리턴하면 알아서 조건 제거해줌)
+ *
+ * 향후 넣을거
+ * 1. enum
+ *
  * */
 class JdslParameter(private val bean: Bean) {
 
     private val jpql = Jpql.newInstance()
 
-    /** 내부참조라서, 리플렉션으로 가져옴. */
-    private val Path<*>.name: String
-        get() {
-            val prop = Bean(this)["property"] as KCallable<*>
-            return prop.name
-        }
+    //==================================================== public ======================================================
 
-    /** 해당 값이 있으면 EQ 필터 적용, 아니면 전체값 적용 */
-    fun <T : Any> eq(path: Path<T>): Predicate {
-        val pathName = path.name
-        checkCommon(pathName)
-        val value = bean[pathName] ?: return OK_ANY
-        val text = value.toString()
-        if (text.isEmpty()) return OK_ANY
-        return Predicates.equal(path.toExpression(), Expressions.value(text))
-    }
+    fun <T : Any> eq(path: Path<T>): Predicate = doText(path) { path, value -> Predicates.equal(path, value) }
+    fun <T : Any> notEq(path: Path<T>): Predicate = doText(path) { path, value -> Predicates.notEqual(path, value) }
 
     /** 해당 값이 있으면 IN 필터 적용, 아니면 전체값 적용 */
     fun <T : Any> `in`(path: Path<T>): Predicate {
         val pathName = path.name
         checkCommon(pathName)
+
         val value = bean[pathName] ?: return OK_ANY
         check(value is Collection<*>) { "Collection 타입만 가능합니다" }
         if (value.isEmpty()) return OK_ANY
@@ -58,9 +52,30 @@ class JdslParameter(private val bean: Bean) {
     fun likeStartsWith(path: Path<String>): Predicate = doLike(path) { "${it}%" }
 
     /** 간단 위임 */
-    override fun toString(): String  = "${this::class.name()} ${bean.data}"
+    override fun toString(): String = "${this::class.name()} ${bean.data}"
 
     //==================================================== private ======================================================
+
+    /** 내부참조라서, 리플렉션으로 가져옴. */
+    private val Path<*>.name: String
+        get() {
+            val prop = Bean(this)["property"] as KCallable<*>
+            return prop.name
+        }
+
+    /**
+     * 해당 값(text)이 있으면 EQ 필터 적용, 아니면 전체값 적용
+     *  */
+    private fun <T : Any> doText(path: Path<T>, block: (path: Expression<T>, value: Expression<String>) -> Predicate): Predicate {
+        val pathName = path.name
+        checkCommon(pathName)
+
+        val value = bean[pathName] ?: return OK_ANY
+        val text = value.toString()
+        if (text.isEmpty()) return OK_ANY
+
+        return block(path.toExpression(), Expressions.value(text))
+    }
 
     /** like 구문을 리턴해준다. */
     private fun doLike(path: Path<String>, template: (String) -> String): Predicate {

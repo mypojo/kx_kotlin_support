@@ -1,5 +1,6 @@
 package net.kotlinx.okhttp
 
+import mu.KotlinLogging
 import okhttp3.Response
 import okio.GzipSource
 import okio.buffer
@@ -15,13 +16,29 @@ data class OkHttpResp(
     val response: Response,
 ) {
 
+    companion object {
+
+        private val log = KotlinLogging.logger {}
+    }
+
     /** resp 스트림을 가져온다.  IO 작업이라서 별도 호출 */
     fun load(): OkHttpResp {
         //gzip이면 풀어준다
         respText = if (response.header("Content-Encoding") == "gzip") {
             GzipSource(response.body.source()).buffer().readUtf8()
         } else {
-            response.body.string()
+            val contentType = response.headers["content-type"]!!
+            val charSetConfig = contentType.contains("charset", false)
+            when {
+                // 하지만 응답 헤더와는 다르게 작업되는 사이트의 경우 강제 입력 ex) text/html 이렇게만 덜렁 있음..
+                okHttpReq.defaultChsrSet != null && !charSetConfig -> {
+                    log.debug { " => 컨텐츠 타입($contentType)에 인코딩 설정이 없음 -> 기본 인코딩(${okHttpReq.defaultChsrSet}) 강제 적용" }
+                    response.body.source().readString(okHttpReq.defaultChsrSet!!)
+                }
+
+                else -> response.body.string() //그냥 이걸로 변환시 응답 헤더를 보고 잘 변환됨
+            }
+
         }
         return this
     }

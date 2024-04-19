@@ -5,14 +5,35 @@ import com.lectra.koson.obj
 import com.lectra.koson.rawJson
 import net.kotlinx.core.number.halfUp
 import net.kotlinx.string.print
+import net.kotlinx.test.TestLevel01
 import net.kotlinx.test.TestRoot
-import org.junit.jupiter.api.Test
 
 internal class GsonDataTest : TestRoot() {
 
+    private data class DataClass01(
+        val name: String,
+    ) {
+        lateinit var aa: String
 
-    @Test
-    fun `그리드`() {
+    }
+
+    @TestLevel01
+    fun `데이터클래스 변환`() {
+
+        val class01 = DataClass01("aa")
+        class01.aa = "데모데이터"
+
+        val json = GsonSet.GSON.toJson(class01)
+        log.debug { "json : $json -> 객체 변환" }
+
+        val q2 = GsonData.parse(json).fromJson<DataClass01>()
+        check(q2.aa == "데모데이터")
+
+    }
+
+
+    @TestLevel01
+    fun `그리드 출력`() {
         val array = GsonData.array {
             add(GsonData.obj {
                 put("a", 12)
@@ -23,15 +44,15 @@ internal class GsonDataTest : TestRoot() {
                 put("b", 234)
             })
             add(GsonData.obj {
-                put("a", 121.123.toBigDecimal().halfUp(-1))
+                put("a", 121238.12149873.toBigDecimal().halfUp(-1).toPlainString())
                 put("b", "xxx")
             })
         }
         array.print()
-        array.take(2).print()
+
     }
 
-    @Test
+    @TestLevel01
     fun `기본테스트`() {
 
         val json = obj {
@@ -44,33 +65,27 @@ internal class GsonDataTest : TestRoot() {
         val updated = GsonData.parse(json).apply {
             put("type", "수정됨")
             put("xxx", "yyy")
-            println(this)
         }
 
-        log.info { "SNS 메세지 포맷 확인용 로그 $updated" }
-        println(updated)
-        println(updated.toString())
-
+        check(updated["type"].str == "수정됨")
+        log.info { "json update -> $updated" }
 
         val lett01 = updated["type"].lett { "${it}xx" }
         check(lett01 != null)
         val lett02 = updated["type2"].lett { "${it}xx" }
         check(lett02 == null)
 
-
         val json2 = obj {
             "option" to rawJson(updated.toString())
             "optionText" to updated.toString()
-        }
+        }.toGsonData()
 
-        println(json2.pretty())
-
+        check(json2["option"].isObject)
+        check(json2["optionText"].isPrimitive)
 
         val gsonData = GsonData.parse(json)
         gsonData["members"].filter { it["name"].str == "B" }.onEach { it.put("age", 25) }
-
-        val sumOfAge = gsonData["members"].sumOf { it["age"].long ?: 0L }
-        println("sumOfAge : $sumOfAge")
+        check(gsonData["members"].sumOf { it["age"].long ?: 0L } == 35L)
 
     }
 }

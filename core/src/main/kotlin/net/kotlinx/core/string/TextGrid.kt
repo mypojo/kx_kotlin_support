@@ -10,6 +10,11 @@ import java.time.LocalDateTime
 inline fun List<String>.toTextGrid(datas: List<Array<out Any?>>) = TextGrid(this, datas)
 
 /**
+ * 즉시 print함
+ * */
+inline fun List<String>.toTextGridPrint(block: () -> List<Array<out Any?>>) = TextGrid(this, block()).print()
+
+/**
  *
  * j-text-util 이 한글 깨지고, 텍스트 리턴이 안되거 걍 새로 만들었다.
  * https://github.com/naver/d2codingfont  <-- 고정폭 폰트 필수
