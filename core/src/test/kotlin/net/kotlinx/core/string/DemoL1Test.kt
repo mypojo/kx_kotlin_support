@@ -1,12 +1,19 @@
 package net.kotlinx.core.string
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.Tag
 import io.kotest.core.annotation.Tags
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.engine.spec.tempdir
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.compose.all
 import io.kotest.matchers.should
+import io.kotest.matchers.string.contain
+import io.kotest.matchers.string.containADigit
 import io.kotest.matchers.string.startWith
 import mu.KotlinLogging
+import net.kotlinx.core.concurrent.sleep
+import kotlin.time.Duration.Companion.seconds
+
 
 @Tags("L1")
 //@Ignored  //전체 비활성화 가능
@@ -14,13 +21,17 @@ internal class DemoL1Test : BehaviorSpec({
 
     val log = KotlinLogging.logger {}
 
-    tags(Tag("L2"))
-
+    val dir = tempdir()
 
     val asd by lazy {
         println("===늦은로딩 2==")
         "xxx"
     }
+
+    val passwordMatcher = Matcher.all(
+        containADigit(), contain(Regex("[a-z]")), contain(Regex("[A-Z]"))
+    )
+
 
     given("a broomstick") {
         `when`("I sit on it") {
@@ -36,8 +47,9 @@ internal class DemoL1Test : BehaviorSpec({
             }
             then("I should be able to fly 22") {
                 // test code
-                log.info { "================= 2 $asd" }
-                //3 shouldBe 4
+                log.info { "================= DemoL1Test $asd" }
+                3.seconds.sleep()
+                log.info { "================= DemoL1Test 2 $asd" }
             }
         }
         `xwhen`("이런식으로 비활성화 가능") {
