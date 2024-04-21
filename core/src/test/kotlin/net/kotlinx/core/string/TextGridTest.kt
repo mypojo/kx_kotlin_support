@@ -1,5 +1,6 @@
 package net.kotlinx.core.string
 
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 internal class TextGridTest{
@@ -16,7 +17,7 @@ internal class TextGridTest{
 
     }
 
-    @Test
+    @Test @Tag("L2")
     fun 기본테스트2(){
 
         listOf("메뉴명", "설명", "path","cost_of_data").toTextGrid(

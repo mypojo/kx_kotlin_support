@@ -3,13 +3,10 @@ package net.kotlinx.core.string
 import io.kotest.core.annotation.Tags
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
-import mu.KotlinLogging
 import net.kotlinx.core.regex.RegexSet
 
-private val log = KotlinLogging.logger {}
-
 @Tags("L2")
-internal class StringRegexSupportKtTest : DescribeSpec({
+internal class StringRegexSupportKt2Test : DescribeSpec({
 
     listOf(
         "1234" to RegexSet.NUMERIC,
@@ -37,7 +34,7 @@ internal class StringRegexSupportKtTest : DescribeSpec({
             it("해당 매칭을 남기고 제거") {
                 text1.removeFrom(RegexSet.NUMERIC) shouldBe "--.KBV"
             }
-            println("xxxxxx")
+            println("***************************")
         }
     }
 

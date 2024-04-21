@@ -33,13 +33,14 @@ allprojects {
 
     tasks.withType<Test> {
         useJUnitPlatform()
-        filter {
-            useJUnitPlatform {
-                includeTags(providers["testIncludeTags"]) //이 태그가 있어야 빌드시 테스트 실행
-            }
-        }
+//        filter {
+//            useJUnitPlatform {
+//                includeTags(providers["testIncludeTags"]) //이 태그가 있어야 빌드시 테스트 실행
+//            }
+//        }
         testLogging {
             showStandardStreams = true //혹시 테스트가 실행될 수 있어서 로그 활성화
+            //events("passed", "skipped", "failed")
         }
     }
 
