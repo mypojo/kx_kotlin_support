@@ -7,27 +7,6 @@ plugins {
 
 //==================================================== 프로젝트별 설정 ======================================================
 
-tasks.getByName<Test>("test") {
-    //코테스트 샘플 실행 제거
-//    exclude("**/string/**") //코테스트 제외
-//    exclude("**/concurrent/**") //코테스트 제외
-
-    useJUnitPlatform{
-        //includeTags("L1")
-        //systemProperty("kotest.tags.include", "L2")
-
-        include("**/net/kotlinx/core/string/*")
-        includeTags("L2")
-
-        testLogging {
-            events("passed", "skipped", "failed")
-        }// e test 의
-
-        //kotest 설정 (JUnit 아님!)
-        maxHeapSize = "4096m"  //gradle test 의 경우 JVM 옵션이 아니라 여기 설정해야함.. (왜인지 모르겠음)
-    }
-}
-
 dependencies {
     implementation(kotlin("stdlib"))
 

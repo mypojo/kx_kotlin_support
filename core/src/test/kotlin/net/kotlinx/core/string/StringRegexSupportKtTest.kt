@@ -26,6 +26,10 @@ internal class StringRegexSupportKtTest : DescribeSpec({
         listOf("문자열", "regex", "retainFrom", "removeFrom").toTextGrid(it).print()
     }
 
+    beforeEach {
+        println("Hello from ${it.descriptor.id.value}")
+    }
+
     describe("StringRegexSupport.kt") {
         val text1 = "2022-12-24.7KBV"
         context("retainFrom") {

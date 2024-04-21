@@ -16,8 +16,8 @@ allprojects {
         plugin("org.jetbrains.kotlin.jvm")
     }
 
-    //자바 11로 타게팅
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    //자바 xx로 타게팅
+    tasks.compileKotlin {
         kotlinOptions {
             jvmTarget = providers["jvmTarget"]
         }
@@ -31,18 +31,23 @@ allprojects {
         maven { url = uri("https://jitpack.io") }
     }
 
-    tasks.withType<Test> {
-        useJUnitPlatform()
-//        filter {
-//            useJUnitPlatform {
-//                includeTags(providers["testIncludeTags"]) //이 태그가 있어야 빌드시 테스트 실행
-//            }
-//        }
+    tasks.test {
+        useJUnitPlatform {
+            //필터 설정은 여기서 하지 않음 ( 매칭이 없으면 No tests found for given include 오류)
+            filter {
+                include("**/net/kotlinx/core/string/*")
+                //includeTags("L1")
+            }
+
+            //kotest 설정 (JUnit 아님!)
+            maxHeapSize = "4096m"  //gradle test 의 경우 JVM 옵션이 아니라 여기 설정해야함.. (왜인지 모르겠음)
+        }
         testLogging {
             showStandardStreams = true //혹시 테스트가 실행될 수 있어서 로그 활성화
             //events("passed", "skipped", "failed")
         }
     }
+
 
     java {
         withSourcesJar() //소스코드 포함해서 배포
