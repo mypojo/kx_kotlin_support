@@ -4,7 +4,7 @@ import io.kotest.core.annotation.Tags
 import io.kotest.core.spec.style.BehaviorSpec
 import mu.KotlinLogging
 
-@Tags("L2")
+@Tags("L1")
 //@Ignored  //전체 비활성화 가능
 internal class CharSetsL1Test : BehaviorSpec({
 

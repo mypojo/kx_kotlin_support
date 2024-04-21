@@ -8,7 +8,7 @@ import net.kotlinx.core.regex.RegexSet
 
 private val log = KotlinLogging.logger {}
 
-@Tags("L2")
+@Tags("L1")
 internal class StringRegexSupportKtL1Test : DescribeSpec({
 
     listOf(
