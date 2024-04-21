@@ -14,8 +14,8 @@ import net.kotlinx.test.TestRoot
  * */
 class LineConditionalTest : TestRoot() {
 
-    val a: CoroutineCondition = coroutineCondition { _ -> true }.alias { "작업A" }
-    val b: CoroutineCondition = coroutineCondition { true }.alias { "작업B" }
+    val 유효성통과: CoroutineCondition = coroutineCondition { _ -> true }.alias { "유효성통과" }
+    val 관리자검증: CoroutineCondition = coroutineCondition { true }.alias { "관리자검증" }
     val c: CoroutineCondition = coroutineCondition {
         it.msgs += ResultText(false,"앗! 작업 C 실패!!")
         false
@@ -25,7 +25,7 @@ class LineConditionalTest : TestRoot() {
     @TestLevel01
     fun `업무로직체크`() {
         //val condition: CoroutineCondition = (a and b) and (a or c)
-        val condition: CoroutineCondition = (a and b) and (c)
+        val condition: CoroutineCondition = (유효성통과 and 관리자검증) and (c)
 
         val ctx: CoroutineConditionContext = conditionContext()
 
