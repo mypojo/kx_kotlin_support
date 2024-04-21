@@ -9,7 +9,7 @@ import net.kotlinx.core.regex.RegexSet
 private val log = KotlinLogging.logger {}
 
 @Tags("L2")
-internal class StringRegexSupportKtTest : DescribeSpec({
+internal class StringRegexSupportKtL1Test : DescribeSpec({
 
     listOf(
         "1234" to RegexSet.NUMERIC,

@@ -35,8 +35,9 @@ allprojects {
         useJUnitPlatform {
             //필터 설정은 여기서 하지 않음 ( 매칭이 없으면 No tests found for given include 오류)
             filter {
-                include("**/net/kotlinx/core/string/*")
-                //includeTags("L1")
+                //태그로 필터링하면 에러나서.. ㅠㅠ 일단 이렇게 땜빵.. Junit으로 돌아가긴 싫이서..
+                include("**/net/kotlinx/**/**L1**")
+                //includeTags("L1") //태그로 하면 에러남..
             }
 
             //kotest 설정 (JUnit 아님!)
