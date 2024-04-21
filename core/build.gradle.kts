@@ -35,7 +35,6 @@ dependencies {
     api("ch.qos.logback:logback-classic:_") //slf4j의 실제 구현체 (레벨 설정에 참조해야함)
     api("org.codehaus.janino:janino:_") //logback 파일롤링 표현식 필터처리에 필요함
 
-    testImplementation("io.kotest:kotest-runner-junit5:_") //kotest 의존성 추가.  현재버전의경우 scan 이슈가 있어서 프로퍼티 설정 해줘야함
 
 }
 

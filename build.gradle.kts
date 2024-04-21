@@ -59,6 +59,9 @@ allprojects {
     dependencies {
         implementation(kotlin("stdlib"))
 
+        //==================================================== 테스트 ======================================================
+        testImplementation("io.kotest:kotest-runner-junit5:_") //kotest 의존성 추가.  현재버전의경우 scan 이슈가 있어서 프로퍼티 설정 해줘야함
+        testImplementation("io.kotest.extensions:kotest-extensions-koin:_") //kotest koin 확장
         /** 공통 DI를 사용할 수 있게 해줌 -> notebook에서 사용하려면 test 폴더가 아닌 main에 있어야함 */
         testImplementation(project(":work"))
     }

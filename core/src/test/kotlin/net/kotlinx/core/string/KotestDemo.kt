@@ -3,7 +3,6 @@ package net.kotlinx.core.string
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.core.annotation.Tags
-import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.engine.spec.tempdir
 import io.kotest.matchers.Matcher
@@ -17,14 +16,6 @@ import io.kotest.matchers.string.startWith
 import mu.KotlinLogging
 import net.kotlinx.core.concurrent.sleep
 import kotlin.time.Duration.Companion.seconds
-
-/**
- * 코테스트 기본 사용 샘플
- * https://kotest.io/docs/assertions/core-matchers.html
- * */
-object KotestProjectConfig : AbstractProjectConfig() {
-    override val parallelism = 12
-}
 
 @Tags("L1")
 //@Ignored  //전체 비활성화 가능
