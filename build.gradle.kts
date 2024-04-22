@@ -32,7 +32,6 @@ allprojects {
     }
 
     tasks.test {
-
         useJUnitPlatform {
             //필터 설정은 여기서 하지 않음 ( 매칭이 없으면 No tests found for given include 오류)
             filter {
@@ -47,6 +46,12 @@ allprojects {
             showStandardStreams = true //혹시 테스트가 실행될 수 있어서 로그 활성화
             //events("passed", "skipped", "failed")
         }
+    }
+
+    tasks.create("testL1", Test::class) {
+
+
+
     }
 
 

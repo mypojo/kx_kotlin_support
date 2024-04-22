@@ -22,7 +22,9 @@ class SsmStore(
         synchronized(this) {
             return cache.get(key) {
                 runBlocking {
-                    ssmClient.find(key)
+                    val value = ssmClient.find(key)
+                    checkNotNull(value) { "[$key] 요청된 경로에 데이터가 없습니다. 확인이 필요합니다 -> https://ap-northeast-2.console.aws.amazon.com/systems-manager/parameters/?region=ap-northeast-2&tab=Table" }
+                    value
                 }
             }
         }

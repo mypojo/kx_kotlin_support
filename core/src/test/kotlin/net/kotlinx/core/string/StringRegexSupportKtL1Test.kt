@@ -30,7 +30,7 @@ internal class StringRegexSupportKtL1Test : DescribeSpec({
         println("Hello from ${it.descriptor.id.value}")
     }
 
-    describe("StringRegexSupport.kt") {
+    describe("xxxx StringRegexSupport.kt") {
         val text1 = "2022-12-24.7KBV"
         context("retainFrom") {
             it("해당 매칭만 남기고 제거") {

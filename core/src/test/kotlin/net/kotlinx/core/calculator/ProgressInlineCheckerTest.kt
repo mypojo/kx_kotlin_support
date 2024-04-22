@@ -1,23 +1,26 @@
 package net.kotlinx.core.calculator
 
+import io.kotest.core.spec.style.BehaviorSpec
 import net.kotlinx.core.concurrent.sleep
 import net.kotlinx.core.counter.EventTimeChecker
-import net.kotlinx.test.TestLevel02
-import net.kotlinx.test.TestRoot
+import net.kotlinx.core.test.KotestUtil
+import net.kotlinx.core.test.addTag
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-class ProgressInlineCheckerTest : TestRoot() {
+class ProgressInlineCheckerTest : BehaviorSpec({
 
-    @TestLevel02
-    fun `프로그레스 체크`() {
-        val total: Long = 50
-        val counter = ProgressInlineChecker(total, EventTimeChecker(1.seconds))
+    addTag(KotestUtil.SLOW)
 
-        for (i in 0 until total) {
-            counter.check()
-            200.milliseconds.sleep()
+    Given("ProgressInlineChecker") {
+        Then("진행율 체크됨") {
+            val total: Long = 40
+            val counter = ProgressInlineChecker(total, EventTimeChecker(1.seconds))
+
+            for (i in 0 until total) {
+                counter.check()
+                150.milliseconds.sleep()
+            }
         }
     }
-
-}
+})

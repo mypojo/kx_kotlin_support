@@ -26,13 +26,17 @@ object SystemUtil {
      *  */
     fun envPrint() = listOf("name", "value").toTextGridPrint { System.getenv().map { arrayOf(it.key, it.value.abbr(50)) } }
 
+
+    /** JVM 파라메터 */
+    val JVM_PARAMS: List<String> by lazy { ManagementFactory.getRuntimeMXBean().inputArguments }
+
     /**
      * JVM 파라메터 출력
      * 실행 옵션으로 넣을 수 있음.
      *  */
     fun jvmParamPrint() =
         listOf("name", "value").toTextGridPrint {
-            ManagementFactory.getRuntimeMXBean().inputArguments.map {
+            JVM_PARAMS.map {
                 val split = it.split("=")
                 check(split.size <= 2)
                 arrayOf(split[0], split.getOrNull(1)?.abbr(50) ?: "") // = 가 없을 수 있음 ex) -ea

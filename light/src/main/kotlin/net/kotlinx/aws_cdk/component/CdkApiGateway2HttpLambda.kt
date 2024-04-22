@@ -14,6 +14,9 @@ import software.amazon.awscdk.services.lambda.IFunction
  * API 게이트웨이 람다 버전
  * ex) 리다이렉트
  * domain의 경우 만들어진 경로로 cname을 매핑 해줘야함 (도메인은 타 계정으로 관리하는 경우가 많으니 수작업)
+ *
+ * 간단 풀스택 백엔드 참고
+ * https://www.notion.so/mypojo/c01abb48124a411f8d516ee2c64e64fc
  * */
 class CdkApiGateway2HttpLambda : CdkInterface {
 
