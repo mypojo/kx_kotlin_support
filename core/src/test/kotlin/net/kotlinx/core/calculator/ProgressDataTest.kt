@@ -4,14 +4,14 @@ import io.kotest.core.spec.style.BehaviorSpec
 import mu.KotlinLogging
 import net.kotlinx.core.string.toTextGridPrint
 import net.kotlinx.core.test.KotestUtil
-import net.kotlinx.core.test.addTag
+import net.kotlinx.core.test.init
 import net.kotlinx.core.time.toKr01
 import java.time.LocalDateTime
 
 class ProgressDataTest : BehaviorSpec({
 
     val log = KotlinLogging.logger {}
-    addTag(KotestUtil.SLOW)
+    init(KotestUtil.SLOW)
 
     Given("ProgressData") {
         Then("진행율 계산") {

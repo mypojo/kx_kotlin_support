@@ -19,8 +19,11 @@ class CdkPolicyStatement {
     lateinit var actions: List<String>
     var resources: List<String> = IamPolicyUtil.ALL
 
+    /** 형식은 임의로 지정했음 */
+    var conditions: Map<String, Any> = mapOf()
+
     /** 간단 변환 */
-    fun toPolicyStatement(): PolicyStatement = PolicyStatement(PolicyStatementProps.builder().actions(actions).resources(resources).build())
+    fun toPolicyStatement(): PolicyStatement = PolicyStatement(PolicyStatementProps.builder().actions(actions).resources(resources).conditions(conditions).build())
 }
 
 //        "StringEquals": {

@@ -15,7 +15,7 @@ import io.kotest.matchers.string.startWith
 
 internal class KotestDemo01 : BehaviorSpec({
 
-    addTag(KotestUtil.FAST)
+    init(KotestUtil.FAST)
 
     given("기본기능 확인") {
         `when`("리소스관련") {

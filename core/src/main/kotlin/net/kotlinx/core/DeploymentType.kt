@@ -24,6 +24,7 @@ enum class DeploymentType {
         /**
          * 베이스가 되는 배포 환경 로드
          * 일반적으로는 환경변수 기준으로 로드함
+         * 여기서 로드된것을 별도로 캐시해서 사용할것!
          *  */
         fun load(): DeploymentType {
 

@@ -1,11 +1,16 @@
 package net.kotlinx.core.collection
 
-import org.junit.jupiter.api.Test
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import net.kotlinx.core.test.KotestUtil
+import net.kotlinx.core.test.init
 
-class RangeMapTest {
+class RangeMapTest : BehaviorSpec({
 
-    @Test
-    fun test() {
+    init(KotestUtil.FAST)
+
+    Given("RangeMap") {
 
         val rangeMap = RangeMap(
             listOf(
@@ -14,14 +19,15 @@ class RangeMapTest {
             )
         )
 
-        check(rangeMap["20230301"] == "data1")
-        check(rangeMap["20230702"] == "data2")
+        Then("기본사용법 테스트") {
+            rangeMap["20230301"] shouldBe "data1"
+            rangeMap["20230702"] shouldBe "data2"
+            rangeMap["20220101"] shouldBe null
 
-        check(rangeMap["20220101"] == null)
-
-        checkNotNull(rangeMap["20230101"])
-        checkNotNull(rangeMap["20231201"])
-
+            rangeMap["20230101"] shouldNotBe null
+            rangeMap["20231201"] shouldNotBe null
+        }
     }
 
-}
+
+})

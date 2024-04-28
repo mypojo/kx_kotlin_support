@@ -3,11 +3,11 @@ package net.kotlinx.core.collection
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import net.kotlinx.core.test.KotestUtil
-import net.kotlinx.core.test.addTag
+import net.kotlinx.core.test.init
 
 class MapSupportKtTest : BehaviorSpec({
 
-    addTag(KotestUtil.FAST)
+    init(KotestUtil.FAST)
 
     Given("flatten") {
         Then("플랫화됨") {

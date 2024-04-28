@@ -8,14 +8,9 @@ import net.kotlinx.aws_cdk.util.TagSet
 import net.kotlinx.core.Kdsl
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import software.amazon.awscdk.SecretValue
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.athena.CfnWorkGroup
 import software.amazon.awscdk.services.athena.CfnWorkGroupProps
-import software.amazon.awscdk.services.iam.Group
-import software.amazon.awscdk.services.iam.GroupProps
-import software.amazon.awscdk.services.iam.User
-import software.amazon.awscdk.services.iam.UserProps
 
 
 /**
@@ -31,7 +26,7 @@ class AthenaIamUser : KoinComponent {
     }
 
     /** 팀 이름 (IAM 그룹으로 만들어짐) */
-    lateinit var teamName: String
+    lateinit var groupName: String
 
     /** 결과가 저장될 버킷 (S3 key 네이밍은 고정) */
     lateinit var resultBucket: String
@@ -64,7 +59,7 @@ class AthenaIamUser : KoinComponent {
     lateinit var userNames: List<String>
 
     val workgroupName: String
-        get() = "workgroup-${teamName}"
+        get() = "workgroup-${groupName}"
 
     /**
      * 아테나 & 글루 종합 권한
@@ -112,13 +107,13 @@ class AthenaIamUser : KoinComponent {
 
     fun create(stack: Stack) {
 
-        val outputDir = "${resultBucket}/athena/${teamName}"
+        val outputDir = "${resultBucket}/athena/${groupName}"
 
         //==================================================== 아테나 워크구룹 생성 ======================================================
         val workGroup = CfnWorkGroup(
             stack, workgroupName, CfnWorkGroupProps.builder()
                 .name(workgroupName)
-                .description("workGroup for $teamName")
+                .description("workGroup for $groupName")
                 .workGroupConfiguration(
                     CfnWorkGroup.WorkGroupConfigurationProperty.builder()
                         .bytesScannedCutoffPerQuery(bytesScannedCutoffPerQuery)
@@ -131,13 +126,14 @@ class AthenaIamUser : KoinComponent {
                 )
                 .build()
         )
-        TagSet.IamGroup.tag(workGroup, teamName) //워크스페이스에는 태깅 가능
+        TagSet.IamGroup.tag(workGroup, groupName) //워크스페이스에는 태깅 가능
 
         //==================================================== IAM 생성 ======================================================
         when (iamCertType) {
             IamCertType.USER -> {
+
                 val policy = CdkIamPolicy {
-                    policyName = "app_${teamName}_athena"
+                    policyName = "app_${groupName}_athena"
 
                     val tableBuckets = tables.map { it.bucket }.distinct().map { "arn:aws:s3:::${it}" }
                     val tablePaths = tables.map { "arn:aws:s3:::${it.bucket}/${it.s3Key}*" } //전체(*)를 지정해야함
@@ -150,24 +146,14 @@ class AthenaIamUser : KoinComponent {
                     create(stack)
                 }
 
-                //==================================================== IAM USER ======================================================
-                val group = Group(
-                    stack, "iam_group-$teamName", GroupProps.builder()
-                        .groupName(teamName)
-                        .managedPolicies(listOf(policy.iManagedPolicy))
-                        .build()
-                )
-
-                userNames.forEach { userName ->
-                    User(
-                        stack, "iam_user-${userName}", UserProps.builder()
-                            .groups(listOf(group))
-                            .userName(userName)
-                            .passwordResetRequired(true)
-                            .password(SecretValue.unsafePlainText("${userName}${tempPwdSuff}"))
-                            .build()
-                    )
+                CdkIamUserGroup {
+                    this.groupName = this@AthenaIamUser.groupName
+                    this.userNames = this@AthenaIamUser.userNames
+                    this.tempPwdSuff = this@AthenaIamUser.tempPwdSuff
+                    this.managedPolicies = listOf(policy.iManagedPolicy)
+                    create(stack)
                 }
+
             }
 
             IamCertType.ROLE -> throw UnsupportedOperationException("준비중..")
