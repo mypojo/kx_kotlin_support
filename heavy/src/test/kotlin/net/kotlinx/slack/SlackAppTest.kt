@@ -2,11 +2,11 @@ package net.kotlinx.slack
 
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.gson.GsonSet
-import net.kotlinx.test.TestLight
+import net.kotlinx.kotest.BeSpecLight
 import org.junit.jupiter.api.Test
 
 
-class SlackAppTest : TestLight() {
+class SlackAppTest : BeSpecLight() {
 
     @Test
     fun 이미지전송() {

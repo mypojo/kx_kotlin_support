@@ -3,12 +3,12 @@ package net.kotlinx.aws.javaSdkv2.dynamoLock
 import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.core.concurrent.sleep
-import net.kotlinx.test.TestLight
+import net.kotlinx.kotest.BeSpecLight
 import org.junit.jupiter.api.Test
 import org.koin.core.component.inject
 import kotlin.time.Duration.Companion.seconds
 
-class DynamoLockModuleTest : TestLight() {
+class DynamoLockModuleTest : BeSpecLight() {
 
     val lockModule = DynamoLockModule {
         tableName = "dist_lock-dev"

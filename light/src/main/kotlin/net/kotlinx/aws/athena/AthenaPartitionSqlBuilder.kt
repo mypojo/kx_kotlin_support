@@ -13,6 +13,8 @@ private const val PARTITION_ADD_LIMIT = 1000
  * Athena 파티션 sql 생성 도우미
  * 미리 파티션에 입력될 값을 알고 있어야 한다.
  * 파티션 정보를 모르는경우 S3 스캔해서 확인
+ *
+ * 주의!! 가능하면 파티션 대신 projection 이나 아이스버그를 사용하세요
  */
 class AthenaPartitionSqlBuilder(
 

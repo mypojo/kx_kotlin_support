@@ -4,12 +4,12 @@ import com.slack.api.model.kotlin_extension.block.element.ButtonStyle
 import com.slack.api.model.kotlin_extension.block.withBlocks
 import net.kotlinx.core.dev.DeveloperData
 import net.kotlinx.koin.Koins
+import net.kotlinx.kotest.BeSpecLight
 import net.kotlinx.slack.template.SlackSimpleAlert
-import net.kotlinx.test.TestLight
 import org.junit.jupiter.api.Test
 
 
-class SlackApp_blockTest : TestLight() {
+class SlackApp_blockTest : BeSpecLight() {
 
     val catImage = "https://pbs.twimg.com/profile_images/625633822235693056/lNGUneLX_400x400.jpg"
 
@@ -44,7 +44,7 @@ class SlackApp_blockTest : TestLight() {
     @Test
     fun `블록 데모`() {
 
-        Koins.get<SlackApp>().chatPostMessage {
+        Koins.koin<SlackApp>().chatPostMessage {
             val mainMsg = ":warning::warning: 고양이가 도망쳤습니다 !!"
             channel("#kx_alert")
             text(mainMsg) //우하단 알럿 메세지에 이게 표시됨
@@ -79,7 +79,7 @@ class SlackApp_blockTest : TestLight() {
     @Test
     fun `블록 스래드 데모`() {
 
-        val app = Koins.get<SlackApp>()
+        val app = Koins.koin<SlackApp>()
         val threadTs = app.chatPostMessage {
             val msg = ":ok: 요청하신 작업이 종료되었습니다."
             channel("#kx_alert")

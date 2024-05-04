@@ -5,7 +5,7 @@
 //import net.kotlinx.komoran.KomoClient
 //import net.kotlinx.komoran.KomoResult
 //import net.kotlinx.okhttp.fetch
-//import net.kotlinx.test.TestLight
+//import net.kotlinx.kotest.BeSpecLight
 //import okhttp3.OkHttpClient
 //import org.junit.jupiter.api.Test
 //import org.koin.core.component.inject
@@ -13,7 +13,7 @@
 ///**
 // * https://esbook.kimjmin.net/06-text-analysis/6.7-stemming/6.7.2-nori
 // * */
-//class 형태소분석_크롤링 : TestLight() {
+//class 형태소분석_크롤링 : BeSpecLight() {
 //
 //    /** 기본 클라이언트 */
 //    val client: OkHttpClient by inject()

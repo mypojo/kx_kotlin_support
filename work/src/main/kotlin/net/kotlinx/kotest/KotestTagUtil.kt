@@ -4,6 +4,7 @@ import io.kotest.core.Tag
 import io.kotest.core.spec.Spec
 import mu.KotlinLogging
 import net.kotlinx.core.lib.SystemSeparator
+import net.kotlinx.test.MyAws1Module
 
 /**
  * 런타임에 태그를 확인하는게 아직 불가능한거 같다.
@@ -16,6 +17,12 @@ fun Spec.initTest(vararg tags: Tag) {
         val log = KotlinLogging.logger {}
         log.debug { "kotest TESTING TAG 추가.." }
         tags(KotestUtil.TESTING)
+    }
+    tags.forEach { tag ->
+        val tagName = tag.name
+        if (tagName.startsWith("kx.")) {
+            MyAws1Module.PROFILE_NAME = tagName
+        }
     }
 
 }
@@ -33,13 +40,18 @@ object KotestUtil {
     /** 스래드 등의 느린 테스트 */
     val SLOW = Tag("slow")
 
-    /** 시크릿 값이 필요한 테스트.  DDB 접근 등 */
-    val PROJECT = Tag("project")
-
     /** 테스트중인거 */
     val TESTING = Tag("testing")
 
     /** 테스트 실행필요 없음 */
     val IGNORE = Tag("ignore")
+
+    //==================================================== 프로젝트 관련 (비용이 발생하거나, 리소스가 필요하거나 등 ======================================================
+
+    /** NV */
+    val PROJECT01 = Tag("kx.profile01")
+
+    /** SK */
+    val PROJECT02 = Tag("kx.profile02")
 
 }

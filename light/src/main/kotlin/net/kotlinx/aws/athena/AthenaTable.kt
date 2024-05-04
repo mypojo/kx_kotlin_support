@@ -96,14 +96,14 @@ class AthenaTable {
      * */
     fun icebugDoVacuum() {
         check(athenaTableFormat == AthenaTableFormat.Iceberg)
-        val athenaModule = Koins.get<AthenaModule>()
+        val athenaModule = Koins.koin<AthenaModule>()
         athenaModule.execute("VACUUM $tableName")
     }
 
     /** 레이아웃을 최적화해서 재구성한다 */
     fun icebugDoOptimize() {
         check(athenaTableFormat == AthenaTableFormat.Iceberg)
-        val athenaModule = Koins.get<AthenaModule>()
+        val athenaModule = Koins.koin<AthenaModule>()
         athenaModule.execute("OPTIMIZE $tableName REWRITE DATA USING BIN_PACK  where 1=1;")
     }
 
@@ -113,7 +113,7 @@ class AthenaTable {
     /** 해당 파티션 경로의 디렉토리를 삭제한다. */
     suspend fun deleteaData(vararg partitionValue: String) {
         val dataPath = getDataPath(partitionValue)
-        val aws = Koins.get<AwsClient1>()
+        val aws = Koins.koin<AwsClient1>()
         log.debug { " -> 테이블 $tableName 데이터 삭제 : $bucket $dataPath" }
         aws.s3.deleteDir(bucket, dataPath)
     }
@@ -145,7 +145,7 @@ class AthenaTable {
     suspend fun insertData(file: File, vararg partitionValue: String) {
         val dataPath = getDataPath(partitionValue)
 
-        val aws = Koins.get<AwsClient1>()
+        val aws = Koins.koin<AwsClient1>()
         log.debug { " -> 테이블 $tableName 데이터 업로드 : $bucket $dataPath" }
         aws.s3.putObject(bucket, "${dataPath}${file.name}", file)
     }

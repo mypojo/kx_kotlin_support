@@ -3,13 +3,13 @@ package net.kotlinx.aws.s3
 import net.kotlinx.core.file.slash
 import net.kotlinx.core.threadlocal.ResourceHolder
 import net.kotlinx.file.lazyLoad
-import net.kotlinx.test.TestLight
+import net.kotlinx.kotest.BeSpecLight
 import org.junit.jupiter.api.Test
 import java.io.File
 
 private const val temp = "sin"
 
-class FileLazyLoadPropertyTest : TestLight() {
+class FileLazyLoadPropertyTest : BeSpecLight() {
 
     private val workspace = ResourceHolder.getWorkspace().slash("demo")
 

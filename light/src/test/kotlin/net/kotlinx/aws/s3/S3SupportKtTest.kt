@@ -4,12 +4,12 @@ import aws.sdk.kotlin.services.s3.listBuckets
 import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.core.time.measureTimeString
-import net.kotlinx.test.TestLight
+import net.kotlinx.kotest.BeSpecLight
 import org.junit.jupiter.api.Test
 import org.koin.core.component.inject
 import java.io.File
 
-internal class S3SupportKtTest : TestLight() {
+internal class S3SupportKtTest : BeSpecLight() {
 
     val aws: AwsClient1 by inject()
 

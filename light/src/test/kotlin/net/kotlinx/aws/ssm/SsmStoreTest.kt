@@ -1,4 +1,4 @@
-package net.kotlinx.aws.athena
+package net.kotlinx.aws.ssm
 
 import io.kotest.matchers.shouldNotBe
 import net.kotlinx.aws.AwsClient1
@@ -11,7 +11,7 @@ import org.koin.core.component.inject
 class SsmStoreTest : BeSpecLight(){
 
     init {
-        initTest(KotestUtil.PROJECT)
+        initTest(KotestUtil.PROJECT01)
 
         val aws by inject<AwsClient1>()
 

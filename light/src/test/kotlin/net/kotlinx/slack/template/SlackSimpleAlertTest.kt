@@ -1,10 +1,10 @@
 package net.kotlinx.slack.template
 
 import net.kotlinx.core.dev.DeveloperData
-import net.kotlinx.test.TestLight
+import net.kotlinx.kotest.BeSpecLight
 import org.junit.jupiter.api.Test
 
-class SlackSimpleAlertTest : TestLight() {
+class SlackSimpleAlertTest : BeSpecLight() {
 
     @Test
     fun `성공메세지`() {

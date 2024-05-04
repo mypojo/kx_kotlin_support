@@ -1,10 +1,10 @@
 package net.kotlinx.core.prop
 
+import net.kotlinx.kotest.BeSpecLight
 import net.kotlinx.props.lazyLoadSsm
-import net.kotlinx.test.TestLight
 import org.junit.jupiter.api.Test
 
-class LazyLoadPropertyTest : TestLight() {
+class LazyLoadPropertyTest : BeSpecLight() {
 
 
     private class MyConfig {

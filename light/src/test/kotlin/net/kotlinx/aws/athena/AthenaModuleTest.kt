@@ -1,45 +1,45 @@
 package net.kotlinx.aws.athena
 
-import net.kotlinx.kotest.BeSpecLog
-import net.kotlinx.test.MyAws1Module
-import org.junit.jupiter.api.Test
+import io.kotest.matchers.shouldBe
+import net.kotlinx.aws.AwsConfig
+import net.kotlinx.core.number.toSiText
+import net.kotlinx.core.regex.RegexSet
+import net.kotlinx.core.string.removeFrom
+import net.kotlinx.koin.Koins.koin
+import net.kotlinx.kotest.BeSpecLight
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
+import net.kotlinx.string.print
 
-internal class AthenaModuleTest : BeSpecLog() {
+internal class AthenaModuleTest : BeSpecLight() {
+
     init {
-        @Test
-        fun `기본테스트`() {
-            MyAws1Module.PROFILE_NAME = "sin"
-            val executions = listOf(
-                AthenaReadAll(
-                    """
-                    SELECT basic_date "날짜",kwd_name,date_format(event_time AT TIME ZONE 'Asia/Seoul', '%Y-%m-%d %H') "시간",COUNT(1) CNT 
-                    FROM autobid_rank
-                    group by  basic_date,kwd_name,date_format(event_time AT TIME ZONE 'Asia/Seoul', '%Y-%m-%d %H')
-                    order by basic_date,date_format(event_time AT TIME ZONE 'Asia/Seoul', '%Y-%m-%d %H')
-                """
-                ) { lines ->
-                    println(lines.size)
-                },
-//            AthenaDownload(
-//                """
-//                    SELECT basic_date "날짜",kwd_name,date_format(event_time AT TIME ZONE 'Asia/Seoul', '%Y-%m-%d %H') "시간",COUNT(1)+1 CNT
-//                    FROM autobid_rank
-//                    group by  basic_date,kwd_name,date_format(event_time AT TIME ZONE 'Asia/Seoul', '%Y-%m-%d %H')
-//                    order by basic_date,date_format(event_time AT TIME ZONE 'Asia/Seoul', '%Y-%m-%d %H')
-//                """
-//            ) { file ->
-//                println("파일 다운로드 : ${file.absolutePath}")
-//                csvReader().open(file) {
-//                    readAllAsSequence().forEach {
-//                        println(it)
-//                    }
-//                }
-//                file.toPath().deleteExisting()
-//            },
-            )
-            val athenaModule = AthenaModule(workGroup = "workgroup-prod", database = "p")
-            athenaModule.startAndWaitAndExecute(executions)
+        initTest(KotestUtil.PROJECT01)
+
+        Given("AthenaModule") {
+
+            val awsConfig = koin<AwsConfig>()
+            val databaseName = awsConfig.profileName!!.removeFrom(RegexSet.NUMERIC) //주의!
+            val athenaModule = AthenaModule(workGroup = "workgroup-prod", database = databaseName)
+
+            Then("쿼리 정상출력 & 다운로드 동시실행됨") {
+
+                val query = "SELECT * FROM conv limit 10"
+                athenaModule.startAndWait(
+                    listOf(
+                        AthenaReadAll(query) {
+                            log.info { "쿼리를 즉시 읽어옴" }
+                            it.print()
+                        },
+                        AthenaDownload(query) { file ->
+                            log.info { "파일 다운로드됨 -> ${file.absolutePath} / ${file.length().toSiText()}" }
+                            file.delete() shouldBe true
+                        }
+                    )
+                )
+            }
 
         }
     }
 }
+

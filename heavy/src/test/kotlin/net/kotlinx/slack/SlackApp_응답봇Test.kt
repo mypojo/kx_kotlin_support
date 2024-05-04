@@ -3,11 +3,11 @@ package net.kotlinx.slack
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.gson.GsonSet
-import net.kotlinx.test.TestLight
+import net.kotlinx.kotest.BeSpecLight
 import org.koin.core.component.get
 
 
-class SlackApp_응답봇Test : TestLight() {
+class SlackApp_응답봇Test : BeSpecLight() {
 
     val token = get<AwsClient1>().ssmStore["/slack/token"]!!
     val app = SlackApp(token)

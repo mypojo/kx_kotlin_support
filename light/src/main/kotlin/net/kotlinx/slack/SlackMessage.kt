@@ -29,7 +29,7 @@ interface SlackMessage {
 
     /** 기본 전송 */
     fun send():String{
-        val slackApp = Koins.get<SlackApp>()
+        val slackApp = Koins.koin<SlackApp>()
         threadTs = slackApp.send(this)
         return threadTs!!
     }

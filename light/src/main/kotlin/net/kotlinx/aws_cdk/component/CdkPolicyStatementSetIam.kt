@@ -12,7 +12,7 @@ object CdkPolicyStatementSetIam {
      * 기본적으로 AWS 콘솔에 들어와서 작업할 수 있는 기본기능 제공
      * 일단 MFA 는 수동으로..
      * */
-    fun userDefault(awsId: String = Koins.get<CdkProject>().awsId): CdkPolicyStatement = CdkPolicyStatement {
+    fun userDefault(awsId: String = Koins.koin<CdkProject>().awsId): CdkPolicyStatement = CdkPolicyStatement {
         actions = listOf(
             "iam:ChangePassword", //셀프 비번 변경 (최초 로그인 OR 직접수정)
             "iam:ListUsers",      //리스팅은 해야 진입하지..

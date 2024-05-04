@@ -5,13 +5,13 @@ import net.kotlinx.aws.module.batchStep.BatchStepInput
 import net.kotlinx.aws.module.batchStep.BatchStepListOption
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.gson.toGsonData
+import net.kotlinx.kotest.BeSpecLight
 import net.kotlinx.reflect.name
 import net.kotlinx.test.MyAws1Module
-import net.kotlinx.test.TestLight
 import org.junit.jupiter.api.Test
 import org.koin.core.component.get
 
-class StepEndTest : TestLight() {
+class StepEndTest : BeSpecLight() {
 
 
     @Test

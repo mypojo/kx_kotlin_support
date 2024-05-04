@@ -1,11 +1,11 @@
 package net.kotlinx.openAi
 
 import kotlinx.coroutines.runBlocking
+import net.kotlinx.kotest.BeSpecLight
 import net.kotlinx.props.LazyLoadProperty
-import net.kotlinx.test.TestLight
 import org.junit.jupiter.api.Test
 
-class OpenAiClientTest : TestLight() {
+class OpenAiClientTest : BeSpecLight() {
 
     val openAiClient = OpenAiClient {
         apiKey = LazyLoadProperty.ssm("/gpt4/demo/key")

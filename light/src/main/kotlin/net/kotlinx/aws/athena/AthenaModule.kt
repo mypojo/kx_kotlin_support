@@ -17,6 +17,7 @@ import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.s3.getObjectDownload
 import net.kotlinx.aws.s3.getObjectLines
 import net.kotlinx.core.concurrent.CoroutineSleepTool
+import net.kotlinx.core.concurrent.coroutineExecute
 import net.kotlinx.core.retry.RetryTemplate
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -30,6 +31,8 @@ import kotlin.time.Duration.Companion.seconds
  * 아테나 실행시 도우미
  * 다수의 아테나 쿼리 실행후 기다렸다 결과를 리턴해주는 편의용 모듈
  * checkTimeout 등의 이유료 내장 코루틴을 사용함
+ *
+ * 본격적으로 사용시 이거말고 SFN을 사용하는 것이 좋음
  *  */
 class AthenaModule(
     /** 데이터베이스 명 (기본스키마) */
@@ -167,7 +170,10 @@ class AthenaModule(
      *  */
     fun execute(athenaQuery: String): AthenaExecute = runBlocking { startAndWait(AthenaExecute(athenaQuery)) }
 
-    /** 내부 간단 실행기 */
+    /**
+     * 내부 간단 실행기
+     * 개별적으로 타임아웃을 적용한다.
+     *  */
     suspend fun <T : AthenaQuery> startAndWait(query: T): T {
         withTimeout(checkTimeout) {
             val execution = AthenaExecution(query)
@@ -177,6 +183,18 @@ class AthenaModule(
                 if (ok) break
             }
         }
+        return query
+    }
+
+    /**
+     * 동시 처리하는 간단 샘플
+     *  */
+    suspend fun <T : AthenaQuery> startAndWait(query: List<T>): List<T> {
+        query.map {
+            suspend {
+                startAndWait(it)
+            }
+        }.coroutineExecute()
         return query
     }
 

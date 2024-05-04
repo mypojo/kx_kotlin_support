@@ -6,12 +6,12 @@ import net.kotlinx.aws.module.batchStep.BatchStepListOption
 import net.kotlinx.aws.module.batchStep.BatchStepMode
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.gson.toGsonData
+import net.kotlinx.kotest.BeSpecLight
 import net.kotlinx.reflect.name
-import net.kotlinx.test.TestLight
 import org.junit.jupiter.api.Test
 import org.koin.core.component.get
 
-class StepStartTest : TestLight() {
+class StepStartTest : BeSpecLight() {
 
 
     @Test

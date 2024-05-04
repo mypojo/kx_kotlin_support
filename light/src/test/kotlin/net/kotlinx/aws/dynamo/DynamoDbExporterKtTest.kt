@@ -9,9 +9,22 @@ import net.kotlinx.aws.athena.AthenaTableFormat
 import net.kotlinx.aws.athena.AthenaTablePartitionType
 import net.kotlinx.aws.toAwsClient1
 import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 import org.junit.jupiter.api.Test
 
 class DynamoDbExporterKtTest : BeSpecLog(){
+
+    init {
+        initTest(KotestUtil.PROJECT01)
+
+        Given("") {
+            Then("") {
+
+            }
+        }
+    }
+
     init {
         val aws = AwsConfig(profileName = "sin", awsId = "653734769926").toAwsClient1()
 

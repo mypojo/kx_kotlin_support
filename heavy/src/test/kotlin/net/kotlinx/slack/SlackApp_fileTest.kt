@@ -1,14 +1,14 @@
 package net.kotlinx.slack
 
 import com.slack.api.methods.request.files.FilesSharedPublicURLRequest
-import net.kotlinx.test.TestLight
+import net.kotlinx.kotest.BeSpecLight
 import org.junit.jupiter.api.Test
 import java.io.File
 
 
 private const val userToken = "xoxp-xxxx"
 
-class SlackApp_fileTest : TestLight() {
+class SlackApp_fileTest : BeSpecLight() {
 
     //val token = get<AwsClient1>().ssmStore["/slack/token"]!!
     val app = SlackApp(userToken)

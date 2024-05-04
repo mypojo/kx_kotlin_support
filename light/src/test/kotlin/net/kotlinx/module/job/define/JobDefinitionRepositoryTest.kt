@@ -3,14 +3,14 @@ package net.kotlinx.module.job.define
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import net.kotlinx.kotest.BeSpecLight
 import net.kotlinx.notion.NotionDatabaseToGoogleCalendar
 import net.kotlinx.reflect.Bean
 import net.kotlinx.test.MyLightKoinStarter
-import net.kotlinx.test.TestLight
 import net.kotlinx.test.job.NotionDatabaseToGoogleCalendarJob
 import org.junit.jupiter.api.Test
 
-class JobDefinitionRepositoryTest : TestLight() {
+class JobDefinitionRepositoryTest : BeSpecLight() {
 
 
 

@@ -21,7 +21,7 @@ class LazyLoadProperty {
     operator fun getValue(thisRef: Any?, property: KProperty<*>): String {
 
         if (resultValue == null) {
-            val aws = Koins.get<AwsClient1>()
+            val aws = Koins.koin<AwsClient1>()
             resultValue = when {
 
                 /** 요건 표준 AWS 접미어 */

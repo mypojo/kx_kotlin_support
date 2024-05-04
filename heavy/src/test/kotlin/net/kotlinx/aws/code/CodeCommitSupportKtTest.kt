@@ -21,7 +21,7 @@ class CodeCommitSupportKtTest : TestHeavy() {
     @Test
     fun getCommit() {
 
-        val aws = Koins.get<AwsClient>()
+        val aws = Koins.koin<AwsClient>()
 
         runBlocking {
 

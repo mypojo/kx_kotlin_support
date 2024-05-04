@@ -14,7 +14,7 @@ object MyBatchStepModule : KoinModule {
 
     override fun moduleConfig(): Module = module {
         single {
-            val awsConfig = Koins.get<AwsConfig>()
+            val awsConfig = Koins.koin<AwsConfig>()
             BatchStepConfig {
                 stateMachineName = "${awsConfig.profileName}-batchStep-${MyEnv.SUFFIX}"
                 workUploadBuket = "${awsConfig.profileName}-work-${MyEnv.SUFFIX}"

@@ -11,6 +11,10 @@ import org.koin.mp.KoinPlatform
  * */
 object Koins {
 
-    inline fun <reified T : Any> get() = KoinPlatform.getKoin().get<T>()
+    /**
+     * 자동 import 되도록 단순한 단어 사용
+     * */
+    inline fun <reified T : Any> koin() = KoinPlatform.getKoin().get<T>()
+
 
 }
