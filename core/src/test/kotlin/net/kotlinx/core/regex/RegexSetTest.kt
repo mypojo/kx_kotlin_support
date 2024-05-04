@@ -1,21 +1,23 @@
 package net.kotlinx.core.regex
 
-import org.junit.jupiter.api.Test
+import io.kotest.matchers.shouldBe
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 
-class RegexSetTest {
+class RegexSetTest : BeSpecLog() {
 
-    @Test
-    fun test() {
+    init {
+        initTest(KotestUtil.FAST)
 
-
-        val text = "<tag1>ab영감님</tag1>"
-
-        val matchResult = "tag1".toRegex().find(text)!!
-        println(matchResult)
-        println(matchResult.value)
-        println(matchResult.groupValues)
-
-
+        Given("RegexSet") {
+            Then("extract") {
+                val text = "<tag1>ab영감님</tag1>"
+                val pattern = RegexSet.extract("<tag1>", "</tag1>").toRegex()
+                pattern.find(text)!!.value shouldBe "ab영감님"
+            }
+        }
     }
+
 
 }

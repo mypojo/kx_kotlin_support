@@ -1,11 +1,14 @@
 package net.kotlinx.okhttp
 
+import io.kotest.core.spec.style.DescribeSpec
+import mu.KotlinLogging
 import net.kotlinx.core.text.RegexParseSupport
-import net.kotlinx.test.TestRoot
 import okhttp3.OkHttpClient
 import org.junit.jupiter.api.Test
 
-class RegexParseSupportTest : TestRoot(), RegexParseSupport {
+class RegexParseSupportTest : DescribeSpec({
+
+    val log = KotlinLogging.logger {}
 
     @Test
     fun test() {
@@ -17,15 +20,16 @@ class RegexParseSupportTest : TestRoot(), RegexParseSupport {
 
         log.trace { "전문 : $resp" }
 
-        resp.find("<head>" to "</footer>")?.let { footer ->
-            log.trace { "footer : $footer" }
-            footer.findAll("<P" to "</p>").forEach {
-                log.debug { " -> $it" }
+        RegexParseSupport.template {
+            resp.find("<head>" to "</footer>")?.let { footer ->
+                log.trace { "footer : $footer" }
+                footer.findAll("<P" to "</p>").forEach {
+                    log.debug { " -> $it" }
+                }
+                log.info { "site : ${footer.extract("이 사이트(" to ")")}" }
+                log.info { "title : ${resp.extract("<title>" to "</title>")}" }
             }
-            log.info { "site : ${footer.extract("이 사이트(" to ")")}" }
-            log.info { "title : ${resp.extract("<title>" to "</title>")}" }
         }
+
     }
-
-
-}
+})

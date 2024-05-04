@@ -13,25 +13,25 @@ class LazyLoadProperty<T : Any>(val initBlock: () -> T, val clazz: Class<T>) {
 
     private fun <R> delegate(): ReadOnlyProperty<R, T> = object : ReadOnlyProperty<R, T> {
         override fun getValue(thisRef: R, property: KProperty<*>): T {
-            val hash = clazz.hashCode()
-            val cached = LAZY_CACHE[hash]
+            val id = clazz.kotlin.qualifiedName!!
+            val cached = LAZY_CACHE[id]
             if (cached != null && cached.javaClass == clazz) return cached as T
-            return initBlock().apply { LAZY_CACHE[hash] = this }
+            return initBlock().apply { LAZY_CACHE[id] = this }
         }
     }
 }
 
-private val LAZY_CACHE = HashMap<Int, Any>()
+private val LAZY_CACHE = HashMap<String, Any>()
 
 /**
  * private 객체에 접근 해야함으로 reified 를 사용하지 않음
  *  */
 fun <T> lzayLoadReset(clazz: Class<T>): Boolean {
-    val hash = clazz.hashCode()
-    val result = LAZY_CACHE[hash]
+    val id = clazz.name!!
+    val result = LAZY_CACHE[id]
     if (result?.javaClass != clazz) return false
 
-    LAZY_CACHE.remove(hash)
+    LAZY_CACHE.remove(id)
     return true
 }
 

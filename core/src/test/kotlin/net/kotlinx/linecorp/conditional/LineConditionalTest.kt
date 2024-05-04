@@ -1,43 +1,43 @@
 package net.kotlinx.linecorp.conditional
 
-import com.linecorp.conditional.kotlin.CoroutineCondition
-import com.linecorp.conditional.kotlin.CoroutineConditionContext
 import com.linecorp.conditional.kotlin.and
 import com.linecorp.conditional.kotlin.coroutineCondition
-import kotlinx.coroutines.runBlocking
+import com.linecorp.conditional.kotlin.or
 import net.kotlinx.core.string.ResultText
-import net.kotlinx.test.TestLevel01
-import net.kotlinx.test.TestRoot
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 
 /**
  * https://github.com/line/conditional
  * */
-class LineConditionalTest : TestRoot() {
+class LineConditionalTest : BeSpecLog() {
+    init {
+        initTest(KotestUtil.FAST)
 
-    val 유효성통과: CoroutineCondition = coroutineCondition { _ -> true }.alias { "유효성통과" }
-    val 관리자검증: CoroutineCondition = coroutineCondition { true }.alias { "관리자검증" }
-    val c: CoroutineCondition = coroutineCondition {
-        it.msgs += ResultText(false,"앗! 작업 C 실패!!")
-        false
-    }.alias { "작업C" }
+        Given("유효성 체크 정의") {
 
+            val ctx = conditionContext()
 
-    @TestLevel01
-    fun `업무로직체크`() {
-        //val condition: CoroutineCondition = (a and b) and (a or c)
-        val condition: CoroutineCondition = (유효성통과 and 관리자검증) and (c)
+            val 사용자검증 = coroutineCondition { _ -> true }.alias { "유효성통과" }
+            val 관리자검증 = coroutineCondition { true }.alias { "관리자검증" }
 
-        val ctx: CoroutineConditionContext = conditionContext()
+            val VIP검증 = coroutineCondition {
+                it.msgs += ResultText(false, "VIP가 아닙니다.")
+                false
+            }.alias { "VIP검증" }
 
-        runBlocking {
-            val result = condition.matches(ctx)
-            log.info { "작업결과 : $result" }
-            ctx.logs().forEach {
-                println(it)
+            Then("컨디션 정의 & 문서화") {
+
+                val condition = (사용자검증 and 관리자검증) or (VIP검증)
+
+                val result = condition.matches(ctx)
+                log.info { "작업결과 : $result" }
+                ctx.logs().forEach {
+                    println(it)
+                }
+                log.warn { ctx.msgs }
             }
-            log.warn { ctx.msgs }
         }
     }
-
-
 }

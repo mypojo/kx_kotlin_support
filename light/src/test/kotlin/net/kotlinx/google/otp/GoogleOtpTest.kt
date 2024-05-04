@@ -1,24 +1,23 @@
 package net.kotlinx.google.otp
 
-import net.kotlinx.test.TestRoot
+import net.kotlinx.kotest.BeSpecLog
 import org.junit.jupiter.api.Test
 
-class GoogleOtpTest : TestRoot() {
+class GoogleOtpTest : BeSpecLog(){
+    init {
+        @Test
+        fun `키 생성`() {
 
-    @Test
-    fun `키 생성`() {
+            val generateSecretKey = GoogleOtp.generateSecretKey()
+            println(generateSecretKey)
 
-        val generateSecretKey = GoogleOtp.generateSecretKey()
-        println(generateSecretKey)
+        }
 
+        @Test
+        fun `토큰 검증`() {
+
+            println(GoogleOtp.checkCode("UhiIgKAStJDUMwWf0fmVQymT0nk=", 377735))
+
+        }
     }
-
-    @Test
-    fun `토큰 검증`() {
-
-        println(GoogleOtp.checkCode("UhiIgKAStJDUMwWf0fmVQymT0nk=", 377735))
-
-    }
-
-
 }

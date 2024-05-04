@@ -1,21 +1,34 @@
 package net.kotlinx.core.concurrent
 
-import net.kotlinx.test.TestRoot
-import org.junit.jupiter.api.Test
+import io.kotest.matchers.longs.shouldBeInRange
+import net.kotlinx.core.time.measureTimeString
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 import java.util.concurrent.Callable
+import kotlin.time.Duration.Companion.seconds
 
-class ThreadSupportKtTest : TestRoot() {
+class ThreadSupportKtTest : BeSpecLog() {
 
-    @Test
-    fun `기본테스트`() {
-        val execute = (0..4).map {
-            Callable {
-                println("wait... $it")
-                Thread.sleep(it * 1000L)
-                it
+    init {
+        initTest(KotestUtil.SLOW)
+
+        Given("parallelExecute") {
+            val duration = 2.seconds
+            Then("$duration 이내로 끝나야함") {
+                val timeString = measureTimeString {
+                    (0..6).map {
+                        Callable {
+                            log.debug { " -> 작업시작.." }
+                            Thread.sleep(duration.inWholeMilliseconds)
+                            it
+                        }
+                    }.parallelExecute(10)
+                }
+                timeString.millis shouldBeInRange (duration.inWholeMilliseconds..duration.inWholeMilliseconds + 100)
             }
-        }.parallelExecute(4)
-        println(execute)
+        }
     }
+
 
 }

@@ -23,6 +23,7 @@ fun kotlinHtml(title: String, block: BODY.() -> Unit): String {
 
 
 /** 프로젝트마다 오버라이드 해서 사용할것! */
+@Deprecated("이상해!!")
 fun HTML.setDefault(title: String, block: HEAD.() -> Unit = {}) {
     lang = "ko"
     head {

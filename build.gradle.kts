@@ -33,7 +33,7 @@ allprojects {
 
     tasks.test {
         useJUnitPlatform {
-            //필터 설정은 여기서 하지 않음 ( 매칭이 없으면 No tests found for given include 오류)
+            //필터 설정은 여기서 하지 않음 ( 매칭이 없으면 No tests found for Given include 오류)
             filter {
                 includeEngines = setOf("kotest")  // kotest만 실행
                 //includeTags("L1") //kotest의 경우 태그로 하면 에러남.. 프로퍼티로 설정할것
@@ -67,6 +67,7 @@ allprojects {
         //==================================================== 테스트 ======================================================
         testImplementation("io.kotest:kotest-runner-junit5:_") //kotest 의존성 추가.  현재버전의경우 scan 이슈가 있어서 프로퍼티 설정 해줘야함
         testImplementation("io.kotest.extensions:kotest-extensions-koin:_") //kotest koin 확장
+
         /** 공통 DI를 사용할 수 있게 해줌 -> notebook에서 사용하려면 test 폴더가 아닌 main에 있어야함 */
         testImplementation(project(":work"))
     }

@@ -7,7 +7,7 @@ import net.kotlinx.core.time.TimeString
 import kotlin.system.measureTimeMillis
 
 /**
- * 이미 만들어진 로직에 주입해서 병목구간을 측정하기 위한 용도
+ * 단일 JVM대상으로 이미 만들어진 로직에 주입해서 병목구간을 측정하기 위한 용도
  * try - carch 로 주입해서 사용할것
  */
 class StopWatch {

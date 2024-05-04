@@ -5,7 +5,6 @@ import net.kotlinx.module.job.JobTasklet
 import net.kotlinx.module.job.define.JobDefinition
 import net.kotlinx.module.job.define.JobDefinitionUtil
 import net.kotlinx.module.job.define.jobReg
-import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -13,7 +12,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-internal class KoinJobTest : TestRoot(), KoinComponent {
+internal class KoinJobTest : KoinComponent {
 
     class A1 : JobTasklet {
         override fun doRun(job: Job) {

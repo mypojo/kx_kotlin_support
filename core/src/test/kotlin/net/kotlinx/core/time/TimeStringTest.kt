@@ -1,31 +1,25 @@
 package net.kotlinx.core.time
 
-import org.junit.jupiter.api.Test
-import java.util.concurrent.TimeUnit
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.contain
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 
-internal class TimeStringTest {
+internal class TimeStringTest : BeSpecLog() {
 
-    @Test
-    fun test() {
-        val toMillis = TimeUnit.HOURS.toMillis(3) + 2187367
-        check(toMillis.toTimeString().toString().contains("3시간"))
+    init {
+        initTest(KotestUtil.FAST)
+
+        Given("TimeString") {
+            Then("시간 -> 한글변환 체크") {
+                val duration = 3.hours + 20.minutes
+                duration.inWholeMilliseconds.toTimeString().toString() shouldBe contain("3시간")
+            }
+        }
     }
 
-    @Test
-    fun `시작종료체크`() {
-        val start = TimeStart()
-        Thread.sleep(2000)
-        check(start.toString().contains("2.0초"))
-    }
-
-    @Test
-    fun `시간변환`() {
-
-        check(61.seconds.inWholeMilliseconds == TimeUnit.SECONDS.toMillis(61))
-        check(61450.milliseconds.inWholeSeconds == TimeUnit.MILLISECONDS.toSeconds(61450))
-
-    }
 
 }

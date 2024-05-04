@@ -1,30 +1,38 @@
 package net.kotlinx.core.test.mockk
 
 import io.mockk.spyk
-import net.kotlinx.test.TestRoot
-import org.junit.jupiter.api.Test
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 
 /**
  *  Mockk 테스트 샘플
  */
-class MockkSpykTest : TestRoot() {
+class MockkSpykTest : BeSpecLog() {
 
-    class Calculator {
+    init {
+        initTest(KotestUtil.FAST)
 
-        fun plus(a: Int, b: Int): Int {
-            return privatePlus(a, b)
+        class Calculator {
+
+            fun plus(a: Int, b: Int): Int {
+                return privatePlus(a, b)
+            }
+
+            private fun privatePlus(a: Int, b: Int): Int {
+                return a - b
+            }
         }
 
-        private fun privatePlus(a: Int, b: Int): Int {
-            return a - b
+        Given("MockkSpyk") {
+            Then("1") {
+
+                val calculator = spyk<Calculator>()
+                spyk(Calculator()) //이렇게도 됨
+
+                calculator.plus(1, 2) //스터빙 안해도 오류 안남
+            }
         }
     }
 
-    @Test
-    fun test() {
-        val calculator = spyk<Calculator>()
-        spyk(Calculator()) //이렇게도 됨
-
-        calculator.plus(1, 2) //스터빙 안해도 오류 안남
-    }
 }

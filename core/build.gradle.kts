@@ -30,7 +30,7 @@ dependencies {
     runtimeOnly("com.linecorp.conditional:conditional:_")
     api("com.linecorp.conditional:conditional-kotlin:_") //요구사항에 and 와 or이 포함되어있을경우 이걸로 예쁘게 포매팅
 
-    //==================================================== 로깅.. 맘에 안드네 ======================================================
+    //==================================================== 로깅 ======================================================
     api("io.github.microutils:kotlin-logging-jvm:_") //slf4j의 래퍼. (로거 가져올때 사용)
     api("ch.qos.logback:logback-classic:_") //slf4j의 실제 구현체 (레벨 설정에 참조해야함)
     api("org.codehaus.janino:janino:_") //logback 파일롤링 표현식 필터처리에 필요함

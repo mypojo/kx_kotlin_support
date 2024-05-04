@@ -5,6 +5,7 @@ import kotlin.math.pow
 /**
  * 짧은 URL을 생성하기 위한 간이 유틸
  * 6자리로 만들면 568억개의 유니크 숫자를 표현할 수 있다. => (long)Math.pow(list.size(), 6)
+ * @see net.kotlinx.core.string.Base62Util
  */
 class NumberShortener(private val limitSize: Int = 6) {
 
@@ -13,7 +14,7 @@ class NumberShortener(private val limitSize: Int = 6) {
     //=================================================== 메소드 ===================================================
     /** 기본 6자리  */
     fun toPadString(sequence: Long): String {
-        check(sequence <= max)
+        check(sequence <= max) { "최대 가능한값 $max -> 입력된수 $sequence" }
         return toPadString(sequence, limitSize)
     }
 

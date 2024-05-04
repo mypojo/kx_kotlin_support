@@ -1,29 +1,33 @@
 package net.kotlinx.core.number
 
 import net.kotlinx.core.string.toTextGrid
-import net.kotlinx.test.TestRoot
-import org.junit.jupiter.api.Test
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 
-class RangeSupportKtTest : TestRoot() {
+class RangeSupportKtTest : BeSpecLog() {
 
-    @Test
-    fun test() {
+    init {
+        initTest(KotestUtil.FAST)
 
-        val datas = listOf(
-            0..100,
-            50..100,
-            0 until 100,
-            50 until 100,
-            0..0,
-            0 until 0,
-            -13..3,
-            13..3,
-        ).map {
-            arrayOf(it, it.size)
+        Given("RangeSupportKt") {
+            Then("구간 정의 -> 결과확인") {
+                val datas = listOf(
+                    0..100,
+                    50..100,
+                    0 until 100,
+                    50 until 100,
+                    0..0,
+                    0 until 0,
+                    -13..3,
+                    13..3,
+                ).map {
+                    arrayOf(it, it.size)
+                }
+
+                listOf("데이터", "size").toTextGrid(datas).print()
+            }
         }
-
-        listOf("데이터", "size").toTextGrid(datas).print()
-
     }
 
 }

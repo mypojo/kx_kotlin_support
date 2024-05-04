@@ -1,20 +1,27 @@
 package net.kotlinx.core.lib
 
-import net.kotlinx.test.TestRoot
-import org.junit.jupiter.api.Test
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 
-class SystemUtilTest : TestRoot(){
+class SystemUtilTest : BeSpecLog() {
+    init {
+        initTest(KotestUtil.FAST)
 
-
-    @Test
-    fun test() {
-        println("==== envPrint ====")
-        SystemUtil.envPrint()
-        println("==== systemPropertyPrint ====")
-        SystemUtil.systemPropertyPrint()
-        println("==== jvmParamPrint ====")
-        SystemUtil.jvmParamPrint()
-
+        Given("SystemUtil") {
+            Then("환경변수 출력") {
+                printName()
+                SystemUtil.envPrint()
+            }
+            Then("시스템 프로퍼티 출력") {
+                printName()
+                SystemUtil.systemPropertyPrint()
+            }
+            Then("JVM 파라메터 출력") {
+                printName()
+                SystemUtil.jvmParamPrint()
+            }
+        }
     }
 
 }

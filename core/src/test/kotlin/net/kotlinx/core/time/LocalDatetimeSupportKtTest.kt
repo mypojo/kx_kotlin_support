@@ -1,41 +1,27 @@
 package net.kotlinx.core.time
 
-import org.junit.jupiter.api.Test
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.contain
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-internal class LocalDatetimeSupportKtTest {
+internal class LocalDatetimeSupportKtTest : BeSpecLog() {
 
-//    infix fun LocalDateTime.between(x: LocalDateTime): Long {
-//
-//        val asd = this between x
-//
-//
-//        this.toLong() - x.toLong()
-//    }
+    init {
+        initTest(KotestUtil.FAST)
 
-
-    @Test
-    fun `toLocalDate2`() {
-        val closedRange = "20230101".."20230131"
+        Given("일단 일반적인 사용") {
+            Then("특정 단위로 truncated") {
+                val now = LocalDateTime.now()
+                val truncated = now.truncatedTo(ChronoUnit.MINUTES)
+                truncated.toKr01() shouldBe contain("00초")
+                log.info { "${now.toKr01()} -> ${truncated.toKr01()}" }
+            }
+        }
     }
 
 
-    @Test
-    fun `bt`() {
-        val message = "a".."g"
-        println(message)
-        println("b" in message)
-
-
-    }
-
-    @Test
-    fun `기본테스트`() {
-
-        val now = LocalDateTime.now()
-        println(now.toKr01())
-        println(now.truncatedTo(ChronoUnit.MINUTES).toKr01())
-
-    }
 }

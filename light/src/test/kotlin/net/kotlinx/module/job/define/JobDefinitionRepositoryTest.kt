@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test
 
 class JobDefinitionRepositoryTest : TestLight() {
 
+
+
     init {
         MyLightKoinStarter.startup {
             single {

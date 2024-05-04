@@ -43,6 +43,7 @@ suspend fun <E> ReceiveChannel<E>.receiveAvailable(): List<E> {
  * ex) 크롤링 서버 (동시 실행제한 & 횟수 제한으로 IP블록 회피)
  * Channel 위임 안함
  * 예외 발생시 채널의 데이터는 다 소실된다.
+ *  => 실무에서는 서버리스 활용!
  *  */
 class ScopeChannel(
     /** 기본 스코프. 예외 발생시 이 단위로 다 중지 */

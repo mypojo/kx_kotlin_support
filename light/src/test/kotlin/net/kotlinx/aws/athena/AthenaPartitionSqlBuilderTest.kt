@@ -1,8 +1,8 @@
 package net.kotlinx.aws.athena
 
+import mu.KotlinLogging
 import net.kotlinx.core.time.toTimeString
 import net.kotlinx.core.time.toYmd
-import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -12,7 +12,9 @@ fun main(args: Array<String>) {
     println("==")
 }
 
-internal class AthenaPartitionSqlBuilderTest : TestRoot(), KoinComponent {
+internal class AthenaPartitionSqlBuilderTest : KoinComponent {
+
+    val log = KotlinLogging.logger {}
 
 
     @Test

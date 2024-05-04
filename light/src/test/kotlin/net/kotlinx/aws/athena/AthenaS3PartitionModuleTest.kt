@@ -1,10 +1,10 @@
 package net.kotlinx.aws.athena
 
-import net.kotlinx.test.TestRoot
+import net.kotlinx.kotest.BeSpecLog
 
-internal class AthenaS3PartitionModuleTest : TestRoot() {
-
-//    val aws = AwsConfig(profileName = "sin").toAwsClient()
+internal class AthenaS3PartitionModuleTest : BeSpecLog(){
+    init {
+        //    val aws = AwsConfig(profileName = "sin").toAwsClient()
 //
 //    init {
 //        LogBackUtil.logLevelTo("net.kotlinx.aws.athena", Level.TRACE)
@@ -52,5 +52,5 @@ internal class AthenaS3PartitionModuleTest : TestRoot() {
 //        )
 //        runBlocking { partitionModule.listAndUpdate() }
 //    }
-
+    }
 }

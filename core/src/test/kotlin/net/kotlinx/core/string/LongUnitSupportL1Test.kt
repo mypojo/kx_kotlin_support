@@ -1,14 +1,20 @@
 package net.kotlinx.core.string
 
+import io.kotest.matchers.shouldBe
 import net.kotlinx.core.number.toSiText
-import net.kotlinx.test.TestRoot
-import org.junit.jupiter.api.Test
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 
-internal class LongUnitSupportL1Test : TestRoot() {
+internal class LongUnitSupportL1Test : BeSpecLog() {
 
-    @Test
-    fun `기본테스트`() {
-        println(19915640000.toSiText())
+    init {
+        initTest(KotestUtil.FAST)
+
+        Given("LongUnitSupport") {
+            Then("toSiText") {
+                19915640000.toSiText() shouldBe "18 gbyte"
+            }
+        }
     }
-
 }

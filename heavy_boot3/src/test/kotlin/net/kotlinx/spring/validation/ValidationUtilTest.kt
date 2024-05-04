@@ -1,10 +1,10 @@
 package net.kotlinx.spring.validation
 
 import jakarta.validation.constraints.NotNull
-import net.kotlinx.test.TestRoot
+import net.kotlinx.kotest.BeSpecLog
 import java.time.LocalDate
 
-class ValidationUtilTest : TestRoot() {
+class ValidationUtilTest : BeSpecLog(){
 
     data class ValidRequestDto(
         @field:NotNull(message = "value는 필수 입력값입니다.")
@@ -16,8 +16,5 @@ class ValidationUtilTest : TestRoot() {
         @field:NotNull(message = "number는 필수 입력값입니다.")
         val number: Long? = null
     )
-
-
-
 
 }

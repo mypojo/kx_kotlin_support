@@ -1,18 +1,18 @@
 package net.kotlinx.core.collection
 
-import io.kotest.core.spec.style.BehaviorSpec
-import net.kotlinx.core.test.KotestUtil
-import net.kotlinx.core.test.init
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 
-class CollectionSupportKtTest : BehaviorSpec({
+class CollectionSupportKtTest : BeSpecLog() {
+    init {
+        initTest(KotestUtil.FAST)
 
-    init(KotestUtil.FAST)
-
-    Given("mapNotEmpty") {
-        Then("널이거나 빈값 제외") {
-            val demo = listOf("a", null, "", "b")
-            check(demo.mapNotEmpty { it }.size == 2)
+        Given("mapNotEmpty") {
+            Then("널이거나 빈값 제외") {
+                val demo = listOf("a", null, "", "b")
+                check(demo.mapNotEmpty { it }.size == 2)
+            }
         }
     }
-
-})
+}

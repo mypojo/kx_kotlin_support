@@ -1,29 +1,20 @@
 package net.kotlinx.core.number
 
-import net.kotlinx.core.time.toKr01
-import net.kotlinx.test.TestRoot
-import org.junit.jupiter.api.Test
+import io.kotest.matchers.shouldBe
+import net.kotlinx.core.time.toIso
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 import kotlin.time.Duration.Companion.seconds
 
-class LongSupportKtTest : TestRoot(){
+class LongSupportKtTest : BeSpecLog() {
+    init {
+        initTest(KotestUtil.FAST)
 
-    @Test
-    fun test() {
-
-
-        println("aaa/asd".removeSuffix("/"))
-
-        println(1681869805.seconds.inWholeMilliseconds.toLocalDateTime().toKr01())
-
-
-        println((9 / 20+1))
-        println((19 / 20+1))
-        println((29 / 20+1))
-        println((39 / 20+1))
-        println((49 / 20+1))
-        println((59 / 20+1))
-
-
+        Given("LongSupport") {
+            Then("toLocalDateTime") {
+                1681869805.seconds.inWholeMilliseconds.toLocalDateTime().toIso() shouldBe "2023-04-19T11:03:25"
+            }
+        }
     }
-
 }

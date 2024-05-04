@@ -1,30 +1,38 @@
 package net.kotlinx.core.counter
 
+import io.kotest.matchers.shouldBe
 import net.kotlinx.core.number.toLocalDateTime
 import net.kotlinx.core.time.toKr01
 import net.kotlinx.core.time.toTimeString
-import net.kotlinx.test.TestLevel02
-import net.kotlinx.test.TestRoot
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
+import kotlin.time.Duration.Companion.seconds
 
-class EventTimeCheckerTest : TestRoot() {
+class EventTimeCheckerTest : BeSpecLog() {
 
+    init {
+        initTest(KotestUtil.FAST)
 
-    @TestLevel02
-    fun test() {
+        Given("EventTimeChecker") {
+            Then("x초에 한번만 실행 -> x회 반복 체크 -> x회 호출") {
+                val eventTimeChecker = EventTimeChecker(2.seconds)
 
-        val eventTimeChecker = EventTimeChecker()
-
-        (0..100).forEach {
-            val result = eventTimeChecker.check()
-            if (result.ok) {
-                log.info { "성공 : ${result.now.toLocalDateTime().toKr01()}" }
-            } else {
-                log.debug { "try ${result.tryCnt} / 남은시간 ${result.next.toTimeString()}" }
+                var exeCnt = 0
+                repeat(20) { cnt ->
+                    val result = eventTimeChecker.check()
+                    if (result.ok) {
+                        exeCnt++
+                        log.info { "$cnt -> 성공 $exeCnt : ${result.now.toLocalDateTime().toKr01()}" }
+                    } else {
+                        log.trace { "$cnt -> 남은시간 ${result.next.toTimeString()}" }
+                    }
+                    Thread.sleep(300)
+                }
+                exeCnt shouldBe 3
             }
-
-            Thread.sleep(500)
         }
-
     }
+
 
 }

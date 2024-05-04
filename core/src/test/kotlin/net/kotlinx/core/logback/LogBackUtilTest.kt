@@ -1,25 +1,27 @@
 package net.kotlinx.core.logback
 
 import ch.qos.logback.classic.Level
-import mu.KotlinLogging
 import net.kotlinx.core.CoreUtil
-import org.junit.jupiter.api.Test
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 
-internal class LogBackUtilTest {
+internal class LogBackUtilTest : BeSpecLog() {
 
-    private val log = KotlinLogging.logger {}
+    init {
+        initTest(KotestUtil.FAST)
 
-    @Test
-    fun 기본테스트() {
+        Given("LogBackUtil") {
+            Then("레벨 변경 -> 디버그 로그 ") {
+                log.trace { "trace -> 로깅되지 않음" }
+                log.debug { "debug 로깅됨" }
 
+                LogBackUtil.logLevelTo(CoreUtil.PACKAGE_NAME, Level.TRACE)
 
-        log.trace { "trace 영감님" }
-        log.debug { "debug 영감님" }
-
-        LogBackUtil.logLevelTo(CoreUtil.PACKAGE_NAME, Level.DEBUG)
-
-        log.trace { "trace 영감님" }
-        log.debug { "debug 영감님" }
+                log.trace { "trace 이제 로깅됨" }
+                log.debug { "debug 로깅됨" }
+            }
+        }
     }
 
 }

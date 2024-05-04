@@ -9,69 +9,68 @@ import net.kotlinx.core.gson.GsonSet
 import net.kotlinx.core.threadlocal.ResourceHolder
 import net.kotlinx.core.time.toYmdF01
 import net.kotlinx.guava.fromJsonList
+import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.okhttp.OkHttpSamples
-import net.kotlinx.test.TestRoot
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.time.LocalDate
 
-class CostExplorerExcelTest : TestRoot() {
+class CostExplorerExcelTest : BeSpecLog(){
+    init {
+        @Test
+        fun test() {
 
+            val workspace = File(ResourceHolder.getWorkspace(), this::class.simpleName).apply { mkdirs() }
+            val dataFile = File(workspace, "AWS비용캐시_.${LocalDate.now().toYmdF01()}.json")
 
-    @Test
-    fun test() {
+            val tagRequired = setOf("catson")
 
-        val workspace = File(ResourceHolder.getWorkspace(), this::class.simpleName).apply { mkdirs() }
-        val dataFile = File(workspace, "AWS비용캐시_.${LocalDate.now().toYmdF01()}.json")
-
-        val tagRequired = setOf("catson")
-
-        if (!dataFile.exists()) {
-            log.info { "cost 데이터를 로드합니다.." }
-            runBlocking {
-                val profileNames = IamCredential().profileNames.filter { it !in setOf("sin") } - listOf("kx")
-                val datas = profileNames.flatMap { profileName ->
-                    val client = AwsConfig(profileName = profileName).toAwsClient()
-                    val byService = try {
-                        client.cost.monthService().onEach { it.projectName = profileName }
-                    } catch (e: CostExplorerException) {
-                        log.warn { " -> 프로파일 [${profileName}] 무시" }
-                        emptyList()
-                    }
-                    val byTag = when (profileName in tagRequired) {
-                        true -> {
-                            try {
-                                client.cost.monthTag(listOf("ProjectName")).onEach { it.projectName = profileName }
-                            } catch (e: CostExplorerException) {
-                                log.warn { " -> 프로파일 [${profileName}] 무시" }
-                                emptyList()
+            if (!dataFile.exists()) {
+                log.info { "cost 데이터를 로드합니다.." }
+                runBlocking {
+                    val profileNames = IamCredential().profileNames.filter { it !in setOf("sin") } - listOf("kx")
+                    val datas = profileNames.flatMap { profileName ->
+                        val client = AwsConfig(profileName = profileName).toAwsClient()
+                        val byService = try {
+                            client.cost.monthService().onEach { it.projectName = profileName }
+                        } catch (e: CostExplorerException) {
+                            log.warn { " -> 프로파일 [${profileName}] 무시" }
+                            emptyList()
+                        }
+                        val byTag = when (profileName in tagRequired) {
+                            true -> {
+                                try {
+                                    client.cost.monthTag(listOf("ProjectName")).onEach { it.projectName = profileName }
+                                } catch (e: CostExplorerException) {
+                                    log.warn { " -> 프로파일 [${profileName}] 무시" }
+                                    emptyList()
+                                }
                             }
+
+                            false -> emptyList()
                         }
 
-                        false -> emptyList()
+                        byService + byTag
                     }
-
-                    byService + byTag
+                    dataFile.writeText(GsonSet.GSON.toJson(datas)) //일단 json을 기록
                 }
-                dataFile.writeText(GsonSet.GSON.toJson(datas)) //일단 json을 기록
+            } else {
+                log.warn { "cost 데이터를 재사용합니다.." }
             }
-        }else{
-            log.warn { "cost 데이터를 재사용합니다.." }
+
+            val lines = GsonSet.GSON.fromJsonList<CostExplorerLine>(dataFile.readText())
+
+            CostExplorerExcel {
+                won = runBlocking { OkHttpSamples.dollarWon() }
+                costDatas = lines
+                groupByProject()
+                eachProject()
+                excel.wrap()
+                val outFile = File(workspace, "AWS비용_${LocalDate.now().toYmdF01()}.xlsx")
+                excel.write(outFile)
+                log.info { "결과파일 : $outFile" }
+            }
+
         }
-
-        val lines = GsonSet.GSON.fromJsonList<CostExplorerLine>(dataFile.readText())
-
-        CostExplorerExcel {
-            won = runBlocking { OkHttpSamples.dollarWon() }
-            costDatas = lines
-            groupByProject()
-            eachProject()
-            excel.wrap()
-            val outFile = File(workspace, "AWS비용_${LocalDate.now().toYmdF01()}.xlsx")
-            excel.write(outFile)
-            log.info { "결과파일 : $outFile" }
-        }
-
     }
-
 }

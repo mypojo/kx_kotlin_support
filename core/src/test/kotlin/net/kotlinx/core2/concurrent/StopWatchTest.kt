@@ -1,38 +1,40 @@
 package net.kotlinx.core2.concurrent
 
 import net.kotlinx.core.concurrent.parallelExecute
-import net.kotlinx.test.TestRoot
-import org.junit.jupiter.api.Test
+import net.kotlinx.core.concurrent.sleep
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 import java.util.concurrent.Callable
 import kotlin.random.Random
+import kotlin.time.Duration.Companion.milliseconds
 
-class StopWatchTest : TestRoot() {
+class StopWatchTest : BeSpecLog() {
+    init {
+        initTest(KotestUtil.SLOW)
 
-    val stopWatch = StopWatch()
 
-    @Test
-    fun 체크샘플() {
-
-        (0..15).map {
-            Callable {
-                for (i in 0..16) {
-                    stopWatch.check("STEP01") {
-                        Thread.sleep(15)
-                    }
-                    stopWatch.check("STEP02") {
-                        //랜덤하게 작업 스킵
-                        if (Random.nextInt(10) % 10 != 0) {
-                            Thread.sleep(84)
+        Given("StopWatch") {
+            Then("병렬처리 환경에서 각 구간의 실행시간을 기록/누적해서 표현") {
+                val stopWatch = StopWatch()
+                (0..15).map {
+                    Callable {
+                        for (i in 0..16) {
+                            stopWatch.check("STEP01") {
+                                Random.nextInt(20).milliseconds.sleep()
+                            }
+                            stopWatch.check("STEP02") {
+                                Random.nextInt(80).milliseconds.sleep()
+                            }
+                            stopWatch.check("STEP03") {
+                                Random.nextInt(30).milliseconds.sleep()
+                            }
                         }
                     }
-                    stopWatch.check("STEP03") {
-                        Thread.sleep(22)
-                    }
-                }
+                }.parallelExecute(10)
+
+                println(stopWatch)
             }
-        }.parallelExecute(10)
-
-        println(stopWatch)
+        }
     }
-
 }

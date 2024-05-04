@@ -142,11 +142,11 @@ class PolynomialRegression(
     }
 
     /**
-     * Returns the expected response `y` given the value of the predictor
+     * Returns the expected response `y` Given the value of the predictor
      * variable `x`.
      *
      * @param  x the value of the predictor variable
-     * @return the expected response `y` given the value of the predictor
+     * @return the expected response `y` Given the value of the predictor
      * variable `x`
      */
     fun predict(x: Double): Double {

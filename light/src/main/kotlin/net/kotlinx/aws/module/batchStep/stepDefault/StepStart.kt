@@ -108,10 +108,10 @@ data class StepStartContext(
     val datas: List<String>,
 ) : SerialJsonObj {
 
-    override fun toJson(): String = SerialJsonSet.KSON_OTHER.encodeToString(this)
+    override fun toJson(): String = SerialJsonSet.JSON_OTHER.encodeToString(this)
 
     companion object : SerialJsonCompanion {
-        override fun parseJson(json: String): StepStartContext = SerialJsonSet.KSON_OTHER.decodeFromString(json)
+        override fun parseJson(json: String): StepStartContext = SerialJsonSet.JSON_OTHER.decodeFromString(json)
     }
 
 }

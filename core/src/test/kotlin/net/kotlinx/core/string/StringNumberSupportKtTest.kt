@@ -1,15 +1,21 @@
 package net.kotlinx.core.string
 
-import net.kotlinx.test.TestRoot
-import org.junit.jupiter.api.Test
+import io.kotest.matchers.shouldBe
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 
-class StringNumberSupportKtTest : TestRoot(){
+class StringNumberSupportKtTest : BeSpecLog() {
 
-    @Test
-    fun test() {
+    init {
+        initTest(KotestUtil.FAST)
 
-        println("12.9".toLong2())
-
+        Given("StringNumberSupportKt") {
+            Then("toLong2") {
+                "10.2".toLong2() shouldBe 10
+                "10.5".toLong2() shouldBe 11
+                "12.9".toLong2() shouldBe 13
+            }
+        }
     }
-
 }

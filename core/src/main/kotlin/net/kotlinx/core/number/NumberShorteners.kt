@@ -1,13 +1,14 @@
-package net.kotlinx.core.string
+package net.kotlinx.core.number
 
 import kotlin.math.pow
 
 /**
- * 62진수 문자열 기반의 간단 도구
+ * 62진수 문자열 기반의 간단 도구 (고정 자릿수) -> 특별한 이유가 없다면 범용적으로 이거 쓰면됨
  * 62진수로 표현한 7자리 최대값은 ZZZZZZZ -> 10진수로 3521614606207
  * 총 7자리의 문자를 사용하여, 총 3조 5천개 정도의 URL 매핑 가능
+ * @see net.kotlinx.core.number.NumberShortener
  *  */
-object Base62Util {
+object NumberShorteners {
 
     /** 자주 사용되는 기본 문자욜 */
     private val BASE62_CHARACTERS: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')

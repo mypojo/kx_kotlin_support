@@ -1,32 +1,36 @@
 package net.kotlinx.core.prop
 
-import net.kotlinx.core.time.TimeString
-import net.kotlinx.test.TestRoot
-import org.junit.jupiter.api.Test
+import io.kotest.matchers.shouldNotBe
+import net.kotlinx.core.Poo
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 
-class LazyLoadStringPropertyKtTest : TestRoot() {
+class LazyLoadStringPropertyKtTest : BeSpecLog() {
 
-    val demo: String by lazyLoad {
-        log.info { "초기화됩니다!!" }
-        "xxx"
-    }
+    init {
+        initTest(KotestUtil.FAST)
 
-    val ts: TimeString by lazyLoad {
-        log.info { "TimeString 초기화됩니다!!" }
-        TimeString(123123)
-    }
+        Given("LazyLoadStringPropertyKt") {
 
-    @Test
-    fun `데모`() {
-        println(demo)
-        println(demo)
-        lzayLoadReset(String::class.java)
-        println(demo)
+            var creatCnt = 0
+            val demo: Poo by lazyLoad {
+                log.info { "초기화됩니다!! -> ${creatCnt++}" }
+                Poo("매우 오래걸리는 작업", "demo", creatCnt)
+            }
 
-        println(ts)
-        println(ts)
-        lzayLoadReset(TimeString::class.java)
-        println(ts)
+            Then("최초 할당 후 리셋됨 -> 초기화 결과값이 달라짐") {
+
+                val demo01 = demo
+                log.debug { "데이터로드1 $demo" }
+                log.debug { "데이터로드2 $demo" }
+                lzayLoadReset(Poo::class.java)
+                log.debug { "데이터로드3 $demo" }
+                val demo02 = demo
+
+                demo01.age shouldNotBe demo02.age
+            }
+        }
     }
 
 }

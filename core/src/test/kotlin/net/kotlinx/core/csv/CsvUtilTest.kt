@@ -1,49 +1,37 @@
 package net.kotlinx.core.csv
 
-import org.junit.jupiter.api.Test
-import java.io.File
-import java.nio.file.Paths
-import kotlin.io.path.bufferedWriter
-import kotlin.io.path.deleteIfExists
-import kotlin.io.path.useLines
+import io.kotest.matchers.shouldBe
+import net.kotlinx.core.file.slash
+import net.kotlinx.core.threadlocal.ResourceHolder
+import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 
-internal class CsvUtilTest {
+internal class CsvUtilTest : BeSpecLog() {
 
-    @Test
-    fun 기본테스트() {
+    init {
+        initTest(KotestUtil.FAST)
 
-        val rows = listOf(listOf(1, 2, 3, "영감님"), listOf(4, 5, 6, "이동식2"))
-        val file1 = File("D:\\DATA\\WORK/data1.csv")
-        CsvUtil.ms949Writer().writeAll(rows, file1)
+        Given("CsvUtil") {
 
-        CsvUtil.ms949Reader().readAll(file1).forEach {
-            println(it)
-        }
+            val workspace = ResourceHolder.getWorkspace()
 
-        val file2 = Paths.get("D:\\DATA\\WORK/data2.csv") //path
+            Then("기본기능테스트") {
+                val rows = listOf(
+                    listOf(1, 2, 3, "영감님"),
+                    listOf(4, 5, 6, "이동식2"),
+                )
 
-        //파일 배치로 읽을때
-        file2.bufferedWriter().use {  out ->
-            file1.useLines(
-                charset("MS949")
-            ) { lines ->
-                lines.forEach {
-                    println("기본 SDK $it")
-                    out.write("기본 SDK $it\n")
-                }
+                val file1 = workspace.slash("data1.csv")
+                CsvUtil.ms949Writer().writeAll(rows, file1)
+
+                val lines = CsvUtil.ms949Reader().readAll(file1)
+                lines[0][3] shouldBe "영감님"
+
+                file1.delete() shouldBe true
             }
         }
-
-        file2.useLines{ lines ->
-            lines.forEach {
-                println("file2 다시읽기 $it")
-            }
-        }
-
-        file1.delete()
-        file2.deleteIfExists()
-
-
     }
+
 
 }

@@ -104,7 +104,7 @@ data class ListFireAndForgetContext(
     /** 진행상태 */
     val progress: String,
 ) : SerialJsonObj {
-    override fun toJson(): String = SerialJsonSet.KSON_OTHER.encodeToString(this)
+    override fun toJson(): String = SerialJsonSet.JSON_OTHER.encodeToString(this)
 
 
 }

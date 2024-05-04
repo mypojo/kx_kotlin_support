@@ -33,10 +33,10 @@ class BatchStepInput : SerialJsonObj {
 
     //==================================================== 변환 세트 ======================================================
 
-    override fun toJson(): String = SerialJsonSet.KSON_OTHER.encodeToString(this)
+    override fun toJson(): String = SerialJsonSet.JSON_OTHER.encodeToString(this)
 
     companion object : SerialJsonCompanion {
-        override fun parseJson(json: String): BatchStepInput = SerialJsonSet.KSON_OTHER.decodeFromString<BatchStepInput>(json)
+        override fun parseJson(json: String): BatchStepInput = SerialJsonSet.JSON_OTHER.decodeFromString<BatchStepInput>(json)
     }
 
 }
