@@ -6,21 +6,18 @@ import net.kotlinx.aws.module.batchStep.BatchStepListOption
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.gson.toGsonData
 import net.kotlinx.reflect.name
-import net.kotlinx.test.MyLightKoinStarter
+import net.kotlinx.test.MyAws1Module
 import net.kotlinx.test.TestLight
 import org.junit.jupiter.api.Test
 import org.koin.core.component.get
 
 class StepEndTest : TestLight() {
 
-    companion object {
-        init {
-            MyLightKoinStarter.startup("sin")
-        }
-    }
 
     @Test
     fun test() {
+
+        MyAws1Module.PROFILE_NAME = "sin"
 
         val input = BatchStepInput(StepEnd::class.name()) {
             jobPk = "batchStepTest"

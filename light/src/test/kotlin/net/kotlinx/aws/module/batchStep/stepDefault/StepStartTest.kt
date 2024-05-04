@@ -7,18 +7,12 @@ import net.kotlinx.aws.module.batchStep.BatchStepMode
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.core.gson.toGsonData
 import net.kotlinx.reflect.name
-import net.kotlinx.test.MyLightKoinStarter
 import net.kotlinx.test.TestLight
 import org.junit.jupiter.api.Test
 import org.koin.core.component.get
 
 class StepStartTest : TestLight() {
 
-    companion object {
-        init {
-            MyLightKoinStarter.startup("sin")
-        }
-    }
 
     @Test
     fun test() {

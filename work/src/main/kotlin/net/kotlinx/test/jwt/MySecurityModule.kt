@@ -10,7 +10,7 @@ import kotlin.time.Duration.Companion.hours
 
 object MySecurityModule : KoinModule {
 
-    override fun moduleConfig(option: String?): Module = module {
+    override fun moduleConfig(): Module = module {
 
         single {
             //val secret = MyAws1.AWS.ssmStore["/web/token/secret/${MyEnv.SUFFIX}"]!!

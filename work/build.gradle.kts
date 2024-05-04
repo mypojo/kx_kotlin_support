@@ -29,9 +29,9 @@ dependencies {
     api("gov.nist.math:jama:1.0.3") //https://mvnrepository.com/artifact/gov.nist.math/jama 회귀분석 패키지
 
 
-    //==================================================== 코테스트 공통 ======================================================
-    api("io.kotest:kotest-runner-junit5:_")   // API 임!! 주의!
-//    testImplementation("io.kotest:kotest-assertions-core:_")
+    //==================================================== 테스트 (하위에서 사용하기 위해서 API로 등록) ======================================================
+    api("io.kotest:kotest-runner-junit5:_") //kotest 의존성 추가.  현재버전의경우 scan 이슈가 있어서 프로퍼티 설정 해줘야함
+    api("io.kotest.extensions:kotest-extensions-koin:_") //kotest koin 확장
 
 
     //==================================================== 크롤링 ======================================================

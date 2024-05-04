@@ -3,7 +3,6 @@ package net.kotlinx.aws.s3
 import net.kotlinx.core.file.slash
 import net.kotlinx.core.threadlocal.ResourceHolder
 import net.kotlinx.file.lazyLoad
-import net.kotlinx.test.MyLightKoinStarter
 import net.kotlinx.test.TestLight
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -11,12 +10,6 @@ import java.io.File
 private const val temp = "sin"
 
 class FileLazyLoadPropertyTest : TestLight() {
-
-    companion object {
-        init {
-            MyLightKoinStarter.startup(temp)
-        }
-    }
 
     private val workspace = ResourceHolder.getWorkspace().slash("demo")
 

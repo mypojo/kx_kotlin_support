@@ -1,8 +1,6 @@
 package net.kotlinx.test
 
 import mu.KotlinLogging
-import net.kotlinx.test.MyLightKoinStarter.moduleLightLoad
-import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.module.Module
@@ -20,19 +18,15 @@ object MyHeavyKoinStarter {
         stopKoin() //체크 없이 그냥 스탑해도 됨
         startKoin {
             log.warn { "test kotin [$profile] start.." }
-            moduleLightLoad(profile)
-            moduleHeavyLoad(profile)
+            modules(MyLightKoinStarter.MODULES)
+            modules(
+                MyAwsModule.moduleConfig(),
+            )
             modules(module {
                 block()
             })
 
         }
-    }
-
-    fun KoinApplication.moduleHeavyLoad(profile: String?) {
-        modules(
-            MyAwsModule.moduleConfig(profile),
-        )
     }
 
 

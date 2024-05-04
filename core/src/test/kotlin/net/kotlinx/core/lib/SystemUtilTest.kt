@@ -13,7 +13,7 @@ class SystemUtilTest : BeSpecLog() {
                 printName()
                 SystemUtil.envPrint()
             }
-            Then("시스템 프로퍼티 출력") {
+            Then("시스템 프로퍼티 출력 (커스텀 불가능)") {
                 printName()
                 SystemUtil.systemPropertyPrint()
             }

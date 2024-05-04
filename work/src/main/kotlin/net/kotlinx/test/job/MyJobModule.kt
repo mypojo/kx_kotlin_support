@@ -14,7 +14,7 @@ import org.koin.dsl.module
 
 object MyJobModule : KoinModule {
 
-    override fun moduleConfig(option: String?): Module = module {
+    override fun moduleConfig(): Module = module {
         Job.TABLE_NAME = "job-${MyEnv.SUFFIX}"
         single { JobRepository() }
         single { JobSerializer() }

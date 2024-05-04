@@ -26,6 +26,13 @@ object SystemUtil {
      *  */
     fun envPrint() = listOf("name", "value").toTextGridPrint { System.getenv().map { arrayOf(it.key, it.value.abbr(50)) } }
 
+    /**
+     * 환경변수에 값이 있으면 가져오고
+     * 아니면 key를 리턴한다.
+     * ex) 프로젝트 이름을 git에 노출시키지 않고 조회
+     * */
+    fun envValue(key: String): String = System.getenv()[key] ?: key
+
 
     /** JVM 파라메터 */
     val JVM_PARAMS: List<String> by lazy { ManagementFactory.getRuntimeMXBean().inputArguments }

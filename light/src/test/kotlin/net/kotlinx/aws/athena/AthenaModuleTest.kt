@@ -1,14 +1,14 @@
 package net.kotlinx.aws.athena
 
 import net.kotlinx.kotest.BeSpecLog
-import net.kotlinx.test.MyLightKoinStarter
+import net.kotlinx.test.MyAws1Module
 import org.junit.jupiter.api.Test
 
 internal class AthenaModuleTest : BeSpecLog() {
     init {
         @Test
         fun `기본테스트`() {
-            MyLightKoinStarter.startup("sin")
+            MyAws1Module.PROFILE_NAME = "sin"
             val executions = listOf(
                 AthenaReadAll(
                     """
