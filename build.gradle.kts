@@ -5,8 +5,12 @@ plugins {
 }
 
 //==================================================== 공통 ======================================================
-/** 그래들 표준 문법을 간단하게 변경해줌 */
-operator fun ProviderFactory.get(name: String): String = this.gradleProperty(name).get()
+/**
+ * 그래들 표준 문법을 간단하게 변경해줌
+ * ex) providers["group"]
+ * 값이 없으면 공백 문자로 채워준다.
+ *  */
+operator fun ProviderFactory.get(name: String): String = this.gradleProperty(name).getOrElse("")
 
 allprojects {
 
@@ -49,7 +53,6 @@ allprojects {
     }
 
     tasks.create("testL1", Test::class) {
-
 
 
     }
