@@ -1,22 +1,27 @@
 package net.kotlinx.aws.lambda
 
+import io.kotest.matchers.shouldBe
 import net.kotlinx.core.gson.GsonData
 import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import org.junit.jupiter.api.Test
 
 class LambdaUrlMapTest : BeSpecLog() {
+
     init {
+        initTest(KotestUtil.FAST)
 
-        @Test
-        fun test() {
-            val urlMap = LambdaUrlMap {
-                url = "https://docs.gradle.org/8.4/userguide/command?a=b&c=dd".toHttpUrl()
+        Given("LambdaUrlMap") {
+            Then("") {
+                val urlMap = LambdaUrlMap {
+                    url = "https://docs.gradle.org/8.4/userguide/command?a=b&c=dd".toHttpUrl()
+                }
+                log.info { "Lambda 형식을  handler에 적합한 map 으로 변환 -> $urlMap" }
+
+                urlMap["rawPath"] shouldBe "/8.4/userguide/command"
+                GsonData.fromObj(urlMap)["queryStringParameters"]["c"].str shouldBe "dd"
             }
-            log.info { "map str -> $urlMap" }
-            check(urlMap["rawPath"] == "/8.4/userguide/command")
-            check(GsonData.fromObj(urlMap)["queryStringParameters"]["c"].str == "dd")
-
         }
     }
 }

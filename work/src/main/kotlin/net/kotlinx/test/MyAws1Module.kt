@@ -15,6 +15,10 @@ object MyAws1Module : KoinModule {
 
     /** 기본 프로파일 */
     var PROFILE_NAME: String? = null
+        set(value) {
+            log.debug { "PROFILE_NAME이 변경됩니다. : $field ->$value" }
+            field = value
+        }
 
     private val log = KotlinLogging.logger {}
 
