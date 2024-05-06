@@ -13,10 +13,13 @@ object SystemUtil {
     val IP: String by lazy { Inet4Address.getLocalHost().hostAddress }
 
     /**
-     * 시스템 속성 출력
-     *
+     * 시스템 프로퍼티 출력
+     * 시스템 프로퍼티는 커스텀하게 수정하지 못하는거같음
      *  */
     fun systemPropertyPrint() = listOf("name", "value").toTextGridPrint { System.getProperties().map { arrayOf(it.key, it.value.toString().abbr(50)) } }
+
+    /** 시스템 프로퍼티 가져옴 */
+    fun systemValue(key: String): String? = System.getProperties()[key]?.toString()
 
     /**
      * 환경변수 출력

@@ -6,8 +6,9 @@ import net.kotlinx.aws.s3.listDirs
 
 /**
  * Athena s3 - 파티션 생성 도우미
+ * S3를 리스팅해서 자동으로 파티션을 생성한다.
  */
-class AthenaS3PartitionModule(
+class AthenaPartitionS3Module(
     private val s3Client: S3Client,
     private val athenaModule: AthenaModule,
     private val bucketName: String,

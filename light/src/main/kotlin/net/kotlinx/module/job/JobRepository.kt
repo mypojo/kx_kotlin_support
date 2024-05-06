@@ -37,7 +37,7 @@ class JobRepository : KoinComponent {
             scanIndexForward = false //최근 데이터 우선
             select = Select.AllProjectedAttributes
             limit = 10
-            queryParam = {
+            createParamAndQuery = {
                 val job = it as Job
                 mapOf(
                     ":${DynamoDbBasic.PK}" to AttributeValue.S(job.pk),

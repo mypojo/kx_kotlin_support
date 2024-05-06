@@ -24,13 +24,13 @@ object MyLightKoinStarter {
      * @param block 테스트용 모킹객체 등 오버라이드 설정용
      * */
     fun startup(block: Module.() -> Unit = {}) {
-        stopKoin() //체크 없이 그냥 스탑해도 됨
+        log.info { "startup .." }
+        stopKoin()
         startKoin {
             modules(MODULES)
             modules(module {
                 block()
             })
-
         }
     }
 

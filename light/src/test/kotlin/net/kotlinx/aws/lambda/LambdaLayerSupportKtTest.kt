@@ -1,22 +1,23 @@
 package net.kotlinx.aws.lambda
 
-import kotlinx.coroutines.runBlocking
-import net.kotlinx.aws.AwsConfig
-import net.kotlinx.aws.toAwsClient1
-import net.kotlinx.kotest.BeSpecLog
-import org.junit.jupiter.api.Test
+import net.kotlinx.aws.AwsClient1
+import net.kotlinx.koin.Koins.koin
+import net.kotlinx.kotest.BeSpecLight
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 
-class LambdaLayerSupportKtTest : BeSpecLog() {
+class LambdaLayerSupportKtTest : BeSpecLight() {
+
     init {
-        val aws = AwsConfig().toAwsClient1()
+        initTest(KotestUtil.IGNORE)
 
-        @Test
-        fun test() {
+        val aws = koin<AwsClient1>()
 
-            runBlocking {
+        Given("lambda") {
+            Then("람다의 레이어 정보 업데이트") {
                 aws.lambda.updateFunctionLayers("kx-fn-dev", listOf("arn:aws:lambda:ap-northeast-2:519433147926:layer:layer-kx-fn-dev:6"))
             }
-
         }
     }
+
 }

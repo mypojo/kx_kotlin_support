@@ -11,7 +11,7 @@ import org.koin.core.component.inject
 class SsmStoreTest : BeSpecLight(){
 
     init {
-        initTest(KotestUtil.PROJECT01)
+        initTest(KotestUtil.PROJECT02)
 
         val aws by inject<AwsClient1>()
 
@@ -20,6 +20,7 @@ class SsmStoreTest : BeSpecLight(){
                 val value = aws.ssmStore["/cdk-bootstrap/hnb659fds/version"]
                 value shouldNotBe null
                 log.info { "SSM bootstrap = $value" }
+                "" shouldNotBe ""
             }
         }
     }

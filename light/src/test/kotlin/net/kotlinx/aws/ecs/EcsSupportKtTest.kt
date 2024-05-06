@@ -10,11 +10,11 @@ import org.koin.core.component.get
 class EcsSupportKtTest : BeSpecLight() {
 
     init {
-        initTest(KotestUtil.FAST)
+        initTest(KotestUtil.IGNORE)
 
         Given("ecs") {
             val aws = get<AwsClient1>()
-            Then("updateServiceCount") {
+            Then("updateServiceCount - ECS 서비스 터치") {
                 aws.ecs.updateServiceCount("${MyAws1Module.PROFILE_NAME}-web_cluster-dev", "${MyAws1Module.PROFILE_NAME}-web_service-dev", 1)
             }
         }

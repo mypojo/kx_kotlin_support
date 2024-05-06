@@ -29,9 +29,9 @@ object MyAws1Module : KoinModule {
                 else -> {
                     val envProfileName = SystemUtil.envValue(PROFILE_NAME!!)
                     if (PROFILE_NAME == envProfileName) {
-                        log.info { "프로파일 $PROFILE_NAME" }
+                        log.info { "프로파일 환경변수 X -> 그대로 사용됨 $PROFILE_NAME" }
                     } else {
-                        log.info { "프로파일이 환경변수에서 로드됨 $PROFILE_NAME -> $envProfileName" }
+                        log.info { "프로파일 환경변수에서 로드됨 $PROFILE_NAME -> $envProfileName" }
                     }
                     envProfileName
                 }

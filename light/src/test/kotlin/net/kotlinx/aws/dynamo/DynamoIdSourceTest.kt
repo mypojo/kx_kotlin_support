@@ -1,28 +1,35 @@
 package net.kotlinx.aws.dynamo
 
-import net.kotlinx.aws.AwsConfig
-import net.kotlinx.aws.toAwsClient1
-import net.kotlinx.kotest.BeSpecLog
-import org.junit.jupiter.api.Test
+import net.kotlinx.aws.AwsClient1
+import net.kotlinx.koin.Koins.koin
+import net.kotlinx.kotest.BeSpecLight
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 
-internal class DynamoIdSourceTest : BeSpecLog(){
+internal class DynamoIdSourceTest : BeSpecLight() {
+
     init {
-        val aws = AwsConfig(profileName = "sin").toAwsClient1()
+        initTest(KotestUtil.PROJECT02)
 
-        @Test
-        fun `기본테스트`() {
+        Given("DynamoIdSource") {
 
-            val idSource = DynamoIdSource(
-                dynamoDbClient = aws.dynamo,
-                seqTableName = "guid-dev",
-                pkName = "name",
-                pkValue = "demo",
-            )
-            for (i in 0..3) {
-                println(idSource.invoke())
+            val aws = koin<AwsClient1>()
+
+            Then("GUID 채번 테스트") {
+
+                val idSource = DynamoIdSource(
+                    dynamoDbClient = aws.dynamo,
+                    seqTableName = "guid-dev",
+                    pkValue = "kotest-demo",
+                )
+
+                for (i in 0..3) {
+                    log.info { " => [$i] -> 채번된 ID : ${idSource.invoke()}" }
+                }
             }
-
-
         }
+
+
     }
+
 }

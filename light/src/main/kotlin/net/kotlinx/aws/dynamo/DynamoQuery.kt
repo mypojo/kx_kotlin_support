@@ -3,6 +3,7 @@ package net.kotlinx.aws.dynamo
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.QueryRequest
 import aws.sdk.kotlin.services.dynamodb.model.Select
+import mu.KotlinLogging
 
 /**
  * 각 항목들은 상속해서 사용
@@ -14,9 +15,10 @@ class DynamoQuery(block: DynamoQuery.() -> Unit) {
     lateinit var query: String
 
     /**
-     * 1:1
+     * 주어진 데이터로 쿼리 파라메터를 어떻게 만들것인지 정의
+     * 간단히 정의 가능한곳에만 사용.
      *  */
-    var queryParam: ((data: DynamoData) -> Map<String, AttributeValue>)? = null
+    var createParamAndQuery: ((data: DynamoData) -> Map<String, AttributeValue>)? = null
 
     var limit: Int = 100
 
@@ -38,11 +40,15 @@ class DynamoQuery(block: DynamoQuery.() -> Unit) {
 
     /** 수정해서 사용 */
     fun toQueryRequest(data: DynamoData): QueryRequest {
-        queryParam?.let {
+
+        log.trace { "쿼리 파라메터 생성 로직이 있다면 적용" }
+        createParamAndQuery?.let {
             val returnParam = it(data)
             this.param = returnParam
             this.query = returnParam.keys.joinToString(" AND ") { "${it.replaceFirst(":", "")} = $it" }
         }
+        check(this::param.isInitialized)
+        check(this::query.isInitialized)
         return QueryRequest {
             this.expressionAttributeValues = param
             this.keyConditionExpression = query
@@ -57,17 +63,8 @@ class DynamoQuery(block: DynamoQuery.() -> Unit) {
 
     companion object {
 
-        val keyEqualTo = DynamoQuery {
-            queryParam = { mapOf(":${DynamoDbBasic.PK}" to AttributeValue.S(it.pk)) }
-        }
-        val sortBeginsWith = DynamoQuery {
-            queryParam = {
-                mapOf(
-                    ":${DynamoDbBasic.PK}" to AttributeValue.S(it.pk),
-                    ":${DynamoDbBasic.SK}" to AttributeValue.S(it.sk),
-                )
-            }
-        }
+        private val log = KotlinLogging.logger {}
+
     }
 
 

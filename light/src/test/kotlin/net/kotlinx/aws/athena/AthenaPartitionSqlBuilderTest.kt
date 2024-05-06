@@ -2,10 +2,10 @@ package net.kotlinx.aws.athena
 
 import net.kotlinx.core.time.toTimeString
 import net.kotlinx.core.time.toYmd
+import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.BeSpecLight
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import org.koin.core.component.get
 import java.time.LocalDate
 
 internal class AthenaPartitionSqlBuilderTest : BeSpecLight() {
@@ -15,7 +15,7 @@ internal class AthenaPartitionSqlBuilderTest : BeSpecLight() {
 
         Given("AthenaModule") {
 
-            val athenaModule = get<AthenaModule>()
+            val athenaModule = koin<AthenaModule>()
 
             Then("파티션_LIMIT") {
                 val start = System.currentTimeMillis()
@@ -31,7 +31,6 @@ internal class AthenaPartitionSqlBuilderTest : BeSpecLight() {
                 //val addSql = builder.generateAddSql("d.demo", datas)
                 val addSqls = builder.generateAddSqlBatch("d.demo", datas)
                 //log.info { "파티션 addSql \n$addSql" }
-
 
                 athenaModule.startAndWaitAndExecute(addSqls.map { AthenaExecute(it) })
                 log.info { "파티션 작업 종료 : 걸린시간 ${(System.currentTimeMillis() - start).toTimeString()}" }

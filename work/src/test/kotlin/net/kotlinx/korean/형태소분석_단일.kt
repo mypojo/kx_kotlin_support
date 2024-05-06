@@ -3,7 +3,6 @@ package net.kotlinx.korean
 
 import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL
 import kr.co.shineware.nlp.komoran.core.Komoran
-import mu.KotlinLogging
 import net.kotlinx.core.string.toTextGrid
 import net.kotlinx.kotest.BeSpecLight
 import org.junit.jupiter.api.Test
@@ -14,8 +13,6 @@ class 형태소분석_단일 : BeSpecLight() {
     private val headers = listOf("단어", "타입")
 
     val komoran: Komoran = Komoran(DEFAULT_MODEL.FULL)
-
-    val log = KotlinLogging.logger {}
 
     @Test
     fun test() {

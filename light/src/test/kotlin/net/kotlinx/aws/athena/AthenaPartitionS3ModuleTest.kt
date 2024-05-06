@@ -7,16 +7,18 @@ import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 
-internal class AthenaS3PartitionModuleTest : BeSpecLog() {
+/** 권장하지 않음 */
+internal class AthenaPartitionS3ModuleTest : BeSpecLog() {
 
     init {
         initTest(KotestUtil.IGNORE)
 
-        val aws = Koins.koin<AwsClient1>()
-
         Given("AthenaS3PartitionModule") {
+
+            val aws = Koins.koin<AwsClient1>()
+
             Then("기본테스트") {
-                val partitionModule = AthenaS3PartitionModule(
+                val partitionModule = AthenaPartitionS3Module(
                     aws.s3,
                     AthenaModule("wp", "workgroup-dev"),
                     "sin-data-dev",
@@ -31,7 +33,7 @@ internal class AthenaS3PartitionModuleTest : BeSpecLog() {
                 }
             }
             Then("event1_web") {
-                val partitionModule = AthenaS3PartitionModule(
+                val partitionModule = AthenaPartitionS3Module(
                     aws.s3,
                     AthenaModule("wd", "workgroup-dev"),
                     "sin-work-dev",
@@ -42,7 +44,7 @@ internal class AthenaS3PartitionModuleTest : BeSpecLog() {
                 runBlocking { partitionModule.listAndUpdate() }
             }
             Then("http_log") {
-                val partitionModule = AthenaS3PartitionModule(
+                val partitionModule = AthenaPartitionS3Module(
                     aws.s3,
                     AthenaModule("wd", "workgroup-dev"),
                     "sin-data-dev",

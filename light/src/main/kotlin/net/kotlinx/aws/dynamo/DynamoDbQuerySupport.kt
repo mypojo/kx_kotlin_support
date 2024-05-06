@@ -9,8 +9,8 @@ import aws.sdk.kotlin.services.dynamodb.paginators.queryPaginated
 
 //==================================================== 단일 쿼리 ======================================================
 
-suspend fun <T : DynamoData> DynamoDbClient.query(data: T,block: DynamoQuery.() -> Unit = {}): List<T> {
-    val query = DynamoQuery(block)
+/** 고정된 쿼리 사용 */
+suspend fun <T : DynamoData> DynamoDbClient.query(query: DynamoQuery, data: T): List<T> {
     val req = query.toQueryRequest(data)
     val firstScan = this.query(req).items!!
     if (firstScan.isEmpty()) return emptyList()
@@ -21,6 +21,9 @@ suspend fun <T : DynamoData> DynamoDbClient.query(data: T,block: DynamoQuery.() 
     }
     return items.map { data.fromAttributeMap(it) as T }
 }
+
+/** 런타임에 쿼리 설정을 재정의해서 쓸때 사용 */
+suspend fun <T : DynamoData> DynamoDbClient.query(data: T, block: DynamoQuery.() -> Unit = {}): List<T> = query(DynamoQuery(block), data)
 
 
 /** 키값 단위로 1:1 매핑해서 가져옴 */
