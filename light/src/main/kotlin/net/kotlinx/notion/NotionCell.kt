@@ -1,7 +1,7 @@
 package net.kotlinx.notion
 
 import mu.KotlinLogging
-import net.kotlinx.core.gson.GsonData
+import net.kotlinx.json.gson.GsonData
 
 /**
  * 노션 데이터페이스 페이지의 각 항목 컬럼 (읽기전용)

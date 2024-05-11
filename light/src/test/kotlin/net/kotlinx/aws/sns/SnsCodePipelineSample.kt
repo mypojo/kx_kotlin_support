@@ -2,12 +2,12 @@ package net.kotlinx.aws.sns
 
 private const val sample = """
 {
-  "account": "653734769926",
+  "account": "xxxxxxxxxxx",
   "detailType": "CodePipeline Action Execution State Change",
   "region": "ap-northeast-2",
   "source": "aws.codepipeline",
   "time": "2022-07-21T05:26:58Z",
-  "notificationRuleArn": "arn:aws:codestar-notifications:ap-northeast-2:653734769926:notificationrule/c36fb6d6784c2d31705a84702f249513ab5bbec1",
+  "notificationRuleArn": "arn:aws:codestar-notifications:ap-northeast-2:xxxxxxxxxxx:notificationrule/c36fb6d6784c2d31705a84702f249513ab5bbec1",
   "detail": {
     "pipeline": "sin-dev",
     "execution-id": "1d247af2-7eb3-4569-aeda-41416e2a81c5",
@@ -30,7 +30,7 @@ private const val sample = """
     "version": 11.0
   },
   "resources": [
-    "arn:aws:codepipeline:ap-northeast-2:653734769926:sin-dev"
+    "arn:aws:codepipeline:ap-northeast-2:xxxxxxxxxxx:sin-dev"
   ],
   "additionalAttributes": {
     "additionalInformation": "Build terminated with state: FAILED"

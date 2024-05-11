@@ -6,11 +6,11 @@ private val sample = """
     "id": "51a6f4cb-60bd-b181-8ae8-430a485d95af",
     "detail-type": "ECS Task State Change",
     "source": "aws.ecs",
-    "account": "653734769926",
+    "account": "xxxxxxxxxxx",
     "time": "2022-08-08T05:07:23Z",
     "region": "ap-northeast-2",
     "resources": [
-        "arn:aws:ecs:ap-northeast-2:653734769926:task/sin-web_cluster-dev/7e12d648155541fbb8a922c39b586f82"
+        "arn:aws:ecs:ap-northeast-2:xxxxxxxxxxx:task/sin-web_cluster-dev/7e12d648155541fbb8a922c39b586f82"
     ],
     "detail": {
         "attachments": [
@@ -49,19 +49,19 @@ private val sample = """
             }
         ],
         "availabilityZone": "ap-northeast-2a",
-        "clusterArn": "arn:aws:ecs:ap-northeast-2:653734769926:cluster/sin-web_cluster-dev",
+        "clusterArn": "arn:aws:ecs:ap-northeast-2:xxxxxxxxxxx:cluster/sin-web_cluster-dev",
         "connectivity": "CONNECTED",
         "connectivityAt": "2022-08-08T05:04:18.682Z",
         "containers": [
             {
-                "containerArn": "arn:aws:ecs:ap-northeast-2:653734769926:container/sin-web_cluster-dev/7e12d648155541fbb8a922c39b586f82/843b051c-10ee-4020-b3ec-75f8c4c9c6d4",
+                "containerArn": "arn:aws:ecs:ap-northeast-2:xxxxxxxxxxx:container/sin-web_cluster-dev/7e12d648155541fbb8a922c39b586f82/843b051c-10ee-4020-b3ec-75f8c4c9c6d4",
                 "exitCode": 143,
                 "lastStatus": "STOPPED",
                 "name": "sin-web_container-dev",
-                "image": "653734769926.dkr.ecr.ap-northeast-2.amazonaws.com/sin-web:dev",
+                "image": "xxxxxxxxxxx.dkr.ecr.ap-northeast-2.amazonaws.com/sin-web:dev",
                 "imageDigest": "sha256:73b6a47ec14f5ba795aae787a60fa54dc6c46a2a7e74a2ae0ed44fa4220b6578",
                 "runtimeId": "7e12d648155541fbb8a922c39b586f82-3367969491",
-                "taskArn": "arn:aws:ecs:ap-northeast-2:653734769926:task/sin-web_cluster-dev/7e12d648155541fbb8a922c39b586f82",
+                "taskArn": "arn:aws:ecs:ap-northeast-2:xxxxxxxxxxx:task/sin-web_cluster-dev/7e12d648155541fbb8a922c39b586f82",
                 "networkInterfaces": [
                     {
                         "attachmentId": "281fc8d0-aad3-4592-8f75-cce8d9050499",
@@ -97,10 +97,10 @@ private val sample = """
         "startedBy": "ecs-svc/5211643699352071000",
         "stoppingAt": "2022-08-08T05:06:48.601Z",
         "stoppedAt": "2022-08-08T05:07:23.184Z",
-        "stoppedReason": "Task failed ELB health checks in (target-group arn:aws:elasticloadbalancing:ap-northeast-2:653734769926:targetgroup/sin-web-target-dev/ccb1c7ee670051a0)",
+        "stoppedReason": "Task failed ELB health checks in (target-group arn:aws:elasticloadbalancing:ap-northeast-2:xxxxxxxxxxx:targetgroup/sin-web-target-dev/ccb1c7ee670051a0)",
         "stopCode": "ServiceSchedulerInitiated",
-        "taskArn": "arn:aws:ecs:ap-northeast-2:653734769926:task/sin-web_cluster-dev/7e12d648155541fbb8a922c39b586f82",
-        "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:653734769926:task-definition/sin-web_task_def-dev:26",
+        "taskArn": "arn:aws:ecs:ap-northeast-2:xxxxxxxxxxx:task/sin-web_cluster-dev/7e12d648155541fbb8a922c39b586f82",
+        "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:xxxxxxxxxxx:task-definition/sin-web_task_def-dev:26",
         "updatedAt": "2022-08-08T05:07:23.184Z",
         "version": 6
     }

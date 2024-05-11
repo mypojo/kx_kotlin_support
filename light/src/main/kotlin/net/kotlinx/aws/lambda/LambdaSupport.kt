@@ -4,9 +4,9 @@ import aws.sdk.kotlin.services.lambda.*
 import aws.sdk.kotlin.services.lambda.model.*
 import aws.sdk.kotlin.services.lambda.waiters.waitUntilPublishedVersionActive
 import net.kotlinx.aws.s3.S3Data
-import net.kotlinx.core.string.ResultText
-import net.kotlinx.core.time.TimeStart
-import net.kotlinx.core.time.toKr01
+import net.kotlinx.string.ResultText
+import net.kotlinx.time.TimeStart
+import net.kotlinx.time.toKr01
 import org.apache.commons.text.StringEscapeUtils
 import java.io.File
 import java.time.LocalDateTime

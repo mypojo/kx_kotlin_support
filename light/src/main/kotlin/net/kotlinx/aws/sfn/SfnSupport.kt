@@ -5,7 +5,6 @@ import aws.sdk.kotlin.services.sfn.model.DescribeExecutionResponse
 import aws.sdk.kotlin.services.sfn.model.ExecutionStatus
 import aws.sdk.kotlin.services.sfn.model.ListActivitiesResponse
 import aws.sdk.kotlin.services.sfn.model.ListExecutionsResponse
-import net.kotlinx.aws.AwsConfig
 
 /** 결과 리턴 최대치 */
 private const val MAX_RESULTS = 1000
@@ -32,18 +31,17 @@ suspend fun SfnClient.listActivities(nextToken: String? = null): ListActivitiesR
  * 진행 히스토리. 실행중인거 포함해서 다 리턴됨
  * ex) 이미 동일한 잡이 진행중인지 확인
  *  */
-suspend fun SfnClient.listExecutions(awsId: String, stateMachineName: String, executionStatus: ExecutionStatus, nextToken: String? = null): ListExecutionsResponse {
+suspend fun SfnClient.listExecutions(stateMachineName: String, executionStatus: ExecutionStatus, nextToken: String? = null): ListExecutionsResponse {
     return this.listExecutions {
         this.statusFilter = executionStatus
         this.nextToken = nextToken
         this.maxResults = MAX_RESULTS
-        this.stateMachineArn = SfnUtil.stateMachineArn(awsId, stateMachineName)
+        this.stateMachineArn = SfnUtil.stateMachineArn(stateMachineName)
     }
 }
 
-/** 결과 간단 가져오기 등. */
-suspend fun SfnClient.describeExecution(awsConfig: AwsConfig, stateMachineName: String, sfnId: String): DescribeExecutionResponse {
-    return this.describeExecution {
-        this.executionArn = "arn:aws:states:${awsConfig.region}:${awsConfig.awsId}:execution:${stateMachineName}:${sfnId}"
-    }
-}
+/** 인라인 간단 가져오기 */
+suspend fun SfnClient.describeExecution(executionArn: String): DescribeExecutionResponse = this.describeExecution { this.executionArn = executionArn }
+
+/** 인라인 간단 가져오기 */
+suspend fun SfnClient.describeExecution(stateMachineName: String, sfnId: String): DescribeExecutionResponse = describeExecution(SfnUtil.executionArn(stateMachineName, sfnId))

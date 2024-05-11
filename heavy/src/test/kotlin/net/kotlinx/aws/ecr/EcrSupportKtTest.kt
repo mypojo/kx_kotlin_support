@@ -1,24 +1,25 @@
 package net.kotlinx.aws.ecr
 
-import kotlinx.coroutines.runBlocking
-import net.kotlinx.aws.AwsConfig
-import net.kotlinx.aws.toAwsClient
-import net.kotlinx.kotest.BeSpecLog
-import org.junit.jupiter.api.Test
+import io.kotest.matchers.shouldNotBe
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.koin.Koins.koin
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
+import net.kotlinx.kotest.modules.BeSpecHeavy
 
-internal class EcrSupportKtTest : BeSpecLog(){
+internal class EcrSupportKtTest : BeSpecHeavy() {
+
     init {
-        val aws = AwsConfig(profileName = "sin").toAwsClient()
+        initTest(KotestUtil.IGNORE)
 
-        @Test
-        fun `기본테스트`() {
-
-            runBlocking {
-
-                aws.ecr.findAndUpdateTag("sin-job", "prod-2023-03-29_16-56", "prod")
-
+        Given("EcrSupportKt") {
+            val aws = koin<AwsClient>()
+            val profileName = aws.awsConfig.profileName!!
+            xThen("태그로 특정 이미지 조회") {
+                val image = aws.ecr.findByTag("$profileName-job", "prod")
+                image.imageId shouldNotBe null
             }
-
         }
     }
+
 }

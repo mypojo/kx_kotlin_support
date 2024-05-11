@@ -1,29 +1,32 @@
 package net.kotlinx.spring.el
 
-import net.kotlinx.core.string.toTextGrid
-import net.kotlinx.core.time.TimeFormat
 import net.kotlinx.kotest.BeSpecLog
-import org.junit.jupiter.api.Test
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
+import net.kotlinx.string.toTextGrid
+import net.kotlinx.time.TimeFormat
 import java.time.LocalDateTime
 
 internal class SpringElUtilTest : BeSpecLog() {
+
     init {
-        data class Item(val name: String, val cost: Long) {
-            var code: String? = null
-            var map: Map<String, String>? = null
-            var startTime: LocalDateTime? = null
-            var endTime: LocalDateTime? = null
+        initTest(KotestUtil.FAST)
 
-            //==================================================== 커스텀 ======================================================
-            val startDate: String
-                get() = TimeFormat.Y2MD_K01[startTime]
-            val endDate: String
-                get() = TimeFormat.Y2MD_K01[endTime]
+        Given("SpringElUtil") {
 
-        }
+            data class Item(val name: String, val cost: Long) {
+                var code: String? = null
+                var map: Map<String, String>? = null
+                var startTime: LocalDateTime? = null
+                var endTime: LocalDateTime? = null
 
-        @Test
-        fun test() {
+                //==================================================== 커스텀 ======================================================
+                val startDate: String
+                    get() = TimeFormat.Y2MD_K01[startTime]
+                val endDate: String
+                    get() = TimeFormat.Y2MD_K01[endTime]
+
+            }
 
             val item = Item("자전거", 900).apply {
                 code = "A786"
@@ -32,21 +35,23 @@ internal class SpringElUtilTest : BeSpecLog() {
                 endTime = LocalDateTime.now()
             }
 
-            val templateTexts = listOf(
-                "가격 = #{cost+200}  기간 :  #{startDate} ~ #{endDate}",
-                "가격검수 -> #{cost > 700 ? '합격' : '불합격'}",
-                "상품명은 #{name} 입니다. 카메라 = #{map['카메라']}",
-                "구내건수 = #{1+3}",
-                "바이트수 : #{'Hello World'.bytes.length} -> #{'abc'.substring(2, 3)}",
-                "랜덤숫자 #{T(java.lang.Math).random() * 100 + 1}",
-                "엑셀시트 #{ T(net.kotlinx.core.number.StringIntUtil).INSTANCE.intToUpperAlpha( 2 ) }", //컴퍼니언 오브젝트는 INSTANCE를 붙여야함
-            )
+            Then("스프링 EL 간단데모") {
+                val templateTexts = listOf(
+                    "가격 = #{cost+200}  기간 :  #{startDate} ~ #{endDate}",
+                    "가격검수 -> #{cost > 700 ? '합격' : '불합격'}",
+                    "상품명은 #{name} 입니다. 카메라 = #{map['카메라']}",
+                    "구내건수 = #{1+3}",
+                    "바이트수 : #{'Hello World'.bytes.length} -> #{'abc'.substring(2, 3)}",
+                    "랜덤숫자 #{T(java.lang.Math).random() * 100 + 1}",
+                    "엑셀시트 #{ T(net.kotlinx.number.StringIntUtil).INSTANCE.intToUpperAlpha( 2 ) }", //컴퍼니언 오브젝트는 INSTANCE를 붙여야함
+                )
 
-            val datas = templateTexts.map { arrayOf(it, SpringElUtil.elFormat(it, item)) }.toList()
+                val datas = templateTexts.map { arrayOf(it, SpringElUtil.elFormat(it, item)) }.toList()
 
-            listOf("템플릿", "결과").toTextGrid(datas).print()
+                listOf("템플릿", "결과").toTextGrid(datas).print()
 
-            log.info { " -> 텍스트 추출값 ${SpringElUtil.extract<String>("code", item)}" }
+                log.info { " -> 텍스트 추출값 ${SpringElUtil.extract<String>("code", item)}" }
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 package net.kotlinx.passay
 
-import net.kotlinx.core.string.toTextGrid
 import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.string.toTextGrid
 import org.junit.jupiter.api.Test
 import org.passay.PasswordData
 import org.passay.RuleResult

@@ -15,14 +15,14 @@ import net.kotlinx.aws.lambdaCommon.handler.s3.S3LogicHandler
 import net.kotlinx.aws.module.batchStep.BatchStepConfig
 import net.kotlinx.aws.module.batchStep.BatchStepInput
 import net.kotlinx.aws.with
-import net.kotlinx.core.calculator.ProgressData
-import net.kotlinx.core.concurrent.coroutineExecute
-import net.kotlinx.core.gson.GsonData
-import net.kotlinx.core.regex.RegexSet
-import net.kotlinx.core.serial.SerialJsonObj
-import net.kotlinx.core.serial.SerialJsonSet
-import net.kotlinx.core.string.retainFrom
-import net.kotlinx.core.time.TimeStart
+import net.kotlinx.calculator.ProgressData
+import net.kotlinx.concurrent.coroutineExecute
+import net.kotlinx.json.gson.GsonData
+import net.kotlinx.json.serial.SerialJsonSet
+import net.kotlinx.json.serial.SerialToJson
+import net.kotlinx.regex.RegexSet
+import net.kotlinx.string.retainFrom
+import net.kotlinx.time.TimeStart
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -103,7 +103,7 @@ data class ListFireAndForgetContext(
     val firstNum: Int?,
     /** 진행상태 */
     val progress: String,
-) : SerialJsonObj {
+) : SerialToJson {
     override fun toJson(): String = SerialJsonSet.JSON_OTHER.encodeToString(this)
 
 

@@ -1,6 +1,6 @@
 package net.kotlinx.excel
 
-import net.kotlinx.core.number.StringIntUtil
+import net.kotlinx.number.StringIntUtil
 import org.apache.poi.common.usermodel.HyperlinkType
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.xssf.usermodel.XSSFHyperlink

@@ -5,7 +5,7 @@ import aws.sdk.kotlin.services.costexplorer.getCostAndUsage
 import aws.sdk.kotlin.services.costexplorer.model.DateInterval
 import aws.sdk.kotlin.services.costexplorer.model.Granularity
 import aws.sdk.kotlin.services.costexplorer.model.GroupDefinitionType
-import net.kotlinx.core.time.toYmdF01
+import net.kotlinx.time.toYmdF01
 import java.time.LocalDate
 
 /** map 의 내용을 전부 replace 한다. */

@@ -2,7 +2,7 @@ package net.kotlinx.aws.lambdaCommon.handler
 
 import com.amazonaws.services.lambda.runtime.Context
 import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
-import net.kotlinx.core.gson.GsonData
+import net.kotlinx.json.gson.GsonData
 
 
 /**

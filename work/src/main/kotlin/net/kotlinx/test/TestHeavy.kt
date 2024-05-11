@@ -12,8 +12,5 @@ abstract class TestHeavy : KoinComponent {
 
         val log = KotlinLogging.logger {}
 
-        init {
-            MyHeavyKoinStarter.startup() //기본 스타트업. 오버라이드시 companion object 에 추가
-        }
     }
 }

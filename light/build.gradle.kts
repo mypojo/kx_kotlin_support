@@ -43,6 +43,7 @@ dependencies {
     api("aws.sdk.kotlin:batch:$awsVersion") //걸리는데가 많아서 추가
     api("aws.sdk.kotlin:ecs:$awsVersion") //ECS 서비스 업데이트 때문에 여기 추가
     api("aws.sdk.kotlin:cloudwatchlogs:$awsVersion") //로그 조회기능때문에 위로 이동
+    api("aws.sdk.kotlin:sts:$awsVersion") //용량 얼마 안되서 옮김. AWS ID 조회 등
 
     //==================================================== AWS 람다 ======================================================
     api("com.amazonaws:aws-lambda-java-core:_") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함
@@ -74,11 +75,13 @@ dependencies {
 
     //==================================================== OPEN-AI ======================================================
     implementation("com.aallam.openai:openai-client:_") //open API (챗GPT) kotlin client
-    implementation("io.ktor:ktor-client-okhttp:_") //open API 의 JVM http 엔진. 나는 okhttp 사용
+    implementation("io.ktor:ktor-client-core:_") //open API 의 ktor core  베타인 3점대에서 2점대로 낮춤. 아직 플러그인이 덜 완성된거 같음
+    implementation("io.ktor:ktor-client-okhttp:_") //open API 의 ktor JVM http 엔진. 나는 okhttp 사용
 
     //==================================================== 기타 ======================================================
     api("gov.nist.math:jama:1.0.3") //https://mvnrepository.com/artifact/gov.nist.math/jama 회귀분석 패키지
     api("net.lingala.zip4j:zip4j:_") //zip 압축 & 암호설정 패키지. 200kb
+    api("org.jsoup:jsoup:_") //크롤링  1.8.3
 
 }
 

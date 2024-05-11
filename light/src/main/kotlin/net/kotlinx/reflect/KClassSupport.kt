@@ -1,6 +1,6 @@
 package net.kotlinx.reflect
 
-import net.kotlinx.core.string.decapital
+import net.kotlinx.string.decapital
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 

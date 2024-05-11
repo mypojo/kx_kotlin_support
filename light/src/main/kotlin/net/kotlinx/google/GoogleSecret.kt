@@ -12,6 +12,8 @@ import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.sheets.v4.SheetsScopes
+import net.kotlinx.file.slash
+import net.kotlinx.system.ResourceHolder
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader
@@ -41,8 +43,12 @@ class GoogleSecret(block: GoogleSecret.() -> Unit = {}) {
         CalendarScopes.CALENDAR
     )
 
-    /** 시크릿을 저장할 디렉터리 */
-    lateinit var secretDir: File
+    /**
+     * 시크릿을 저장할 디렉터리
+     * 디폴트로 자주 사용되는 디렉토리 지정
+     * ex) C:\Users\userName\.google
+     *  */
+    var secretDir: File = ResourceHolder.USER_ROOT.slash(".google")
 
     /**
      * 다운로드받은 웹 애플리케이션의 클라이언트 ID 의 보안 비밀번호 파일 이름

@@ -3,14 +3,14 @@ package net.kotlinx.jpa.util
 import jakarta.persistence.Column
 import jakarta.persistence.Table
 import mu.KotlinLogging
-import net.kotlinx.core.string.abbr
-import net.kotlinx.core.string.toSnakeFromCamel
-import net.kotlinx.core.string.toTextGrid
 import net.kotlinx.guava.ClassFinder
 import net.kotlinx.reflect.annotationsOrEmpty
 import net.kotlinx.reflect.findClass
 import net.kotlinx.reflect.props
 import net.kotlinx.reflect.toKClass
+import net.kotlinx.string.abbr
+import net.kotlinx.string.toSnakeFromCamel
+import net.kotlinx.string.toTextGrid
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 

@@ -1,11 +1,9 @@
 package net.kotlinx.string
 
-import net.kotlinx.core.gson.GsonData
-import net.kotlinx.core.string.TextGrid
-import net.kotlinx.core.string.abbr
-import net.kotlinx.core.string.toTextGrid
+import net.kotlinx.json.gson.GsonData
 import net.kotlinx.reflect.Bean
 
+//==================================================== 리플렉션 때문에 이 프로젝트로 이동 ======================================================
 
 /** Gson array 인 경우 -> 아테나 등 간단 출력시 활용 */
 fun GsonData.print(limitSize: Int = TextGrid.TEXT_ABBR_LIMIT) {

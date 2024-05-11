@@ -6,8 +6,8 @@ import com.lectra.koson.obj
 import com.lectra.koson.rawJson
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import net.kotlinx.core.gson.GsonData
-import net.kotlinx.core.gson.GsonSet
+import net.kotlinx.json.gson.GsonData
+import net.kotlinx.json.gson.GsonSet
 import net.kotlinx.spring.servlet.writeJson
 import org.springframework.web.servlet.View
 

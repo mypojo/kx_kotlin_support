@@ -1,11 +1,11 @@
 package net.kotlinx.aws.athena
 
-import net.kotlinx.core.time.toTimeString
-import net.kotlinx.core.time.toYmd
 import net.kotlinx.koin.Koins.koin
-import net.kotlinx.kotest.BeSpecLight
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
+import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.time.toTimeString
+import net.kotlinx.time.toYmd
 import java.time.LocalDate
 
 internal class AthenaPartitionSqlBuilderTest : BeSpecLight() {

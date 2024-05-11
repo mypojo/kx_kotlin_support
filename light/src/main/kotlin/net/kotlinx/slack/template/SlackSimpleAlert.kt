@@ -4,10 +4,10 @@ import com.slack.api.model.block.LayoutBlock
 import com.slack.api.model.kotlin_extension.block.withBlocks
 import mu.KotlinLogging
 import net.kotlinx.core.Kdsl
-import net.kotlinx.core.dev.DeveloperData
-import net.kotlinx.core.number.ifFalse
-import net.kotlinx.core.string.abbr
+import net.kotlinx.domain.developer.DeveloperData
+import net.kotlinx.number.ifFalse
 import net.kotlinx.slack.*
+import net.kotlinx.string.abbr
 
 /**
  * 슬랙 알람 템플릿
@@ -17,9 +17,6 @@ class SlackSimpleAlert : SlackMessage {
     @Kdsl
     constructor(block: SlackSimpleAlert.() -> Unit = {}) {
         apply(block)
-    }
-
-    override fun send(): String {
         this::mainMsg.isInitialized.ifFalse {
             log.trace { "기본 메세지 입력" }
             mainMsg = when {
@@ -35,6 +32,7 @@ class SlackSimpleAlert : SlackMessage {
             val workLocationLinkText = if (workLocationLink == null) workLocation else workLocation.slackLink(workLocationLink!!)
             val slackIdsText = if (developers.isEmpty()) "" else ":smile: ${developers.joinToString(" / ") { it.slackId!!.slackMention() }}"
 
+            /** 기본 메세지 */
             /** 기본 메세지 */
             val defaultMessages = listOf(
                 ":id: $workDivLinkText :computer: $workLocationLinkText  $slackIdsText",
@@ -60,8 +58,6 @@ class SlackSimpleAlert : SlackMessage {
                 }
             }
         }
-
-        return super.send()
     }
 
     override lateinit var channel: String

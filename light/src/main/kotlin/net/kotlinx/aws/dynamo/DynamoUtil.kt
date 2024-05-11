@@ -1,7 +1,7 @@
 package net.kotlinx.aws.dynamo
 
 import net.kotlinx.aws.AwsConfig
-import net.kotlinx.core.string.encodeUrl
+import net.kotlinx.string.encodeUrl
 import java.util.concurrent.TimeUnit
 
 /**

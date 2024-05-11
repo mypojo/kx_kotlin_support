@@ -3,7 +3,7 @@ package net.kotlinx.kotest
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.test.TestScope
 import mu.KotlinLogging
-import net.kotlinx.core.lib.SystemSeparator
+import net.kotlinx.system.SystemSeparator
 
 /**
  * 간단 스펙 재정의
@@ -12,6 +12,7 @@ import net.kotlinx.core.lib.SystemSeparator
  * ==== 설정관련 주의사항 ====
  * parallelism 올리는경우 다른 콘솔에 로그가 찍힐 수 있으니 주의!
  * */
+@Suppress("LeakingThis")
 abstract class BeSpecLog : BehaviorSpec() {
 
     /**

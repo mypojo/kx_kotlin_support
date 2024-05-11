@@ -36,6 +36,5 @@ dependencies {
 
     //==================================================== 크롤링 ======================================================
     api("com.github.shin285:KOMORAN:3.3.9") //간이 형태소분석기   https://docs.komoran.kr/firststep/installation.html
-    api("org.jsoup:jsoup:1.8.3") //크롤링
 
 }

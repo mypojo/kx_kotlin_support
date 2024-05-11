@@ -1,31 +1,33 @@
 package net.kotlinx.openAi
 
-import kotlinx.coroutines.runBlocking
-import net.kotlinx.kotest.BeSpecLight
-import net.kotlinx.props.LazyLoadProperty
-import org.junit.jupiter.api.Test
+import net.kotlinx.koin.Koins.koin
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
+import net.kotlinx.kotest.modules.BeSpecLight
 
 class OpenAiClientTest : BeSpecLight() {
 
-    val openAiClient = OpenAiClient {
-        apiKey = LazyLoadProperty.ssm("/gpt4/demo/key")
-        modelId = OpenAiModels.GPT_4
-    }
+    init {
+        initTest(KotestUtil.IGNORE)
 
-    @Test
-    fun test() = runBlocking {
+        Given("OpenAiClient") {
+            log.warn { "비용 나오고 오래걸림!!" }
+            val openAiClient = koin<OpenAiClient>()
 
-        val completion = openAiClient.chat(
-            listOf(
-                "kotlin 용 DI 프레임워크 유명한고 4개만 소개해주고, 장단점을 알려줘",
-                "아이들에게 교육하는 말투로 답변해줘",
-            )
-        )
+            Then("요청 & 응답 샘플") {
+                val completion = openAiClient.chat(
+                    listOf(
+                        "kotlin 용 DI 프레임워크 유명한고 4개만 소개해주고, 장단점을 알려줘",
+                        "아이들에게 교육하는 말투로 답변해줘",
+                    )
+                )
 
-        val contents = completion.toContents()
-        contents.forEachIndexed { index, s ->
-            log.info { "결과 ${index + 1}/${contents.size} \n$s" }
+                val contents = completion.toContents()
+                contents.forEachIndexed { index, s ->
+                    log.info { "결과 ${index + 1}/${contents.size} \n$s" }
+                }
+            }
         }
-
     }
+
 }

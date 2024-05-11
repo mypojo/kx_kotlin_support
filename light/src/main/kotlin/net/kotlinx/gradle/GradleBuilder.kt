@@ -6,10 +6,10 @@ import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.lambda.*
 import net.kotlinx.aws.s3.putObject
 import net.kotlinx.aws.toAwsClient1
-import net.kotlinx.core.DeploymentType
-import net.kotlinx.core.concurrent.delay
-import net.kotlinx.core.retry.RetryTemplate
-import net.kotlinx.core.time.TimeStart
+import net.kotlinx.concurrent.delay
+import net.kotlinx.retry.RetryTemplate
+import net.kotlinx.system.DeploymentType
+import net.kotlinx.time.TimeStart
 import java.io.File
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -18,9 +18,7 @@ import kotlin.time.Duration.Companion.seconds
 
 /**
  * 코드빌드용 설정데이터
- * 그래들 빌드파일에 사용됨 (그래들 의존성은 없음)
- *
- * 나중에 cc로 변경하기
+ * 그래들 빌드파일에 사용됨 (그래들 의존성은 maven에 찾을 수 없어서 못넣음. ㅠ)
  *  */
 class GradleBuilder(
     val awsId: String,
@@ -75,10 +73,11 @@ class GradleBuilder(
 
     //==================================================== AWS ======================================================
 
-    val awsConfig = AwsConfig(profileName = profileName)
-
     /** 기본 클라이언트 */
-    val aws1 by lazy { awsConfig.toAwsClient1() }
+    val aws1 by lazy {
+        val awsConfig = AwsConfig(profileName = profileName)
+        awsConfig.toAwsClient1()
+    }
 
     /** 로깅용 문구 */
     override fun toString(): String = "isWindows($isWindows) / tagName($ecrTagName) / commitId($commitId)"

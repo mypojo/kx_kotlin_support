@@ -6,10 +6,10 @@ import aws.sdk.kotlin.services.cloudwatchlogs.describeLogStreams
 import aws.sdk.kotlin.services.cloudwatchlogs.getLogEvents
 import kotlinx.coroutines.delay
 import mu.KotlinLogging
-import net.kotlinx.core.collection.repeatUntil
-import net.kotlinx.core.number.padStart
-import net.kotlinx.core.number.toLocalDateTime
-import net.kotlinx.core.time.toKr01
+import net.kotlinx.collection.repeatUntil
+import net.kotlinx.number.padStart
+import net.kotlinx.number.toLocalDateTime
+import net.kotlinx.time.toKr01
 import java.io.File
 
 /**

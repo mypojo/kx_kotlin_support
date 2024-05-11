@@ -1,15 +1,22 @@
 package net.kotlinx.aws1
 
+import io.kotest.matchers.shouldBe
+import net.kotlinx.aws.AwsInstanceType
 import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.kotest.BeSpecLog
-import org.junit.jupiter.api.Test
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 
-internal class AwsInstanceTypeUtilTest : BeSpecLog(){
+internal class AwsInstanceTypeUtilTest : BeSpecLog() {
+
     init {
-        @Test
-        fun `기본테스트`() {
-            println(AwsInstanceTypeUtil.INSTANCE_TYPE)
-        }
+        initTest(KotestUtil.FAST)
 
+        Given("AwsInstanceTypeUtil") {
+            Then("로컬로 표기되어야함") {
+                AwsInstanceTypeUtil.INSTANCE_TYPE shouldBe AwsInstanceType.LOCAL
+            }
+        }
     }
+
 }

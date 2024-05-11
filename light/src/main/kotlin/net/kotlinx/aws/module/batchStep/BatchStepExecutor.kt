@@ -6,10 +6,11 @@ import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.lambdaCommon.handler.s3.S3LogicInput
 import net.kotlinx.aws.s3.putObject
 import net.kotlinx.aws.sfn.startExecution
+import net.kotlinx.aws.sts.StsUtil
+import net.kotlinx.calculator.ProgressInlineChecker
+import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.core.Kdsl
-import net.kotlinx.core.calculator.ProgressInlineChecker
-import net.kotlinx.core.concurrent.coroutineExecute
-import net.kotlinx.core.time.measureTimeString
+import net.kotlinx.time.measureTimeString
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
@@ -41,7 +42,7 @@ class BatchStepExecutor : KoinComponent {
             log.warn { "[${option.retrySfnId}] 재시도 요청 -> S3로 업로드는 스킵!!" }
         }
 
-        aws.sfn.startExecution(aws.awsConfig.awsId!!, config.stateMachineName, input.option.sfnId, input.toJson())
+        aws.sfn.startExecution(StsUtil.ACCOUNT_ID, config.stateMachineName, input.option.sfnId, input.toJson())
 
         return input
     }

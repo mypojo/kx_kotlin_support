@@ -3,8 +3,8 @@ package net.kotlinx.test
 import ch.qos.logback.classic.Level
 import mu.KotlinLogging
 import net.kotlinx.core.CoreUtil
-import net.kotlinx.core.logback.LogBackUtil
-import net.kotlinx.core.time.TimeStart
+import net.kotlinx.logback.LogBackUtil
+import net.kotlinx.time.TimeStart
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach

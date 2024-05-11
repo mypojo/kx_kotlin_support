@@ -3,7 +3,7 @@ package net.kotlinx.notion
 import com.lectra.koson.Koson
 import com.lectra.koson.obj
 import mu.KotlinLogging
-import net.kotlinx.core.gson.toGsonData
+import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.okhttp.await
 import okhttp3.OkHttpClient
 import org.koin.core.component.KoinComponent

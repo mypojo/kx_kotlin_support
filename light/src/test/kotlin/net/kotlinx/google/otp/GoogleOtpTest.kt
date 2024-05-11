@@ -1,23 +1,25 @@
 package net.kotlinx.google.otp
 
+import io.kotest.matchers.ints.shouldBeGreaterThan
+import io.kotest.matchers.shouldBe
 import net.kotlinx.kotest.BeSpecLog
-import org.junit.jupiter.api.Test
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 
-class GoogleOtpTest : BeSpecLog(){
+class GoogleOtpTest : BeSpecLog() {
+
     init {
-        @Test
-        fun `키 생성`() {
+        initTest(KotestUtil.FAST)
 
-            val generateSecretKey = GoogleOtp.generateSecretKey()
-            println(generateSecretKey)
-
-        }
-
-        @Test
-        fun `토큰 검증`() {
-
-            println(GoogleOtp.checkCode("UhiIgKAStJDUMwWf0fmVQymT0nk=", 377735))
-
+        Given("GoogleOtp") {
+            Then("키 생성") {
+                val generateSecretKey = GoogleOtp.generateSecretKey()
+                generateSecretKey.length shouldBeGreaterThan 0
+            }
+            xThen("토큰 검증 -> 스마트폰에 등록후 테스트 해보세요") {
+                GoogleOtp.checkCode("UhiIgKAStJDUMwWf0fmVQymT0nk=", 377735) shouldBe true
+            }
         }
     }
+
 }

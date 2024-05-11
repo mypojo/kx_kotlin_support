@@ -53,7 +53,7 @@ class BatchStepConfig(block: BatchStepConfig.() -> Unit) : KoinComponent {
     /** 간단 결과 리턴 */
     suspend fun describeExecution(sfnId: String): DescribeExecutionResponse {
         return aws1.sfn.describeExecution {
-            this.executionArn = "arn:aws:states:${aws1.awsConfig.region}:${aws1.awsConfig.awsId}:execution:${stateMachineName}:${sfnId}"
+            this.executionArn = SfnUtil.executionArn(stateMachineName, sfnId,aws1.awsConfig.region)
         }
     }
 

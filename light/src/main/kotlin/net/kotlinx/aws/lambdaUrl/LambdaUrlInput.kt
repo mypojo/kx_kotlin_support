@@ -1,6 +1,6 @@
 package net.kotlinx.aws.lambdaUrl
 
-import net.kotlinx.core.gson.GsonData
+import net.kotlinx.json.gson.GsonData
 
 /**
  * https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html

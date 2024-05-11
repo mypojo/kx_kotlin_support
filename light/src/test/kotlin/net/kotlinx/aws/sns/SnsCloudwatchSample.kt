@@ -4,17 +4,17 @@ private const val sample = """
 {
   "AlarmName": "sin-alarm-rds-dev",
   "AlarmDescription": null,
-  "AWSAccountId": "653734769926",
+  "AWSAccountId": "xxxxxxxxxxx",
   "AlarmConfigurationUpdatedTimestamp": "2022-11-08T02:50:15.240+0000",
   "NewStateValue": "ALARM",
   "NewStateReason": "Threshold Crossed: 2 out of the last 4 datapoints [10.708333333333332 (08/11/22 02:40:00), 10.791661891275925 (08/11/22 02:30:00)] were greater than the threshold (10.7) (minimum 2 datapoints for OK -> ALARM transition).",
   "StateChangeTime": "2022-11-08T02:51:18.729+0000",
   "Region": "Asia Pacific (Seoul)",
-  "AlarmArn": "arn:aws:cloudwatch:ap-northeast-2:653734769926:alarm:sin-alarm-rds-dev",
+  "AlarmArn": "arn:aws:cloudwatch:ap-northeast-2:xxxxxxxxxxx:alarm:sin-alarm-rds-dev",
   "OldStateValue": "OK",
   "OKActions": [],
   "AlarmActions": [
-    "arn:aws:sns:ap-northeast-2:653734769926:sin-topic_admin_all-dev"
+    "arn:aws:sns:ap-northeast-2:xxxxxxxxxxx:sin-topic_admin_all-dev"
   ],
   "InsufficientDataActions": [],
   "Trigger": {

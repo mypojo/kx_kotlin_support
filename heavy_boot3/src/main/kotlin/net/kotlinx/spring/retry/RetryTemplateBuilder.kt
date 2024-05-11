@@ -1,7 +1,7 @@
 package net.kotlinx.spring.retry
 
 import mu.KotlinLogging
-import net.kotlinx.core.lib.toSimpleString
+import net.kotlinx.exception.toSimpleString
 import org.springframework.retry.RetryCallback
 import org.springframework.retry.RetryContext
 import org.springframework.retry.RetryListener
@@ -15,6 +15,7 @@ import kotlin.time.Duration
 
 /**
  * 필요한거만 간단하게 적용한 버전
+ * 별로 좋은거 같지않다.. 그냥 만든거 써야지
  */
 class RetryTemplateBuilder {
 

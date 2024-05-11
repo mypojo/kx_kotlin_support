@@ -10,7 +10,7 @@ import mu.KotlinLogging
 /**
  * 다이나모DB를 사용한 글로벌 유니크 키 채번기
  * 미리 테이블이 만들어져있어야 한다.
- * @see net.kotlinx.core.id.IdGenerator
+ * @see net.kotlinx.id.IdGenerator
  */
 
 class DynamoIdSource(

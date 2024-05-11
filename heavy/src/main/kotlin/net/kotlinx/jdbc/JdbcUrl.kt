@@ -1,8 +1,8 @@
 package net.kotlinx.jdbc
 
+import net.kotlinx.collection.toQueryString
 import net.kotlinx.core.Kdsl
-import net.kotlinx.core.collection.toQueryString
-import net.kotlinx.props.lazyLoadString
+import net.kotlinx.lazyLoad.lazyLoadString
 
 class JdbcUrl {
 

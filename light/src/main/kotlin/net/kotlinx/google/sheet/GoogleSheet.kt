@@ -2,8 +2,8 @@ package net.kotlinx.google.sheet
 
 import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.model.ValueRange
-import net.kotlinx.core.number.StringIntUtil
 import net.kotlinx.google.GoogleService
+import net.kotlinx.number.StringIntUtil
 
 /**
  * 주의!.

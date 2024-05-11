@@ -8,7 +8,7 @@ import aws.sdk.kotlin.services.s3.model.ObjectIdentifier
 import aws.smithy.kotlin.runtime.content.*
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import mu.KotlinLogging
-import net.kotlinx.core.concurrent.coroutineExecute
+import net.kotlinx.concurrent.coroutineExecute
 import java.io.File
 import java.nio.charset.Charset
 
@@ -150,6 +150,7 @@ suspend inline fun S3Client.deleteAll(datas: Collection<S3Data>) {
  * 간단 쓰기는 없음 (스트리핑 put은 안됨) -> 먼저 파일로 쓴 다음 업로드 할것!!
  * @param charset  지정하지 않으면 기본디코딩
  *  */
+@Deprecated("lazyLoad 쓰세요")
 suspend inline fun S3Client.getObjectLines(bucket: String, key: String, charset: Charset? = null): List<List<String>>? {
     return try {
         this.getObject(

@@ -4,8 +4,8 @@ import com.google.common.collect.Multimap
 import com.google.common.reflect.TypeParameter
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
-import net.kotlinx.core.gson.GsonData
-import net.kotlinx.core.gson.GsonSet
+import net.kotlinx.json.gson.GsonData
+import net.kotlinx.json.gson.GsonSet
 import java.lang.reflect.Type
 
 /** json을 List 객체로 간단 변환 */

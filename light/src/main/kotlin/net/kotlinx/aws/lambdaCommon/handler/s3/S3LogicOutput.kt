@@ -1,6 +1,6 @@
 package net.kotlinx.aws.lambdaCommon.handler.s3
 
-import net.kotlinx.core.gson.GsonData
+import net.kotlinx.json.gson.GsonData
 
 /**
  * S3 CSV 로 저장될 개별 결과 파일.

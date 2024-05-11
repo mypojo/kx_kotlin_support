@@ -2,8 +2,8 @@ package net.kotlinx.google.calendar
 
 import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.EventDateTime
-import net.kotlinx.core.time.toDate
-import net.kotlinx.core.time.toYmdF01
+import net.kotlinx.time.toDate
+import net.kotlinx.time.toYmdF01
 import java.time.LocalDate
 import java.time.LocalDateTime
 

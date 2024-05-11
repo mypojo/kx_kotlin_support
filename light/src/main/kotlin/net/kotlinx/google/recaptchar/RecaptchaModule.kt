@@ -1,7 +1,7 @@
 package net.kotlinx.google.recaptchar
 
 import mu.KotlinLogging
-import net.kotlinx.core.gson.GsonData
+import net.kotlinx.json.gson.GsonData
 import net.kotlinx.okhttp.fetch
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient

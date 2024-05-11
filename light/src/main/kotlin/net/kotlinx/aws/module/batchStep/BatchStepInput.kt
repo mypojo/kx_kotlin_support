@@ -3,9 +3,9 @@ package net.kotlinx.aws.module.batchStep
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import net.kotlinx.core.Kdsl
-import net.kotlinx.core.serial.SerialJsonCompanion
-import net.kotlinx.core.serial.SerialJsonObj
-import net.kotlinx.core.serial.SerialJsonSet
+import net.kotlinx.json.serial.SerialJsonSet
+import net.kotlinx.json.serial.SerialParseJson
+import net.kotlinx.json.serial.SerialToJson
 
 
 /**
@@ -16,7 +16,7 @@ import net.kotlinx.core.serial.SerialJsonSet
  * #2 AWS BATCH(CdkSfnBatch) -> args 로 입력받는 형태라서, 2뎁스로 만들어야 매핑 가능함 (1뎁스 되는지는?? 몰라. 될거 같지만 일단 2뎁스로 감)
  * */
 @Serializable
-class BatchStepInput : SerialJsonObj {
+class BatchStepInput : SerialToJson {
 
     @Kdsl
             /** 내부 테스트용 */
@@ -35,7 +35,7 @@ class BatchStepInput : SerialJsonObj {
 
     override fun toJson(): String = SerialJsonSet.JSON_OTHER.encodeToString(this)
 
-    companion object : SerialJsonCompanion {
+    companion object Parse : SerialParseJson {
         override fun parseJson(json: String): BatchStepInput = SerialJsonSet.JSON_OTHER.decodeFromString<BatchStepInput>(json)
     }
 

@@ -1,6 +1,6 @@
 package net.kotlinx.okhttp
 
-import net.kotlinx.core.regex.RegexSet
+import net.kotlinx.regex.RegexSet
 import okhttp3.OkHttpClient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

@@ -5,7 +5,7 @@ import io.jsonwebtoken.security.Keys
 import io.jsonwebtoken.security.SecurityException
 import jakarta.validation.ValidationException
 import mu.KotlinLogging
-import net.kotlinx.core.time.toDate
+import net.kotlinx.time.toDate
 import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDateTime
 import java.util.*

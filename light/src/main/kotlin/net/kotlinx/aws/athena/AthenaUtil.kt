@@ -1,6 +1,6 @@
 package net.kotlinx.aws.athena
 
-import net.kotlinx.core.string.toSnakeFromCamel
+import net.kotlinx.string.toSnakeFromCamel
 import java.time.LocalDateTime
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty

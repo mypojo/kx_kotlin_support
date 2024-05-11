@@ -3,9 +3,9 @@ package net.kotlinx.aws.lambda
 import com.google.gson.JsonElement
 import com.lectra.koson.ObjectType
 import net.kotlinx.aws.AwsNaming
-import net.kotlinx.core.gson.GsonData
-import net.kotlinx.core.gson.toGsonData
-import net.kotlinx.core.serial.SerialJsonObj
+import net.kotlinx.json.gson.GsonData
+import net.kotlinx.json.gson.toGsonData
+import net.kotlinx.json.serial.SerialToJson
 
 /** 람다결과(map) 형식 지원하는 객체 */
 interface LambdaMapResult {
@@ -30,7 +30,7 @@ object LambdaHandlerUtil {
         is JsonElement -> GsonData(handlerResp).fromJson<LinkedHashMap<String, Any>>() //Gson
         is GsonData -> handlerResp.fromJson<LinkedHashMap<String, Any>>() //Gson V2
         is ObjectType -> GsonData.parse(handlerResp).fromJson<LinkedHashMap<String, Any>>() //koson
-        is SerialJsonObj -> handlerResp.toJson().toGsonData().fromJson<LinkedHashMap<String, Any>>() //kotlin serialize
+        is SerialToJson -> handlerResp.toJson().toGsonData().fromJson<LinkedHashMap<String, Any>>() //kotlin serialize
         //==================================================== 객체 ======================================================
         is LambdaMapResult -> handlerResp.toLambdaMap()
         else -> GsonData.fromObj(handlerResp).fromJson<LinkedHashMap<String, Any>>()

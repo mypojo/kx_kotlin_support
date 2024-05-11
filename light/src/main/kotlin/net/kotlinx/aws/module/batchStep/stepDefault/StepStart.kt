@@ -14,17 +14,16 @@ import net.kotlinx.aws.lambdaCommon.handler.s3.S3LogicHandler
 import net.kotlinx.aws.module.batchStep.BatchStepConfig
 import net.kotlinx.aws.module.batchStep.BatchStepInput
 import net.kotlinx.aws.module.batchStep.BatchStepMode
-import net.kotlinx.core.gson.GsonData
-import net.kotlinx.core.regex.RegexSet
-import net.kotlinx.core.serial.LocalDateTimeSerializer
-import net.kotlinx.core.serial.SerialJsonCompanion
-import net.kotlinx.core.serial.SerialJsonObj
-import net.kotlinx.core.serial.SerialJsonSet
-import net.kotlinx.core.string.retainFrom
-import net.kotlinx.module.job.Job
-import net.kotlinx.module.job.JobExeFrom
-import net.kotlinx.module.job.JobRepository
-import net.kotlinx.module.job.JobStatus
+import net.kotlinx.domain.job.JobExeFrom
+import net.kotlinx.domain.job.JobRepository
+import net.kotlinx.domain.job.JobStatus
+import net.kotlinx.json.gson.GsonData
+import net.kotlinx.json.serial.LocalDateTimeSerializer
+import net.kotlinx.json.serial.SerialJsonSet
+import net.kotlinx.json.serial.SerialParseJson
+import net.kotlinx.json.serial.SerialToJson
+import net.kotlinx.regex.RegexSet
+import net.kotlinx.string.retainFrom
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.LocalDateTime
@@ -47,12 +46,12 @@ class StepStart : LambdaLogicHandler, KoinComponent {
         val option = BatchStepInput.parseJson(input.toString()).option
         val inputDatas = config.listInputs(option.targetSfnId)
 
-        if(inputDatas.isNotEmpty()){
-            log.warn { " ${config.workUploadBuket}/${config.workUploadInputDir}${option.targetSfnId}/  -> 데이터가 존재하지 않습니다. (retry일 경우에만 데이터가 없어도 됨)"  }
+        if (inputDatas.isNotEmpty()) {
+            log.warn { " ${config.workUploadBuket}/${config.workUploadInputDir}${option.targetSfnId}/  -> 데이터가 존재하지 않습니다. (retry일 경우에만 데이터가 없어도 됨)" }
         }
         log.debug { " -> [${config.workUploadBuket}/${config.workUploadInputDir}${option.targetSfnId}] -> ${inputDatas.size} 로드됨" }
 
-        val job = Job(option.jobPk, option.jobSk) {
+        val job = net.kotlinx.domain.job.Job(option.jobPk, option.jobSk) {
             jobStatus = JobStatus.RUNNING
             reqTime = LocalDateTime.now()
             jobStatus = JobStatus.RUNNING
@@ -70,7 +69,7 @@ class StepStart : LambdaLogicHandler, KoinComponent {
         return StepStartContext(
             LocalDateTime.now(),
             inputDatas.size,
-            inputDatas.firstOrNull()?.substringAfterLast("/")?.retainFrom(RegexSet.NUMERIC)?.toInt() ?: 0 ,
+            inputDatas.firstOrNull()?.substringAfterLast("/")?.retainFrom(RegexSet.NUMERIC)?.toInt() ?: 0,
             when (option.mode) {
 
                 BatchStepMode.MAP_INLINE -> {
@@ -106,11 +105,11 @@ data class StepStartContext(
      * array<String> 이며 문자는 json 형식이어야함  {Key:...}
      *  */
     val datas: List<String>,
-) : SerialJsonObj {
+) : SerialToJson {
 
     override fun toJson(): String = SerialJsonSet.JSON_OTHER.encodeToString(this)
 
-    companion object : SerialJsonCompanion {
+    companion object Parse : SerialParseJson {
         override fun parseJson(json: String): StepStartContext = SerialJsonSet.JSON_OTHER.decodeFromString(json)
     }
 

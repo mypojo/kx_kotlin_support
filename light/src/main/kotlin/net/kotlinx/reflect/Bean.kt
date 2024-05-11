@@ -1,9 +1,9 @@
 package net.kotlinx.reflect
 
 import mu.KotlinLogging
-import net.kotlinx.core.concurrent.parallelExecute
-import net.kotlinx.core.string.TextGrid
-import net.kotlinx.core.string.toTextGrid
+import net.kotlinx.concurrent.parallelExecute
+import net.kotlinx.string.TextGrid
+import net.kotlinx.string.toTextGrid
 import java.util.concurrent.Callable
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty

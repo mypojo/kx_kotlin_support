@@ -52,12 +52,6 @@ allprojects {
         }
     }
 
-    tasks.create("testL1", Test::class) {
-
-
-    }
-
-
     java {
         withSourcesJar() //소스코드 포함해서 배포
         //withJavadocJar() //메이븐 센트럴 빌드에 필요
@@ -90,7 +84,7 @@ allprojects {
         archiveFileName = "allDependencies.zip"
         doFirst {
             println("용량확인..")
-            configurations.runtimeClasspath.get().sortedByDescending { it.length() }.take(20).forEach {
+            configurations.runtimeClasspath.get().sortedByDescending { it.length() }.take(30).forEach {
                 println(" -> ${it.length() / 1024 / 1024}  ${it.name}")
             }
         }

@@ -1,6 +1,6 @@
 package net.kotlinx.google.sheet
 
-import net.kotlinx.core.number.StringIntUtil
+import net.kotlinx.number.StringIntUtil
 
 /**
  * 구글 시트에서 사용되는 좌표 생성기

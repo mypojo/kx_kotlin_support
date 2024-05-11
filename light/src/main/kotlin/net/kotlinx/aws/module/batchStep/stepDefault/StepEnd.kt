@@ -10,13 +10,13 @@ import net.kotlinx.aws.lambda.LambdaUtil
 import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
 import net.kotlinx.aws.module.batchStep.BatchStepConfig
 import net.kotlinx.aws.module.batchStep.BatchStepInput
-import net.kotlinx.core.gson.GsonData
-import net.kotlinx.core.retry.RetryTemplate
-import net.kotlinx.core.time.toTimeString
-import net.kotlinx.module.job.Job
-import net.kotlinx.module.job.JobRepository
-import net.kotlinx.module.job.JobStatus
-import net.kotlinx.module.job.JobUpdateSet
+import net.kotlinx.domain.job.JobRepository
+import net.kotlinx.domain.job.JobStatus
+import net.kotlinx.domain.job.JobUpdateSet
+import net.kotlinx.json.gson.GsonData
+import net.kotlinx.retry.RetryTemplate
+import net.kotlinx.time.toTimeString
+
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.LocalDateTime
@@ -84,7 +84,7 @@ class StepEnd : LambdaLogicHandler, KoinComponent {
             }
         }
 
-        jobRepository.getItem(Job(option.jobPk, option.jobSk))!!.apply {
+        jobRepository.getItem(net.kotlinx.domain.job.Job(option.jobPk, option.jobSk))!!.apply {
             jobStatus = JobStatus.SUCCEEDED
             endTime = LocalDateTime.now()
             jobContext = resultJson.toString()

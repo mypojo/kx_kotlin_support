@@ -2,7 +2,7 @@ package net.kotlinx.notion
 
 import com.lectra.koson.arr
 import com.lectra.koson.obj
-import net.kotlinx.core.gson.GsonData
+import net.kotlinx.json.gson.GsonData
 
 /**
  * enum 과 실제 타입 이름을 맞추려는 무리수로 이렇게 됨.. ㅠㅠ

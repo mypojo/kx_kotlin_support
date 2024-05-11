@@ -16,9 +16,9 @@ import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.s3.getObjectDownload
 import net.kotlinx.aws.s3.getObjectLines
-import net.kotlinx.core.concurrent.CoroutineSleepTool
-import net.kotlinx.core.concurrent.coroutineExecute
-import net.kotlinx.core.retry.RetryTemplate
+import net.kotlinx.concurrent.CoroutineSleepTool
+import net.kotlinx.concurrent.coroutineExecute
+import net.kotlinx.retry.RetryTemplate
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File

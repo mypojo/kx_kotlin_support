@@ -2,7 +2,7 @@ package net.kotlinx.aws.cost
 
 import aws.sdk.kotlin.services.costexplorer.model.GetCostAndUsageResponse
 import aws.sdk.kotlin.services.costexplorer.model.GroupDefinitionType
-import net.kotlinx.core.string.toTextGrid
+import net.kotlinx.string.toTextGrid
 
 /** 간단출력 */
 fun List<CostExplorerLine>.print() {

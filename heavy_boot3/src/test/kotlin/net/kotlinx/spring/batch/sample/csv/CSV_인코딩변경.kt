@@ -2,14 +2,15 @@ package net.kotlinx.spring.batch.sample.csv
 
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.spring.batch.BatchExecutor
-import net.kotlinx.spring.opencsv.CsvItemWriterTemplate
-import net.kotlinx.spring.opencsv.toCsvItemWriter
-import net.kotlinx.spring.opencsv.toCsvReader
+import net.kotlinx.spring.batch.component.CsvItemWriterTemplate
+import net.kotlinx.spring.batch.component.toCsvItemWriter
+import net.kotlinx.spring.batch.component.toCsvReader
 import net.kotlinx.spring.resource.toGzipOutputStreamResource
 import org.junit.jupiter.api.Test
 import java.io.File
 
 class CSV_인코딩변경 : BeSpecLog(){
+
     init {
         fun doAll(inputDir: File) {
             val outDir = File(inputDir.absolutePath + "_out").apply { mkdirs() }

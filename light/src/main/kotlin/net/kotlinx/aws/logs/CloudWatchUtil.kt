@@ -1,8 +1,8 @@
 package net.kotlinx.aws.logs
 
 import net.kotlinx.aws.AwsConfig
-import net.kotlinx.core.string.encodeUrl
-import net.kotlinx.core.time.toLong
+import net.kotlinx.string.encodeUrl
+import net.kotlinx.time.toLong
 import java.time.LocalDateTime
 
 object CloudWatchUtil {

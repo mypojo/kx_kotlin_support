@@ -2,14 +2,14 @@ package net.kotlinx.aws.athena
 
 import io.kotest.matchers.shouldBe
 import net.kotlinx.aws.AwsConfig
-import net.kotlinx.core.number.toSiText
-import net.kotlinx.core.regex.RegexSet
-import net.kotlinx.core.string.removeFrom
 import net.kotlinx.koin.Koins.koin
-import net.kotlinx.kotest.BeSpecLight
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
+import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.number.toSiText
+import net.kotlinx.regex.RegexSet
 import net.kotlinx.string.print
+import net.kotlinx.string.removeFrom
 
 internal class AthenaModuleTest : BeSpecLight() {
 

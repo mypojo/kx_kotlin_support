@@ -1,21 +1,19 @@
 package net.kotlinx.notion
 
 import mu.KotlinLogging
-import net.kotlinx.core.string.toLocalDateTime
-import net.kotlinx.core.time.TimeStart
-import net.kotlinx.core.time.toF01
-import net.kotlinx.core.time.toIso
-import net.kotlinx.core.time.toTimeString
 import net.kotlinx.google.calendar.GoogleCalendar
 import net.kotlinx.google.calendar.GoogleCalendarData
+import net.kotlinx.string.toLocalDateTime
+import net.kotlinx.time.toF01
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 
 /**
  * 노션 DB 를 구글 캘린더로 변환해줌
  * ex) 5분에 한번씩 AWS Lambda로 동기화 -> 월비용
+ *
+ * https://github.com/BoD/klibnotion 쓰세요
  *  */
 class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() -> Unit = {}) : KoinComponent {
 
@@ -76,22 +74,23 @@ class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() ->
     /**
      * 마지막 동기화 시간 이후부터 지금까지의 변경데이터 스캔
      * */
-    suspend fun updateOrInsert() {
+    fun updateOrInsert() {
+        log.warn { "이거 기억이 안난다.." }
 
-        val start = TimeStart()
-
-        //먼저 마지막 수정 시간을 스캔한다. 페이지의 가장 첫 라인 사용.
-        val synchInfoCell = notionPageBlockClient.blocks(notionPageId, 1).first()
-        val lastSynchTime = fromBlock(synchInfoCell.cell!!.viewText)
-
-        val scanStartTime = lastSynchTime.plusSeconds(1) //1초 이후로 스캔
-        val scanEndTime = LocalDateTime.now()
-
-        val filter = NotionFilterSet.lastEditBetween(scanStartTime to scanEndTime)
+//        val start = TimeStart()
+//
+//        //먼저 마지막 수정 시간을 스캔한다. 페이지의 가장 첫 라인 사용.
+//        val synchInfoCell = notionPageBlockClient.blocks(notionPageId, 1).first()
+//        val lastSynchTime = fromBlock(synchInfoCell.cell!!.viewText)
+//
+//        val scanStartTime = lastSynchTime.plusSeconds(1) //1초 이후로 스캔
+//        val scanEndTime = LocalDateTime.now()
+//
+//        val filter = NotionFilterSet.lastEditBetween(scanStartTime to scanEndTime)
         //val filter = NotionFilterSet.lastEditAfter(scanStartTime)
-        val notionRows = notionDatabaseClient.queryAll(notionDbId, filter)
-        notionRows.forEach { notionRow ->
-
+//        val notionRows = notionDatabaseClient.queryAll(notionDbId, filter)
+//        notionRows.forEach { notionRow ->
+//
 //            val dateCell = notionRow.colimns.firstOrNull { it.name == date } ?: throw IllegalStateException("date column is required")
 //            val titleCell = notionRow.colimns.firstOrNull { it.name == title } ?: throw IllegalStateException("title column is required")
 //            val descCell = notionRow.colimns.firstOrNull { it.name == desc } ?: throw IllegalStateException("desc column is required")
@@ -118,15 +117,15 @@ class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() ->
 //            } else {
 //                synchUpdate(calendarId, calendarData, gceId, notionRow.id)
 //            }
-        }
+//        }
 
         //노션 블럭정보 업데이트
         //notionPageBlockClient.update(NotionCell2(synchInfoCell.cell!!.id, NotionCellType.rich_text, toBlock(scanEndTime)))
 
-        log.info {
-            val duration = ChronoUnit.MILLIS.between(scanStartTime, scanEndTime).toTimeString()
-            "스캔 [${scanStartTime.toIso()}~${scanEndTime.toIso()}] (${duration} 간의 데이터변경건) : 처리건수 ${notionRows.size} -> $start"
-        }
+//        log.info {
+//            val duration = ChronoUnit.MILLIS.between(scanStartTime, scanEndTime).toTimeString()
+//            "스캔 [${scanStartTime.toIso()}~${scanEndTime.toIso()}] (${duration} 간의 데이터변경건) : 처리건수 ${notionRows.size} -> $start"
+//        }
     }
 
     private suspend fun synchInsert(calendarId: String, calendarData: GoogleCalendarData, notionPageId: String) {

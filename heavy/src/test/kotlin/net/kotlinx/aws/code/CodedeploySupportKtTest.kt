@@ -2,40 +2,40 @@ package net.kotlinx.aws.code
 
 import aws.sdk.kotlin.services.codedeploy.model.LifecycleEventStatus
 import aws.sdk.kotlin.services.codedeploy.putLifecycleEventHookExecutionStatus
-import kotlinx.coroutines.runBlocking
-import net.kotlinx.aws.AwsConfig
-import net.kotlinx.aws.toAwsClient
-import net.kotlinx.kotest.BeSpecLog
-import org.junit.jupiter.api.Test
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.sts.StsUtil
+import net.kotlinx.koin.Koins.koin
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
+import net.kotlinx.kotest.modules.BeSpecHeavy
 
-class CodedeploySupportKtTest : BeSpecLog(){
+class CodedeploySupportKtTest : BeSpecHeavy() {
+
     init {
-        val aws = AwsConfig(profileName = "sin", awsId = "112233").toAwsClient()
+        initTest(KotestUtil.IGNORE)
 
-        @Test
-        fun test() {
+        Given("CodedeployAppSpecBuilder") {
+            val aws = koin<AwsClient>()
+            xThen("코드 디플로이 배포") {
+                val appSepc = CodedeployAppSpecBuilder(
+                    awsId = StsUtil.ACCOUNT_ID,
+                    containerName = "sin-web_container-prod",
+                    taskDef = "sin-web_task_def-prod",
+                    lambdaHookName = "sin-controller-prod"
+                ).build()
 
-            val appSepc = CodedeployAppSpecBuilder(
-                awsId = aws.awsConfig.awsId!!,
-                containerName = "sin-web_container-prod",
-                taskDef = "sin-web_task_def-prod",
-                lambdaHookName = "sin-controller-prod"
-            ).build()
-
-            runBlocking {
                 val deployment = aws.codeDeploy.createDeployment("sin-codedeploy-prod", "sin-codedeploy-prod", appSepc)
-                println(CodedeployUtil.toConsoleLink(deployment.deploymentId!!))
+                log.warn { "코드디플로이 배포 -> ${CodedeployUtil.toConsoleLink(deployment.deploymentId!!)}" }
             }
-        }
 
-        @Test
-        fun to_success() = runBlocking {
-            val deployment = aws.codeDeploy.putLifecycleEventHookExecutionStatus {
-                "d-9ZEA0GBXJ"
-                "eyJlbmNyeXB0ZWREYXRhIjoiNmNWNjd1N0Fsbm1TWmo3L1lJMmZtWmlqdC9nMDdMdC8yYTlCQUh2QXV1RUtDUkZ1ZXBmMWNRWTdsRCs2blN5RXpWenNQWXhWT0g2SEVNbTFpKzlMKzRTMFhjWk0yUHRTU0FxRXhjekFiUGFPS0JJRjR2bG9pR1hWakpXUmthOXVTSVRZdVJDdmlRPT0iLCJpdlBhcmFtZXRlclNwZWMiOiJQYnRSNzg2Zm1BSE02ODVxIiwibWF0ZXJpYWxTZXRTZXJpYWwiOjF9"
-                LifecycleEventStatus.Succeeded
+            xThen("코드 디플로이 배포 -> 승인처리") {
+                val deployment = aws.codeDeploy.putLifecycleEventHookExecutionStatus {
+                    "xxxx"
+                    "yyyy"
+                    LifecycleEventStatus.Succeeded
+                }
+                log.warn { "코드디플로이 승인됨 from ${deployment.lifecycleEventHookExecutionId}" }
             }
-            println(deployment)
         }
     }
 }

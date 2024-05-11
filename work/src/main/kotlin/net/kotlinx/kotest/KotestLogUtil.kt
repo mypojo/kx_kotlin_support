@@ -2,8 +2,8 @@ package net.kotlinx.kotest
 
 import ch.qos.logback.classic.Level
 import net.kotlinx.core.CoreUtil
-import net.kotlinx.core.DeploymentType
-import net.kotlinx.core.logback.LogBackUtil
+import net.kotlinx.logback.LogBackUtil
+import net.kotlinx.system.DeploymentType
 
 
 /**

@@ -22,7 +22,7 @@ class BatchExecutor(
     private val log = KotlinLogging.logger {}
 
     //======================= 설정파일 ===============================
-    var name = this::class.simpleName
+    var name: String = this::class.simpleName!!
 
     lateinit var itemReader: ItemReader<out Any>
     lateinit var itemWriter: ItemWriter<out Any>
@@ -81,26 +81,12 @@ class BatchExecutor(
 
     /** 나중에 하자 */
     private fun doExecute(): ExecutionContext {
-        throw UnsupportedOperationException()
-//        val success = AtomicBoolean(Boolean.TRUE)
-//        val executor: ThreadExecutor = ThreadExecutor.of(threadCnt, name)
-//        executor.setWaitForTasksToCompleteOnShutdown(false) //스프링 배치 형태는 셧다운(예외 발생)시 모든 스래드를 인터럽트 하고 기다린다.
-//        executor.setErrorHandler { e ->
-//            if (e is BatchExecutorStopException) {
-//                log.info("[{}] BatchExecutorStopException => {}", name, e.getMessage())
-//            } else {
-//                errorHandler?.handleError(e)
-//                val knownStop = e is PropagatedRuntimeException.InterruptedRuntimeException || e is InterruptedException
-//                if (knownStop) {
-//                    //스택트레이스는 하나면 충분하다.
-//                    log.error("[{}] 실행중인 스래드 중단요청으로 stop : {}", Thread.currentThread().name, ExceptionUtil.toString(e))
-//                } else {
-//                    log.error("[{}] 실행중인 스래드에서 예외발생 => 스래드 전체를 셧다운합니다.", Thread.currentThread().name, e)
-//                }
-//                executor.shutdown() //즉시 인터럽트함.
-//                success.set(Boolean.FALSE)
-//            }
+        throw UnsupportedOperationException("아직 안만들었어요. 가능하면 다른거 쓰세요.")
+//        val success = AtomicBoolean(true)
+//        val executor = ThreadPoolBuilder(threadCnt, name).build {
+//            setWaitForTasksToCompleteOnShutdown(false) //스프링 배치 형태는 셧다운(예외 발생)시 모든 스래드를 인터럽트 하고 기다린다.
 //        }
+//
 //        val callable = Callable<Long> {
 //            try {
 //                val countSum = MutableLong()
@@ -112,9 +98,12 @@ class BatchExecutor(
 //                BatchExecutorHolder.LOCAL.remove()
 //            }
 //        }
+//
+//        executor.submit(callable)
+//
 //        val futures: MutableList<Future<Long>> = Lists.newArrayList()
 //        for (i in 0 until threadCnt) {
-//            futures.add(executor.submit(callable))
+//            futures.add()
 //        }
 //        try {
 //            //여기서 블럭한다.  인터럽트도 안되고, ExecutionException를 던지지 않는다. (내부 예외 처리)
@@ -133,7 +122,7 @@ class BatchExecutor(
 //            log.trace("리더/라이터 close 완료")
 //        }
 //        check(success.get()) { "병렬 처리시 예외가 발생 -> 메인 스레드에서 예외 전파시킴" }
-        return executionContext
+//        return executionContext
     }
 
     companion object {

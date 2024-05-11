@@ -2,9 +2,9 @@ package net.kotlinx.aws.lambdaCommon.handler
 
 import com.amazonaws.services.lambda.runtime.Context
 import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
-import net.kotlinx.core.gson.GsonData
-import net.kotlinx.module.job.trigger.JobLocalExecutor
-import net.kotlinx.module.job.trigger.JobSerializer
+import net.kotlinx.domain.job.trigger.JobLocalExecutor
+import net.kotlinx.domain.job.trigger.JobSerializer
+import net.kotlinx.json.gson.GsonData
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 

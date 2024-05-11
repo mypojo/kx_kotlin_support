@@ -9,9 +9,9 @@ import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.toAwsClient1
-import net.kotlinx.core.string.toLocalDateTime
-import net.kotlinx.core.time.toH
-import net.kotlinx.core.time.toYmd
+import net.kotlinx.string.toLocalDateTime
+import net.kotlinx.time.toH
+import net.kotlinx.time.toYmd
 import java.net.URLDecoder
 
 /**

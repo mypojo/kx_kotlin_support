@@ -5,8 +5,8 @@ package net.kotlinx.guava
 import com.google.common.base.Charsets
 import com.google.common.hash.HashFunction
 import com.google.common.hash.Hashing
-import net.kotlinx.core.number.NumberUtil
-import net.kotlinx.core.number.padStart
+import net.kotlinx.number.NumberUtil
+import net.kotlinx.number.padStart
 import java.nio.charset.Charset
 import java.time.LocalDateTime
 import kotlin.math.abs

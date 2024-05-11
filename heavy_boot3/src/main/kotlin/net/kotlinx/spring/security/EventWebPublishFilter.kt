@@ -4,10 +4,10 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import net.kotlinx.aws.AwsInfoLoader
-import net.kotlinx.core.number.toLocalDateTime
-import net.kotlinx.hibernate.eventLog.EventPublisher
-import net.kotlinx.hibernate.eventLog.EventUtil
-import net.kotlinx.hibernate.eventLog.EventWeb
+import net.kotlinx.domain.eventLog.EventPublisher
+import net.kotlinx.domain.eventLog.EventUtil
+import net.kotlinx.domain.eventLog.EventWeb
+import net.kotlinx.number.toLocalDateTime
 import org.springframework.web.filter.OncePerRequestFilter
 
 /**

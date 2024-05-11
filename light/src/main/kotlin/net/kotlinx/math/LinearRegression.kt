@@ -1,9 +1,9 @@
 package net.kotlinx.math
 
 import mu.KotlinLogging
-import net.kotlinx.core.lib.SystemUtil
-import net.kotlinx.core.number.toSiText
-import net.kotlinx.core.time.TimeStart
+import net.kotlinx.number.toSiText
+import net.kotlinx.system.SystemUtil
+import net.kotlinx.time.TimeStart
 import kotlin.math.pow
 
 /**

@@ -2,7 +2,7 @@ package net.kotlinx.aws.firehose
 
 import aws.sdk.kotlin.services.firehose.FirehoseClient
 import com.google.gson.Gson
-import net.kotlinx.core.gson.GsonSet
+import net.kotlinx.json.gson.GsonSet
 
 /**
  * 키네시스 간단 로거

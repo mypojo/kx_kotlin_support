@@ -1,7 +1,7 @@
 package net.kotlinx.okhttp
 
 import net.kotlinx.core.Kdsl
-import net.kotlinx.core.string.CharSets
+import net.kotlinx.string.CharSets
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType

@@ -11,6 +11,7 @@ import aws.sdk.kotlin.services.lambda.LambdaClient
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.sfn.SfnClient
 import aws.sdk.kotlin.services.ssm.SsmClient
+import aws.sdk.kotlin.services.sts.StsClient
 import net.kotlinx.aws.ssm.SsmStore
 
 /**
@@ -30,6 +31,7 @@ open class AwsClient1(val awsConfig: AwsConfig) {
     val dynamo: DynamoDbClient by lazy { DynamoDbClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
     val lambda: LambdaClient by lazy { LambdaClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
     val logs: CloudWatchLogsClient by lazy { CloudWatchLogsClient  { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val sts: StsClient by lazy { StsClient  { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
 
     //==================================================== 컴퓨팅 인프라 ======================================================
     val sfn: SfnClient by lazy { SfnClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }

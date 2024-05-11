@@ -28,21 +28,3 @@ val ThreadPoolTaskScheduler.remainPoolSize: Int
     /** 최대 스래드 - 현재 작동중인 스래드 = 사용 가능한 스래드  */
     get() = corePoolSize - activeCount
 
-
-//=========================== 스케쥴링용 메소드 ===============================
-///**
-// * 하루에 한번 작동하는 배치
-// * ex) exe.scheduleAtFixedRate(run01,LocalTime.of(12,29,3),Duration.ofDays(1));
-// * 크론 표현식 말고 이걸 사용할것
-// */
-//fun ThreadPoolTaskScheduler.scheduleAtFixedRate(runnable: Runnable?, time: LocalTime, duration: Duration?) {
-//    val firstExecute = time.atDate(LocalDate.now()).atZone(TimeUtil.SEOUL).toInstant()
-//    this.scheduleAtFixedRate(runnable, firstExecute, duration)
-//}
-//
-///** scheduleAtFixedDate와 비슷하지만 딜레이보다 작을경우 중첩 가능하게 작동.   */
-//fun ThreadPoolTaskScheduler.scheduleAtFixedDateWithDuplication(runnable: Runnable?, fixedDate: Long) {
-//    this.scheduleAtFixedRate(Runnable { this.execute(runnable) }, fixedDate)
-//}
-
-

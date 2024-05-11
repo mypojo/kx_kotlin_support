@@ -1,66 +1,51 @@
 package net.kotlinx.aws.lambda
 
-import kotlinx.coroutines.runBlocking
-import net.kotlinx.aws.AwsConfig
-import net.kotlinx.aws.toAwsClient
-import net.kotlinx.kotest.BeSpecLog
-import org.junit.jupiter.api.Test
+import aws.sdk.kotlin.services.lambda.listFunctions
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.koin.Koins.koin
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
+import net.kotlinx.kotest.modules.BeSpecHeavy
+import net.kotlinx.string.toLocalDateTime
+import net.kotlinx.string.toTextGridPrint
+import net.kotlinx.time.toKr01
 
-internal class LambdaSupportKtTest : BeSpecLog(){
+internal class LambdaSupportKtTest : BeSpecHeavy() {
+
     init {
-        val aws = AwsConfig(profileName = "sin").toAwsClient()
-        val functionName = "sin-chatgpt-prod"
+        initTest(KotestUtil.PROJECT02)
 
-        @Test
-        fun `레이어 - 리스팅`() {
-            runBlocking {
-                val versions = aws.lambda.listLayerVersions(
-                    listOf(
-                        "sin-layer_v1-dev",
-                        "sin-layer_v2-dev",
-                        "sin-layer_v3-dev",
-                    )
-                )
-                versions.map { it.layerVersionArn }.forEach { println(it) }
+        Given("LambdaSupportKt") {
+            val aws = koin<AwsClient>()
+            val profileName = aws.awsConfig.profileName!!
+            Then("함수 리스팅") {
+                listOf("함수명", "코드사이즈", "ARN").toTextGridPrint {
+                    aws.lambda.listFunctions { maxItems = 10 }.functions!!.map {
+                        arrayOf(it.functionName, it.codeSize, it.functionArn)
+                    }
+                }
             }
-        }
 
-        @Test
-        fun `기본테스트`() {
-            runBlocking {
+            Then("레이어 최신버전 확인") {
+                val layerNames = listOf(
+                    "$profileName-layer_v1-dev",
+                    "$profileName-layer_v2-dev",
+                    "$profileName-layer_v3-dev",
+                )
+                val layers = aws.lambda.listLayerVersions(layerNames)
+
+                listOf("ARN", "생성일자").toTextGridPrint {
+                    layers.map { arrayOf(it.layerVersionArn, it.createdDate!!.toLocalDateTime().toKr01()) }
+                }
+            }
+
+            xThen("업데이트") {
                 aws.lambda.updateFunctionCode("sin-job_lambda-prod", "463327615611.dkr.ecr.ap-northeast-2.amazonaws.com/sin-job", "local-2023-03-22_12-04")
             }
-        }
-
-        @Test
-        fun `버전업&교체`() {
-            runBlocking {
+            xThen("버전업&교체") {
                 aws.lambda.publishVersionAndUpdateAlias("sin-batchFunction-dev", LambdaUtil.SERVICE_ON)
             }
         }
-
-        @Test
-        fun `버전업`() {
-            runBlocking {
-                val resp = aws.lambda.publishVersion(functionName)
-                println("업데이트된 버전 ${resp.version}")
-            }
-        }
-
-        @Test
-        fun `알리아스교체`() {
-            runBlocking {
-                val resp = aws.lambda.updateAlias(functionName, "3", "service-on")
-                println("name ${resp.name}")
-            }
-        }
-
-        @Test
-        fun `알리아스생성`() {
-            runBlocking {
-                val resp = aws.lambda.createAlias(functionName, "3", "service-on")
-                println("name ${resp.name}")
-            }
-        }
     }
+
 }

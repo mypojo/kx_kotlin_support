@@ -1,7 +1,7 @@
 package net.kotlinx.spring.batch.component
 
-import net.kotlinx.core.gson.GsonData
-import net.kotlinx.core.regex.RegexSet
+import net.kotlinx.json.gson.GsonData
+import net.kotlinx.regex.RegexSet
 import net.kotlinx.spring.resource.toResource
 import org.springframework.batch.item.file.FlatFileItemReader
 import org.springframework.batch.item.file.mapping.PassThroughLineMapper

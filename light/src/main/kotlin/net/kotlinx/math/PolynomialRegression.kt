@@ -3,7 +3,7 @@ package net.kotlinx.math
 import Jama.Matrix
 import Jama.QRDecomposition
 import mu.KotlinLogging
-import net.kotlinx.core.number.halfUp
+import net.kotlinx.number.halfUp
 import kotlin.math.abs
 import kotlin.math.pow
 

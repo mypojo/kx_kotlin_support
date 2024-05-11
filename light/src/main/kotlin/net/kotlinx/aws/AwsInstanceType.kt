@@ -1,6 +1,6 @@
 package net.kotlinx.aws
 
-import net.kotlinx.core.threadlocal.ResourceHolder.getWorkspace
+import net.kotlinx.system.ResourceHolder.getWorkspace
 import java.io.File
 
 /**

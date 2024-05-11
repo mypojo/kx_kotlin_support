@@ -1,7 +1,7 @@
 package net.kotlinx.aws
 
 import aws.smithy.kotlin.runtime.client.SdkClient
-import net.kotlinx.core.retry.RetryTemplate
+import net.kotlinx.retry.RetryTemplate
 
 
 /** 간단 변환 */

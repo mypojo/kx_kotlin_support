@@ -1,33 +1,34 @@
 package net.kotlinx.aws.sfn
 
 import aws.sdk.kotlin.services.sfn.model.ExecutionStatus
-import kotlinx.coroutines.runBlocking
+import io.kotest.matchers.ints.shouldBeGreaterThan
+import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.AwsConfig
-import net.kotlinx.aws.toAwsClient1
-import net.kotlinx.kotest.BeSpecLog
-import org.junit.jupiter.api.Test
+import net.kotlinx.koin.Koins.koin
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
+import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.string.print
 
-class SfnSupportKtTest : BeSpecLog() {
+class SfnSupportKtTest : BeSpecLight() {
+
     init {
+        initTest(KotestUtil.PROJECT02)
 
-        val AWS = AwsConfig("sin").toAwsClient1()
+        Given("SfnSupportKt") {
+            val aws = koin<AwsClient1>()
+            Then("SFN 리스팅 & 상세조회") {
 
-        @Test
-        fun test() {
-            runBlocking {
-                val lists = AWS.sfn.listExecutions("289023186990", "sin-batchStep-dev", ExecutionStatus.Succeeded)
-                lists.executions!!.forEach {
-                    println(it)
-                }
+                val awsConfig = koin<AwsConfig>()
+                val lists = aws.sfn.listExecutions("${awsConfig.profileName}-batchStep-dev", ExecutionStatus.Succeeded)
+                lists.executions.size shouldBeGreaterThan 0
+                lists.executions.take(10).print()
 
-                lists.executions!!.first().executionArn
-
-//            val desc = AWS.sfn.describeExecution(lists.executions!!.first().executionArn!!)
-//            println(desc)
-//            println(desc.input)
-//            println(desc.inputDetails)
-
+                val target = lists.executions.first()
+                val desc = aws.sfn.describeExecution(target.executionArn)
+                log.debug { "로드된 desc : $desc" }
             }
         }
     }
+
 }

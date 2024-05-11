@@ -11,9 +11,9 @@ import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
 import net.kotlinx.aws.s3.getObjectText
 import net.kotlinx.aws.s3.putObject
 import net.kotlinx.aws.with
-import net.kotlinx.core.gson.GsonData
-import net.kotlinx.core.lib.toSimpleString
-import net.kotlinx.core.time.TimeStart
+import net.kotlinx.exception.toSimpleString
+import net.kotlinx.json.gson.GsonData
+import net.kotlinx.time.TimeStart
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File

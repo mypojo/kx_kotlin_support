@@ -32,7 +32,7 @@ data class OkHttpResp(
             when {
                 // 하지만 응답 헤더와는 다르게 작업되는 사이트의 경우 강제 입력 ex) text/html 이렇게만 덜렁 있음..
                 okHttpReq.defaultChsrSet != null && !charSetConfig -> {
-                    log.debug { " => 컨텐츠 타입($contentType)에 인코딩 설정이 없음 -> 기본 인코딩(${okHttpReq.defaultChsrSet}) 강제 적용" }
+                    log.trace { " => 컨텐츠 타입($contentType)에 인코딩 설정이 없음 -> 기본 인코딩(${okHttpReq.defaultChsrSet}) 강제 적용" }
                     response.body.source().readString(okHttpReq.defaultChsrSet!!)
                 }
 

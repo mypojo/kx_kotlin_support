@@ -7,10 +7,10 @@ import kotlinx.html.MetaHttpEquiv.contentType
 import mu.KotlinLogging
 import net.kotlinx.aws.lambda.LambdaHandlerUtil
 import net.kotlinx.core.Kdsl
-import net.kotlinx.core.gson.GsonData
-import net.kotlinx.core.lib.toSimpleString
-import net.kotlinx.core.threadlocal.ResourceHolder
-import net.kotlinx.core.time.TimeUtil
+import net.kotlinx.exception.toSimpleString
+import net.kotlinx.json.gson.GsonData
+import net.kotlinx.system.ResourceHolder
+import net.kotlinx.time.TimeUtil
 import org.crac.Resource
 
 /**

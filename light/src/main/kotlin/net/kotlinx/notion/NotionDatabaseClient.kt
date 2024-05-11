@@ -4,12 +4,12 @@ import com.lectra.koson.KosonType
 import com.lectra.koson.ObjectType
 import com.lectra.koson.obj
 import mu.KotlinLogging
-import net.kotlinx.core.collection.repeatCollectUntil
-import net.kotlinx.core.gson.GsonData
-import net.kotlinx.core.koson.rawKeyValue
-import net.kotlinx.core.string.toLocalDateTime
-import net.kotlinx.core.time.TimeStart
+import net.kotlinx.collection.repeatCollectUntil
+import net.kotlinx.json.gson.GsonData
+import net.kotlinx.json.koson.rawKeyValue
 import net.kotlinx.okhttp.await
+import net.kotlinx.string.toLocalDateTime
+import net.kotlinx.time.TimeStart
 import okhttp3.OkHttpClient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -20,6 +20,8 @@ import org.koin.core.component.inject
  * 각 기능은 필요할때 만들기
  *
  * 데이터베이스 ID 채번 후 해당 페이지로 가서 "연결" 을 선택 후 KEY를 채번한것과 연결 해주어야 한다.
+ *
+ * https://github.com/BoD/klibnotion 쓰세요
  *  */
 class NotionDatabaseClient(
     /** 영구키임!! 주의! */

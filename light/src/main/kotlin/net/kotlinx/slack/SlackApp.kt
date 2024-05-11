@@ -1,11 +1,12 @@
 package net.kotlinx.slack
 
 import com.slack.api.Slack
+import com.slack.api.methods.MethodsClient
 import com.slack.api.methods.request.chat.ChatPostMessageRequest
 import com.slack.api.methods.response.chat.ChatPostMessageResponse
 import com.slack.api.webhook.WebhookPayloads
 import mu.KotlinLogging
-import net.kotlinx.core.gson.GsonData
+import net.kotlinx.json.gson.GsonData
 import java.io.Closeable
 
 /**
@@ -45,6 +46,9 @@ class SlackApp(
 
     private val log = KotlinLogging.logger {}
 
+    /** 토큰인증 추가해서 Client 리턴 */
+    fun methods(): MethodsClient = slack.methods(token)
+
     /**
      * 기본 DSL 버전
      * TS를 알고있는경우 해당 메세지의 스래드에 글 추가 가능
@@ -52,7 +56,7 @@ class SlackApp(
      *  */
     fun chatPostMessage(block: ChatPostMessageRequest.ChatPostMessageRequestBuilder.() -> Unit): String {
         val request: ChatPostMessageRequest = ChatPostMessageRequest.builder().apply(block).build()
-        val response: ChatPostMessageResponse = slack.methods(token).chatPostMessage(request)
+        val response: ChatPostMessageResponse = methods().chatPostMessage(request)
         if (!response.isOk) {
             log.warn { "채널[${request.channel}] 에러 : ${response.error}" }
         }
@@ -79,7 +83,7 @@ class SlackApp(
             }
             return "ok"
         } else {
-            return chatPostMessage{
+            return chatPostMessage {
                 text(msg.mainMsg)
                 channel(msg.channel)
                 msg.threadTs?.let { v -> threadTs(v) }

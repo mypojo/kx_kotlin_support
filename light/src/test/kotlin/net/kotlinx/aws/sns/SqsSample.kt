@@ -14,7 +14,7 @@ private const val sample22 = """
   "messageAttributes": {},
   "md5OfBody": "a21470f7fe7262ec2b75c82d8c303875",
   "eventSource": "aws:sqs",
-  "eventSourceARN": "arn:aws:sqs:ap-northeast-2:653734769926:sin-synch_gdn-dev",
+  "eventSourceARN": "arn:aws:sqs:ap-northeast-2:xxxxxxxxxxx:sin-synch_gdn-dev",
   "awsRegion": "ap-northeast-2"
 }    
 """

@@ -2,7 +2,7 @@ package net.kotlinx.aws.s3
 
 import aws.sdk.kotlin.services.s3.model.ListObjectsV2Response
 import kotlinx.coroutines.flow.Flow
-import net.kotlinx.core.concurrent.collectToList
+import net.kotlinx.concurrent.collectToList
 
 
 /** 간단 도우미 */

@@ -4,9 +4,9 @@ import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.events.S3Event
 import com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotification
 import io.mockk.mockk
-import net.kotlinx.kotest.BeSpecLight
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
+import net.kotlinx.kotest.modules.BeSpecLight
 
 internal class FirehoseKrHandlerTest : BeSpecLight() {
 

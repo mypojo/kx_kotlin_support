@@ -1,7 +1,6 @@
 package net.kotlinx.slack
 
 import com.slack.api.model.block.LayoutBlock
-import net.kotlinx.koin.Koins
 
 /**
  * 슬랙 메세지 & 블록을 구성하는 인터페이스
@@ -26,12 +25,5 @@ interface SlackMessage {
 
     /** 스래드가 있으면 댓글로 추가함 */
     var threadTs: String?
-
-    /** 기본 전송 */
-    fun send():String{
-        val slackApp = Koins.koin<SlackApp>()
-        threadTs = slackApp.send(this)
-        return threadTs!!
-    }
 
 }

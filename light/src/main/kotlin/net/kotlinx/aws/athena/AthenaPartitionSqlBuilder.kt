@@ -22,7 +22,7 @@ class AthenaPartitionSqlBuilder(
     private val bucketName: String,
     /**
      * ex) collect
-     * ex) cloudtrail/AWSLogs/653734769926/CloudTrail/ap-northeast-2
+     * ex) cloudtrail/AWSLogs/xxxxxxxxxxx/CloudTrail/ap-northeast-2
      *  */
     private val prefix: String = "collect",
 ) {

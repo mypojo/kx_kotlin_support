@@ -12,8 +12,8 @@ import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
 import mu.KotlinLogging
 import net.kotlinx.core.Kdsl
-import net.kotlinx.core.time.TimeStart
-import net.kotlinx.props.lazyLoadString
+import net.kotlinx.lazyLoad.lazyLoadString
+import net.kotlinx.time.TimeStart
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 

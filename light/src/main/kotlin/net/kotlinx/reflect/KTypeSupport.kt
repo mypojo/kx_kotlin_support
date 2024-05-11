@@ -1,8 +1,8 @@
 package net.kotlinx.reflect
 
 import aws.smithy.kotlin.runtime.content.BigDecimal
-import net.kotlinx.core.string.toLocalDateTime
-import net.kotlinx.core.string.toLong2
+import net.kotlinx.string.toLocalDateTime
+import net.kotlinx.string.toLong2
 import java.time.LocalDateTime
 import kotlin.reflect.KClass
 import kotlin.reflect.KType

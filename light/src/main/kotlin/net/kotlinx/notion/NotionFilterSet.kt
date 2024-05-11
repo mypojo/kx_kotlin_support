@@ -3,7 +3,7 @@ package net.kotlinx.notion
 import com.lectra.koson.ObjectType
 import com.lectra.koson.arr
 import com.lectra.koson.obj
-import net.kotlinx.core.time.toIso
+import net.kotlinx.time.toIso
 import java.time.LocalDateTime
 
 /**

@@ -1,6 +1,6 @@
 package net.kotlinx.notion.work
 
-import net.kotlinx.core.time.TimeString
+import net.kotlinx.time.TimeString
 import kotlin.time.Duration.Companion.hours
 
 /** 지문인식기 프로그램에서 csv로 받은 데이터 */

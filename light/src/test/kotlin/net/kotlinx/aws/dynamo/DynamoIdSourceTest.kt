@@ -2,9 +2,9 @@ package net.kotlinx.aws.dynamo
 
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.koin.Koins.koin
-import net.kotlinx.kotest.BeSpecLight
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
+import net.kotlinx.kotest.modules.BeSpecLight
 
 internal class DynamoIdSourceTest : BeSpecLight() {
 

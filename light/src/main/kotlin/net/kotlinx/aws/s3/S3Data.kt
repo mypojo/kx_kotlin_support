@@ -1,6 +1,6 @@
 package net.kotlinx.aws.s3
 
-import net.kotlinx.core.string.encodeUrl
+import net.kotlinx.string.encodeUrl
 
 /**
  * S3 패스가 다양하게 사용됨. 이를 명시적으로 합쳐서 다루기 위한 객체.

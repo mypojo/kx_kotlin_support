@@ -1,7 +1,7 @@
 package net.kotlinx.aws.fargate
 
 import mu.KotlinLogging
-import net.kotlinx.core.threadlocal.ResourceHolder
+import net.kotlinx.system.ResourceHolder
 import sun.misc.Signal
 import java.io.File
 import kotlin.system.exitProcess

@@ -9,11 +9,10 @@ import kotlinx.html.stream.createHTML
 import mu.KotlinLogging
 import net.kotlinx.aws.lambda.LambdaMapResult
 import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
-
-import net.kotlinx.core.gson.GsonData
-import net.kotlinx.core.html.setDefault
-import net.kotlinx.core.lib.toSimpleString
-import net.kotlinx.core.string.ResultText
+import net.kotlinx.exception.toSimpleString
+import net.kotlinx.html.setDefault
+import net.kotlinx.json.gson.GsonData
+import net.kotlinx.string.ResultText
 
 
 /**

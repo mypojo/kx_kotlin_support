@@ -7,8 +7,8 @@ import aws.sdk.kotlin.services.cloudwatchlogs.startQuery
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
-import net.kotlinx.core.exception.KnownException
-import net.kotlinx.core.time.toLong
+import net.kotlinx.exception.KnownException
+import net.kotlinx.time.toLong
 import java.time.LocalDateTime
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes

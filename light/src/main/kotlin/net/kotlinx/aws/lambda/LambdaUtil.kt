@@ -1,7 +1,7 @@
 package net.kotlinx.aws.lambda
 
-import net.kotlinx.core.gson.GsonSet
-import net.kotlinx.core.string.ResultText
+import net.kotlinx.json.gson.GsonSet
+import net.kotlinx.string.ResultText
 import java.io.File
 
 /** 람다 유틸들  */

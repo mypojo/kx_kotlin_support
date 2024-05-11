@@ -8,7 +8,7 @@ import java.sql.ResultSetMetaData
  * 쿼리 결과
  * https://github.com/vsch/kotlin-jdbc
  * 간단하게 athena 등으로 업로드할때 사용
- * @see net.kotlinx.core.csv.CsvUtil.writeAllGzip
+ * @see net.kotlinx.csv.CsvUtil.writeAllGzip
  *  */
 data class QueryResult(val header: List<String>, val results: List<List<Any?>>)
 

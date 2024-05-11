@@ -41,4 +41,7 @@ object KotestUtil {
     /** SK */
     val PROJECT02 = Tag("kx.profile02")
 
+    /** MT */
+    val PROJECT03 = Tag("kx.profile03")
+
 }

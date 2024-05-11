@@ -3,7 +3,8 @@ package net.kotlinx.aws.module.batchStep.stepDefault
 import com.amazonaws.services.lambda.runtime.Context
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
-import net.kotlinx.core.gson.GsonData
+import net.kotlinx.core.Kdsl
+import net.kotlinx.json.gson.GsonData
 import net.kotlinx.reflect.name
 
 /**
@@ -14,7 +15,12 @@ import net.kotlinx.reflect.name
  *           "option.$": "$.option"
  *         }
  * */
-class BatchStepDefaultRunner(block: BatchStepDefaultRunner.() -> Unit = {}) : LambdaLogicHandler {
+class BatchStepDefaultRunner : LambdaLogicHandler {
+
+    @Kdsl
+    constructor(block: BatchStepDefaultRunner.() -> Unit = {}) {
+        apply(block)
+    }
 
     /** 등록된 로직 */
     var logics: List<LambdaLogicHandler> = listOf(
@@ -33,10 +39,6 @@ class BatchStepDefaultRunner(block: BatchStepDefaultRunner.() -> Unit = {}) : La
         val methodResult = methodLogic(input, context)
         checkNotNull(methodResult)
         return methodResult
-    }
-
-    init {
-        apply(block)
     }
 
 

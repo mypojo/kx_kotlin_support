@@ -1,6 +1,6 @@
 package net.kotlinx.aws.iam
 
-import net.kotlinx.core.regex.RegexSet
+import net.kotlinx.regex.RegexSet
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.readText

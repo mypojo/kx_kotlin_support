@@ -9,8 +9,8 @@ import aws.sdk.kotlin.services.batch.model.JobStatus
 import aws.sdk.kotlin.services.batch.model.SubmitJobResponse
 import aws.sdk.kotlin.services.batch.submitJob
 import mu.KotlinLogging
-import net.kotlinx.core.concurrent.CoroutineSleepTool
-import net.kotlinx.core.time.TimeFormat
+import net.kotlinx.concurrent.CoroutineSleepTool
+import net.kotlinx.time.TimeFormat
 import kotlin.time.Duration.Companion.seconds
 
 private val log = KotlinLogging.logger {}

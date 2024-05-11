@@ -2,13 +2,13 @@ package net.kotlinx.aws.cost
 
 import aws.sdk.kotlin.services.costexplorer.model.GroupDefinitionType
 import mu.KotlinLogging
-import net.kotlinx.core.collection.flattenAny
-import net.kotlinx.core.number.StringIntUtil
-import net.kotlinx.core.string.ifNullOrEmpty
-import net.kotlinx.core.time.TimeFormat
+import net.kotlinx.collection.flattenAny
 import net.kotlinx.excel.Excel
 import net.kotlinx.excel.XlsComment
 import net.kotlinx.excel.XlsFormula
+import net.kotlinx.number.StringIntUtil
+import net.kotlinx.string.ifNullOrEmpty
+import net.kotlinx.time.TimeFormat
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
@@ -26,7 +26,7 @@ class CostExplorerExcel(block: CostExplorerExcel.() -> Unit = {}) {
 
     /**
      * 달러-원 환율
-     * @see net.kotlinx.okhttp.OkHttpSamples.dollarWon
+     * @see net.kotlinx.okhttp.OkHttpSamples.dollarWonAwait
      *  */
     var won = 1320.7
 

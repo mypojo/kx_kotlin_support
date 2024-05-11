@@ -1,12 +1,12 @@
 package net.kotlinx.notion.work
 
 import mu.KotlinLogging
-import net.kotlinx.core.string.CharSets
-import net.kotlinx.core.string.toLocalTime
 import net.kotlinx.notion.NotionCell2
 import net.kotlinx.notion.NotionCellType
 import net.kotlinx.notion.NotionDatabaseClient
 import net.kotlinx.notion.NotionFilterSet
+import net.kotlinx.string.CharSets
+import net.kotlinx.string.toLocalTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
@@ -27,14 +27,22 @@ class WorkGroupLogic(block: WorkGroupLogic.() -> Unit = {}) : KoinComponent {
     lateinit var groups: List<WorkGroup>
 
     fun read(file: File): List<WorkOutput> {
-        log.info { "파일 $file 처리..." }
-        val worksOrg = file.readLines(CharSets.MS949).drop(2).map { it.split(",") }.map { WorkInput(it[0], it[1], it[4]) }
+        log.info { "파일 처리 [$file ] ..." }
+        val worksOrg = file.readLines(CharSets.MS949).drop(2).map { line ->
+            val split = line.split(",")
+            try {
+                WorkInput(split[0], split[1], split[4])
+            } catch (e: Exception) {
+                log.error { "실패 라인 : $line" }
+                throw e
+            }
+        }
         val basicDate = worksOrg.minOf { it.date } //가장 작은 날을 기준 날짜로 함. (익일이 올 수 있나?)
 
         val workOutputs = worksOrg.filter { it.date == basicDate }.groupBy { it.name }.values.map { v ->
             val first = v.first()
-            val startTime = v.minOf { it.time }
-            val endTime = v.maxOf { it.time }
+            val startTime = v.minOf { it.time }.padStart(6,'0')
+            val endTime = v.maxOf { it.time }.padStart(6,'0')
             val totlaSec = endTime.toLocalTime().toSecondOfDay() - startTime.toLocalTime().toSecondOfDay()
             val workSec = totlaSec - (if (totlaSec >= 7.hours.inWholeSeconds) 1.hours.inWholeSeconds else 0)  //7시간 초과인경우 점심시간 1시간 고려
             WorkOutput(basicDate, first.name, startTime, endTime, workSec)
