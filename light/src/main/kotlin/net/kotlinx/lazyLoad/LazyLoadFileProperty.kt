@@ -19,8 +19,18 @@ import kotlin.reflect.KProperty
 /**
  * 각종 리소스에서 늦은 로드를 해주는 프로퍼티
  *  */
-class LazyLoadFileProperty(private val configFile: File, private val path: String) {
+class LazyLoadFileProperty(
 
+    /** 설정된 파일 */
+    private val configFile: File,
+    /** 파일에 기록할 내용의 위치 정보 */
+    private val path: String,
+) {
+
+    /**
+     * 실제 위임 파일
+     * 디렉토리 입력일 경우 path로 재조정 해줌 ex) S3 파일
+     *  */
     private var delegateFile = when {
         configFile.isDirectory -> configFile.slash(path.substringAfterLast("/"))
         else -> configFile
@@ -31,40 +41,44 @@ class LazyLoadFileProperty(private val configFile: File, private val path: Strin
         if (delegateFile.exists()) {
             log.trace { " -> File이 이미 존재합니다. 로드 스킵!! $path" }
         } else {
+            load()
+        }
+        return delegateFile
+    }
 
-            when {
-                path.startsWith(ProtocolPrefix.HTTP) || path.startsWith(ProtocolPrefix.HTTPS) -> {
-                    log.debug { " -> File을 http에서 로드합니다 $path -> $delegateFile" }
-                    val http: OkHttpClient = koin()
-                    http.download(delegateFile) {
-                        this.url = path
-                    }
-                    log.debug { " -> File을 http에서 로드 완료 -> ${delegateFile.length().toSiText()} : ${delegateFile.absolutePath}" }
+    fun load(): File {
+        when {
+            path.startsWith(ProtocolPrefix.HTTP) || path.startsWith(ProtocolPrefix.HTTPS) -> {
+                log.debug { " -> File을 http에서 로드합니다 $path -> $delegateFile" }
+                val http: OkHttpClient = koin()
+                http.download(delegateFile) {
+                    this.url = path
                 }
-
-                path.startsWith(ProtocolPrefix.S3) -> {
-                    log.debug { " -> File을 S3에서 로드합니다 $path -> $delegateFile" }
-                    val s3Data = S3Data.parse(path)
-                    val aws: AwsClient1 = koin()
-                    runBlocking {
-                        aws.s3.getObjectDownload(s3Data.bucket, s3Data.key, delegateFile)
-                    }
-                    log.debug { " -> File을 S3에서 로드 완료 -> ${delegateFile.length().toSiText()} : ${delegateFile.absolutePath}" }
-                }
-
-                path.startsWith(ProtocolPrefix.SSM) -> {
-                    log.debug { " -> File을 AWS Parameter Store 에서 로드합니다 $path -> $delegateFile" }
-                    val aws: AwsClient1 = koin()
-                    val value = runBlocking {
-                        aws.ssm.find(path) ?: throw java.lang.IllegalArgumentException("SSM 값이 없습니다. $path")
-                    }
-                    delegateFile.writeText(value)
-                    log.debug { " -> File을 S3에서 로드 완료 -> ${delegateFile.length().toSiText()} : ${delegateFile.absolutePath}" }
-                }
-
-                else -> throw IllegalArgumentException("지원하지 않는 형식입니다. $path")
+                log.debug { " -> File을 http에서 로드 완료 -> ${delegateFile.length().toSiText()} : ${delegateFile.absolutePath}" }
             }
 
+            path.startsWith(ProtocolPrefix.S3) -> {
+                log.debug { " -> File을 S3에서 로드합니다 $path -> $delegateFile" }
+                val s3Data = S3Data.parse(path)
+                val aws: AwsClient1 = koin()
+                runBlocking {
+                    aws.s3.getObjectDownload(s3Data.bucket, s3Data.key, delegateFile)
+                }
+                log.debug { " -> File을 S3에서 로드 완료 -> ${delegateFile.length().toSiText()} : ${delegateFile.absolutePath}" }
+            }
+
+            path.startsWith(ProtocolPrefix.SSM) -> {
+                val ssmPath = path.removePrefix(ProtocolPrefix.SSM)
+                log.debug { " -> File을 AWS Parameter Store 에서 로드합니다 $ssmPath -> $delegateFile" }
+                val aws: AwsClient1 = koin()
+                val value = runBlocking {
+                    aws.ssm.find(ssmPath) ?: throw java.lang.IllegalArgumentException("SSM 값이 없습니다. $ssmPath")
+                }
+                delegateFile.writeText(value)
+                log.debug { " -> File을 S3에서 로드 완료 -> ${delegateFile.length().toSiText()} : ${delegateFile.absolutePath}" }
+            }
+
+            else -> throw IllegalArgumentException("지원하지 않는 형식입니다. $path")
         }
         return delegateFile
     }
@@ -86,3 +100,5 @@ infix fun File.lazyLoad(path: String): LazyLoadFileProperty = LazyLoadFileProper
 
 /** 늦은 초기화  & 중위함수 지원 */
 infix fun File.lazyLoad(path: S3Data): LazyLoadFileProperty = LazyLoadFileProperty(this, path.toFullPath())
+
+infix fun File.lazyLoadSsm(path: String): LazyLoadFileProperty = LazyLoadFileProperty(this, "${ProtocolPrefix.SSM}$path")

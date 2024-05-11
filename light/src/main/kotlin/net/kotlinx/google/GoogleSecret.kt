@@ -50,12 +50,9 @@ class GoogleSecret(block: GoogleSecret.() -> Unit = {}) {
      *  */
     var secretDir: File = ResourceHolder.USER_ROOT.slash(".google")
 
-    /**
-     * 다운로드받은 웹 애플리케이션의 클라이언트 ID 의 보안 비밀번호 파일 이름
-     * 이걸로 리네이밍 해서 secretDir 에 저장할것
-     *  */
-    var secretClientFileName: String = "secret.json"
 
+    /** SSM 등에서 데이터를 가져와서 여기에 파일로 만들것 */
+    var secretClientFile: File = File(secretDir, SECRET_CLIENT_FILE_NAME)
 
     /** 최종 크리덴셜 */
     val credential: Credential
@@ -68,7 +65,6 @@ class GoogleSecret(block: GoogleSecret.() -> Unit = {}) {
 
     init {
         block()
-        val secretClientFile = File(secretDir, secretClientFileName)
         val secret = InputStreamReader(FileInputStream(secretClientFile))
         val clientSecrets = GoogleClientSecrets.load(jsonFactory, secret)
         val flow =
@@ -90,7 +86,17 @@ class GoogleSecret(block: GoogleSecret.() -> Unit = {}) {
         /** 계정 인증받을 임시포트  */
         const val TEMP_PORT = 8888
 
-        /** OAuth2 승인 후 저장되는 파일 명 */
+        /**
+         * OAuth2 승인 후 저장되는 파일 명
+         * file로 프로퍼티를 전달하는걸 모르겠어서 그냥 함
+         *  */
         const val SECRET_STORED_FILE_NAME = "StoredCredential"
+
+        /**
+         * 인증에 필요한 클라이언트 시크릿 파일명 (꼭 이 이름으로 해야하는건 아님)
+         * 다운로드받은 웹 애플리케이션의 클라이언트 ID 의 보안 비밀번호 파일 이름
+         * 이걸로 리네이밍 해서 secretDir 에 저장할것
+         * */
+        const val SECRET_CLIENT_FILE_NAME: String = "secret.json"
     }
 }
