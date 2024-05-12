@@ -15,10 +15,7 @@ dependencies {
     implementation("com.google.ortools:ortools-java:_") //구글 최적화도구 orTool https://developers.google.com/optimization/install/java/pkg_windows?hl=ko
 
     //==================================================== 테스트 api   ======================================================
-    api("org.junit-pioneer:junit-pioneer:_")  //환경변수 테스트용 (실서버 job 실행 등)
-    api("org.junit.jupiter:junit-jupiter-api:_") //최신버전
-    api("io.mockk:mockk:_") //코틀린 모킹
-
+    //api("io.mockk:mockk:_") //코틀린 모킹
     //api("com.navercorp.fixturemonkey:fixture-monkey-starter-kotlin:0.6.10")  //네이버 픽스쳐몽키.. 애매함 -> .jqwik-database 이파일 자꾸 생겨서 제거
 
     //==================================================== 머신러닝 ======================================================

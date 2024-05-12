@@ -1,5 +1,7 @@
 package net.kotlinx.string
 
+import mu.KotlinLogging
+import net.kotlinx.number.maxWith
 import net.kotlinx.time.toKr01
 import java.time.LocalDateTime
 
@@ -26,7 +28,8 @@ class TextGrid(
 ) {
 
     enum class TextGridType {
-        TEXT, NUM, ;
+        TEXT, NUM,
+        ;
     }
 
     /** 개행 제거해줌 */
@@ -75,7 +78,9 @@ class TextGrid(
         }
 
         val body = if (datas.isEmpty()) {
-            listOf("|${" ".repeat(gridFullSize - 19)}데이터가 없습니다|")
+            val emptySize = (gridFullSize - EMPTY_MSG_SPACE - 2).maxWith(0) //좌우 | 2칸 제외
+            log.trace { "gridFullSize $gridFullSize  -> repeat $emptySize" }
+            listOf("|${" ".repeat(emptySize)}${EMPTY_MSG}|")
         } else {
             convertedDatas.map { resizeAndInline(it) }
         }
@@ -95,6 +100,14 @@ class TextGrid(
 
         /** 이 사이즈가 넘으면 보통 comsole에서 의미없다고 생각하고 줄임 */
         const val TEXT_ABBR_LIMIT = 40
+
+        private val log = KotlinLogging.logger {}
+
+        /** 값이 없을때 보여줄 메세지 */
+        const val EMPTY_MSG = "데이터 없음"
+
+        /** 빈 메세지 사이즈 */
+        val EMPTY_MSG_SPACE = EMPTY_MSG.space()
 
     }
 

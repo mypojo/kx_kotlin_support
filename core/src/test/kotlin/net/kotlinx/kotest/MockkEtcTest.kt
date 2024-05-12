@@ -1,9 +1,9 @@
 package net.kotlinx.kotest
 
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockkStatic
 import net.kotlinx.string.capital
-import org.junit.jupiter.api.Assertions.assertEquals
 import java.time.LocalDateTime
 
 /**
@@ -25,8 +25,7 @@ class MockkEtcTest : BeSpecLog() {
                 mockkStatic(LocalDateTime::class)
 
                 every { LocalDateTime.now() } returns LocalDateTime.of(2023, 5, 3, 0, 0, 0)
-
-                assertEquals(LocalDateTime.of(2023, 5, 3, 0, 0, 0), LocalDateTime.now())
+                LocalDateTime.of(2023, 5, 3, 0, 0, 0) shouldBe LocalDateTime.now()
             }
 
             fun String.textCapitalizeWords(): String {

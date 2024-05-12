@@ -36,7 +36,7 @@ class RangeSpliterTest : BeSpecLog() {
                     val results = spliters.map { it[i] }
 
                     //분리형태 추가
-                    val currentWeek = results[0].split(7, dayOfWeek.value)
+                    val currentWeek = results[0].split(7, dayOfWeek.value - 1) //dayOfWeek 는 1부터 시작
 
                     val data = listOf(i) + results + listOf(currentWeek) + listOf(results.sumOf { it.size })
                     data.toTypedArray()

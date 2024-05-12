@@ -1,70 +1,70 @@
 package net.kotlinx.reflect
 
+import io.kotest.matchers.shouldBe
 import net.kotlinx.kotest.BeSpecLog
-import org.junit.jupiter.api.Test
+import net.kotlinx.kotest.KotestUtil
+import net.kotlinx.kotest.initTest
 
-class BeanTest : BeSpecLog(){
+class BeanTest : BeSpecLog() {
+
+    data class Poo1(
+        val name: String,
+    ) {
+
+        var age: Int? = null
+        var group: String? = null
+    }
+
+    class PooDto1 {
+        var name: String? = null
+        var age: Int? = null
+        var tag: String? = null
+    }
+
+    class PooDto2(
+        var name: String,
+        var age: Int?,
+    ) {
+        var tag: String? = null
+    }
+
+    data class PooDto3(
+        var name: String? = null,
+        var age: Int? = null,
+        var tag: String? = null,
+    )
+
     init {
-        data class Poo1(
-            val name: String
-        ) {
+        initTest(KotestUtil.FAST)
 
-            var age: Int? = null
-            var group: String? = null
-        }
+        Given("Bean") {
+            Then("간단 사용 테스트") {
+                val p1 = Poo1("홍길동").apply {
+                    age = 15
+                    group = "테스트"
+                }
 
-        class PooDto1 {
-            var name: String? = null
-            var age: Int? = null
-            var tag: String? = null
-        }
+                Bean(p1).also {
+                    it["name"] shouldBe "홍길동"
+                    it["age"] shouldBe 15
 
-        class PooDto2(
-            var name: String,
-            var age: Int?,
-        ) {
-            var tag: String? = null
-        }
+                    it.put("age", 878)
+                    it["age"] shouldBe 878
+                }
 
-        data class PooDto3(
-            var name: String? = null,
-            var age: Int? = null,
-            var tag: String? = null,
-        )
+                Bean(p1).convert(PooDto1::class).also {
+                    Bean(it).toTextGrid().print()
+                    check(it.name == p1.name)
+                }
+                Bean(p1).convert(PooDto2::class).also {
+                    Bean(it).toTextGrid().print()
+                    check(it.name == p1.name)
+                }
 
-
-        @Test
-        fun test() {
-
-
-            val p1 = Poo1("홍길동").apply {
-                age = 15
-                group = "테스트"
+                val fromLine = Bean.fromLine(PooDto3::class, listOf("김철수", "26", "myTag"))
+                Bean(fromLine).toTextGrid().print()
             }
-
-            Bean(p1).also {
-                println(it["name"])
-                println(it["age"])
-                it.put("age", 878)
-                println(it["age"])
-                check(it["age"] == 878)
-                println(it.get(Poo1::name))
-            }
-
-            Bean(p1).convert(PooDto1::class).also {
-                Bean(it).toTextGrid().print()
-                check(it.name == p1.name)
-            }
-            Bean(p1).convert(PooDto2::class).also {
-                Bean(it).toTextGrid().print()
-                check(it.name == p1.name)
-            }
-
-
-            val fromLine = Bean.fromLine(PooDto3::class, listOf("김철수", "26", "myTag"))
-            Bean(fromLine).toTextGrid().print()
-
-
         }
     }
+
 }
