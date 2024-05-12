@@ -1,11 +1,10 @@
 package net.kotlinx.koin
 
-import org.koin.core.component.KoinComponent
 import org.koin.core.module.Module
 import org.koin.mp.KoinPlatformTools
 
 /** 네이밍 통일용 인터페이스 */
-interface KoinModule : KoinComponent {
+interface KoinModule {
     fun moduleConfig(): Module
 }
 

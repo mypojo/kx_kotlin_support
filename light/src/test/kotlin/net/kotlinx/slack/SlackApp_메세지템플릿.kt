@@ -5,7 +5,7 @@ import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
-import net.kotlinx.slack.template.SlackSimpleAlert
+import net.kotlinx.slack.msg.SlackSimpleAlert
 
 class SlackApp_메세지템플릿 : BeSpecLight() {
 

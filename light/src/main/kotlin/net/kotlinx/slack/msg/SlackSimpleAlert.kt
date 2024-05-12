@@ -1,8 +1,7 @@
-package net.kotlinx.slack.template
+package net.kotlinx.slack.msg
 
 import com.slack.api.model.block.LayoutBlock
 import com.slack.api.model.kotlin_extension.block.withBlocks
-import mu.KotlinLogging
 import net.kotlinx.core.Kdsl
 import net.kotlinx.domain.developer.DeveloperData
 import net.kotlinx.number.ifFalse
@@ -18,7 +17,6 @@ class SlackSimpleAlert : SlackMessage {
     constructor(block: SlackSimpleAlert.() -> Unit = {}) {
         apply(block)
         this::mainMsg.isInitialized.ifFalse {
-            log.trace { "기본 메세지 입력" }
             mainMsg = when {
                 exception != null -> ":warning: [$source] 에러 :warning:"
                 else -> ":white_check_mark: [$source] 메세지 :white_check_mark:"
@@ -112,11 +110,6 @@ class SlackSimpleAlert : SlackMessage {
      * 링크 삽입 불가능함!! 주로 코드나 표, SQL 문구 등 표기용
      * */
     var body: List<String> = emptyList()
-
-    companion object {
-        private val log = KotlinLogging.logger {}
-    }
-
 
 }
 

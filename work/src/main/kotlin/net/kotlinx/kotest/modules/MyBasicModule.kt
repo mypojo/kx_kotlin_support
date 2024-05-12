@@ -59,7 +59,7 @@ object MyBasicModule : KoinModule {
             }
         }
         single {
-            log.info { "구글 서비스가 로드됩니다.ㅣ" }
+            log.info { "구글 서비스가 로드됩니다" }
             val secret = GoogleSecret {
                 secretClientFile.lazyLoadSsm("/google/app-access/oauth2_client").load()
                 secretDir.slash(GoogleSecret.SECRET_STORED_FILE_NAME).lazyLoad(S3Data("kotlinx", "store/secret/google/app-access/StoredCredential")).load()

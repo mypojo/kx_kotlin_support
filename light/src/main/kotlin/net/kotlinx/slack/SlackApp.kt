@@ -7,6 +7,7 @@ import com.slack.api.methods.response.chat.ChatPostMessageResponse
 import com.slack.api.webhook.WebhookPayloads
 import mu.KotlinLogging
 import net.kotlinx.json.gson.GsonData
+import net.kotlinx.slack.msg.SlackMessage
 import java.io.Closeable
 
 /**

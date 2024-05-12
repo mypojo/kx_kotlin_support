@@ -1,8 +1,7 @@
-package net.kotlinx.slack.template
+package net.kotlinx.slack.msg
 
 import com.slack.api.model.block.LayoutBlock
 import net.kotlinx.core.Kdsl
-import net.kotlinx.slack.SlackMessage
 
 /**
  * 간단 인라인 메세지 발송기.

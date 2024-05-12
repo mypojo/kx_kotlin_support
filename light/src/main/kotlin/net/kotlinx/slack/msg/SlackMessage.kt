@@ -1,4 +1,4 @@
-package net.kotlinx.slack
+package net.kotlinx.slack.msg
 
 import com.slack.api.model.block.LayoutBlock
 
