@@ -23,6 +23,7 @@ abstract class BeSpecKoin(modules: List<Module>) : BeSpecLog() {
     init {
         beforeSpec {
             INIT.check {
+                log.info { "beforeSpec INIT ... (한번만 초기화됨)" }
                 if (SystemSeparator.IS_GRADLE) {
                     val tagExp = SystemUtil.systemValue("kotest.tags") ?: ""
                     val awsProfiles = tagExp.split("|").map { it.trim() }.filter { it.startsWith("kx.") }
