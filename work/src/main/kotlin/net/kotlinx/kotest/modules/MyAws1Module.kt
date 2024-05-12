@@ -43,7 +43,10 @@ object MyAws1Module : KoinModule {
             }
             AwsConfig(profileName = currentProfileName)
         }
-        single { get<AwsConfig>().toAwsClient1() }
+        single {
+            log.debug { "[single] AwsClient1 생성.." }
+            get<AwsConfig>().toAwsClient1()
+        }
         single { AwsInfoLoader() }
         single { AthenaModule(workGroup = "workgroup-${MyEnv.SUFFIX}", database = MyEnv.SUFFIX.substring(0, 1)) }
     }

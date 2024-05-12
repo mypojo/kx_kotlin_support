@@ -29,7 +29,6 @@ object KotestUtil {
 
     /**
      * 테스트 실행필요 없음
-     *
      *  */
     val IGNORE = Tag("ignore")
 

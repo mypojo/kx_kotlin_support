@@ -17,7 +17,6 @@ import org.koin.core.module.Module
  * 1. io.kotest.koin.KoinExtension 사용하지 않음 -> 이경우 Given 마다 koin이 리셋됨 & 전체 테스트시 문제가 있는거같음.. 학습하기 귀찮음
  * 2. 나는 한개의 koin으로 모든 테스트를 수행하고싶음 ex) DB야연결 -> 따라서 일반적인 koin으로 사용
  *
- * KoinComponent 이거 나중에 제거하기
  * */
 abstract class BeSpecKoin(modules: List<Module>) : BeSpecLog() {
 
