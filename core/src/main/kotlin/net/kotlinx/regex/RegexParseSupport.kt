@@ -34,8 +34,8 @@ interface RegexParseSupport {
         class RegexParseTemplate : RegexParseSupport
 
         /** 인라인 지원기 */
-        fun template(block: RegexParseTemplate.() -> Unit) {
-            block(RegexParseTemplate())
+        fun <T> template(block: RegexParseTemplate.() -> T): T {
+            return block(RegexParseTemplate())
         }
     }
 

@@ -2,9 +2,15 @@
 plugins {
     //코어 플러그인
     kotlin("jvm") //항상 최신버전 사용. 멀티플랫폼 버전과 동일함
+
+    //주의!! gradle 의 boot 의존성 API 가 하위까지 내려오지 않느거 같아서, boot로 따로 또 로드해줌
+    id("org.springframework.boot") apply false
+    id("io.spring.dependency-management")
 }
 
 //==================================================== 프로젝트별 설정 ======================================================
+
+apply(plugin = "io.spring.dependency-management")
 
 dependencies {
 
@@ -33,5 +39,14 @@ dependencies {
 
     //==================================================== 크롤링 ======================================================
     api("com.github.shin285:KOMORAN:3.3.9") //간이 형태소분석기   https://docs.komoran.kr/firststep/installation.html
+
+
+    //==================================================== boot 재정의 ======================================================
+
+    /** 부트전용 의존성 적용 (버전 명시 필요없어짐) */
+    implementation(platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES))  //https://youtrack.jetbrains.com/issue/KT-53426
+
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-batch")
 
 }

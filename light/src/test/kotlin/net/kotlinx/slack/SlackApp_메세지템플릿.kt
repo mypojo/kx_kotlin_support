@@ -13,30 +13,15 @@ class SlackApp_메세지템플릿 : BeSpecLight() {
         initTest(KotestUtil.SLOW)
 
         Given("SlackSimpleAlert") {
-            val slackApp = koin<SlackApp>()
-            xThen("에러메세지 데모") {
-                val alert = SlackSimpleAlert {
-                    channel = "#kx_alert"
-                    source = "kx_project-dev"
-                    workDiv = "sync_meta01"
-                    workDivLink = "https://www.google.co.kr/"
-                    workLocation = "LAMBDA"
-                    workLocationLink = "https://naver.com"
-                    developers = listOf(DeveloperData(id = "xx", slackId = "U0641U84CUE"))
-                    exception = Exception("예외발생")
-                    descriptions = listOf(
-                        "너무 많은 예산이 소진되었습니다.",
-                        "예산을 높여주세요",
-                    )
-                    body = listOf(
-                        "XxxException ... ",
-                        " -> xxxxxx",
-                    )
+
+            Then("에러메세지 데모") {
+                SlackMessageSenderSet.ON_ERROR.send {
+                    descriptions += listOf("추가메세지")
                 }
-                slackApp.send(alert)
             }
 
             xThen("성공메세지 데모") {
+                val slackApp = koin<SlackApp>()
                 val alert = SlackSimpleAlert {
                     channel = "#kx_alert"
                     source = "demo_project"

@@ -12,6 +12,7 @@ import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.sheets.v4.SheetsScopes
+import net.kotlinx.core.Kdsl
 import net.kotlinx.file.slash
 import net.kotlinx.system.ResourceHolder
 import java.io.File
@@ -32,7 +33,12 @@ import java.io.InputStreamReader
  * #3 프로젝트 생성 & 원하는 서비스 활성화 -> OAuth 2.0 클라이언트 ID -> 동의화면 만들기 (유니크이름지정,시트읽고쓰기 권한부여)
  * #4 OAuth 2.0 생성 (데스크톱앱) -> 시크릿 다운로드 -> google-sheet-secret 로 이름 바꿔서 저장 & 시크릿 스토어로 저장
  */
-class GoogleSecret(block: GoogleSecret.() -> Unit = {}) {
+class GoogleSecret {
+
+    @Kdsl
+    constructor(block: GoogleSecret.() -> Unit = {}) {
+        apply(block)
+    }
 
     /** 어플 네임 (각 서비스를 인스턴스화 할때 사용됨)  */
     var applicationName: String = "Google Service"
@@ -64,7 +70,6 @@ class GoogleSecret(block: GoogleSecret.() -> Unit = {}) {
     val jsonFactory: JsonFactory = JacksonFactory.getDefaultInstance()
 
     init {
-        block()
         val secret = InputStreamReader(FileInputStream(secretClientFile))
         val clientSecrets = GoogleClientSecrets.load(jsonFactory, secret)
         val flow =

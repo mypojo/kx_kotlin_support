@@ -6,8 +6,6 @@ import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.lambdaCommon.handler.s3.S3LogicInput
 import net.kotlinx.aws.s3.putObject
 import net.kotlinx.aws.sfn.startExecution
-import net.kotlinx.aws.sts.StsUtil
-import net.kotlinx.calculator.ProgressInlineChecker
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.core.Kdsl
 import net.kotlinx.time.measureTimeString
@@ -42,7 +40,7 @@ class BatchStepExecutor : KoinComponent {
             log.warn { "[${option.retrySfnId}] 재시도 요청 -> S3로 업로드는 스킵!!" }
         }
 
-        aws.sfn.startExecution(StsUtil.ACCOUNT_ID, config.stateMachineName, input.option.sfnId, input.toJson())
+        aws.sfn.startExecution(config.stateMachineName, input.option.sfnId, input.toJson())
 
         return input
     }
@@ -51,7 +49,7 @@ class BatchStepExecutor : KoinComponent {
     suspend fun upload(datas: List<S3LogicInput>, targetSfnId: String) {
         val thidDir = File(workDir, "${targetSfnId}}")
         val workUploadDir = "${config.workUploadInputDir}$targetSfnId/"
-        val progressInlineChecker = ProgressInlineChecker(datas.size.toLong())
+        //val progressInlineChecker = ProgressInlineChecker(datas.size.toLong())  // 프로그레스 체크할정도로 오래걸리지 않음
         measureTimeString {
             log.debug { "S3로 업로드 start => 데이터 ${datas.size}건" }
             thidDir.mkdirs()
@@ -62,7 +60,7 @@ class BatchStepExecutor : KoinComponent {
                     file.writeText(textJson)
                     val workUploadKey = "${workUploadDir}${file.name}"
                     aws.s3.putObject(config.workUploadBuket, workUploadKey, file)
-                    progressInlineChecker.check()
+                    //progressInlineChecker.check()
                 }
             }.coroutineExecute(8) //6개 까지는 잘됨. 10개는 종종 오류
             thidDir.deleteRecursively() //정리

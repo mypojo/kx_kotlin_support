@@ -2,7 +2,6 @@ package net.kotlinx.slack
 
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.gson.GsonSet
-import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -14,7 +13,7 @@ class SlackApp_양방향봇 : BeSpecLight() {
 
         Given("SlackApp_양방향봇") {
 
-            val slackApp = koin<SlackApp>()
+            //val slackApp = koin<SlackApp>()
 
             xThen("봇으로 전달된 슬렉 메시지를 서버가 수신해서 응답 해준다") {
                 val slackInput = GsonData.obj()

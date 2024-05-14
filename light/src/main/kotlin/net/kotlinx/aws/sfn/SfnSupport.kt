@@ -10,11 +10,11 @@ import aws.sdk.kotlin.services.sfn.model.ListExecutionsResponse
 private const val MAX_RESULTS = 1000
 
 /** SFN 실행 샘플 */
-suspend fun SfnClient.startExecution(awsId: String, stateMachineName: String, sfnId: String, json: Any) {
+suspend fun SfnClient.startExecution(stateMachineName: String, sfnId: String, json: Any) {
     this.startExecution {
         this.input = json.toString()
         this.name = sfnId
-        this.stateMachineArn = SfnUtil.stateMachineArn(awsId, stateMachineName)
+        this.stateMachineArn = SfnUtil.stateMachineArn(stateMachineName)
     }
 }
 

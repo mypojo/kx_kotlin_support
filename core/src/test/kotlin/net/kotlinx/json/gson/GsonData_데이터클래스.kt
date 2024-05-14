@@ -1,7 +1,11 @@
 package net.kotlinx.json.gson
 
+import com.lectra.koson.obj
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
+import kotlinx.serialization.Serializable
 import net.kotlinx.json.koson.KosonTest.Companion.DEMO_KOSON
+import net.kotlinx.json.serial.SerialJsonSet
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -11,7 +15,7 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 
-internal class GsonDataTest : BeSpecLog() {
+internal class GsonData_데이터클래스 : BeSpecLog() {
 
     private data class TestPoo01(
         var name: String? = null,
@@ -21,8 +25,10 @@ internal class GsonDataTest : BeSpecLog() {
         var parent: TestPoo01? = null,
     )
 
+    @Serializable
     private data class DataClass01(
         val name: String,
+        var type: String? = null,
     ) {
         lateinit var aa: String
     }
@@ -30,7 +36,29 @@ internal class GsonDataTest : BeSpecLog() {
     init {
         initTest(KotestUtil.FAST)
 
-        Given("GsonData") {
+        Given("데이터 클래스 테스트") {
+
+            When("낫널 클래스에 널 json을 변환하는경우") {
+                val gsonData = obj {
+                    "name" to null
+                    "type" to null
+                }.toGsonData()
+                log.debug { "gsonData : $gsonData" }
+
+                Then("gson 으로 리플렉션 시에는 notnull로 잡혀있어도 null이 입력됨") {
+                    val dataClass01 = gsonData.fromJson<DataClass01>()
+                    dataClass01.name shouldBe null
+                    dataClass01.type shouldBe null
+                }
+
+                Then("반대로 kotlin serial 사용시 null 이 오면 입력이 안된다") {
+                    shouldThrow<Exception> {
+                        SerialJsonSet.JSON.decodeFromString<DataClass01>(gsonData.toString())
+                    }
+                }
+
+            }
+
             Then("데이터클래스 변환") {
                 val class01 = DataClass01("aa")
                 class01.aa = "데모데이터"

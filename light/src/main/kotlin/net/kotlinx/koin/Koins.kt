@@ -36,6 +36,7 @@ object Koins {
 
     /**
      * koin 시작
+     * ex) Koins.startup(BeSpecLight.MODULES)
      * */
     fun startup(modules: List<Module>) {
         log.info { "koin startup .." }

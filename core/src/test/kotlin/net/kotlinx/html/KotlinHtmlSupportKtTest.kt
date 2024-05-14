@@ -2,10 +2,12 @@ package net.kotlinx.html
 
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import kotlinx.html.*
+import net.kotlinx.file.slash
 import net.kotlinx.html.htmx.htmxButtonGet
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
+import net.kotlinx.system.ResourceHolder
 
 class KotlinHtmlSupportKtTest : BeSpecLog() {
 
@@ -23,6 +25,7 @@ class KotlinHtmlSupportKtTest : BeSpecLog() {
 
         Given("kotlinHtml") {
             Then("html 파일 생성 테스트") {
+
                 val headers = listOf("이름", "소속", "나이", "실행")
                 val datas = listOf(
                     Poo("개똥이", "삼성", 12),
@@ -33,7 +36,10 @@ class KotlinHtmlSupportKtTest : BeSpecLog() {
                     h3 { +"제공기능" }
                     div {
                         table {
-                            thead { tr { headers.forEach { th { +it } } } }
+                            //attributes["data-theme"] = "light"
+                            thead {
+                                tr { headers.forEach { th { +it } } }
+                            }
                             tbody {
                                 datas.forEach { d ->
                                     tr {
@@ -55,11 +61,22 @@ class KotlinHtmlSupportKtTest : BeSpecLog() {
                                     }
                                 }
                             }
+                            tfoot {
+                                tr {
+                                    td { +"합계" }
+                                    td { +"A" }
+                                    td { +"55" }
+                                    td { +"-" }
+                                }
+                            }
                         }
                     }
                 }
 
                 html.length shouldBeGreaterThan 10
+                val htmlFile = ResourceHolder.getWorkspace().slash("KotlinHtmlSupport").slash("index.html")
+                htmlFile.writeText(html)
+                log.info { "htmlFile $htmlFile" }
             }
         }
 

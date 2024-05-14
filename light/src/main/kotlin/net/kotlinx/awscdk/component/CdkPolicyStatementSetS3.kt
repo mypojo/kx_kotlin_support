@@ -23,7 +23,8 @@ object CdkPolicyStatementSetS3 {
             this.resources = keys.map { "arn:aws:s3:::${bucketName}/${it}" }
         },
         /**
-         * 추가로 AWS 콘솔에서는 리스팅 해주는 역할이 필요하다. -> 이게 버킷 단위 + condition 으로 지정된다.
+         * 추가로 AWS 콘솔에서는 리스팅 해주는 역할이 필요하다.
+         *  -> 이게 리소스 경로를 지정하는게 아니라, 버킷 + condition 으로 지정된다.
          *  */
         CdkPolicyStatement {
             actions = listOf(
