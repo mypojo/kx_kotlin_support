@@ -11,7 +11,7 @@ import net.kotlinx.google.calendar.GoogleCalendar
 import net.kotlinx.id.IdGenerator
 import net.kotlinx.json.gson.GsonSet
 import net.kotlinx.koin.KoinModule
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.lazyLoad.lazyLoad
 import net.kotlinx.lazyLoad.lazyLoadSsm
 import net.kotlinx.lazyLoad.lazyLoadStringSsm
@@ -68,7 +68,7 @@ object MyBasicModule : KoinModule {
         }
 
         single {
-            val googleService = koin<GoogleService>()
+            val googleService by koinLazy<GoogleService>()
             GoogleCalendar(googleService)
         }
 

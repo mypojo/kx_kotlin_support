@@ -1,18 +1,16 @@
-package net.kotlinx.string
+package net.kotlinx.time
 
 import io.kotest.matchers.shouldBe
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.time.TimeFormat
-import net.kotlinx.time.TimeUtil
-import net.kotlinx.time.toKr01
+import net.kotlinx.string.toLocalDateTime
 
-internal class StringTimeSupportKtTest : BeSpecLog() {
+internal class 타임존_테스트 : BeSpecLog() {
     init {
         initTest(KotestUtil.FAST)
 
-        Given("기본적인 설명") {
+        Given("ISO 텍스트 파싱") {
             When("UTC 시간이 주어진 경우") {
                 val zonedDateTime = TimeFormat.ISO.toZonedDateTime("2023-12-22T06:43:49.611+00:00")
 
@@ -37,8 +35,8 @@ internal class StringTimeSupportKtTest : BeSpecLog() {
         }
 
         Given("string -> LocalDateTime 변환") {
-            When("일반포맷") {
-                Then("일반적인 변환") {
+            When("로컬시간 변환") {
+                Then("특이사항 없음") {
                     "2022-12-31".toLocalDateTime().toKr01() shouldBe "2022년12월31일(토) 00시00분00초"
                     "20221231-11:30:12".toLocalDateTime().toKr01() shouldBe "2022년12월31일(토) 11시30분12초"
                 }

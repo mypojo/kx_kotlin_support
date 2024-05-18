@@ -2,7 +2,7 @@ package net.kotlinx.slack
 
 import io.kotest.matchers.shouldBe
 import net.kotlinx.file.slash
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -17,7 +17,7 @@ class SlackApp_파일 : BeSpecLight() {
 
         Given("SlackApp") {
 
-            val app = koin<SlackApp>()
+            val app by koinLazy<SlackApp>()
             val imgFile = ResourceHolder.getWorkspace().slash("test").slash("img.jpg")
 
             xThen("파일 업로드 (업로드 먼저 해야함)") {

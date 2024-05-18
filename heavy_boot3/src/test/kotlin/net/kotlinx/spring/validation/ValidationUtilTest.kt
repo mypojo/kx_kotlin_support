@@ -1,11 +1,11 @@
 package net.kotlinx.spring.validation
 
 import jakarta.validation.constraints.NotNull
-import net.kotlinx.domain.validation.ValidationUtil
-import net.kotlinx.domain.validation.print
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
+import net.kotlinx.validation.bg.ValidationUtil
+import net.kotlinx.validation.bg.print
 import java.time.LocalDate
 
 class ValidationUtilTest : BeSpecLog() {

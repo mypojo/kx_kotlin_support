@@ -4,9 +4,8 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.Select
 import io.kotest.matchers.shouldBe
 import net.kotlinx.aws.AwsClient1
-import net.kotlinx.domain.job.Job
 import net.kotlinx.domain.job.JobStatus
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -20,7 +19,7 @@ internal class DynamoQuery_쿼리테스트 : BeSpecLight() {
 
         Given("DynamoQuery") {
 
-            val aws = koin<AwsClient1>()
+            val aws by koinLazy<AwsClient1>()
 
             net.kotlinx.domain.job.Job.TABLE_NAME = "job-dev"
 
@@ -53,7 +52,7 @@ internal class DynamoQuery_쿼리테스트 : BeSpecLight() {
 
             Then("쿼리 -> 런타임 수정") {
                 var newLimit = 2
-                val jobs = aws.dynamo.query(param){
+                val jobs = aws.dynamo.query(param) {
                     queryConfig()
                     limit = newLimit
                 }
@@ -67,7 +66,6 @@ internal class DynamoQuery_쿼리테스트 : BeSpecLight() {
             }
         }
     }
-
 
 
 }

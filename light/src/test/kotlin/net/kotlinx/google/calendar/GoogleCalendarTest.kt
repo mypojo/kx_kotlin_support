@@ -1,7 +1,7 @@
 package net.kotlinx.google.calendar
 
 import net.kotlinx.concurrent.delay
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -14,7 +14,7 @@ internal class GoogleCalendarTest : BeSpecLight() {
         initTest(KotestUtil.SLOW)
 
         Given("GoogleCalendar") {
-            val calendar = koin<GoogleCalendar>()
+            val calendar by koinLazy<GoogleCalendar>()
             val calId = "dj1cr2gi7tshqd13ltgca2p0ns@group.calendar.google.com"
 
             Then("리스팅") {

@@ -4,7 +4,7 @@ import aws.sdk.kotlin.services.sfn.model.ExecutionStatus
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.AwsConfig
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -16,10 +16,10 @@ class SfnSupportKtTest : BeSpecLight() {
         initTest(KotestUtil.PROJECT02)
 
         Given("SfnSupportKt") {
-            val aws = koin<AwsClient1>()
+            val aws by koinLazy<AwsClient1>()
             Then("SFN 리스팅 & 상세조회") {
 
-                val awsConfig = koin<AwsConfig>()
+                val awsConfig by koinLazy<AwsConfig>()
                 val lists = aws.sfn.listExecutions("${awsConfig.profileName}-batchStep-dev", ExecutionStatus.Succeeded)
                 lists.executions.size shouldBeGreaterThan 0
                 lists.executions.take(10).print()

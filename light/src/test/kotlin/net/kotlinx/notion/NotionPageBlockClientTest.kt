@@ -1,6 +1,6 @@
 package net.kotlinx.notion
 
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -13,7 +13,7 @@ class NotionPageBlockClientTest : BeSpecLight() {
         initTest(KotestUtil.SLOW)
 
         Given("NotionPageBlockClient") {
-            val page = koin<NotionPageBlockClient>()
+            val page by koinLazy<NotionPageBlockClient>()
             val pageId = "4b18e3f52ce84487b64acab8ab2b5837"
 
             Then("블록조회") {

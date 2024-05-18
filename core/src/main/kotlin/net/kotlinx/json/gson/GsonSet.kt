@@ -4,6 +4,7 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.kotlinx.time.TimeFormat
+import net.kotlinx.time.UtcConverter
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -52,7 +53,7 @@ object GsonSet {
         GsonBuilder().apply {
             applyDefaut()
             setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeUtcAdapter()) //날짜가 UTC
+            registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeUtceAdapter(UtcConverter.ISO_INSTANT)) //날짜가 UTC
         }.create()!!
     }
 
@@ -63,7 +64,7 @@ object GsonSet {
     val BEAN_UTC_ZONE: Gson by lazy {
         GsonBuilder().apply {
             applyDefaut()
-            registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeUtcZoneAdapter()) //날짜가 UTC_ZONE
+            registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeUtceAdapter(UtcConverter.ISO_OFFSET)) //날짜가 UTC_ZONE
         }.create()!!
     }
 

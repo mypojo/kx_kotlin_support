@@ -9,5 +9,6 @@ enum class CodedeployConfig {
     ECSAllAtOnce,
     ECSLinear10PercentEvery1Minutes;
 
+    /** 실제 설정 이름 */
     fun toConfig(): String = "CodeDeployDefault.$name"
 }

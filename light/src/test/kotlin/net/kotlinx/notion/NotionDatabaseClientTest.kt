@@ -1,7 +1,7 @@
 package net.kotlinx.notion
 
 import io.kotest.matchers.ints.shouldBeGreaterThan
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -15,7 +15,7 @@ internal class NotionDatabaseClientTest : BeSpecLight() {
 
         Given("NotionDatabaseClient") {
 
-            val database = koin<NotionDatabaseClient>()
+            val database by koinLazy<NotionDatabaseClient>()
             val dbId = "3ab409904afb41a88d1530a7879a62c7"
 
             Then("조회 - 1년 전으로부터 최대 100건") {

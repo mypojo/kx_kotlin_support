@@ -1,4 +1,4 @@
-package net.kotlinx.domain.validation.ann
+package net.kotlinx.validation.bg.ann
 
 import jakarta.validation.Constraint
 import jakarta.validation.ConstraintValidator

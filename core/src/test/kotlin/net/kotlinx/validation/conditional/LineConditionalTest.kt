@@ -3,7 +3,6 @@ package net.kotlinx.validation.conditional
 import com.linecorp.conditional.kotlin.and
 import com.linecorp.conditional.kotlin.or
 import io.kotest.matchers.shouldBe
-import jakarta.validation.ValidationException
 import net.kotlinx.concurrent.delay
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
@@ -24,40 +23,38 @@ class LineConditionalTest : BeSpecLog() {
             When("다음처럼 컨디션이 정의됨") {
 
                 val 사용자검증 = condition("사용자검증") {
-                    log.trace { "입력필드 벨리데이션 체크" }
-                    true
+                    "입력필드 벨리데이션 체크 성공"
                 }
 
                 val 관리자검증 = condition("관리자검증") {
-                    log.trace { "DB 조회 후 각종 지표 검사.." }
                     200.milliseconds.delay()
-                    it += "요청 xx / 검증값 bb -> cc를 만족해서 통과"
-                    true
+                    if (1 == 2) {
+                        it.failMsgs += "요청 xx / 검증값 bb -> cc를 만족해서 실패"
+                    }
+                    "DB 조회 후 각종 지표 검사 성공"
                 }
 
                 val VIP검증 = condition("VIP검증") {
-                    it += "VIP 검증 경고.."
-                    throw ValidationException("VIP가 아닙니다.")
+                    if (1 == 1) {
+                        it.failMsgs += "VIP가 아닙니다"
+                    }
+                    if (1 == 1) {
+                        it.failMsgs += "서비스 대상 지역이 아닙니다"
+                    }
+                    "VP 정상 인증 완료"
                 }
 
-                Then("컨디션 정의 & 문서화") {
+                Then("VPC 검증이 실패하더라도 최종 벨리데이션은 통과") {
 
-                    val ctx = conditionContext()
                     val condition = (사용자검증 and 관리자검증) or VIP검증
 
-                    val result = condition.matches(ctx)
-                    log.info { "작업 $condition => 결과 $result" }
-                    val resultLogs = ctx.resultLogs()
-                    resultLogs.print()
-                    result shouldBe true
-                    resultLogs.first { it.condition == "VIP검증" }.message.size shouldBe 2
+                    val result = condition.validate()
+                    log.info { "작업 $condition => 결과 ${result.ok}" }
+                    result.logs.print()
+                    result.ok shouldBe true
+                    result.logs.first { it.condition == "VIP검증" }.message.size shouldBe 2
                 }
             }
-
-        }
-
-        Given("백그라운드 유요성 체크리스트") {
-
         }
 
     }

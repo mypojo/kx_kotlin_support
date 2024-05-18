@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 
 /**
- * 공용 날짜 변환
+ * 공용 Local 날짜 변환
  * 주의!! 존이 입력될경우 무조건 한국 시간으로 변환한다.
  *  */
 fun String.toLocalDateTime(): LocalDateTime {
@@ -38,16 +38,28 @@ fun String.toLocalDateTime(): LocalDateTime {
     }
 }
 
-/** 공용 날짜 변환 : 로그 확인용 */
-fun String.toLocalDate(): LocalDate = TimeFormat.YMD.toLocalDate(this.retainFrom(RegexSet.NUMERIC))
+/**
+ * 공용 날짜 변환.
+ * ex) 로그 확인용
+ * */
+fun String.toLocalDate(): LocalDate {
+    val value = this.retainFrom(RegexSet.NUMERIC)
+    return when (value.length) {
+        8 -> TimeFormat.YMD.toLocalDate(value)
+        else -> throw IllegalArgumentException("invalid date format : $value")
+    }
 
-/** 공용 날짜 변환 : 로그 확인용 */
+}
+
+/**
+ * 공용 시간 변환
+ * ex) 로그 확인용
+ * */
 fun String.toLocalTime(): LocalTime {
     val value = this.retainFrom(RegexSet.NUMERIC)
     return when (value.length) {
         5 -> TimeFormat.HMS.toLocalTime(value.padStart(6, '0')) //5자리는 앞에 0을 채워줌
         6 -> TimeFormat.HMS.toLocalTime(value)
-        else -> throw IllegalArgumentException("invalid date format : $value")
+        else -> throw IllegalArgumentException("invalid datetime format : $value")
     }
-
 }

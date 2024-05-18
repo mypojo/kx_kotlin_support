@@ -1,6 +1,6 @@
 package net.kotlinx.aws.athena
 
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -15,7 +15,7 @@ internal class AthenaPartitionSqlBuilderTest : BeSpecLight() {
 
         Given("AthenaModule") {
 
-            val athenaModule = koin<AthenaModule>()
+            val athenaModule by koinLazy<AthenaModule>()
 
             Then("파티션_LIMIT") {
                 val start = System.currentTimeMillis()

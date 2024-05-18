@@ -12,7 +12,6 @@ class TimeUtilTest : BeSpecLog() {
 
         Given("TimeUtil") {
             Then("between") {
-
                 val start = "20231201".toLocalDate()
                 val end = "20231205".toLocalDate()
                 val dates = TimeUtil.between(start, end)

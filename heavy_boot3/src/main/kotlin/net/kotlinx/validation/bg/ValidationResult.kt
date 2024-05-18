@@ -1,4 +1,4 @@
-package net.kotlinx.domain.validation
+package net.kotlinx.validation.bg
 
 import jakarta.validation.ConstraintViolation
 import jakarta.validation.ValidationException
@@ -33,6 +33,7 @@ fun Collection<ValidationResult>.print() {
  * 결과메세지를 만들기 위한 템플릿용 빈
  * jakarta ConstraintViolation 와 호환된다.
  */
+@Deprecated("kotlin 제품 사용해주세요")
 class ValidationResult(
     val violation: ConstraintViolation<*>
 ) {

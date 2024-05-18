@@ -1,7 +1,7 @@
 package net.kotlinx.google.sheet
 
 import net.kotlinx.google.GoogleService
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -13,7 +13,7 @@ internal class GoogleSheetTest : BeSpecLight() {
 
         Given("GoogleSheet") {
 
-            val googleService = koin<GoogleService>()
+            val googleService by koinLazy<GoogleService>()
             val sheet = GoogleSheet(googleService, "13U-VKClgbbwhic6Jb6nsf9ITeESn7nZiEXNN6M5fsNY", "테스트용")
 
             Then("구글시트 읽기") {

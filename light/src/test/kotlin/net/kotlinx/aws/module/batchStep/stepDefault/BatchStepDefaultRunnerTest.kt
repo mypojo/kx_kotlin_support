@@ -5,7 +5,7 @@ import net.kotlinx.aws.module.batchStep.BatchStepListOption
 import net.kotlinx.aws.module.batchStep.BatchStepMode
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.gson.toGsonData
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -18,7 +18,7 @@ class BatchStepDefaultRunnerTest : BeSpecLight() {
 
         Given("BatchStepDefaultRunner") {
 
-            val runner = koin<BatchStepDefaultRunner>()
+            val runner by koinLazy<BatchStepDefaultRunner>()
             Then("StepStart 테스트") {
 
                 val input = BatchStepInput(StepStart::class.name()) {

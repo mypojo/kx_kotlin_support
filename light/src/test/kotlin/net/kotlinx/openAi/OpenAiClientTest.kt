@@ -1,6 +1,6 @@
 package net.kotlinx.openAi
 
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -12,7 +12,7 @@ class OpenAiClientTest : BeSpecLight() {
 
         Given("OpenAiClient") {
             log.warn { "비용 나오고 오래걸림!!" }
-            val openAiClient = koin<OpenAiClient>()
+            val openAiClient by koinLazy<OpenAiClient>()
 
             Then("요청 & 응답 샘플") {
                 val completion = openAiClient.chat(

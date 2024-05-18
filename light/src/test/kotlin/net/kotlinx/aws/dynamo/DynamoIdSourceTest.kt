@@ -1,7 +1,7 @@
 package net.kotlinx.aws.dynamo
 
 import net.kotlinx.aws.AwsClient1
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -13,7 +13,7 @@ internal class DynamoIdSourceTest : BeSpecLight() {
 
         Given("DynamoIdSource") {
 
-            val aws = koin<AwsClient1>()
+            val aws by koinLazy<AwsClient1>()
 
             Then("GUID 채번 테스트") {
 

@@ -1,4 +1,4 @@
-package net.kotlinx.domain.validation
+package net.kotlinx.validation.bg
 
 
 import jakarta.validation.ConstraintViolation
@@ -7,6 +7,7 @@ import jakarta.validation.Validator
 
 
 /** 벨리데이터 팩토리 있던데 뭐 지정하는게 딱히 없음 */
+@Deprecated("kotlin 제품 사용해주세요")
 object ValidationUtil {
 
     /** 기본 벨리데이터 */

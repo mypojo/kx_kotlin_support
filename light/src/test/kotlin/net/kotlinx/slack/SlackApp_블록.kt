@@ -2,7 +2,7 @@ package net.kotlinx.slack
 
 import com.slack.api.model.kotlin_extension.block.element.ButtonStyle
 import com.slack.api.model.kotlin_extension.block.withBlocks
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -14,7 +14,7 @@ class SlackApp_블록 : BeSpecLight() {
 
         Given("SlackApp") {
 
-            val app = koin<SlackApp>()
+            val app by koinLazy<SlackApp>()
             val catImage = "https://pbs.twimg.com/profile_images/625633822235693056/lNGUneLX_400x400.jpg"
 
             xThen("블록 데모") {

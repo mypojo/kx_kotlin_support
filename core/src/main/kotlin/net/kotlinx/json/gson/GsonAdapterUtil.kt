@@ -93,15 +93,13 @@ object GsonAdapterUtil {
     }
 
     /** 시간의 경우 UTC 기본값으로 변환해줌 */
-    class DateTimeUtcAdapter : JsonDeserializer<LocalDateTime>, JsonSerializer<LocalDateTime> {
-        override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): LocalDateTime = json.asString.fromUtc()
-        override fun serialize(src: LocalDateTime?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement = JsonPrimitive(src?.toUtc() ?: "")
-    }
+    class DateTimeUtceAdapter(private val converter: UtcConverter) : JsonDeserializer<LocalDateTime>, JsonSerializer<LocalDateTime> {
 
-    /** 시간의 경우 UTC Zone 기본값으로 변환해줌 */
-    class DateTimeUtcZoneAdapter : JsonDeserializer<LocalDateTime>, JsonSerializer<LocalDateTime> {
-        override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): LocalDateTime = json.asString.fromUtcZone()
-        override fun serialize(src: LocalDateTime?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement = JsonPrimitive(src?.toUtcZone() ?: "")
+        override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): LocalDateTime =
+            converter.fromText(json.asString)
+
+        override fun serialize(src: LocalDateTime?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement =
+            JsonPrimitive(src?.let { converter.toText(it) } ?: "")
     }
 
 

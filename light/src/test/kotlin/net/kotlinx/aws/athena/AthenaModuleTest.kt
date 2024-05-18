@@ -2,7 +2,7 @@ package net.kotlinx.aws.athena
 
 import io.kotest.matchers.shouldBe
 import net.kotlinx.aws.AwsConfig
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -18,7 +18,7 @@ internal class AthenaModuleTest : BeSpecLight() {
 
         Given("AthenaModule") {
 
-            val awsConfig = koin<AwsConfig>()
+            val awsConfig by koinLazy<AwsConfig>()
             val databaseName = awsConfig.profileName!!.removeFrom(RegexSet.NUMERIC) //주의!
             val athenaModule = AthenaModule(workGroup = "workgroup-prod", database = databaseName)
 

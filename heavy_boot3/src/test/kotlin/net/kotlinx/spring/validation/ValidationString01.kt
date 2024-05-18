@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import net.kotlinx.core.Comment
-import net.kotlinx.domain.validation.ann.*
+import net.kotlinx.validation.bg.ann.*
 import org.hibernate.validator.constraints.Length
 
 class ValidationString01 {

@@ -2,7 +2,7 @@ package net.kotlinx.slack
 
 import mu.KotlinLogging
 import net.kotlinx.domain.developer.DeveloperData
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.MyEnv
 import net.kotlinx.slack.msg.SlackSimpleAlert
 
@@ -12,12 +12,13 @@ object SlackMessageSenderSet {
 
     val ON_ERROR = object : SlackMessageSender {
 
-        private val slackApp = koin<SlackApp>()
+        private val slackApp by koinLazy<SlackApp>()
 
         override fun send(block: SlackSimpleAlert.() -> Unit) {
 
             if (MyEnv.IS_LOCAL) {
                 log.warn { "로컬 전송입니다!" }
+                return
             }
 
             val alert = SlackSimpleAlert {

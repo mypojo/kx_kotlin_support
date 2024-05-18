@@ -7,6 +7,7 @@ import aws.sdk.kotlin.services.codedeploy.model.LifecycleEventStatus
 import aws.sdk.kotlin.services.codedeploy.model.PutLifecycleEventHookExecutionStatusResponse
 import aws.sdk.kotlin.services.codedeploy.model.RevisionLocationType
 import aws.sdk.kotlin.services.codedeploy.putLifecycleEventHookExecutionStatus
+import net.kotlinx.json.gson.GsonData
 
 
 //==================================================== 로직 ======================================================
@@ -17,7 +18,7 @@ import aws.sdk.kotlin.services.codedeploy.putLifecycleEventHookExecutionStatus
 suspend fun CodeDeployClient.createDeployment(
     applicationName: String,
     deploymentGroupName: String,
-    appSpec: Any,
+    appSpec: GsonData,
     codedeployConfig: CodedeployConfig = CodedeployConfig.ECSAllAtOnce
 ): CreateDeploymentResponse {
     return this.createDeployment {
@@ -32,6 +33,18 @@ suspend fun CodeDeployClient.createDeployment(
         }
     }
 }
+
+/** 블루그린배포 간단버전 */
+suspend fun CodeDeployClient.createDeployment(deployData: EcsDeployData): CreateDeploymentResponse {
+    val appSepc = CodedeployAppSpecBuilder(deployData).build()
+    return createDeployment(
+        deployData.applicationName,
+        deployData.deploymentGroupName,
+        appSepc,
+        deployData.codedeployConfig
+    )
+}
+
 
 /** 후크 상태 변경 (샘플)  */
 suspend fun CodeDeployClient.putLifecycleEventHookExecutionStatus(

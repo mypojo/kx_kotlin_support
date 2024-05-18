@@ -6,7 +6,7 @@ import net.kotlinx.aws.athena.AthenaModule
 import net.kotlinx.aws.athena.AthenaTable
 import net.kotlinx.aws.athena.AthenaTableFormat
 import net.kotlinx.aws.athena.AthenaTablePartitionType
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -18,7 +18,7 @@ class DynamoDbExporterKtTest : BeSpecLog() {
 
         Given("DynamoDbExporter") {
 
-            val aws = koin<AwsClient1>()
+            val aws by koinLazy<AwsClient1>()
 
             Then("step1 - S3로 익스포트") {
                 val exporter = DynamoDbExporter(aws) {

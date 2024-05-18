@@ -1,4 +1,4 @@
-package net.kotlinx.konform
+package net.kotlinx.validation.konform
 
 import com.lectra.koson.obj
 import io.konform.validation.Validation
@@ -11,8 +11,6 @@ import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
-import net.kotlinx.validation.konform.minLengthKr
-import net.kotlinx.validation.konform.printSimple
 
 class KonformTest : BeSpecLight() {
 

@@ -2,7 +2,7 @@ package net.kotlinx.okhttp
 
 import io.kotest.matchers.shouldBe
 import net.kotlinx.file.slash
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -12,11 +12,12 @@ import okhttp3.OkHttpClient
 
 internal class OkHttpSupportTest : BeSpecLight() {
 
+    private val client by koinLazy<OkHttpClient>()
+
     init {
         initTest(KotestUtil.SLOW)
 
         Given("OkHttpClient") {
-            val client = koin<OkHttpClient>()
 
             Then("기본테스트") {
                 val resp = client.fetch {

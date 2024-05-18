@@ -1,45 +1,39 @@
 package net.kotlinx.aws.code
 
-import com.lectra.koson.ObjectType
 import com.lectra.koson.arr
 import com.lectra.koson.obj
-import net.kotlinx.aws.AwsConfig
+import net.kotlinx.aws.sts.StsUtil
+import net.kotlinx.json.gson.GsonData
+import net.kotlinx.json.koson.toGsonData
 
 /**
  * appSepc 만들기 매우 짜증남.. 왜 이렇게 했을까..
  */
-data class CodedeployAppSpecBuilder(
-    private val awsId: String,
-    private val containerName: String,
-    /** 리비전 번호가 포함되지 않으면  latest 인듯.  ex) dd-web_task_def-dev:27 */
-    private val taskDef: String,
-    private val lambdaHookName: String = "",
-    private val containerPort: Int = 8080,
-    private val region: String = AwsConfig.SEOUL,
-) {
-    fun build(): ObjectType = obj {
+class CodedeployAppSpecBuilder(val ecsDeployData: EcsDeployData) {
+
+    fun build(): GsonData = obj {
         "version" to 1
         "Resources" to arr[
-                obj {
-                    "TargetService" to obj {
-                        "Type" to "AWS::ECS::Service"
-                        "Properties" to obj {
-                            "TaskDefinition" to "arn:aws:ecs:${region}:${awsId}:task-definition/${taskDef}"
-                            "LoadBalancerInfo" to obj {
-                                "ContainerName" to containerName
-                                "ContainerPort" to containerPort
-                            }
-                            "PlatformVersion" to "1.4.0"
+            obj {
+                "TargetService" to obj {
+                    "Type" to "AWS::ECS::Service"
+                    "Properties" to obj {
+                        "TaskDefinition" to "arn:aws:ecs:${ecsDeployData.region}:${StsUtil.ACCOUNT_ID}:task-definition/${ecsDeployData.taskDef}"
+                        "LoadBalancerInfo" to obj {
+                            "ContainerName" to ecsDeployData.containerName
+                            "ContainerPort" to ecsDeployData.containerPort
                         }
+                        "PlatformVersion" to "1.4.0"
                     }
                 }
+            }
         ]
         //후킹 설정  https://docs.aws.amazon.com/ko_kr/codedeploy/latest/userguide/reference-appspec-file-structure-hooks.html
-        if (lambdaHookName.isNotEmpty()) {
+        ecsDeployData.beforeAllowTraffic?.let {
             "Hooks" to arr[
-                    obj { "BeforeAllowTraffic" to lambdaHookName }
+                obj { "BeforeAllowTraffic" to it }
             ]
         }
-    }
+    }.toGsonData()
 
 }

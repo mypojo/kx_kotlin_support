@@ -1,7 +1,7 @@
 package net.kotlinx.slack
 
 import net.kotlinx.domain.developer.DeveloperData
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -21,7 +21,7 @@ class SlackApp_메세지템플릿 : BeSpecLight() {
             }
 
             xThen("성공메세지 데모") {
-                val slackApp = koin<SlackApp>()
+                val slackApp by koinLazy<SlackApp>()
                 val alert = SlackSimpleAlert {
                     channel = "#kx_alert"
                     source = "demo_project"
