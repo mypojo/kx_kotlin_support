@@ -11,13 +11,6 @@ import net.kotlinx.string.toBigDecimal2
 import net.kotlinx.system.DeploymentType
 import java.time.LocalDateTime
 
-class MyClass {
-    companion object {
-        fun companionMethod(): String = "original"
-    }
-}
-
-
 /**
  *  Mockk 테스트 샘플
  */

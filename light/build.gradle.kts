@@ -75,8 +75,21 @@ dependencies {
 
     //==================================================== OPEN-AI ======================================================
     implementation("com.aallam.openai:openai-client:_") //open API (챗GPT) kotlin client
+
+
+    //==================================================== ktor-client (OPEN-AI 에서 사용) ======================================================
     implementation("io.ktor:ktor-client-core:_") //open API 의 ktor core  베타인 3점대에서 2점대로 낮춤. 아직 플러그인이 덜 완성된거 같음
     implementation("io.ktor:ktor-client-okhttp:_") //open API 의 ktor JVM http 엔진. 나는 okhttp 사용
+
+    //==================================================== ktor-server (UI) ======================================================
+    implementation("io.ktor:ktor-server-core-jvm:_")
+    implementation("io.ktor:ktor-server-netty:_")
+    implementation("io.ktor:ktor-server-tests-jvm:_")  // 람다용 호출 때문에 testImplementation -> implementation 로 변경
+    implementation("io.ktor:ktor-server-html-builder-jvm:_") //kotlin html 간단 확장
+    // 인증 3종세트
+    implementation("io.ktor:ktor-server-auth-jvm:_")
+    implementation("io.ktor:ktor-server-auth-jwt-jvm:_")
+    implementation("io.ktor:ktor-server-sessions-jvm:_")
 
     //==================================================== 기타 ======================================================
     api("gov.nist.math:jama:1.0.3") //https://mvnrepository.com/artifact/gov.nist.math/jama 회귀분석 패키지
