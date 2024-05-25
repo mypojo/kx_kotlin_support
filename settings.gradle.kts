@@ -20,9 +20,12 @@ pluginManagement {
 //==================================================== refreshVersions 세팅 여러가지 ======================================================
 plugins {
     id("com.gradle.enterprise") version "3.6.3"
-    id("de.fayard.refreshVersions") version "0.60.2" //기타의존성 버전 자동갱신 -> 멀티프로젝트는 안되는듯?
+    id("de.fayard.refreshVersions") version "0.60.2" //기타의존성 버전 자동갱신
 }
 
+/**
+ * 리프레시 버전을 사용하는경우 커스텀 buildSrc 사용시 ignore 설정 및 약간의 테스트가 필요함
+ * */
 refreshVersions {
     enableBuildSrcLibs()
 }

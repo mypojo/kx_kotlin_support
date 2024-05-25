@@ -3,7 +3,7 @@ package net.kotlinx.notion
 import com.lectra.koson.obj
 import mu.KotlinLogging
 import net.kotlinx.json.gson.GsonData
-import net.kotlinx.json.gson.toGsonData
+import net.kotlinx.json.koson.toGsonData
 
 /**
  * 노션 데이터페이스 페이지의 각 항목 컬럼 (읽기전용)

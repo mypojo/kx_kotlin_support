@@ -23,6 +23,7 @@ import net.kotlinx.string.ResultText
  * 주의!
  *
  *  */
+@Deprecated("xx")
 class FunctionRouter(block: FunctionRouter.() -> Unit = {}) : LambdaLogicHandler {
 
     private val inputRoutes = mutableListOf<FunctionRouteInfo>()

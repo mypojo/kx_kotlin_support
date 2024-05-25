@@ -17,6 +17,7 @@ import org.crac.Resource
  * 하나만 만들어서 여러군데 다 사용하고싶은 범용 람다 함수  핸들러
  * Core.getGlobalContext().register(this) 해줄것!
  */
+@Deprecated("사용중지")
 abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<String, Any>>, Resource {
 
     protected val log = KotlinLogging.logger {}
@@ -80,7 +81,7 @@ abstract class CommonFunctionHandler : RequestHandler<Map<String, Any>, Map<Stri
                 log.trace { "람다로직 체크 ${logic.handler::class.simpleName} ..." }
                 val result = logic.handler(data, context) ?: continue
 
-                log.info { "람다로직 종료 ${logic.handler::class.simpleName} 적용" }
+                log.trace { "람다로직 종료 ${logic.handler::class.simpleName} 적용" }
                 val lambdaMap = LambdaHandlerUtil.anyToLambdaMap(result)
                 log.trace { " -> 결과 $lambdaMap" } //양이 매우 클 수 있음
                 return lambdaMap

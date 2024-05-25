@@ -6,11 +6,14 @@ import okhttp3.HttpUrl
  * 간단 URL 생성기 (크롤링 등)
  * 원본 URL에서 쿼리 파라메터 등을 간단하게 추가할때 사용됨
  *  */
-fun HttpUrl.build(block: HttpUrl.Builder.() -> Unit = {}): String {
+fun HttpUrl.buildUrl(block: HttpUrl.Builder.() -> Unit = {}): HttpUrl {
     val builder = this.newBuilder()
     builder.apply(block)
-    return builder.build().toString()
+    return builder.build()
 }
+
+/** 단축 */
+fun HttpUrl.build(block: HttpUrl.Builder.() -> Unit = {}): String = this.buildUrl(block).toString()
 
 /** 조합 확인용 */
 fun HttpUrl.toUrlString(): String {

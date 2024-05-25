@@ -3,6 +3,7 @@ package net.kotlinx.domain.eventLog.data
 import com.google.common.collect.Sets
 import net.kotlinx.domain.eventLog.EventUtil
 import net.kotlinx.domain.eventLog.data.EventDataHolder.addData
+import net.kotlinx.hibernate.config.AbstractJpaPostListener
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.string.toSnakeFromCamel
 import org.hibernate.event.spi.PostDeleteEvent

@@ -5,6 +5,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import kotlinx.serialization.Serializable
 import net.kotlinx.json.koson.KosonTest.Companion.DEMO_KOSON
+import net.kotlinx.json.koson.toGsonData
 import net.kotlinx.json.serial.SerialJsonSet
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil

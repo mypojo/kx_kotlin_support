@@ -1,7 +1,6 @@
 package net.kotlinx.json.gson
 
 import com.google.gson.*
-import com.lectra.koson.KosonType
 import mu.KotlinLogging
 import net.kotlinx.json.serial.SerialToJson
 
@@ -13,9 +12,6 @@ fun String?.toGsonDataOrEmpty(): GsonData {
 
 /** 간단 변환 */
 fun String.toGsonData(): GsonData = GsonData.parse(this)
-
-/** 간단 변환 */
-fun KosonType.toGsonData(): GsonData = GsonData.parse(this)
 
 /** 간단 변환 */
 fun List<GsonData>.toGsonArray(): GsonData = GsonData.array().also { ar -> this.forEach { ar.add(it) } }

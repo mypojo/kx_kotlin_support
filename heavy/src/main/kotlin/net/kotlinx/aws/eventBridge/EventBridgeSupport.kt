@@ -10,7 +10,7 @@ import aws.sdk.kotlin.services.eventbridge.putEvents
 /**
  * 시간입력은 따로 하지 않고 자체 채번 시간사용 (비교용)
  * https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-putevent-size.html
- * 256 kb 이하만 가능
+ * 총 항목의 크기가 256 kb 이하만 가능 -> 더 크다면 S3를 권장함
  * *   */
 suspend fun EventBridgeClient.putEvents(config: EventBridgeConfig, datas: List<String>): PutEventsResponse {
     return this.putEvents {
@@ -21,21 +21,6 @@ suspend fun EventBridgeClient.putEvents(config: EventBridgeConfig, datas: List<S
                 this.detailType = config.detailType
                 this.resources = config.resources
                 this.detail = data
-            }
-        }
-    }
-}
-
-@Deprecated("안씀")
-suspend fun EventBridgeClient.putEvents(datas: List<EventBridgeData>): PutEventsResponse {
-    return this.putEvents {
-        this.entries = datas.map { data ->
-            PutEventsRequestEntry {
-                this.eventBusName = data.eventBusName
-                this.source = data.source
-                this.detailType = data.detailType
-                this.resources = data.resources
-                this.detail = data.detail
             }
         }
     }

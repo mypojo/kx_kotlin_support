@@ -4,7 +4,7 @@ import com.lectra.koson.obj
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.contain
 import net.kotlinx.aws.lambdaCommon.handler.s3.S3LogicHandler
-import net.kotlinx.aws.module.batchStep.stepDefault.StepStartContext
+import net.kotlinx.domain.batchStep.stepDefault.StepStartContext
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest

@@ -35,7 +35,7 @@ package-lock.json
 
 #### versionRefresh ####
 buildscan.log
-buildSrc
+buildSrc/build
 
 #### 개인 관리 ####
 **/*_sin*

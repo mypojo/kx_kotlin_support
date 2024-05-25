@@ -14,8 +14,8 @@ class SlackApp_메세지템플릿 : BeSpecLight() {
 
         Given("SlackSimpleAlert") {
 
-            Then("에러메세지 데모") {
-                SlackMessageSenderSet.ON_ERROR.send {
+            xThen("에러메세지 데모") {
+                SlackMessageSenders.Alert.send {
                     descriptions += listOf("추가메세지")
                 }
             }

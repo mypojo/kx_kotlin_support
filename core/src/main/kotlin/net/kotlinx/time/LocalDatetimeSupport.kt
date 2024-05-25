@@ -1,6 +1,7 @@
 package net.kotlinx.time
 
 import java.time.Duration
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
@@ -33,6 +34,9 @@ inline fun LocalDateTime.toF01(): String = TimeFormat.YMDHM_F01[this]
 fun LocalDateTime.between(endTime: LocalDateTime = LocalDateTime.now()): kotlin.time.Duration = Duration.between(this, endTime).toKotlinDuration()
 
 //==================================================== 존 관련 (테스트 필요) ======================================================
+
+/** Instant 변환 */
+fun LocalDateTime.toInstant(zoneId: ZoneId = TimeUtil.SEOUL): Instant = this.atZone(zoneId).toInstant()!!
 
 /** 밀리초 변환 */
 fun LocalDateTime.toLong(zoneId: ZoneId = TimeUtil.SEOUL): Long = this.atZone(zoneId).toInstant().toEpochMilli()

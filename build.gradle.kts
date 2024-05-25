@@ -1,3 +1,6 @@
+import net.kotlinx.gradle.commandGitCurrentBrabch
+import net.kotlinx.gradle.get
+
 plugins {
     //코어 플러그인
     kotlin("jvm") //항상 최신버전 사용. 멀티플랫폼 버전과 동일함
@@ -5,12 +8,6 @@ plugins {
 }
 
 //==================================================== 공통 ======================================================
-/**
- * 그래들 표준 문법을 간단하게 변경해줌
- * ex) providers["group"]
- * 값이 없으면 더미 데이터로 채워준다 (오류 방지)
- *  */
-operator fun ProviderFactory.get(name: String): String = this.gradleProperty(name).getOrElse("$name is not found")
 
 allprojects {
 
@@ -130,6 +127,17 @@ publishing {
                 password = providers["repsy.maven.password"]
             }
         }
+    }
+}
+
+/**
+ * 테스트용 메소드
+ * other -> gradleTest
+ *  */
+tasks.create("gradleTest") {
+    doLast {
+        val currentBrabch = this.project.commandGitCurrentBrabch()
+        check(currentBrabch == "master")
     }
 }
 

@@ -36,6 +36,5 @@ dependencies {
     api("ch.qos.logback:logback-classic:_") //slf4j의 실제 구현체 (레벨 설정에 참조해야함)
     api("org.codehaus.janino:janino:_") //logback 파일롤링 표현식 필터처리에 필요함
 
-
 }
 

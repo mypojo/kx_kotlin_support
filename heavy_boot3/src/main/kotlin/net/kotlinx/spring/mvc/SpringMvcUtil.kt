@@ -1,7 +1,7 @@
 package net.kotlinx.spring.mvc
 
 import mu.KotlinLogging
-import net.kotlinx.domain.menu.MenuData
+import net.kotlinx.domain.menu.MenuMethod
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
 
 
@@ -14,7 +14,7 @@ object SpringMvcUtil {
 
     private val log = KotlinLogging.logger {}
 
-    fun toMap(handlerMapping: RequestMappingHandlerMapping): Map<String, MenuData> {
+    fun toMap(handlerMapping: RequestMappingHandlerMapping): Map<String, MenuMethod> {
         return handlerMapping.handlerMethods.entries.flatMap { (req, value) ->
             if (value.beanType.simpleName == "BasicErrorController") return@flatMap emptyList() //기본 설정 제거. 제거 방법이 없는듯?
             if (log.isTraceEnabled) {
@@ -30,7 +30,7 @@ object SpringMvcUtil {
                 log.warn { "경고!!  directPaths is required : $req" }
             }
             req.directPaths.map {
-                MenuData(
+                MenuMethod(
                     it,
                     value.beanType,
                     value.method,

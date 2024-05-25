@@ -60,12 +60,11 @@ object Koins {
         }
     }
 
-
     /**
-     * 간단하게 인라인으로 시작
+     * 간단하게 인라인으로 시작 & 재시작 없음
      * ex) 그래들 스크립트 등
      *  */
-    fun startup(block: Module.() -> Unit) {
+    fun startupOnlyOnce(block: Module.() -> Unit) {
         if (!KoinPlatformTools.exist()) {
             startKoin {
                 modules(module {
@@ -74,6 +73,20 @@ object Koins {
             }
         }
     }
+
+    /**
+     * 간단하게 인라인으로 시작 & 재시작함
+     * ex) CDK 스크립트
+     *  */
+    fun startupReset(block: Module.() -> Unit) {
+        stopKoin()
+        startKoin {
+            modules(module {
+                block()
+            })
+        }
+    }
+
 
     /** 파라메터가 있어야 가져올 수 있는것도 있음 주의! */
     @OptIn(KoinInternalApi::class)

@@ -151,6 +151,7 @@ class AthenaIamUser : KoinComponent {
                     this.userNames = this@AthenaIamUser.userNames
                     this.tempPwdSuff = this@AthenaIamUser.tempPwdSuff
                     this.managedPolicies = listOf(policy.iManagedPolicy)
+                    this.login = true
                     create(stack)
                 }
 

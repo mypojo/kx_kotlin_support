@@ -37,9 +37,13 @@ class GradleBuilder {
         apply(block)
     }
 
-
     /** AWS 프로파일 정보 */
     val profileName: String? = koin<AwsConfig>().profileName
+
+    /**
+     * AWS 로컬 커맨드 실행의 경우 프로파일을 추가로 입력해줘야함
+     *  */
+    val profileCommand = if (AwsInstanceTypeUtil.IS_LOCAL && profileName != null) "--profile $profileName" else ""
 
     /** AWS 인스턴스 */
     val aws by koinLazy<AwsClient>()
@@ -90,18 +94,14 @@ class GradleBuilder {
      * ex) npx vite build
      * ex) aws s3 sync ${project(":demo-svelte").projectDir}\dist s3://demo.kotlinx.net/
      * */
+    @Deprecated("OS 패키지꺼 쓰세요")
     fun command(command: String): List<String> = when (OsType.OS_TYPE) {
         OsType.LINUX -> listOf("bash", "-c", command)
         OsType.WINDOWS -> listOf("cmd", "/c", command)
         OsType.MAC -> listOf("bash", "-c", command) // mac 은 잘 모름
     }
 
-    /**
-     * AWS 로컬 커맨드 실행의 경우 프로파일을 추가로 입력해줘야함
-     *  */
-    val profileCommand = if (AwsInstanceTypeUtil.IS_LOCAL && profileName != null) "--profile $profileName" else ""
-
-    //==================================================== ECR ======================================================
+    //==================================================== ECR 간단 배포 (실제배포는 jib) ======================================================
 
     /** ECR 태그이름 생성기 */
     var ecrTagName: () -> String = { "${deploymentType}-${TimeFormat.YMDHM_F02.get()}" }
@@ -112,7 +112,7 @@ class GradleBuilder {
         return "aws ecr get-login-password --region $region $profileCommand | docker login --username AWS --password-stdin $ecrUrl"
     }
 
-    //==================================================== ECR -> ECS 간단 배포 ======================================================
+    //====================================================  ECS(ECR) 간단 배포 ======================================================
 
     /** ECS 배포 설정정보 */
     lateinit var ecsDeployData: EcsDeployData
@@ -126,14 +126,14 @@ class GradleBuilder {
     }
 
     /** 블루그린 배포 */
-    fun ecrDeployBlueGreen(containerName: String, taskDef: String, lambdaHookName: String? = null) {
+    fun ecrDeployBlueGreen() {
         runBlocking {
             val deployment = aws.codeDeploy.createDeployment(ecsDeployData)
-            log.info { "[${containerName}] 코드디플로이 배포 완료 ->  ${CodedeployUtil.toConsoleLink(deployment.deploymentId!!)}" }
+            log.info { "[${ecsDeployData.containerName}] 코드디플로이 배포 완료 ->  ${CodedeployUtil.toConsoleLink(deployment.deploymentId!!)}" }
         }
     }
 
-    //==================================================== ECR -> 람다 간단 배포 ======================================================
+    //==================================================== 람다(ECR) 간단 배포 ======================================================
 
     /** RCR 람다 함수 업데이트 */
     fun lambdaUpdateFunction(repositoryName: String, functionName: String) {
@@ -148,7 +148,6 @@ class GradleBuilder {
             aws.lambda.updateFunctionCode(functionName, imageUrl, branchName) //터치만 해줌
         }
     }
-
 
     //==================================================== 람다(jar) 간단 배포 ======================================================
 

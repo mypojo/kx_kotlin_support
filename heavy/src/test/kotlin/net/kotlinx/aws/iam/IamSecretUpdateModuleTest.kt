@@ -17,7 +17,7 @@ class IamSecretUpdateModuleTest : BeSpecHeavy() {
             Then("시크릿키 갱신") {
                 val aws by koinLazy<AwsClient>()
                 val userName = System.getenv("AWS_ID")
-                aws.iamSecretUpdateModule.checkAndUpdate(userName, Duration.ofDays(90))
+                aws.iamSecretUpdateModule.checkAndUpdate(userName, Duration.ofDays(19))
             }
         }
     }

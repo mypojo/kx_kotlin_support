@@ -6,15 +6,14 @@ import io.jsonwebtoken.security.SecurityException
 import jakarta.validation.ValidationException
 import mu.KotlinLogging
 import net.kotlinx.time.toDate
-import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDateTime
 import java.util.*
 import javax.crypto.SecretKey
 import kotlin.time.Duration
 
-
 /**
  * https://jwt.io/
+ * 시큐리티 의존이 없긴 하지만 너무 무거움.. 거의 0.5mb & 잭슨 의손정 있음.
  *  */
 class JwtProvider(
     secretPlain: String,
@@ -29,9 +28,9 @@ class JwtProvider(
     }
 
     /** 토큰으로 변환 */
-    fun <T : UserDetails> createToken(user: T, block: JwtBuilder.() -> Unit = {}): String {
+    fun createToken(username: String, block: JwtBuilder.() -> Unit = {}): String {
         return Jwts.builder()
-            .subject(user.username)
+            .subject(username)
             .signWith(secretKey, Jwts.SIG.HS512) //암호화 기본
             .expiration(LocalDateTime.now().plusMinutes(tokenDuration.inWholeMinutes).toDate())
             .issuedAt(Date())
@@ -41,13 +40,13 @@ class JwtProvider(
             .compact()
     }
 
-    /**인증 정보 조회  */
-    fun parseToken(token: String) = try {
+    /** 토큰을 객체로 변환  */
+    fun parseToken(token: String): Claims = try {
         Jwts.parser()
             .verifyWith(secretKey)
             .build()
             .parseSignedClaims(token)
-            .payload
+            .payload!!
     } catch (e: SecurityException) {
         log.info { " -> 입력 토큰 $token" }
         throw ValidationException("잘못된 JWT 서명입니다.", e)
@@ -63,7 +62,7 @@ class JwtProvider(
     } catch (e: IllegalArgumentException) {
         log.info { " -> 입력 토큰 $token" }
         throw ValidationException("JWT 토큰이 잘못되었습니다.", e)
-    }!!
+    }
 
 
 }

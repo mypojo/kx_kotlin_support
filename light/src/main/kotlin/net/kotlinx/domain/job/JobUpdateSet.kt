@@ -11,7 +11,7 @@ object JobUpdateSet {
         net.kotlinx.domain.job.Job::jobStatus,
         net.kotlinx.domain.job.Job::jobContext,
         net.kotlinx.domain.job.Job::startTime,
-        net.kotlinx.domain.job.Job::awsInfo,
+        net.kotlinx.domain.job.Job::instanceMetadata,
     ).map { it.name }
 
     /** 종료 */

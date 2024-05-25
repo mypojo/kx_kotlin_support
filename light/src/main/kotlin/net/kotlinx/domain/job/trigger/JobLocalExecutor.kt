@@ -2,11 +2,12 @@ package net.kotlinx.domain.job.trigger
 
 import com.google.common.eventbus.EventBus
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsInfoLoader
+import net.kotlinx.aws.AwsInstanceMetadata
 import net.kotlinx.aws.AwsInstanceType
 import net.kotlinx.domain.job.*
 import net.kotlinx.domain.job.define.JobDefinitionUtil
 import net.kotlinx.exception.toSimpleString
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.reflect.newInstance
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -20,9 +21,9 @@ class JobLocalExecutor : KoinComponent {
 
     private val log = KotlinLogging.logger {}
 
-    private val awsInfoLoader: AwsInfoLoader by inject()
     private val jobRepository: JobRepository by inject()
     private val eventBus: EventBus by inject()
+    private val instanceMetadata by koinLazy<AwsInstanceMetadata>()
 
     /**
      * @return pk 확인용 키 문자욜
@@ -30,7 +31,7 @@ class JobLocalExecutor : KoinComponent {
     suspend fun runJob(job: Job): String {
         val jobDef = JobDefinitionUtil.findById(job.pk)
         val jobService = jobDef.jobClass.newInstance()
-        job.awsInfo = awsInfoLoader.load()
+        job.instanceMetadata = instanceMetadata
 
         log.debug { "job run (${job.toKeyString()})" }
         job.jobOption?.let {
@@ -53,7 +54,7 @@ class JobLocalExecutor : KoinComponent {
             jobRepository.updateItem(job, JobUpdateSet.END)
 
             //실서버 강제호출의 경우 알람 전송
-            if (job.awsInfo!!.instanceType == AwsInstanceType.BATCH) {
+            if (job.instanceMetadata!!.instanceType == AwsInstanceType.BATCH) {
                 if (job.jobExeFrom == JobExeFrom.ADMIN) {
                     eventBus.post(JobEvent(job, msgs = listOf("강제실행 정상 종료")))
                 }

@@ -2,7 +2,9 @@ package net.kotlinx.domain.eventLog.data
 
 import net.kotlinx.id.IdGenerator
 import net.kotlinx.json.gson.GsonData
+import net.kotlinx.koin.Koins.koinLazy
 import java.time.LocalDateTime
+import kotlin.concurrent.getOrSet
 
 /**
  * 각 로직에 별도로 세팅할것.
@@ -16,7 +18,7 @@ object EventDataHolder {
     /** datas 에 추가됨 */
     fun addData(block: EventData.() -> Unit = {}) {
         val eventData = EventData().apply(block)
-        val datas = DATAS.get() ?: let { mutableListOf<EventData>().also { DATAS.set(it) } }
+        val datas = DATAS.getOrSet { mutableListOf() }
         datas.add(eventData)
     }
 
@@ -43,27 +45,19 @@ object EventDataHolder {
     }
 
     /** tx당 1개 생성되는 표준 시간을 리턴  */
-    fun getTxTime(): LocalDateTime {
-        return TX_TIME.get() ?: let { LocalDateTime.now().also { TX_TIME.set(it) } }
-    }
+    fun getTxTime(): LocalDateTime = TX_TIME.getOrSet { LocalDateTime.now() }
 
     //==================================================== EVENT_ID ======================================================
 
     /** 예외 처리 등, 미리 ID를 채번할때 사용  */
     private val EVENT_ID = ThreadLocal<Long>()
 
-    private lateinit var idGenerator: IdGenerator
+    private val ID_GENERATOR by koinLazy<IdGenerator>()
 
     /** 미리 세팅 안하면 null 리턴됨  */
-    fun getOrMakeEventId(): Long {
-        return EVENT_ID.get() ?: let { idGenerator.nextval().also { EVENT_ID.set(it) } }
-    }
+    fun getOrMakeEventId(): Long = EVENT_ID.getOrSet { ID_GENERATOR.nextval() }
 
     //==================================================== 공통 ======================================================
-
-    fun init(idGenerator: IdGenerator) {
-        EventDataHolder.idGenerator = idGenerator
-    }
 
     fun remove() {
         TX_TIME.remove()

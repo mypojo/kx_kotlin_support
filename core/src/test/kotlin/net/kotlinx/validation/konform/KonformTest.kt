@@ -7,7 +7,7 @@ import io.konform.validation.jsonschema.maxLength
 import io.konform.validation.jsonschema.maximum
 import io.konform.validation.jsonschema.minimum
 import io.kotest.matchers.shouldBe
-import net.kotlinx.json.gson.toGsonData
+import net.kotlinx.json.koson.toGsonData
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -29,7 +29,7 @@ class KonformTest : BeSpecLight() {
 
             val defaultValidate = Validation {
                 UserProfile::fullName required {
-                    minLengthKr(2)
+                    minLengthKr("풀네임", 2)
                     maxLength(100)
                 }
             }

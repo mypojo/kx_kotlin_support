@@ -1,6 +1,8 @@
 package net.kotlinx.kotest.modules
 
+import com.google.common.eventbus.DeadEvent
 import com.google.common.eventbus.EventBus
+import com.google.common.eventbus.Subscribe
 import mu.KotlinLogging
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.core.ProtocolPrefix
@@ -39,11 +41,23 @@ object MyBasicModule : KoinModule {
             SlackApp(token)
         }
         single { GsonSet.GSON }
-        single { EventBus() }
+        /** 이벤트버스 구독은 리플렉션 하지말고 개별 모듈에서 명시적으로 등록하자. */
+        single {
+            class DeadEventListener {
+                @Subscribe
+                fun onEvent(event: DeadEvent) {
+                    log.error { "DeadEvent 수신 경고!! : $event" }
+                }
+            }
+            EventBus().apply { register(DeadEventListener()) }
+        }
         single {
             val tempSeq = AtomicLong()
             IdGenerator({ tempSeq.incrementAndGet() })
         }
+
+        //==================================================== 각종 오픈 API  ======================================================
+
         single {
             val secretValue by lazyLoadStringSsm("/notion/key")
             NotionDatabaseClient(secretValue)

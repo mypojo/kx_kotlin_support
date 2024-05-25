@@ -9,6 +9,8 @@ import software.amazon.awscdk.services.iam.PolicyStatementProps
 
 object IamPolicyUtil {
 
+    val CODECOMMIT by lazy { ManagedPolicy.fromAwsManagedPolicyName("AWSCodeCommitPowerUser") }
+
     /** 관리자용 권한 샘플 */
     val DEFAULT_ADMIN_ACTIONS = listOf(
         "logs:*",

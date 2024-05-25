@@ -2,16 +2,21 @@ package net.kotlinx.ktor.server
 
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.contain
+import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
-import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.ktor.server.app.configureRouting
+import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.ktor.allModules
 
-class KtorApplicationUtilTest : BeSpecLog() {
+class KtorApplicationUtilTest : BeSpecLight() {
+
+    private val ktor by koinLazy<HttpClient>()
+    private val jwt by koinLazy<KtorJwt>()
 
     init {
         initTest(KotestUtil.FAST)
@@ -20,7 +25,7 @@ class KtorApplicationUtilTest : BeSpecLog() {
             Then("간단 실행") {
                 testApplication {
                     application {
-                        configureRouting()
+                        allModules()
                     }
                     client.get("/").apply {
                         status shouldBe HttpStatusCode.OK
@@ -32,10 +37,6 @@ class KtorApplicationUtilTest : BeSpecLog() {
         }
 
         Given("람다용 서버 테스트") {
-            val ktor = KtorApplicationUtil.buildClient {
-                configureRouting()
-            }
-
 
             When("루트 입력시") {
                 Then("리다이렉트 설정된 경로 호출") {
@@ -58,6 +59,50 @@ class KtorApplicationUtilTest : BeSpecLog() {
                     }
                 }
             }
+        }
+
+        Given("시큐리티 테스트") {
+
+            val authJwt: HttpRequestBuilder.() -> Unit = {
+                headers {
+                    //append(HttpHeaders.Authorization, "Bearer ${jwt.createToken()}")
+                }
+            }
+
+            val authBearer: HttpRequestBuilder.() -> Unit = {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer abcx")
+                }
+            }
+
+            When("로그인필용없음") {
+                Then("미인증 -> 200") {
+                    val resp = ktor.get("/protected/a")
+                    resp.status shouldBe HttpStatusCode.OK
+                }
+            }
+
+            When("인증필요(디폴트)") {
+                Then("미인증 -> Unauthorized") {
+                    val resp = ktor.get("/protected/b")
+                    resp.status shouldBe HttpStatusCode.Unauthorized
+                }
+                Then("인증 -> 200") {
+                    val resp = ktor.get("/protected/b", authJwt)
+                    resp.status shouldBe HttpStatusCode.OK
+                    resp.bodyAsText() shouldBe contain("ROLE_DEFAULT")
+                }
+            }
+
+            When("인증필요(bearer)") {
+                Then("인증 -> 200 => 다른 역할 리턴") {
+                    val resp = ktor.get("/protected/c", authBearer)
+                    resp.status shouldBe HttpStatusCode.OK
+                    resp.bodyAsText() shouldBe contain("ROLE_BEARER")
+                }
+            }
+
+
         }
     }
 

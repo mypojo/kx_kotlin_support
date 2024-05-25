@@ -18,7 +18,6 @@ val HttpServletRequest.forwardedIp: String
         return remoteIp
     }
 
-
 /** 앞에 있는 만료된 쿠기?들은 오버라이드 된다   */
 val HttpServletRequest.cookieMap: Map<String, String>
     get() = this.cookies?.let { cookies.associate { it.name to it.value } } ?: emptyMap()

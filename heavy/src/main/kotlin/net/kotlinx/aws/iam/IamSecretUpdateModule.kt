@@ -52,7 +52,7 @@ class IamSecretUpdateModule(
         ).print()
 
         val invalidKey = allKeys.filter { it.key.status == StatusType.Active && it.overTime > 0L }.maxWithOrNull(compareBy { it.overTime })
-        if(invalidKey == null){
+        if (invalidKey == null) {
             log.debug { "기간이 지난 키값이 존해자지 않습니다 -> 로직 무시" }
             return@runBlocking
         }
@@ -73,7 +73,7 @@ class IamSecretUpdateModule(
         check(invalidKey.key.accessKeyId == oldKey.first) { "저장된 키와 invalid 키가 동일해야 합니다." }
 
         val newKey = iamClient.createAccessKey { this.userName = userName }.let { it.accessKey!!.accessKeyId to it.accessKey!!.secretAccessKey }
-        log.info { " -> 키가 교체되어 저장됩니다. ${oldKey.first} => ${newKey.first} / 확인 :  $credential" }
+        log.info { " -> 키가 교체되어 저장됩니다. ${oldKey.first} => ${newKey.first} / 확인 :  ${credential.secretPath}" }
         credential.replaceKey(newKey)
 
         log.info { " -> invalid 키 ${oldKey.first} 를 비활성화 시킵니다." }

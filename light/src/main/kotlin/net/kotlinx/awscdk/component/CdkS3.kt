@@ -3,6 +3,7 @@ package net.kotlinx.awscdk.component
 import net.kotlinx.awscdk.CdkEnum
 import net.kotlinx.awscdk.toCdk
 import net.kotlinx.awscdk.util.TagUtil
+import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.Duration
 import software.amazon.awscdk.RemovalPolicy
 import software.amazon.awscdk.Stack
@@ -11,7 +12,17 @@ import software.amazon.awscdk.services.s3.*
 /**
  * 디폴트로 자동 암호화임
  * */
-class CdkS3(val name: String) : CdkEnum {
+class CdkS3 : CdkEnum {
+
+    @Kdsl
+    constructor(name: String, block: CdkS3.() -> Unit = {}) {
+        apply(block).apply {
+            this.name = name
+        }
+    }
+
+    /** 버킷 명 */
+    lateinit var name: String
 
     /** 도메인 등은 이름 그대로를 버킷명으로 사용함 */
     var domain: Boolean = false

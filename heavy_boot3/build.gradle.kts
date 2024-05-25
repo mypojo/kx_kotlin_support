@@ -31,7 +31,7 @@ dependencies {
     implementation("org.hibernate.validator:hibernate-validator") //버전표기 X
 
     //==================================================== JWT 관련 ======================================================
-    implementation("io.jsonwebtoken:jjwt-api:_")
+    api("io.jsonwebtoken:jjwt-api:_")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:_")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:_")
 

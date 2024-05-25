@@ -1,9 +1,9 @@
 package net.kotlinx.kotest.modules
 
 import net.kotlinx.aws.AwsConfig
-import net.kotlinx.aws.module.batchStep.BatchStepConfig
-import net.kotlinx.aws.module.batchStep.BatchStepExecutor
-import net.kotlinx.aws.module.batchStep.stepDefault.BatchStepDefaultRunner
+import net.kotlinx.aws.lambda.dispatch.synch.BatchStepDispatcher
+import net.kotlinx.domain.batchStep.BatchStepConfig
+import net.kotlinx.domain.batchStep.BatchStepExecutor
 import net.kotlinx.koin.KoinModule
 import net.kotlinx.koin.Koins
 import net.kotlinx.kotest.MyEnv
@@ -21,7 +21,7 @@ object MyBatchStepModule : KoinModule {
             }
         }
         single { BatchStepExecutor() }
-        single { BatchStepDefaultRunner() }
+        single { BatchStepDispatcher() }
     }
 
 

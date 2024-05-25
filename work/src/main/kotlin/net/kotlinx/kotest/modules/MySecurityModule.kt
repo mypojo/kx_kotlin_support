@@ -12,8 +12,9 @@ object MySecurityModule : KoinModule {
 
     override fun moduleConfig(): Module = module {
 
+
+        /** 스프링 부트에서 사용하는 JWT 제공자.. 별로인거 같다. */
         single {
-            //val secret = MyAws1.AWS.ssmStore["/web/token/secret/${MyEnv.SUFFIX}"]!!
             JwtProvider("시크릿키", 24.hours)
         }
 

@@ -1,6 +1,7 @@
 package net.kotlinx.aws.lambdaCommon
 
 /** 각 람다 로직을 DSL로 정의 */
+@Deprecated("xx")
 class LambdaFunctionLogic {
 
     /** 로직 설명 */

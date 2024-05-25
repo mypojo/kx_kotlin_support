@@ -2,6 +2,7 @@ package net.kotlinx.awscdk.component
 
 import net.kotlinx.awscdk.CdkEnum
 import net.kotlinx.awscdk.util.TagUtil
+import net.kotlinx.core.Kdsl
 import net.kotlinx.system.DeploymentType
 import software.amazon.awscdk.Duration
 import software.amazon.awscdk.Stack
@@ -23,10 +24,18 @@ fun IFunction.url(type: FunctionUrlAuthType = FunctionUrlAuthType.NONE) {
 /**
  * 람다 함수 정의 (일반 버전)
  * */
-class CdkLambda(val name: String) : CdkEnum {
+class CdkLambda : CdkEnum {
+
+    @Kdsl
+    constructor(name: String, block: CdkLambda.() -> Unit = {}) {
+        apply(block).apply { this.lambdaName = name }
+    }
+
+    /** 람다 이름 */
+    lateinit var lambdaName: String
 
     override val logicalName: String
-        get() = "${project.projectName}-${name}-${deploymentType.name.lowercase()}"
+        get() = "${project.projectName}-${lambdaName}-${deploymentType.name.lowercase()}"
 
     /** 필수 권한 */
     lateinit var role: IRole

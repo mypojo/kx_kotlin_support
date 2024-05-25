@@ -9,10 +9,6 @@ apply {
     plugin("org.jetbrains.kotlin.plugin.serialization")
 }
 
-//==================================================== 공통 ======================================================
-/** 그래들 표준 문법을 간단하게 변경해줌 ex) providers["kotlinVersion"] */
-operator fun ProviderFactory.get(name: String): String = this.gradleProperty(name).get()
-
 //==================================================== 프로젝트별 설정 ======================================================
 
 dependencies {
@@ -22,7 +18,8 @@ dependencies {
     api(project(":core"))
 
     //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
-    api("org.jetbrains.kotlin:kotlin-reflect:${providers["kotlinVersion"]}") // 리플렉션 약 3.1메가. 살짝 부담되긴 함.  코틀린 버전하고 같이 따라감
+    val kotlinVersion: String by project
+    api("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}") // 리플렉션 약 3.1메가. 살짝 부담되긴 함.  코틀린 버전하고 같이 따라감
     api("io.insert-koin:koin-core:_") //kotlin DI 도구. 모듈 설정에는 이걸 적용하기로함.  실무에서는 spring 사용
 
     //==================================================== 기본 http 클라이언트 ======================================================
@@ -82,14 +79,14 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:_") //open API 의 ktor JVM http 엔진. 나는 okhttp 사용
 
     //==================================================== ktor-server (UI) ======================================================
-    implementation("io.ktor:ktor-server-core-jvm:_")
-    implementation("io.ktor:ktor-server-netty:_")
-    implementation("io.ktor:ktor-server-tests-jvm:_")  // 람다용 호출 때문에 testImplementation -> implementation 로 변경
-    implementation("io.ktor:ktor-server-html-builder-jvm:_") //kotlin html 간단 확장
+    api("io.ktor:ktor-server-core-jvm:_")
+    api("io.ktor:ktor-server-netty:_")
+    api("io.ktor:ktor-server-tests-jvm:_")  // 람다용 호출 때문에 testImplementation -> implementation 로 변경
+    api("io.ktor:ktor-server-html-builder-jvm:_") //kotlin html 간단 확장
     // 인증 3종세트
-    implementation("io.ktor:ktor-server-auth-jvm:_")
-    implementation("io.ktor:ktor-server-auth-jwt-jvm:_")
-    implementation("io.ktor:ktor-server-sessions-jvm:_")
+    api("io.ktor:ktor-server-auth-jvm:_")
+    api("io.ktor:ktor-server-auth-jwt-jvm:_")
+    api("io.ktor:ktor-server-sessions-jvm:_")
 
     //==================================================== 기타 ======================================================
     api("gov.nist.math:jama:1.0.3") //https://mvnrepository.com/artifact/gov.nist.math/jama 회귀분석 패키지

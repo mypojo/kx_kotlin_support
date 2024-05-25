@@ -13,7 +13,7 @@ object JobPrintUtil {
     fun job01(jobs: Collection<Job>): TextGrid {
         return jobs.sortedBy { it.reqTime }.reversed().map {
             arrayOf(
-                it.pk, it.sk, it.jobStatus, it.awsInfo?.instanceType,
+                it.pk, it.sk, it.jobStatus, it.instanceMetadata?.instanceType,
                 it.reqTime.toKr01(),
                 it.startTime?.toKr01() ?: "-",
                 it.toIntervalMills()?.toTimeString(),
@@ -27,7 +27,7 @@ object JobPrintUtil {
     fun job02(jobs: Collection<Job>): TextGrid {
         return jobs.sortedBy { it.reqTime }.reversed().map {
             arrayOf(
-                it.pk, it.sk, it.jobStatus, it.awsInfo?.instanceType,
+                it.pk, it.sk, it.jobStatus, it.instanceMetadata?.instanceType,
                 it.reqTime.toKr01(),
                 it.startTime?.toKr01() ?: "-",
                 it.toIntervalMills()?.toTimeString(),

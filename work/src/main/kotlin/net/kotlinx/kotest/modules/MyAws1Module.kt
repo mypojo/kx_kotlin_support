@@ -2,7 +2,7 @@ package net.kotlinx.kotest.modules
 
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsConfig
-import net.kotlinx.aws.AwsInfoLoader
+import net.kotlinx.aws.AwsInstanceMetadataLoader
 import net.kotlinx.aws.athena.AthenaModule
 import net.kotlinx.aws.toAwsClient1
 import net.kotlinx.koin.KoinModule
@@ -47,7 +47,10 @@ object MyAws1Module : KoinModule {
             log.debug { "[single] AwsClient1 생성.." }
             get<AwsConfig>().toAwsClient1()
         }
-        single { AwsInfoLoader() }
+        single {
+            log.debug { "AwsInstanceMetadata 로드.." }
+            AwsInstanceMetadataLoader().load()
+        }
         single { AthenaModule(workGroup = "workgroup-${MyEnv.SUFFIX}", database = MyEnv.SUFFIX.substring(0, 1)) }
     }
 

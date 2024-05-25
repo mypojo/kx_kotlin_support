@@ -4,11 +4,11 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 /**
- * UserDetails 간단 구현 버전
+ * kotlin용 UserDetails 간단 구현 버전
  * */
 open abstract class SimpleUserDetail(
-    open var loginId: String = "unknown",
-    open var auths: Collection<out GrantedAuthority> = emptyList(),
+    open val loginId: String,
+    open val auths: Collection<out GrantedAuthority>,
 ) : UserDetails {
 
     /** 로그인 시에만 임시로 사용한다. */

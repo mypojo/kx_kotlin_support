@@ -1,10 +1,10 @@
 package net.kotlinx.aws.cost
 
 import aws.sdk.kotlin.services.costexplorer.CostExplorerClient
+import aws.sdk.kotlin.services.costexplorer.createCostCategoryDefinition
 import aws.sdk.kotlin.services.costexplorer.getCostAndUsage
-import aws.sdk.kotlin.services.costexplorer.model.DateInterval
-import aws.sdk.kotlin.services.costexplorer.model.Granularity
-import aws.sdk.kotlin.services.costexplorer.model.GroupDefinitionType
+import aws.sdk.kotlin.services.costexplorer.model.*
+import aws.sdk.kotlin.services.costexplorer.startCostAllocationTagBackfill
 import net.kotlinx.time.toYmdF01
 import java.time.LocalDate
 
@@ -60,3 +60,37 @@ suspend fun CostExplorerClient.monthTag(
     }.toLines(GroupDefinitionType.Tag)
 
 }
+
+/**
+ * 비용할당태그(Cost allocation tags) 생성
+ * SDK로 아직 안되는듯?
+ * */
+suspend fun CostExplorerClient.startCostAllocationTagBackfill() {
+    this.startCostAllocationTagBackfill {
+
+    }
+    throw UnsupportedOperationException()
+}
+
+
+
+/**
+ * 코스트 카테고리 정의 생성
+ * 샘플 코드
+ *  */
+suspend fun CostExplorerClient.createCostCategoryDefinition() {
+    this.createCostCategoryDefinition {
+        name = "MyCostCategory"
+        rules = listOf(
+            CostCategoryRule {
+                value = "TeamA"
+                rule = Expression {
+                    dimensions = DimensionValues {
+                        key = Dimension.Service
+                    }
+                }
+            },
+        )
+    }
+}
+

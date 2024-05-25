@@ -4,7 +4,7 @@ import net.kotlinx.domain.job.define.JobDefinitionUtil
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
-import net.kotlinx.kotest.modules.NotionDatabaseToGoogleCalendarJob
+import net.kotlinx.kotest.modules.job.DemoJob
 import net.kotlinx.reflect.Bean
 import net.kotlinx.string.print
 
@@ -19,7 +19,7 @@ class JobTest : BeSpecLight() {
                 JobDefinitionUtil.list().print()
             }
 
-            val jobDefinition = JobDefinitionUtil.findById(NotionDatabaseToGoogleCalendarJob::class)
+            val jobDefinition = JobDefinitionUtil.findById(DemoJob::class)
             Then("잡 단일 조회") {
                 Bean(jobDefinition).toTextGrid().print()
             }

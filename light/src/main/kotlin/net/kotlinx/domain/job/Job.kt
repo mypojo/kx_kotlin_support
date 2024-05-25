@@ -1,7 +1,7 @@
 package net.kotlinx.domain.job
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import net.kotlinx.aws.AwsInfo
+import net.kotlinx.aws.AwsInstanceMetadata
 import net.kotlinx.aws.dynamo.*
 import net.kotlinx.json.gson.GsonSet
 import net.kotlinx.time.toIso
@@ -40,7 +40,7 @@ class Job(
             endTime?.let { this += Job::endTime.name to AttributeValue.S(it.toIso()) }
 
             jobErrMsg?.let { this += Job::jobErrMsg.name to AttributeValue.S(it) }
-            awsInfo?.let { this += Job::awsInfo.name to AttributeValue.S(GsonSet.GSON.toJson(awsInfo)) }
+            instanceMetadata?.let { this += Job::instanceMetadata.name to AttributeValue.S(GsonSet.GSON.toJson(instanceMetadata)) }
 
             jobOption?.let { this += Job::jobOption.name to AttributeValue.S(it) }
             sfnId?.let { this += Job::sfnId.name to AttributeValue.S(it) }
@@ -66,7 +66,7 @@ class Job(
         endTime = map.find(Job::endTime)
 
         jobErrMsg = map.find(Job::jobErrMsg)
-        awsInfo = map.findJson(Job::awsInfo)
+        instanceMetadata = map.findJson(Job::instanceMetadata)
         jobOption = map.find(Job::jobOption)
         sfnId = map.find(Job::sfnId)
         jobEnv = map.find(Job::jobEnv)
@@ -131,7 +131,7 @@ class Job(
      * 혹시 런타임이 틀릴 수 있어서 실제 잡 시작할때 입력함
      *  시작되기 전까지는 null일 수 있음.
      *  */
-    var awsInfo: AwsInfo? = null
+    var instanceMetadata: AwsInstanceMetadata? = null
 
     /**
      * SFN ID
@@ -164,7 +164,7 @@ class Job(
      * 클라우드와치 로그 링크를 리턴
      * 이 뒤에 필터를 붙일 수 있다.
      */
-    fun toLogLink(): String = awsInfo?.toLogLink(startTime) ?: "awsInfo is required"
+    fun toLogLink(): String = instanceMetadata?.toLogLink(startTime) ?: "awsInfo is required"
 
     /** DDB 콘솔 링크 */
     fun toConsoleLink(): String = DynamoUtil.toConsoleLink(tableName, this)

@@ -21,6 +21,13 @@ class CdkIamUserGroup {
     /** 사용자 이름들 */
     lateinit var userNames: List<String>
 
+    /**
+     * 로그인이 필요한지 여부
+     * GIT용 user인 경우 로그인이 필요없음
+     * 외부 업체에서 S3 접근등을 해야한다면 로그인이 필요함
+     *  */
+    var login: Boolean = false
+
     /** 임시 비밀번호 뒷자리 */
     lateinit var tempPwdSuff: String
 
@@ -44,8 +51,12 @@ class CdkIamUserGroup {
                 stack, "iam_user-${userName}", UserProps.builder()
                     .groups(listOf(group))
                     .userName(userName)
-                    .passwordResetRequired(true)
-                    .password(SecretValue.unsafePlainText("${userName}${tempPwdSuff}"))
+                    .apply {
+                        if (login) {
+                            passwordResetRequired(true)
+                            password(SecretValue.unsafePlainText("${userName}${tempPwdSuff}"))
+                        }
+                    }
                     .build()
             )
         }
