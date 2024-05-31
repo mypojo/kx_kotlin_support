@@ -18,9 +18,8 @@ import net.kotlinx.aws.s3.getObjectDownload
 import net.kotlinx.aws.s3.getObjectLines
 import net.kotlinx.concurrent.CoroutineSleepTool
 import net.kotlinx.concurrent.coroutineExecute
+import net.kotlinx.core.Kdsl
 import net.kotlinx.retry.RetryTemplate
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.io.File
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -34,20 +33,29 @@ import kotlin.time.Duration.Companion.seconds
  *
  * 본격적으로 사용시 이거말고 SFN을 사용하는 것이 좋음
  *  */
-class AthenaModule(
-    /** 데이터베이스 명 (기본스키마) */
-    val database: String = "",
-    /** 워크그룹 (쿼리 결과 위치 있어야함) */
-    val workGroup: String = "primary",
-    /** 쿼리 종료되었는지 체크를 시도하는 간격 */
-    private val checkInterval: Duration = 1.seconds,
-    /** 쿼리 체크 타임아웃 */
-    private val checkTimeout: Duration = 10.minutes,
-) : KoinComponent {
+class AthenaModule {
+
+    @Kdsl
+    constructor(block: AthenaModule.() -> Unit = {}) {
+        apply(block)
+    }
 
     private val log = KotlinLogging.logger {}
 
-    private val aws: AwsClient1 by inject()
+    /** 기본 클라이언트 */
+    lateinit var aws: AwsClient1
+
+    /** 데이터베이스 명 (기본스키마) */
+    lateinit var database: String
+
+    /** 워크그룹 (쿼리 결과 위치 있어야함) */
+    var workGroup: String = "primary"
+
+    /** 쿼리 종료되었는지 체크를 시도하는 간격 */
+    var checkInterval: Duration = 1.seconds
+
+    /** 쿼리 체크 타임아웃 */
+    var checkTimeout: Duration = 10.minutes
 
     /** 기본 리트라이 */
     var retry: RetryTemplate = RetryTemplate {
@@ -55,7 +63,7 @@ class AthenaModule(
     }
 
     /** 고정 실행 컨텍스트 미리 생성. (스키마 미 지정시 디폴트 스키마) */
-    private val _queryExecutionContext = QueryExecutionContext { this.database = this@AthenaModule.database }
+    private val _queryExecutionContext by lazy { QueryExecutionContext { this.database = this@AthenaModule.database } }
 
     /** 코루틴 기반 아테나 쿼리 실행 래퍼 */
     private inner class AthenaExecution(private val athenaQuery: AthenaQuery) {

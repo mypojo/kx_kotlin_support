@@ -5,7 +5,8 @@ import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
 import net.kotlinx.okhttp.fetch
-import net.kotlinx.regex.RegexParseSupport
+import net.kotlinx.regex.extract
+import net.kotlinx.regex.find
 import okhttp3.OkHttpClient
 
 class RegexParseSupportTest : BeSpecLight() {
@@ -24,14 +25,12 @@ class RegexParseSupportTest : BeSpecLight() {
 
                 log.trace { "전문 : $resp" }
 
-                RegexParseSupport.template {
-                    val footer = resp.find("<head>" to "</footer>")!!
-                    log.trace { "footer : $footer" }
+                val footer = resp.find("<head>" to "</footer>")!!
+                log.trace { "footer : $footer" }
 
-                    log.info { "site : ${footer.extract("이 사이트(" to ")")}" }
-                    log.info { "title : ${resp.extract("<title>" to "</title>")}" }
-                    footer.extract("이 사이트(" to ")") shouldBe "findip.kr"
-                }
+                log.info { "site : ${footer.extract("이 사이트(" to ")")}" }
+                log.info { "title : ${resp.extract("<title>" to "</title>")}" }
+                footer.extract("이 사이트(" to ")") shouldBe "findip.kr"
             }
         }
     }

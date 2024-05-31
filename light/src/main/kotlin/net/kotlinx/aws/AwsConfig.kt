@@ -1,9 +1,16 @@
 package net.kotlinx.aws
 
 import aws.sdk.kotlin.runtime.auth.credentials.DefaultChainCredentialsProvider
+import aws.sdk.kotlin.runtime.client.AwsSdkClientConfig
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProviderConfig
+import aws.smithy.kotlin.runtime.http.config.HttpEngineConfig
 import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
 import aws.smithy.kotlin.runtime.http.engine.okhttp.OkHttpEngine
+import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
+import net.kotlinx.aws.sfn.SfnConfig
+import net.kotlinx.koin.Koins.koin
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -13,7 +20,7 @@ data class AwsConfig(
     /** 프로필 없으면 환경변서(체인 순서대로) 적용 */
     val profileName: String? = null,
     /** AWS ID. API에 따라 필요한 경우가 있음 */
-    val awsId: String? = null,
+    private val inputAwsId: String? = null,
     /** 기본으로 서울 */
     val region: String = SEOUL,
 
@@ -47,7 +54,46 @@ data class AwsConfig(
         this.connectionIdleTimeout = this@AwsConfig.connectionIdleTimeout
     }
 
+    /**
+     * AWS ID
+     * 최초 입력시 누락되었다면 늦은 로딩한다.
+     *  */
+    val awsId: String by lazy {
+        inputAwsId ?: run {
+            val aws = koin<AwsClient1>(profileName)
+            val identity = runBlocking { aws.sts.getCallerIdentity() }
+            log.debug { "[$profileName] AWS ID가 입력되지 않아서 STS를 통해서 로드됨 -> ${identity.account}" }
+            identity.account!!
+        }
+    }
+
+    //==================================================== client 빌드 옵션 추가 ======================================================
+
+    /** 빌더에 각종 설정을 추가해줌 */
+    fun build(clientBuilder: Any) {
+        if (clientBuilder is AwsSdkClientConfig.Builder) clientBuilder.region = region
+        if (clientBuilder is CredentialsProviderConfig.Builder) clientBuilder.credentialsProvider = credentialsProvider
+        if (clientBuilder is HttpEngineConfig.Builder) clientBuilder.httpClient = httpClientEngine
+    }
+
+    //==================================================== 제품별 설정  ======================================================
+
+    /** SFN 설정 */
+    val sfnConfig: SfnConfig by lazy { SfnConfig(this) }
+
+    /**
+     * ECR 경로
+     * 이 위에 버전 정보가 붙을 수 있다.
+     * ex) 331671628331.dkr.ecr.ap-northeast-2.amazonaws.com/media-data:latest
+     * ex) 331671628331.dkr.ecr.ap-northeast-2.amazonaws.com/media-data@sha256:24c4d31fc292a57f32ffcd4d2719f0b10bfea9d08786af589196547af5bb960f
+     */
+    fun ecrPath(repositoryName: String): String = "${awsId}.dkr.ecr.${region}.amazonaws.com/${repositoryName}"
+
+
     companion object {
+
+        private val log = KotlinLogging.logger {}
+
         const val SEOUL = "ap-northeast-2"
     }
 }

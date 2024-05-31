@@ -17,10 +17,13 @@ internal class AthenaPartitionS3ModuleTest : BeSpecLog() {
 
             val aws = Koins.koin<AwsClient1>()
 
+            val athenaModule = AthenaModule{
+                //"wp", "workgroup-dev"
+            }
             Then("기본테스트") {
                 val partitionModule = AthenaPartitionS3Module(
                     aws.s3,
-                    AthenaModule("wp", "workgroup-dev"),
+                    athenaModule,
                     "sin-data-dev",
                     "data",
                     "http_log",
@@ -35,7 +38,7 @@ internal class AthenaPartitionS3ModuleTest : BeSpecLog() {
             Then("event1_web") {
                 val partitionModule = AthenaPartitionS3Module(
                     aws.s3,
-                    AthenaModule("wd", "workgroup-dev"),
+                    athenaModule,
                     "sin-work-dev",
                     "collect",
                     "event1_web",
@@ -46,7 +49,7 @@ internal class AthenaPartitionS3ModuleTest : BeSpecLog() {
             Then("http_log") {
                 val partitionModule = AthenaPartitionS3Module(
                     aws.s3,
-                    AthenaModule("wd", "workgroup-dev"),
+                    athenaModule,
                     "sin-data-dev",
                     "data",
                     "http_log",

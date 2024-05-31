@@ -25,22 +25,22 @@ import net.kotlinx.aws.ssm.SsmStore
 open class AwsClient1(val awsConfig: AwsConfig) {
 
     //==================================================== 클라이언트 설정 ======================================================
-    val s3: S3Client by lazy { S3Client { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val kinesis: KinesisClient by lazy { KinesisClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val firehose: FirehoseClient by lazy { FirehoseClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val dynamo: DynamoDbClient by lazy { DynamoDbClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val lambda: LambdaClient by lazy { LambdaClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val logs: CloudWatchLogsClient by lazy { CloudWatchLogsClient  { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val sts: StsClient by lazy { StsClient  { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val s3: S3Client by lazy { S3Client { awsConfig.build(this) }.regist(awsConfig) }
+    val kinesis: KinesisClient by lazy { KinesisClient { awsConfig.build(this) }.regist(awsConfig) }
+    val firehose: FirehoseClient by lazy { FirehoseClient { awsConfig.build(this) }.regist(awsConfig) }
+    val dynamo: DynamoDbClient by lazy { DynamoDbClient { awsConfig.build(this) }.regist(awsConfig) }
+    val lambda: LambdaClient by lazy { LambdaClient { awsConfig.build(this) }.regist(awsConfig) }
+    val logs: CloudWatchLogsClient by lazy { CloudWatchLogsClient { awsConfig.build(this) }.regist(awsConfig) }
+    val sts: StsClient by lazy { StsClient { awsConfig.build(this) }.regist(awsConfig) }
 
     //==================================================== 컴퓨팅 인프라 ======================================================
-    val sfn: SfnClient by lazy { SfnClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val athena: AthenaClient by lazy { AthenaClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val batch: BatchClient by lazy { BatchClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val ecs: EcsClient by lazy { EcsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val sfn: SfnClient by lazy { SfnClient { awsConfig.build(this) }.regist(awsConfig) }
+    val athena: AthenaClient by lazy { AthenaClient { awsConfig.build(this) }.regist(awsConfig) }
+    val batch: BatchClient by lazy { BatchClient { awsConfig.build(this) }.regist(awsConfig) }
+    val ecs: EcsClient by lazy { EcsClient { awsConfig.build(this) }.regist(awsConfig) }
 
     /** 저장소 */
-    val ssm: SsmClient by lazy { SsmClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val ssm: SsmClient by lazy { SsmClient { awsConfig.build(this) }.regist(awsConfig) }
 
     //==================================================== 기타 ======================================================
     /** SSM(Systems Manager) 스토어. = 파라메터 스토어 */

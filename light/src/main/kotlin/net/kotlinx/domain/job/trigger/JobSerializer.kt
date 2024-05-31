@@ -6,7 +6,7 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.dynamo.DynamoUtil
 import net.kotlinx.domain.job.*
-import net.kotlinx.domain.job.define.JobDefinitionUtil
+import net.kotlinx.domain.job.define.JobDefinitionRepository
 import net.kotlinx.domain.job.define.JobExecuteType
 import net.kotlinx.id.IdGenerator
 import net.kotlinx.json.gson.GsonData
@@ -35,7 +35,7 @@ class JobSerializer : KoinComponent {
         val jobSk = input[AwsNaming.JOB_SK].str ?: idGenerator.nextvalAsString()
 
         val job = Job(jobPk, jobSk) {
-            val jobDefinition = JobDefinitionUtil.findById(pk)
+            val jobDefinition = JobDefinitionRepository.findById(pk)
             val jobTrigger = jobDefinition.jobTriggerMethod
             reqTime = LocalDateTime.now()
             jobStatus = JobStatus.STARTING

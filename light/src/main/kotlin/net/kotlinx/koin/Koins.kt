@@ -54,9 +54,20 @@ object Koins {
      * ex) Koins.startup(BeSpecLight.MODULES)
      * */
     fun startup(modules: List<Module>) {
-        stopKoin()
         startKoin {
             modules(modules)
+        }
+    }
+
+    /**
+     * 한번만 시작함
+     * ex) 전체 테스트 수행
+     *  */
+    fun startupOnlyOnce(modules: List<Module>) {
+        if (!KoinPlatformTools.exist()) {
+            startKoin {
+                modules(modules)
+            }
         }
     }
 

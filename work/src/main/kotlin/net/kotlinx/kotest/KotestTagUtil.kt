@@ -24,23 +24,17 @@ object KotestUtil {
     /** 스래드 등의 느린 테스트 */
     val SLOW = Tag("slow")
 
+    /** AWS 인프라 등 시크릿이 필요하고 비용이 발생할 수 있는것 */
+    val PROJECT = Tag("project")
+
     /** 테스트중인거 */
     val TESTING = Tag("testing")
 
     /**
      * 테스트 실행필요 없음
+     * 비용이 나오거나 인프라가 생성됨
      *  */
     val IGNORE = Tag("ignore")
 
-    //==================================================== 프로젝트 관련 (비용이 발생하거나, 리소스가 필요하거나 등 ======================================================
-
-    /** NV */
-    val PROJECT01 = Tag("kx.profile01")
-
-    /** SK */
-    val PROJECT02 = Tag("kx.profile02")
-
-    /** MT */
-    val PROJECT03 = Tag("kx.profile03")
 
 }

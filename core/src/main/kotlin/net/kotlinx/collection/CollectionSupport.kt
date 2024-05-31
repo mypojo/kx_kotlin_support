@@ -23,3 +23,23 @@ fun <T> Collection<T>.diff(other: Collection<T>): Set<T> {
  * 문자열이 비어있지 않은것만 필터링
  *  */
 fun <T> Collection<T>.mapNotEmpty(transform: (T) -> String?): Collection<String> = this.mapNotNull(transform).filter { it.isNotEmpty() }
+
+
+/**
+ * 첫 조건에따라 그룹바이한다.
+ * ex) 라인 파싱
+ *  */
+fun <T> List<T>.groupByFirstCondition(transform: (T) -> Boolean): List<List<T>> {
+    val results: MutableList<List<T>> = mutableListOf()
+    var existList = mutableListOf<T>()
+    for (current in this) {
+        val start = transform(current)
+        if (start) {
+            results += existList
+            existList = mutableListOf()
+        }
+        existList += current
+    }
+    results += existList //마지막 남은거 넣어줌
+    return results.filter { it.isNotEmpty() }
+}

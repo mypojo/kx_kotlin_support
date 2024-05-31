@@ -1,6 +1,6 @@
 package net.kotlinx.domain.job
 
-import net.kotlinx.domain.job.define.JobDefinitionUtil
+import net.kotlinx.domain.job.define.JobDefinitionRepository
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -16,10 +16,10 @@ class JobTest : BeSpecLight() {
         Given("Job") {
 
             Then("전체 잡 출력") {
-                JobDefinitionUtil.list().print()
+                JobDefinitionRepository.list().print()
             }
 
-            val jobDefinition = JobDefinitionUtil.findById(DemoJob::class)
+            val jobDefinition = JobDefinitionRepository.findById(DemoJob::class)
             Then("잡 단일 조회") {
                 Bean(jobDefinition).toTextGrid().print()
             }

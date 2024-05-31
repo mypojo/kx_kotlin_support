@@ -8,7 +8,6 @@ import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatchLogic
 import net.kotlinx.aws.s3.deleteDir
 import net.kotlinx.aws.s3.toList
-import net.kotlinx.aws.sfn.SfnUtil
 import net.kotlinx.core.Kdsl
 import net.kotlinx.domain.batchStep.stepDefault.StepEnd
 import net.kotlinx.domain.batchStep.stepDefault.StepList
@@ -44,7 +43,7 @@ class BatchStepConfig : KoinComponent {
     var workUploadOutputDir: String = "upload/sfnBatchModuleOutput/"
 
     /** 콘솔링크 출력 */
-    fun consoleLink(sfnId: String): String = SfnUtil.consoleLink(aws1.awsConfig.awsId!!, stateMachineName, sfnId)
+    fun consoleLink(sfnId: String): String = aws1.awsConfig.sfnConfig.consoleLink(stateMachineName, sfnId)
 
     /** 미리 준비된 로직들 */
     var logics: List<LambdaDispatchLogic> = listOf(
@@ -66,7 +65,7 @@ class BatchStepConfig : KoinComponent {
     /** 간단 결과 리턴 */
     suspend fun describeExecution(sfnId: String): DescribeExecutionResponse {
         return aws1.sfn.describeExecution {
-            this.executionArn = SfnUtil.executionArn(stateMachineName, sfnId, aws1.awsConfig.region)
+            this.executionArn = aws1.awsConfig.sfnConfig.executionArn(stateMachineName, sfnId)
         }
     }
 

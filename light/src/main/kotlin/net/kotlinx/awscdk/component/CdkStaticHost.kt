@@ -42,8 +42,16 @@ class CdkStaticHost {
      * */
     lateinit var certArn: String
 
+    /**
+     * S3 오리진의 이름.
+     * CloudFront 사용시 꼭 버킷이름이 도메인과 일치할 필요는 없음. 다만 일치하면 이쁘니깐 권장.
+     * hostDomain S3버킷명이 이미 선점되었을경우 이걸 사용해서 대체할것
+     *  */
+    var hostS3Name: String? = null
+
     fun create(stack: Stack) {
-        val origonBucket = CdkS3(hostDomain).apply {
+        val s3Name = hostS3Name ?: hostDomain
+        val origonBucket = CdkS3(s3Name).apply {
             domain = true
             removalPolicy = RemovalPolicy.DESTROY
             publicReadAccess = true
@@ -52,16 +60,15 @@ class CdkStaticHost {
             create(stack)
         }
 
-        CdkCloudFront {
+        val cloudFront = CdkCloudFront {
             domain = hostDomain
             iBucket = origonBucket.iBucket
             iCertificate = Certificate.fromCertificateArn(stack, "hosting-${hostDomain}", certArn)
             create(stack)
-
-            val zone = HostedZoneUtil.load(stack, rootDomain)
-            Route53Util.arecord(stack, zone, hostDomain, toRecordTarget())
         }
 
+        val zone = HostedZoneUtil.load(stack, rootDomain)
+        Route53Util.arecord(stack, zone, hostDomain, cloudFront.toRecordTarget())
 
     }
 }

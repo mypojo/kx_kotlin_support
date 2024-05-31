@@ -10,7 +10,7 @@ import net.kotlinx.koin.Koins.koin
  * job 주요 정보는 프로젝트마다 다르고, AWS로 부터 호출하는것도 있다.
  * 따라서 기본 메타데이터를 채우기 위해 factory를 통해서 생성함
  *
- * 설정파일(ECS)과 환경변수로부터 데이터를 로드함으로, 한번만 늦은로딩으로 캐시하면됨
+ * 설정파일(ECS)과 환경변수 or AWS API 로부터 데이터를 로드함으로, 늦은로딩으로 캐시한다.
  * */
 class AwsInstanceMetadataLoader {
 

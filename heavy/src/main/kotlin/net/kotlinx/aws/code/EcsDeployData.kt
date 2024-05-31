@@ -42,7 +42,9 @@ class EcsDeployData {
     var containerPort: Int = 8080
 
     /** 리즌 */
-    var region: String = AwsConfig.SEOUL
+    lateinit var awsConfig: AwsConfig
+//    /** 리즌 */
+//    var region: String = AwsConfig.SEOUL
 
     /** ?? */
     lateinit var applicationName: String

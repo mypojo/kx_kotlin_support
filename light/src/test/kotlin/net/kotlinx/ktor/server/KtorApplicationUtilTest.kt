@@ -11,12 +11,14 @@ import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.ktor.KtorMember
+import net.kotlinx.kotest.modules.ktor.KtorMemberConverter
 import net.kotlinx.kotest.modules.ktor.allModules
 
 class KtorApplicationUtilTest : BeSpecLight() {
 
     private val ktor by koinLazy<HttpClient>()
-    private val jwt by koinLazy<KtorJwt>()
+    private val memberConverter by koinLazy<KtorMemberConverter>()
 
     init {
         initTest(KotestUtil.FAST)
@@ -63,18 +65,6 @@ class KtorApplicationUtilTest : BeSpecLight() {
 
         Given("시큐리티 테스트") {
 
-            val authJwt: HttpRequestBuilder.() -> Unit = {
-                headers {
-                    //append(HttpHeaders.Authorization, "Bearer ${jwt.createToken()}")
-                }
-            }
-
-            val authBearer: HttpRequestBuilder.() -> Unit = {
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer abcx")
-                }
-            }
-
             When("로그인필용없음") {
                 Then("미인증 -> 200") {
                     val resp = ktor.get("/protected/a")
@@ -82,19 +72,50 @@ class KtorApplicationUtilTest : BeSpecLight() {
                 }
             }
 
-            When("인증필요(디폴트)") {
+            When("인증필요(JWT=디폴트)") {
+
+                val member = KtorMember("sin", "admin")
                 Then("미인증 -> Unauthorized") {
                     val resp = ktor.get("/protected/b")
                     resp.status shouldBe HttpStatusCode.Unauthorized
                 }
+
                 Then("인증 -> 200") {
+
+                    val authJwt: HttpRequestBuilder.() -> Unit = {
+                        headers {
+                            val token = memberConverter.convertTo(member)
+                            append(HttpHeaders.Authorization, "Bearer $token")
+                        }
+                    }
                     val resp = ktor.get("/protected/b", authJwt)
                     resp.status shouldBe HttpStatusCode.OK
-                    resp.bodyAsText() shouldBe contain("ROLE_DEFAULT")
+                    resp.bodyAsText() shouldBe contain(member.name)
                 }
+
+                Then("인증 but IP 차단 -> Forbidden") {
+
+                    val authJwt: HttpRequestBuilder.() -> Unit = {
+                        headers {
+                            val token = memberConverter.convertTo(member)
+                            append(HttpHeaders.Authorization, "Bearer $token")
+                            append("x-forwarded-for","111.222.333.444")
+                        }
+                    }
+                    val resp = ktor.get("/protected/b", authJwt)
+                    resp.status shouldBe HttpStatusCode.Forbidden
+                }
+
             }
 
-            When("인증필요(bearer)") {
+            When("인증필요(bearer 커스텀)") {
+
+                val authBearer: HttpRequestBuilder.() -> Unit = {
+                    headers {
+                        append(HttpHeaders.Authorization, "Bearer abcx")
+                    }
+                }
+
                 Then("인증 -> 200 => 다른 역할 리턴") {
                     val resp = ktor.get("/protected/c", authBearer)
                     resp.status shouldBe HttpStatusCode.OK

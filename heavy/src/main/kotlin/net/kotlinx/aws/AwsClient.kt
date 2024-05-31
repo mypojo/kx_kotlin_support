@@ -1,5 +1,6 @@
 package net.kotlinx.aws
 
+import aws.sdk.kotlin.services.budgets.BudgetsClient
 import aws.sdk.kotlin.services.codecommit.CodeCommitClient
 import aws.sdk.kotlin.services.codedeploy.CodeDeployClient
 import aws.sdk.kotlin.services.costexplorer.CostExplorerClient
@@ -18,24 +19,25 @@ import net.kotlinx.aws.sm.SmStore
 /** 선형 구조임으로 조합보다는 상속이 더 좋은 선택 */
 class AwsClient(awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     //==================================================== 공통 ======================================================
-    val iam: IamClient by lazy { IamClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val cost: CostExplorerClient by lazy { CostExplorerClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val ses: SesClient by lazy { SesClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val elb: ElasticLoadBalancingV2Client by lazy { ElasticLoadBalancingV2Client  { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val iam: IamClient by lazy { IamClient { awsConfig.build(this) }.regist(awsConfig) }
+    val cost: CostExplorerClient by lazy { CostExplorerClient { awsConfig.build(this) }.regist(awsConfig) }
+    val budget: BudgetsClient by lazy { BudgetsClient { awsConfig.build(this) }.regist(awsConfig) }
+    val ses: SesClient by lazy { SesClient { awsConfig.build(this) }.regist(awsConfig) }
+    val elb: ElasticLoadBalancingV2Client by lazy { ElasticLoadBalancingV2Client  { awsConfig.build(this) }.regist(awsConfig) }
 
     //==================================================== 저장소 ======================================================
-    val rds: RdsClient by lazy { RdsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val sqs: SqsClient by lazy { SqsClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val sm: SecretsManagerClient by lazy { SecretsManagerClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val event: EventBridgeClient by lazy { EventBridgeClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val rds: RdsClient by lazy { RdsClient { awsConfig.build(this) }.regist(awsConfig) }
+    val sqs: SqsClient by lazy { SqsClient { awsConfig.build(this) }.regist(awsConfig) }
+    val sm: SecretsManagerClient by lazy { SecretsManagerClient { awsConfig.build(this) }.regist(awsConfig) }
+    val event: EventBridgeClient by lazy { EventBridgeClient { awsConfig.build(this) }.regist(awsConfig) }
 
     //==================================================== 컴퓨팅 인프라 ======================================================
-    val ec2: Ec2Client by lazy { Ec2Client { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val ec2: Ec2Client by lazy { Ec2Client { awsConfig.build(this) }.regist(awsConfig) }
 
     //==================================================== 코드 시리즈 ======================================================
-    val codeDeploy: CodeDeployClient by lazy { CodeDeployClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val codeCommit: CodeCommitClient by lazy { CodeCommitClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
-    val ecr: EcrClient by lazy { EcrClient { region = awsConfig.region; credentialsProvider = awsConfig.credentialsProvider; httpClient = awsConfig.httpClientEngine; } }
+    val codeDeploy: CodeDeployClient by lazy { CodeDeployClient { awsConfig.build(this) }.regist(awsConfig) }
+    val codeCommit: CodeCommitClient by lazy { CodeCommitClient { awsConfig.build(this) }.regist(awsConfig) }
+    val ecr: EcrClient by lazy { EcrClient { awsConfig.build(this) }.regist(awsConfig) }
 
     //==================================================== 모듈 설정 ======================================================
     val iamSecretUpdateModule: IamSecretUpdateModule by lazy { IamSecretUpdateModule(iam) }

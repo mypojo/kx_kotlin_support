@@ -1,9 +1,13 @@
 package net.kotlinx.time
 
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 /** YMD  */
 fun LocalDate.toYmd(): String = TimeFormat.YMD[this]
+
+/** 루트 시간으로 변환 */
+fun LocalDate.toLocalDateTime(): LocalDateTime = this.atTime(0, 0, 0, 0)
 
 /**
  * YM

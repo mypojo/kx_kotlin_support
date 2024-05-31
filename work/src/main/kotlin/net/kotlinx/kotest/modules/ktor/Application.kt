@@ -14,19 +14,18 @@ fun main() {
         Netty, port = 8080,
         host = "0.0.0.0",
         module = Application::allModules,
-    )
-        .start(wait = true)
+    ).start(wait = true)
 
 }
 
 fun Application.allModules() {
 
     //==================================================== 설정 ======================================================
+    val log = KotlinLogging.logger {}
     configureRouting()
     configureSecurity()
 
     //==================================================== 시작 로그 ======================================================
-    val log = KotlinLogging.logger {}
     log.info { "서버 시작됨. ${"http://localhost:8080/"}" }
     log.trace {
         SystemUtil.jvmParamPrint()

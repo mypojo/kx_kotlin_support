@@ -1,13 +1,13 @@
 package net.kotlinx.domain.job.define
 
+import net.kotlinx.awscdk.util.EipUtil.getKoin
 import net.kotlinx.domain.job.JobTasklet
 import net.kotlinx.reflect.name
-import org.koin.core.component.KoinComponent
 import org.koin.core.qualifier.named
 import org.koin.mp.KoinPlatformTools
 import kotlin.reflect.KClass
 
-object JobDefinitionUtil : KoinComponent {
+object JobDefinitionRepository {
 
     /**
      * 잡 정의 가져오기

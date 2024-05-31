@@ -2,7 +2,6 @@ package net.kotlinx.aws.code
 
 import com.lectra.koson.arr
 import com.lectra.koson.obj
-import net.kotlinx.aws.sts.StsUtil
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.koson.toGsonData
 
@@ -18,7 +17,7 @@ class CodedeployAppSpecBuilder(val ecsDeployData: EcsDeployData) {
                 "TargetService" to obj {
                     "Type" to "AWS::ECS::Service"
                     "Properties" to obj {
-                        "TaskDefinition" to "arn:aws:ecs:${ecsDeployData.region}:${StsUtil.ACCOUNT_ID}:task-definition/${ecsDeployData.taskDef}"
+                        "TaskDefinition" to "arn:aws:ecs:${ecsDeployData.awsConfig.region}:${ecsDeployData.awsConfig.awsId}:task-definition/${ecsDeployData.taskDef}"
                         "LoadBalancerInfo" to obj {
                             "ContainerName" to ecsDeployData.containerName
                             "ContainerPort" to ecsDeployData.containerPort

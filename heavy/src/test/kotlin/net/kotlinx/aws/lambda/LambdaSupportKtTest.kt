@@ -1,8 +1,8 @@
 package net.kotlinx.aws.lambda
 
 import aws.sdk.kotlin.services.lambda.listFunctions
-import net.kotlinx.aws.AwsClient
-import net.kotlinx.koin.Koins.koinLazy
+import net.kotlinx.aws.AwsClient1
+import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
@@ -12,12 +12,14 @@ import net.kotlinx.time.toKr01
 
 internal class LambdaSupportKtTest : BeSpecHeavy() {
 
+    private val profileName by lazy { findProfile28() }
+    private val aws by lazy { koin<AwsClient1>(profileName) }
+
     init {
-        initTest(KotestUtil.PROJECT02)
+        initTest(KotestUtil.PROJECT)
 
         Given("LambdaSupportKt") {
-            val aws by koinLazy<AwsClient>()
-            val profileName = aws.awsConfig.profileName!!
+
             Then("함수 리스팅") {
                 listOf("함수명", "코드사이즈", "ARN").toTextGridPrint {
                     aws.lambda.listFunctions { maxItems = 10 }.functions!!.map {

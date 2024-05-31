@@ -50,7 +50,10 @@ class DynamoDbExporterKtTest : BeSpecLog() {
                 }
                 log.info { "테이블 [${table.tableName}] 생성 \n${table.create()}" }
 
-                val athenaModule = AthenaModule(workGroup = "workgroup-dev", database = "wd")
+                val athenaModule = AthenaModule {
+                    workGroup = "workgroup-dev"
+                    database = "wd"
+                }
                 athenaModule.execute(table.drop())
                 athenaModule.execute(table.create())
                 //최종 업무 테이블은 view 테이블 변환해서 사용 & X일치 테이블 드랍

@@ -7,19 +7,20 @@ import kotlinx.html.html
 import kotlinx.html.p
 import kotlinx.html.stream.createHTML
 import net.kotlinx.aws.AwsClient
-import net.kotlinx.koin.Koins
+import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
 
 class SesSupportKtTest : BeSpecHeavy() {
 
+    private val profileName by lazy { findProfile28() }
+    private val aws by lazy { koin<AwsClient>(profileName) }
+
     init {
-        initTest(KotestUtil.PROJECT02)
+        initTest(KotestUtil.IGNORE)
 
         Given("ses") {
-
-            val aws = Koins.koin<AwsClient>()
 
             xThen("이메일 전송") {
 

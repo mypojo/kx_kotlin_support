@@ -29,7 +29,7 @@ class KtorJwt {
     /** 알고리즘 */
     private val algorithm by lazy { Algorithm.HMAC512(secretKey) }
 
-    /** 사용자 */
+    /** expire  */
     var expire: Duration = 7.days
 
     /** JWT 검중기 */

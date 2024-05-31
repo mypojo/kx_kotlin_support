@@ -23,10 +23,7 @@ class IamSecretUpdateModule(
 
     private val log = KotlinLogging.logger {}
 
-    private data class AwsIamKey(
-        val key: AccessKeyMetadata,
-        val limit: Duration,
-    ) {
+    private data class AwsIamKey(val key: AccessKeyMetadata, val limit: Duration) {
         /** 생성시간 */
         val createTime = key.createDate!!.toLocalDateTime()
 

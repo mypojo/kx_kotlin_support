@@ -37,7 +37,6 @@ allprojects {
             //필터 설정은 여기서 하지 않음 ( 매칭이 없으면 No tests found for Given include 오류)
             filter {
                 includeEngines = setOf("kotest")  // kotest만 실행
-                //includeTags("L1") //kotest의 경우 태그로 하면 에러남.. 프로퍼티로 설정할것
             }
 
             //kotest 설정 (JUnit 아님!)

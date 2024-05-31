@@ -1,14 +1,20 @@
 package net.kotlinx.aws.iam
 
-import net.kotlinx.regex.RegexSet
+import net.kotlinx.collection.groupByFirstCondition
+import net.kotlinx.regex.extract
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
+/**
+ * 가능하면 메모리에 남기지 않게 하기위해서 static하게 만들지 않음
+ * */
 class IamCredential {
 
-    /** 일반적인 로컬 시크릿 위치.  */
+    /**
+     * 일반적인 로컬 시크릿 위치.
+     *  */
     val secretPath: Path by lazy {
         val profile = System.getenv(ENV_PROFILE)
         listOf(
@@ -19,18 +25,30 @@ class IamCredential {
 
     val secretFileText by lazy { secretPath.readText() }
 
-    /** 키값이 하나만 존재해야 한다. */
-    val keyPair by lazy {
-        val accessKey = ACCESS_KEY.find(secretFileText)?.value?.trim() ?: throw IllegalStateException("억세스 키가 없습니다.")
-        val secretKey = SECRET_KEY.find(secretFileText)?.value?.trim() ?: throw IllegalStateException("시크릿 키가 없습니다.")
-        accessKey to secretKey
+    /**
+     * 프로파일 정보들
+     * ex) 전체 계정의 과금 로드
+     * ex) 특정 프로파일 메타데이터 참조
+     *  */
+    val profileDatas: List<IamCredentialData> by lazy {
+        val profileTexts = secretFileText.split("\n").groupByFirstCondition { it.startsWith("[") }
+        profileTexts.map { lines ->
+            val profileName = lines.first().extract("[" to "]")!!
+            IamCredentialData(
+                profileName,
+                lines.find { it.startsWith(AWS_ACCESS_KEY_ID) }?.substringAfter("=")?.trim(),
+                lines.find { it.startsWith(AWS_SECRET_ACCESS_KEY) }?.substringAfter("=")?.trim(),
+                lines.find { it.startsWith(ROLE_ARN) }?.substringAfter("=")?.trim(),
+            )
+        }
     }
 
-    /** 프로파일 이름들. 전체 프로파일을 로드할때 사용 ex) 과금 로드 */
-    val profileNames by lazy {
-        val regex = RegexSet.extract("[", "]").toRegex()
-        regex.findAll(IamCredential().secretFileText).map { it.value }.filter { it != "default" }.toList()
-    }
+    /**
+     * 키값이 하나이상 있어야 정상작동한다.
+     * 가장 위의 키를 사용
+     *  */
+    val keyPair: Pair<String, String> by lazy { profileDatas.first().let { it.accessKey!! to it.secretKey!! } }
+
 
     /** 키 값을 교체한다. */
     fun replaceKey(newKey: Pair<String, String>) {
@@ -49,8 +67,9 @@ class IamCredential {
 
         private const val ENV_PROFILE = "USERPROFILE"
 
-        private val ACCESS_KEY = "(?<=aws_access_key_id\\s{0,2}=).*".toRegex(RegexOption.MULTILINE)
-        private val SECRET_KEY = "(?<=aws_secret_access_key\\s{0,2}=).*".toRegex(RegexOption.MULTILINE)
+        private const val AWS_ACCESS_KEY_ID = "aws_access_key_id"
+        private const val AWS_SECRET_ACCESS_KEY = "aws_secret_access_key"
+        private const val ROLE_ARN = "role_arn"
 
     }
 

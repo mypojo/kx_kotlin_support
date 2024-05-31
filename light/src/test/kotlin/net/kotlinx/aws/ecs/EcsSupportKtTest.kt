@@ -5,7 +5,6 @@ import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
-import net.kotlinx.kotest.modules.MyAws1Module
 
 class EcsSupportKtTest : BeSpecLight() {
 
@@ -15,7 +14,7 @@ class EcsSupportKtTest : BeSpecLight() {
         Given("ecs") {
             val aws by koinLazy<AwsClient1>()
             Then("updateServiceCount - ECS 서비스 터치") {
-                aws.ecs.updateServiceCount("${MyAws1Module.PROFILE_NAME}-web_cluster-dev", "${MyAws1Module.PROFILE_NAME}-web_service-dev", 1)
+                aws.ecs.updateServiceCount("${""}-web_cluster-dev", "${""}-web_service-dev", 1)
             }
         }
     }

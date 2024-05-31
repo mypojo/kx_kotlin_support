@@ -8,7 +8,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient1
-import net.kotlinx.aws.sts.StsUtil
 import net.kotlinx.time.measureTimeString
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.minutes
@@ -76,7 +75,7 @@ class DynamoDbExporter(private val aws: AwsClient1, block: DynamoDbExporter.() -
 
     /** 위치 지정하면, 내부 구조는 변경이 불가능한듯. */
     suspend fun export() {
-        val tableArn = "arn:aws:dynamodb:${aws.awsConfig.region}:${StsUtil.ACCOUNT_ID}:table/${tableName}"
+        val tableArn = "arn:aws:dynamodb:${aws.awsConfig.region}:${aws.awsConfig.awsId}:table/${tableName}"
         val resp = aws.dynamo.exportTableToPointInTime {
             this.tableArn = tableArn
             this.s3Bucket = this@DynamoDbExporter.s3Bucket

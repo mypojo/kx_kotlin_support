@@ -17,15 +17,22 @@ const val LIMIT_PER_REQ = 1000
 
 //==================================================== 기본 읽기/쓰기 ======================================================
 
-/** 간단 다운로드. 스트리밍 처리시 다운받아서 하세여 (inputStream 제공이 없는거 같음.) */
-suspend inline fun S3Client.getObjectDownload(bucket: String, key: String, file: File) = this.getObject(
+/**
+ * 간단 다운로드. 스트리밍 처리시 다운받아서 하세여 (inputStream 제공이 없는거 같음.)
+ * 메타데이터 체크를 통과해야 다운로드 한다
+ * */
+suspend inline fun S3Client.getObjectDownload(bucket: String, key: String, file: File, crossinline block: (Map<String, String>?) -> Boolean = { true }) = this.getObject(
     GetObjectRequest {
         this.bucket = bucket
         this.key = key
     }
 ) {
-    it.body?.writeToFile(file)
+    val doDownload = block(it.metadata)
+    if (doDownload) {
+        it.body?.writeToFile(file)
+    }
 }
+
 
 /**
  * 간단 업로드

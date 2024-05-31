@@ -14,7 +14,7 @@ class LambdaLayerSupportKtTest : BeSpecLight() {
         Given("lambda") {
             val aws by koinLazy<AwsClient1>()
             Then("람다의 레이어 정보 업데이트") {
-                aws.lambda.updateFunctionLayers("kx-fn-dev", listOf("arn:aws:lambda:ap-northeast-2:519433147926:layer:layer-kx-fn-dev:6"))
+                aws.lambda.updateFunctionLayers("kx-fn-dev", listOf("arn:aws:lambda:ap-northeast-2:xxx:layer:layer-kx-fn-dev:6"))
             }
         }
     }

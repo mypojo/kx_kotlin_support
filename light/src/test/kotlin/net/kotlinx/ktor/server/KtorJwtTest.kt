@@ -1,5 +1,6 @@
 package net.kotlinx.ktor.server
 
+import io.kotest.matchers.shouldBe
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -20,11 +21,10 @@ class KtorJwtTest : BeSpecLight(){
 
             Then("JWT 변환 & 역변환") {
 
-                val token = memberConverter.encode(member)
-                println(token)
+                val token = memberConverter.convertTo(member)
 
-                val decoded = memberConverter.decode(token)
-                println(decoded)
+                val decoded = memberConverter.convertFrom(token)
+                decoded shouldBe member
             }
         }
     }

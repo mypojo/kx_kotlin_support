@@ -1,9 +1,9 @@
 package net.kotlinx.aws.logs
 
 import aws.sdk.kotlin.services.cloudwatchlogs.getLogEvents
-import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.AwsClient1
 import net.kotlinx.file.slash
-import net.kotlinx.koin.Koins.koinLazy
+import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
@@ -15,11 +15,13 @@ import java.time.LocalDateTime
 
 class CloudWatchLogsSupportKtTest : BeSpecHeavy() {
 
+    private val profileName by lazy { findProfile28() }
+    private val aws by lazy { koin<AwsClient1>(profileName) }
+
     init {
-        initTest(KotestUtil.PROJECT02)
+        initTest(KotestUtil.PROJECT)
 
         Given("CloudWatchLogsSupportKt") {
-            val aws by koinLazy<AwsClient>()
             xThen("로그 다운로드") {
                 var out = ResourceHolder.getWorkspace().slash("로그다운로드").slash("log.txt")
                 aws.logs.download(

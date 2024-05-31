@@ -15,6 +15,7 @@ class OpenAiClientTest : BeSpecLight() {
             val openAiClient by koinLazy<OpenAiClient>()
 
             Then("요청 & 응답 샘플") {
+
                 val completion = openAiClient.chat(
                     listOf(
                         "kotlin 용 DI 프레임워크 유명한고 4개만 소개해주고, 장단점을 알려줘",

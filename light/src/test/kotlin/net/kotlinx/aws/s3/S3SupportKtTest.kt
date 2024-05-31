@@ -3,9 +3,7 @@ package net.kotlinx.aws.s3
 import aws.sdk.kotlin.services.s3.listBuckets
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import net.kotlinx.aws.AwsClient1
-import net.kotlinx.aws.AwsConfig
 import net.kotlinx.koin.Koins.koin
-import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -13,13 +11,13 @@ import net.kotlinx.string.print
 
 internal class S3SupportKtTest : BeSpecLight() {
 
+    private val profileName by lazy { findProfile28() }
+    private val aws by lazy { koin<AwsClient1>(profileName) }
+
     init {
-        initTest(KotestUtil.PROJECT02)
+        initTest(KotestUtil.PROJECT)
 
         Given("S3SupportKt") {
-            val aws: AwsClient1 = koin()
-            val awsConfig by koinLazy<AwsConfig>()!!
-            val profileName = awsConfig.profileName
 
             Then("버킷 리스팅") {
                 val buckets = aws.s3.listBuckets {}.buckets!!

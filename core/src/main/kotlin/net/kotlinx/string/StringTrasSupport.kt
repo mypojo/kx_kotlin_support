@@ -5,6 +5,16 @@ import java.net.URLDecoder
 import java.net.URLEncoder
 import java.util.*
 
+/** 간단 마스킹 */
+fun String.mask(start: Int = 2, end: Int = this.length): String {
+    val input = this
+    if (start < 0 || end > input.length || start > end) {
+        throw IllegalArgumentException("Invalid start or end position")
+    }
+    val maskLength = end - start
+    val mask = "*".repeat(maskLength)
+    return input.substring(0, start) + mask + input.substring(end)
+}
 
 /** decapitalize 쓰고싶은데 왜!!! 부활시킴 */
 fun String.decapital(): String = this.replaceFirstChar { it.lowercase(Locale.getDefault()) }

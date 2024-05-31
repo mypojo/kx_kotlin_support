@@ -5,7 +5,7 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsInstanceMetadata
 import net.kotlinx.aws.AwsInstanceType
 import net.kotlinx.domain.job.*
-import net.kotlinx.domain.job.define.JobDefinitionUtil
+import net.kotlinx.domain.job.define.JobDefinitionRepository
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.reflect.newInstance
@@ -29,7 +29,7 @@ class JobLocalExecutor : KoinComponent {
      * @return pk 확인용 키 문자욜
      * */
     suspend fun runJob(job: Job): String {
-        val jobDef = JobDefinitionUtil.findById(job.pk)
+        val jobDef = JobDefinitionRepository.findById(job.pk)
         val jobService = jobDef.jobClass.newInstance()
         job.instanceMetadata = instanceMetadata
 

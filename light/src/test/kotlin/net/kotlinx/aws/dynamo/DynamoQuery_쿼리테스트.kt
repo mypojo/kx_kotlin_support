@@ -5,7 +5,7 @@ import aws.sdk.kotlin.services.dynamodb.model.Select
 import io.kotest.matchers.shouldBe
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.domain.job.JobStatus
-import net.kotlinx.koin.Koins.koinLazy
+import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -14,12 +14,13 @@ import net.kotlinx.string.print
 
 internal class DynamoQuery_쿼리테스트 : BeSpecLight() {
 
+    private val profileName by lazy { findProfile28() }
+    private val aws by lazy { koin<AwsClient1>(profileName) }
+
     init {
-        initTest(KotestUtil.PROJECT02)
+        initTest(KotestUtil.PROJECT)
 
         Given("DynamoQuery") {
-
-            val aws by koinLazy<AwsClient1>()
 
             net.kotlinx.domain.job.Job.TABLE_NAME = "job-dev"
 

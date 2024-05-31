@@ -1,8 +1,8 @@
 package net.kotlinx.aws.athena
 
 import io.kotest.matchers.shouldBe
-import net.kotlinx.aws.AwsConfig
-import net.kotlinx.koin.Koins.koinLazy
+import net.kotlinx.aws.AwsClient1
+import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -13,14 +13,18 @@ import net.kotlinx.string.removeFrom
 
 internal class AthenaModuleTest : BeSpecLight() {
 
+    private val profileName by lazy { findProfile99() }
+
     init {
-        initTest(KotestUtil.PROJECT01)
+        initTest(KotestUtil.PROJECT)
 
         Given("AthenaModule") {
 
-            val awsConfig by koinLazy<AwsConfig>()
-            val databaseName = awsConfig.profileName!!.removeFrom(RegexSet.NUMERIC) //주의!
-            val athenaModule = AthenaModule(workGroup = "workgroup-prod", database = databaseName)
+            val athenaModule = AthenaModule {
+                aws = koin<AwsClient1>(profileName)
+                workGroup = "workgroup-prod"
+                database = profileName.removeFrom(RegexSet.NUMERIC) //주의!
+            }
 
             Then("쿼리 정상출력 & 다운로드 동시실행됨") {
 

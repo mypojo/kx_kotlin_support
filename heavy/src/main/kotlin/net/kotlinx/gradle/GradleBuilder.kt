@@ -9,7 +9,6 @@ import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.code.CodedeployUtil
 import net.kotlinx.aws.code.EcsDeployData
 import net.kotlinx.aws.code.createDeployment
-import net.kotlinx.aws.ecr.EcrUtil
 import net.kotlinx.aws.ecr.findAndUpdateTag
 import net.kotlinx.aws.ecs.touch
 import net.kotlinx.aws.lambda.*
@@ -27,8 +26,9 @@ import java.io.File
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * 코드빌드용 설정데이터
- * 그래들 빌드파일에 사용됨 (그래들 의존성은 maven에 찾을 수 없어서 못넣음. ㅠ)
+ * 그래들 빌드용 유틸. 그냥 그래들에 하드코딩하면 너무 지저분해져서 만들었음
+ * 그래들의 buildSrc + 이것을 조합해서 발드함.
+ * buildSrc 까지 같이쓰는 이유는 프로젝트별로 설정이 조금씩 다르고, 여기는 그래들 의존성을 추가할 수 없어서임 (maven에 찾을 수 없음)
  *  */
 class GradleBuilder {
 
@@ -36,6 +36,9 @@ class GradleBuilder {
     constructor(block: GradleBuilder.() -> Unit = {}) {
         apply(block)
     }
+
+    /** AWS 인스턴스 */
+    val aws by koinLazy<AwsClient>()
 
     /** AWS 프로파일 정보 */
     val profileName: String? = koin<AwsConfig>().profileName
@@ -45,14 +48,10 @@ class GradleBuilder {
      *  */
     val profileCommand = if (AwsInstanceTypeUtil.IS_LOCAL && profileName != null) "--profile $profileName" else ""
 
-    /** AWS 인스턴스 */
-    val aws by koinLazy<AwsClient>()
-
     /**
-     * 리즌정보
-     * 기본 설정과는 다른 리즌에도 배포할 수 있음
+     * 기본 설정과는 다른 리즌에도 배포할 수 있어서 별도 지정
      *  */
-    var region: String = AwsConfig.SEOUL
+    lateinit var awsConfig: AwsConfig
 
     /** 배포 타입 */
     var deploymentType: DeploymentType = DeploymentType.load()
@@ -108,8 +107,8 @@ class GradleBuilder {
 
     /** ECR 로그인 주소 생성 */
     fun ecrLoginCommand(repositoryName: String): String {
-        val ecrUrl = EcrUtil.path(repositoryName, region)
-        return "aws ecr get-login-password --region $region $profileCommand | docker login --username AWS --password-stdin $ecrUrl"
+        val ecrUrl = awsConfig.ecrPath(repositoryName)
+        return "aws ecr get-login-password --region ${awsConfig.region} $profileCommand | docker login --username AWS --password-stdin $ecrUrl"
     }
 
     //====================================================  ECS(ECR) 간단 배포 ======================================================
@@ -144,7 +143,7 @@ class GradleBuilder {
             aws.ecr.findAndUpdateTag(repositoryName, tagName, branchName)
 
             log.info { "람다 함수 ECR 터치" }
-            val imageUrl = EcrUtil.path(repositoryName, region)
+            val imageUrl = awsConfig.ecrPath(repositoryName)
             aws.lambda.updateFunctionCode(functionName, imageUrl, branchName) //터치만 해줌
         }
     }
