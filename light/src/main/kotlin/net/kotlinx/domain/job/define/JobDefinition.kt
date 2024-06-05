@@ -1,5 +1,6 @@
 package net.kotlinx.domain.job.define
 
+import net.kotlinx.core.Kdsl
 import net.kotlinx.domain.developer.DeveloperData
 import net.kotlinx.domain.job.JobTasklet
 import net.kotlinx.domain.job.trigger.JobTriggerMethod
@@ -19,7 +20,12 @@ fun Module.jobReg(block: JobDefinition.() -> Unit) {
 }
 
 /** job ENUM 에서 이걸 구현하면 됨  */
-class JobDefinition(block: JobDefinition.() -> Unit = {}) {
+class JobDefinition {
+
+    @Kdsl
+    constructor(block: JobDefinition.() -> Unit = {}) {
+        apply(block)
+    }
 
     /** 잡의 구현체 등록. 이 설정은 말 그대로 설정이라서 실제 인스턴스화까지는 되지 말아야함  */
     lateinit var jobClass: KClass<out JobTasklet>
@@ -44,23 +50,19 @@ class JobDefinition(block: JobDefinition.() -> Unit = {}) {
     var authors: List<DeveloperData> = emptyList()
 
     /** 설명 */
-    var comments: List<String> = emptyList()
+    var descs: List<String> = emptyList()
+
+    /**
+     * 속성
+     * 커스텀 해서 사용하세요
+     * */
+    var attributes: MutableMap<String, Any> = mutableMapOf()
 
     /** 그룹(상위 sfn 이름 등) */
     var parentJobPk: String = ""
 
     /** 기본적인 잡의 타임아웃. 이게 넘어가면 경고 등이 실행되어야함 */
     var timeout: Duration = 1.hours
-
-    /** 한줄 코멘트 지원 */
-    var comment: String = ""
-        set(value) {
-            comments = listOf(value)
-        }
-
-    init {
-        block(this)
-    }
 
     /** 설정에서 커스텀 옵션으로 변경함 */
     fun toJobOption(block: JobTriggerOption.() -> Unit = {}): JobTriggerOption = JobTriggerOption(this).apply(block)

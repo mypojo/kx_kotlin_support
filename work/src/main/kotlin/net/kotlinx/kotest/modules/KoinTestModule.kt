@@ -24,7 +24,7 @@ class PooService {
 }
 
 /** 해당 패키지의 기본적인 의존성 주입 */
-object MyKoinTestModule : KoinModule {
+object KoinTestModule : KoinModule {
 
     override fun moduleConfig(): Module = module {
 

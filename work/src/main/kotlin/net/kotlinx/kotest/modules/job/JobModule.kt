@@ -24,7 +24,7 @@ object JobModule : KoinModule {
         jobReg {
             jobClass = DemoJob::class
             name = "데모 작업 실행"
-            comments = listOf(
+            descs = listOf(
                 "x분 주기로 동기화",
                 "월비용 =  80원",
             )

@@ -28,7 +28,7 @@ import org.koin.dsl.module
 import java.util.concurrent.atomic.AtomicLong
 
 /** 해당 패키지의 기본적인 의존성 주입 */
-object MyBasicModule : KoinModule {
+object BasicModule : KoinModule {
 
     private val log = KotlinLogging.logger {}
 

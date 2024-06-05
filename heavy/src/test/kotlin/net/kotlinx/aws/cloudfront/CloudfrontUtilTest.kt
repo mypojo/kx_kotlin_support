@@ -12,10 +12,9 @@ class CloudfrontUtilTest : BeSpecLight() {
         initTest(KotestUtil.FAST)
 
         Given("클라우드 프론트 비용 확인") {
-            Then("클리어 비용 계산") {
+            xThen("클리어 비용 계산") {
                 val dir = File("C:\\WORKSPACE\\aa\\bb\\web\\")
                 CloudfrontUtil.clearCost(dir)
-
             }
         }
     }

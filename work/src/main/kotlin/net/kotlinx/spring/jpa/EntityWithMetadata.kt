@@ -21,7 +21,7 @@ abstract class EntityWithMetadata<T> : EntityWithId<T>() {
     )
     @Embedded
     @NotExpose
-    var reg: BasicMetadata? = null
+    lateinit var reg: BasicMetadata
 
     @AttributeOverrides(
         AttributeOverride(name = "name", column = Column(name = "update_name", length = 255)),
@@ -45,15 +45,12 @@ abstract class EntityWithMetadata<T> : EntityWithId<T>() {
 
     @PreUpdate
     fun preUpdate() {
-        checkNotNull(reg)
         update = createNewMetadata()
     }
 
     @PreRemove
     fun preRemove() {
-
     }
-
 
     companion object {
         private fun createNewMetadata(): BasicMetadata {

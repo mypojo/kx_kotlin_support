@@ -10,7 +10,7 @@ import net.kotlinx.kotest.MyEnv
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-object MyBatchStepModule : KoinModule {
+object BatchStepModule : KoinModule {
 
     override fun moduleConfig(): Module = module {
         single {

@@ -18,7 +18,7 @@ object MyAwsModule : KoinModule {
 
         single { get<AwsConfig>().toAwsClient() }
 
-        MyAws1Module.IAM_PROFILES.profiles.forEach { pair ->
+        Aws1Module.IAM_PROFILES.profiles.forEach { pair ->
             val profile = pair.first
             single(named(profile)) {
                 log.debug { "[${profile}] AwsClient 생성.." }

@@ -15,6 +15,7 @@ import kotlin.time.Duration
  * https://jwt.io/
  * 시큐리티 의존이 없긴 하지만 너무 무거움.. 거의 0.5mb & 잭슨 의손정 있음.
  *  */
+@Deprecated("KtorJwt 사용하세요")
 class JwtProvider(
     secretPlain: String,
     private val tokenDuration: Duration,

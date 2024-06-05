@@ -15,26 +15,24 @@ import java.util.*
 @MappedSuperclass
 abstract class EntityWithId<T> : Persistable<T> {
 
-    /** ID */
-    @get:JvmName("getEntityId")
-    var id: T? = null
-
     /**
      * Persistable 인터페이스 요구사항.
      * ID는 채번해서 입력하기때문에 반드시 필요함.
+     * @JvmName 어노테이션을 쓰지 않기 위해서 이렇게 함
      */
     @Transient
     @NotExpose
-    @get:JvmName("isEntityNew")
-    private var isNew = false
+    private var _new: Boolean = false
 
     //==================================================== 기본 오버라이드 ======================================================
 
     /** 기본 오버라이드 */
-    override fun getId(): T? = id
+    override fun isNew(): Boolean = _new
 
-    /** 기본 오버라이드 */
-    override fun isNew(): Boolean = isNew
+    /** 기본 세터 */
+    fun setNew(new: Boolean) {
+        this._new = new
+    }
 
 
     /** ID만 비교 */

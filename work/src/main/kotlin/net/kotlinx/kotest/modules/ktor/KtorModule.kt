@@ -31,7 +31,6 @@ object KtorModule : KoinModule {
                 issuer = "kotlinx.net"
                 audiences = listOf("user")
             }
-
         }
         single { KtorMemberConverter() }
 
