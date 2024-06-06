@@ -13,16 +13,25 @@ import kotlin.reflect.KClass
  * 람다에서 부트 늦은로딩을 하기 위해서 만들었음
  * 코드에서 SpringUtil 직접 사용금지
  */
-class SpringBootBeanLoader(private val bootClass: KClass<*>) {
+class SpringBootBeanLoader(
+    /** 부트 클래스 정보 */
+    private val bootClass: KClass<*>,
+    /**
+     * 백그라은드 로직 = NONE
+     * 웹 로직 = SERVLET  -> 컨트롤러 등의 웹 의존성 같이 주입됨
+     * */
+    private val applicationType: WebApplicationType = WebApplicationType.NONE,
+) {
 
     private val log = KotlinLogging.logger {}
+
 
     /** was 초기화 or junit 등 여러가지에서 활용 가능하도록 열어둠 */
     private val context: ApplicationContext by lazy {
         val exist = ContextLoader.getCurrentWebApplicationContext()
         if (exist == null) {
             val ts = TimeStart()
-            val context = SpringApplicationBuilder(bootClass.java).web(WebApplicationType.NONE).run()
+            val context = SpringApplicationBuilder(bootClass.java).web(applicationType).run()
             log.info { " -> 스프링 부트 초기화 완료.. $ts" }
             context
         } else {

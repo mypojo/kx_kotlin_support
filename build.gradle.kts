@@ -62,7 +62,10 @@ allprojects {
         //testImplementation("io.kotest.extensions:kotest-extensions-koin:_") //kotest koin 확장 (일단 사용중지)
         testImplementation("io.mockk:mockk:_") //코틀린 모킹
 
-        /** 공통 DI를 사용할 수 있게 해줌 -> notebook에서 사용하려면 test 폴더가 아닌 main에 있어야함 */
+        /**
+         * 공통 DI를 사용할 수 있게 해줌 -> notebook에서 사용하려면 test 폴더가 아닌 main에 있어야함
+         * springboot 처럼 컴포넌트 스캔해서 하는 애들은 이렇게 다 모아버리면 컴포넌트들이 충돌나서 안된다!  주의!!
+         * */
         testImplementation(project(":work"))
     }
 
