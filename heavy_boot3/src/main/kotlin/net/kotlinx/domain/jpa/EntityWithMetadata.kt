@@ -1,8 +1,9 @@
-package net.kotlinx.spring.jpa
+package net.kotlinx.domain.jpa
 
 
 import jakarta.persistence.*
 import net.kotlinx.json.gson.NotExpose
+import net.kotlinx.koin.Koins.koin
 
 /**
  * 기본 메타데이터가 관리되어야 하는 엔티티
@@ -17,7 +18,7 @@ abstract class EntityWithMetadata<T> : EntityWithId<T>() {
         AttributeOverride(name = "name", column = Column(name = "reg_name", length = 255, updatable = false)),
         AttributeOverride(name = "time", column = Column(name = "reg_time", updatable = false)),
         AttributeOverride(name = "id", column = Column(name = "reg_id", updatable = false)),
-        AttributeOverride(name = "ip", column = Column(name = "reg_ip", length = JpaColumnSize.IP, updatable = false)),
+        AttributeOverride(name = "ip", column = Column(name = "reg_ip", length = 39, updatable = false)), // IPv4 주소: 15자리  / IPv6 주소: 39자리
     )
     @Embedded
     @NotExpose
@@ -27,7 +28,7 @@ abstract class EntityWithMetadata<T> : EntityWithId<T>() {
         AttributeOverride(name = "name", column = Column(name = "update_name", length = 255)),
         AttributeOverride(name = "time", column = Column(name = "update_time")),
         AttributeOverride(name = "id", column = Column(name = "update_id")),
-        AttributeOverride(name = "ip", column = Column(name = "update_ip", length = JpaColumnSize.IP)),
+        AttributeOverride(name = "ip", column = Column(name = "update_ip", length = 39)),
     )
     @Embedded
     @NotExpose
@@ -39,22 +40,18 @@ abstract class EntityWithMetadata<T> : EntityWithId<T>() {
     @PrePersist
     fun prePersist() {
         check(isNew)
-        reg = createNewMetadata()
+        reg = koin<BasicMetadataFactory>().createMetadata()
         preUpdate()
     }
 
     @PreUpdate
     fun preUpdate() {
-        update = createNewMetadata()
+        update = koin<BasicMetadataFactory>().createMetadata()
     }
 
     @PreRemove
     fun preRemove() {
+
     }
 
-    companion object {
-        private fun createNewMetadata(): BasicMetadata {
-            throw UnsupportedOperationException()
-        }
-    }
 }

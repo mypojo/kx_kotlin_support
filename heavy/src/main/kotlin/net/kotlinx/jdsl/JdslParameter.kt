@@ -30,26 +30,26 @@ class JdslParameter(private val bean: Bean) {
 
     //==================================================== public ======================================================
 
-    fun <T : Any> eq(path: Path<T>): Predicate = doText(path) { path, value -> Predicates.equal(path, value) }
-    fun <T : Any> notEq(path: Path<T>): Predicate = doText(path) { path, value -> Predicates.notEqual(path, value) }
+    fun <T : Any> eq(path: Path<T>): Predicate? = doText(path) { path, value -> Predicates.equal(path, value) }
+    fun <T : Any> notEq(path: Path<T>): Predicate? = doText(path) { path, value -> Predicates.notEqual(path, value) }
 
     /** 해당 값이 있으면 IN 필터 적용, 아니면 전체값 적용 */
-    fun <T : Any> `in`(path: Path<T>): Predicate {
+    fun <T : Any> `in`(path: Path<T>): Predicate? {
         val pathName = path.name
         checkCommon(pathName)
 
-        val value = bean[pathName] ?: return OK_ANY
+        val value = bean[pathName] ?: return null
         check(value is Collection<*>) { "Collection 타입만 가능합니다" }
-        if (value.isEmpty()) return OK_ANY
+        if (value.isEmpty()) return null
 
         return Predicates.`in`(path.toExpression(), value.map { Expressions.value(it) })
     }
 
     /** 일반 like */
-    fun like(path: Path<String>): Predicate = doLike(path) { "%${it}%" }
+    fun like(path: Path<String>): Predicate? = doLike(path) { "%${it}%" }
 
     /** 뒷 like */
-    fun likeStartsWith(path: Path<String>): Predicate = doLike(path) { "${it}%" }
+    fun likeStartsWith(path: Path<String>): Predicate? = doLike(path) { "${it}%" }
 
     /** 간단 위임 */
     override fun toString(): String = "${this::class.name()} ${bean.data}"
@@ -66,25 +66,25 @@ class JdslParameter(private val bean: Bean) {
     /**
      * 해당 값(text)이 있으면 EQ 필터 적용, 아니면 전체값 적용
      *  */
-    private fun <T : Any> doText(path: Path<T>, block: (path: Expression<T>, value: Expression<String>) -> Predicate): Predicate {
+    private fun <T : Any> doText(path: Path<T>, block: (path: Expression<T>, value: Expression<String>) -> Predicate): Predicate? {
         val pathName = path.name
         checkCommon(pathName)
 
-        val value = bean[pathName] ?: return OK_ANY
+        val value = bean[pathName] ?: return null
         val text = value.toString()
-        if (text.isEmpty()) return OK_ANY
+        if (text.isEmpty()) return null
 
         return block(path.toExpression(), Expressions.value(text))
     }
 
     /** like 구문을 리턴해준다. */
-    private fun doLike(path: Path<String>, template: (String) -> String): Predicate {
+    private fun doLike(path: Path<String>, template: (String) -> String): Predicate? {
         val pathName = path.name
         checkCommon(pathName)
-        val value = bean[pathName] ?: return OK_ANY
+        val value = bean[pathName] ?: return null
         check(value is String) { "like 의 value 값은 String 이어야 합니다." }
         val text = value.toString()
-        if (text.isEmpty()) return OK_ANY
+        if (text.isEmpty()) return null
 
         val escaped = template(escapeLike(text))
         return Predicates.like(path.toExpression(), Expressions.value(escaped))
@@ -97,8 +97,8 @@ class JdslParameter(private val bean: Bean) {
 
     companion object {
 
-        /** null 회피하기 위한 1=1 조건 */
-        private val OK_ANY = Predicates.equal(Expressions.value(1), Expressions.value(1))
+//        /** null 회피하기 위한 1=1 조건 */
+//        private val OK_ANY = Predicates.equal(Expressions.value(1), Expressions.value(1))
 
         /**
          * 간단 생성자

@@ -9,10 +9,18 @@ pluginManagement {
         kotlin("plugin.serialization") version kotlinVersion  // apply 까지 해당 프로젝트에 해야지 컴파일할때 적용됨
 
         //==================================================== 스프링부트 ======================================================
+        kotlin("plugin.spring") version kotlinVersion //같은값 입력
+
         val springBootVersion: String by settings
         id("org.springframework.boot") version springBootVersion //부트 기본 플러그인.
         val springBootDmVersion: String by settings
         id("io.spring.dependency-management") version springBootDmVersion  //세팅시 의존성 설정시 버전 명시 필요 없어짐.
+
+        //==================================================== 컴파일러  ======================================================
+        //https://kotlinlang.org/docs/all-open-plugin.html#command-line-compiler
+        kotlin("kapt") version kotlinVersion  //어노테이션
+        id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion  //스프링 플러그인 allOpen 등 지원
+        id("org.jetbrains.kotlin.plugin.jpa") version kotlinVersion  // @Entity, @Embeddable, @MappedSuperclass 어노테이션이 붙은 모든 클래스에 자동으로 매개변수가 없는 생성자 추가
     }
 
 }

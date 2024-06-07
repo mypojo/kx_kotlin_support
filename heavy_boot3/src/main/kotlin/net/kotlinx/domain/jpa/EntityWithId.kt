@@ -1,4 +1,4 @@
-package net.kotlinx.spring.jpa
+package net.kotlinx.domain.jpa
 
 
 import jakarta.persistence.MappedSuperclass
@@ -18,7 +18,7 @@ abstract class EntityWithId<T> : Persistable<T> {
     /**
      * Persistable 인터페이스 요구사항.
      * ID는 채번해서 입력하기때문에 반드시 필요함.
-     * @JvmName 어노테이션을 쓰지 않기 위해서 이렇게 함
+     * @JvmName 어노테이션을 쓰지 않기 위해서 private 으로 하고 개별 정의함
      */
     @Transient
     @NotExpose

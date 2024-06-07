@@ -4,11 +4,23 @@ plugins {
     kotlin("jvm") //항상 최신버전 사용. 멀티플랫폼 버전과 동일함
     id("org.springframework.boot") apply false
     id("io.spring.dependency-management")
+
+    //spring-hibernate 플러그인
+    kotlin("kapt")
+    kotlin("plugin.spring")
+    kotlin("plugin.jpa")
 }
 
 //==================================================== 프로젝트별 설정 ======================================================
 
 apply(plugin = "io.spring.dependency-management")
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.Embeddable") //BasicMetadata 등에 기본 생성자 강제생성
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("org.springframework.stereotype.Service")
+}
 
 dependencies {
 
@@ -37,8 +49,6 @@ dependencies {
 
     //==================================================== 배치 관련 ======================================================
     implementation("com.opencsv:opencsv:_") //의존성 문제 보고됨
-
-
 
 
 }

@@ -40,6 +40,8 @@ class JobLocalExecutor : KoinComponent {
 
         try {
 
+            JobHolder.JOB.set(job)
+
             //==============  RUNNING 마킹 ===================
             job.jobStatus = JobStatus.RUNNING
             job.startTime = LocalDateTime.now()
@@ -71,7 +73,10 @@ class JobLocalExecutor : KoinComponent {
             }
             eventBus.post(JobEvent(job, err = e))
             throw JobException(e) //예외를 반드시 던져야 한다.
+        } finally {
+            JobHolder.JOB.remove()
         }
+
         return job.toKeyString()
     }
 

@@ -16,17 +16,27 @@ object SpringHolder {
     //==================================================== 이미 준비됨 ======================================================
 
     /**
-     * http request는 이미 스래드로컬에 있음
-     * ex) httpRequest.forwardedIp
+     * 스프링 MVC HttpServletRequest
+     * ex) HTTP_REQUEST.forwardedIp
      * */
-    val httpRequest: HttpServletRequest
+    val HTTP_REQUEST: HttpServletRequest
         get() = (RequestContextHolder.currentRequestAttributes() as ServletRequestAttributes).request
 
 
+    /**
+     * 스프링 시큐리티 UserDetails
+     *  */
     fun <T : UserDetails> userDetail(): T? {
         val authenticationToken = SecurityContextHolder.getContext().authentication as SimpleAuthenticationToken? ?: return null
         return authenticationToken.principal as T
     }
+
+    //==================================================== 커스텀 ======================================================
+
+    /**
+     * 늦은 초기화 이후 사용할때.
+     * */
+    lateinit var BEANS: SpringBootBeans
 
 
 }
