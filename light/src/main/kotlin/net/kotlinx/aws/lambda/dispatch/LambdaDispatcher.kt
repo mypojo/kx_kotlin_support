@@ -3,7 +3,6 @@ package net.kotlinx.aws.lambda.dispatch
 import com.amazonaws.services.lambda.runtime.Context
 import com.google.common.eventbus.EventBus
 import com.lectra.koson.ObjectType
-import kotlinx.html.MetaHttpEquiv.contentType
 import mu.KotlinLogging
 import net.kotlinx.aws.lambda.LambdaHandlerUtil
 import net.kotlinx.aws.lambda.dispatch.asynch.CodeDeployHookEventPublisher
@@ -20,6 +19,7 @@ import net.kotlinx.guava.postEvent
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.koson.toGsonData
 import net.kotlinx.koin.Koins.koinLazy
+import net.kotlinx.okhttp.OkHttpMediaType
 
 
 /** 람다 실행 설정 */
@@ -90,7 +90,7 @@ class LambdaDispatcher {
                 mapOf(
                     "statusCode" to 500,
                     "headers" to mapOf(
-                        "content-type" to contentType
+                        "content-type" to OkHttpMediaType.JSON
                     ),
                     "body" to mapOf(
                         "error" to result.e.toSimpleString(),

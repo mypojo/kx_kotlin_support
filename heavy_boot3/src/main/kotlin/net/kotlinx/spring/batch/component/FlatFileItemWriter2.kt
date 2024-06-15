@@ -16,8 +16,8 @@ class FlatFileItemWriter2<T> : FlatFileItemWriter<T>() {
     override fun doWrite(items: Chunk<out T>): String {
         val lines = StringBuilder()
         for (item in items) {
-            val aggregate = lineAggregator.aggregate(item)
-            if (aggregate.isNullOrEmpty()) continue
+            val aggregate = lineAggregator.aggregate(item!!)
+            if (aggregate.isEmpty()) continue
             lines.append(aggregate).append(lineSeparator)
         }
         return lines.toString()

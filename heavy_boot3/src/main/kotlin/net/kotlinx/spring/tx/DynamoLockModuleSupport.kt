@@ -1,7 +1,7 @@
 package net.kotlinx.spring.tx
 
 import com.amazonaws.services.dynamodbv2.LockItem
-import net.kotlinx.aws.javaSdkv2.dynamoLock.DynamoLockModule
+import net.kotlinx.aws.javaSdkv2.dynamoLock.DynamoLockManager
 import net.kotlinx.aws.javaSdkv2.dynamoLock.DynamoLockReq
 import org.springframework.transaction.support.TransactionSynchronization
 import org.springframework.transaction.support.TransactionSynchronizationManager
@@ -10,7 +10,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 /**
  * 분산락 간단 적용 with 스프링 트랜잭션
  */
-fun DynamoLockModule.withSpringTx(req: DynamoLockReq, block: (LockItem) -> Unit) {
+fun DynamoLockManager.withSpringTx(req: DynamoLockReq, block: (LockItem) -> Unit) {
 
     check(TransactionSynchronizationManager.isSynchronizationActive()) { "스프링 트랜잭션이 활성화 되어있어야합니다." }
     check(!TransactionSynchronizationManager.isCurrentTransactionReadOnly()) { "쓰기 트랜잭션이 활성화 되어있어야합니다." }

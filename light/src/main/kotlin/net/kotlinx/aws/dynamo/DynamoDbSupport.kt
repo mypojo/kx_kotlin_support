@@ -51,7 +51,10 @@ suspend fun DynamoDbClient.putItem(data: DynamoData): PutItemResponse = this.put
     this.item = data.toAttribute()
 }
 
-/** 간단 업데이트.  List<KProperty<*>> 사용할것 */
+/**
+ * 간단 업데이트.  List<KProperty<*>> 사용할것
+ * DDB는 batch update 같은게 아직 없는듯.
+ *  */
 suspend fun DynamoDbClient.updateItem(data: DynamoData, updateKeys: List<String>): UpdateItemResponse {
     return this.updateItem {
         this.tableName = data.tableName

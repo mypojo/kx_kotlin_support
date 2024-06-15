@@ -1,6 +1,7 @@
 package net.kotlinx.string
 
 import mu.KotlinLogging
+import net.kotlinx.exception.toSimpleString
 import net.kotlinx.number.maxWith
 import net.kotlinx.time.toKr01
 import java.time.LocalDateTime
@@ -40,11 +41,16 @@ class TextGrid(
 
         val convertedDatas = datas.map { array ->
             array.map {
-                when (it) {
-                    is Number -> it.toString() //닷 붙이기
-                    is LocalDateTime -> it.toKr01()
-                    is Collection<*> -> it.joinToString(",")
-                    else -> it.toString().removeFrom(lineSeparatorReg)
+                try {
+                    when (it) {
+                        is Number -> it.toString() //닷 붙이기
+                        is LocalDateTime -> it.toKr01()
+                        is Collection<*> -> it.joinToString(",")
+                        else -> it.toString().removeFrom(lineSeparatorReg)
+                    }
+                } catch (e: Throwable) {
+                    //Hiberante 등의 session 예외시 무시한다.
+                    e.toSimpleString()
                 }
             }.take(headers.size) //헤더보다 길면 제거
         }

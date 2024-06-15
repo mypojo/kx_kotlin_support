@@ -44,6 +44,7 @@ suspend fun Call.await(): Response {
 @Kdsl
 suspend fun OkHttpClient.await(block: OkHttpReq.() -> Unit): OkHttpResp {
     val req = OkHttpReq().apply(block)
+    this.reqInterceptor.invoke(req)
     val resp = this.newCall(req.build()).await()
     return resp.use { OkHttpResp(req, it).load() }
 }

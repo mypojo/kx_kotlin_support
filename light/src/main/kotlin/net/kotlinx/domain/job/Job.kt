@@ -4,6 +4,7 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.aws.AwsInstanceMetadata
 import net.kotlinx.aws.dynamo.*
 import net.kotlinx.json.gson.GsonSet
+import net.kotlinx.lazyLoad.LazyLatchProperty
 import net.kotlinx.time.toIso
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -12,10 +13,7 @@ import java.time.temporal.ChronoUnit
  * DDB에 입력되는 메타데이터
  * https://www.notion.so/mypojo/Job-Module-serverless-docker-57e773b5f0494fb59dcbff5d9a8eb8f5
  */
-class Job(
-    override val pk: String,
-    override val sk: String,
-) : DynamoData {
+class Job(override val pk: String, override val sk: String) : DynamoData {
 
     override val tableName: String
         get() = TABLE_NAME
@@ -172,11 +170,7 @@ class Job(
     companion object {
 
         /** 테이블 이름을 여기서 지정 (한번만 지정 가능) */
-        var TABLE_NAME: String = ""
-            set(value) {
-                if (TABLE_NAME.isNotEmpty() && TABLE_NAME != value) throw IllegalStateException("TABLE_NAME 을 두번 지정($TABLE_NAME -> ${value})하시면 안됩니다~")
-                field = value
-            }
+        var TABLE_NAME: String by LazyLatchProperty()
 
         /** 아무것도 없으면 이거 입력  */
         const val DEFAULT_MEMBER = "system"

@@ -1,6 +1,7 @@
 package net.kotlinx.json.serial
 
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonNamingStrategy
 
 
 /**
@@ -22,6 +23,16 @@ object SerialJsonSet {
     val JSON_OTHER = Json {
         this.ignoreUnknownKeys = true
         this.encodeDefaults = true
+    }
+
+    /**
+     * JSON_OTHER 의 언더스코어 버전
+     * kakao가 이런 식으로 전달해줌
+     * */
+    val JSON_OTHERU = Json {
+        this.ignoreUnknownKeys = true
+        this.encodeDefaults = true
+        this.namingStrategy = JsonNamingStrategy.SnakeCase
     }
 
 }

@@ -1,5 +1,12 @@
 package net.kotlinx.collection
 
+/**
+ * split 등에 사용함
+ *  */
+fun <T> List<T>.toPair(): Pair<T, T> {
+    check(this.size == 2) { "toPair 는 size가 2 이여야 합니다. ${this.joinToString(",")}" }
+    return this[0] to this[1]
+}
 
 /**
  * 객체를 추가후 그대로 리턴해줌

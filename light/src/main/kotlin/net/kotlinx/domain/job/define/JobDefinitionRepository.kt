@@ -1,7 +1,7 @@
 package net.kotlinx.domain.job.define
 
-import net.kotlinx.awscdk.util.EipUtil.getKoin
 import net.kotlinx.domain.job.JobTasklet
+import net.kotlinx.koin.Koins
 import net.kotlinx.reflect.name
 import org.koin.core.qualifier.named
 import org.koin.mp.KoinPlatformTools
@@ -22,7 +22,7 @@ object JobDefinitionRepository {
     fun findById(jobPk: String): JobDefinition = KoinPlatformTools.defaultContext().get().get<JobDefinition>(named(jobPk))
 
     /** 전체 리스팅 */
-    fun list(): List<JobDefinition> = getKoin().getAll<JobDefinition>()
+    fun list(): List<JobDefinition> = Koins.koins<JobDefinition>()
 
 }
 

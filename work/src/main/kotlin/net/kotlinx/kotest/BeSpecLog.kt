@@ -15,6 +15,8 @@ import net.kotlinx.system.SystemSeparator
 @Suppress("LeakingThis")
 abstract class BeSpecLog : BehaviorSpec() {
 
+    val testClassName = this::class.qualifiedName!!
+
     /**
      * 공용 로거.
      * 이거 하나로 같이 써도, UI에서 로그가 잘 보이기때문에 큰 문제 없음

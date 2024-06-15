@@ -1,4 +1,4 @@
-package net.kotlinx.jdsl
+package net.kotlinx.kqdsl
 
 import com.linecorp.kotlinjdsl.dsl.jpql.Jpql
 import com.linecorp.kotlinjdsl.querymodel.jpql.expression.Expression
@@ -24,7 +24,7 @@ import kotlin.reflect.KCallable
  * 1. enum
  *
  * */
-class JdslParameter(private val bean: Bean) {
+class KqdslParameter(private val bean: Bean) {
 
     private val jpql = Jpql.newInstance()
 
@@ -104,7 +104,7 @@ class JdslParameter(private val bean: Bean) {
          * 간단 생성자
          * @param bean 사용자 입력데이터 ex) dto
          *  */
-        fun from(bean: Any): JdslParameter = JdslParameter(Bean(bean))
+        fun from(bean: Any): KqdslParameter = KqdslParameter(Bean(bean))
 
         /**
          * kotlin jdsl 에서는 자동으로 이스케이퍼 미지정시 자동으로 \ 를 이스케이핑 지정해준다.

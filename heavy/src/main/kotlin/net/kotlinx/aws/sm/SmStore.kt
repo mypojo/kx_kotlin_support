@@ -16,8 +16,11 @@ class SmStore(
     private val cache: Cache<String, String?> = CacheBuilder.newBuilder().expireAfterWrite(24, TimeUnit.HOURS).build(),
 ) {
 
-    /** 캐시값 우선 리턴 */
-    operator fun get(key: String): String? {
+    /**
+     * 캐시값 우선 리턴
+     * 없으면 예외 던짐!!
+     *  */
+    operator fun get(key: String): String {
         synchronized(this) {
             return cache.get(key) {
                 runBlocking {

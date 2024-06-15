@@ -47,6 +47,9 @@ inline fun <reified T> List<T>.print(limitSize: Int = TextGrid.TEXT_ABBR_LIMIT) 
             headers.toTextGrid(datas).print()
         }
 
+        /**
+         * 일반적인 List<Domain> 인 경우 리플렉션으로 강제 출력
+         *  */
         else -> {
             //주의!! 실 업무에 이렇게 쓰면 위험함.
             val real = list.map { Bean(it as Any) }

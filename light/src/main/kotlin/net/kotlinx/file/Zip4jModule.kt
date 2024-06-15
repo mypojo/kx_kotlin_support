@@ -1,8 +1,10 @@
 package net.kotlinx.file
 
+import mu.KotlinLogging
 import net.kotlinx.core.Kdsl
 import net.lingala.zip4j.ZipFile
 import net.lingala.zip4j.model.ZipParameters
+import net.lingala.zip4j.model.enums.CompressionMethod
 import net.lingala.zip4j.model.enums.EncryptionMethod
 import java.io.File
 
@@ -50,6 +52,9 @@ class Zip4jModule {
     /** 압축할 파일들 */
     lateinit var files: List<File>
 
+    /** 분할압축 */
+    var splitSizeMb: Long? = null
+
     /** 압축 */
     fun zip() {
 
@@ -60,6 +65,7 @@ class Zip4jModule {
         }
 
         val zipParameters = ZipParameters()
+
         val zipFile: ZipFile = when (password) {
             null -> ZipFile(targetZipFile)
             else -> {
@@ -68,13 +74,22 @@ class Zip4jModule {
                 ZipFile(targetZipFile, password!!.toCharArray())
             }
         }
-        files.forEach { file ->
-            if (file.isFile) {
-                zipFile.addFile(file, zipParameters)
-            } else if ((file.isDirectory)) {
-                zipFile.addFolder(file, zipParameters)
+        if (splitSizeMb != null) {
+            log.trace { "분할 압축을 시도합니다.." }
+            zipParameters.compressionMethod = CompressionMethod.DEFLATE
+            zipFile.createSplitZipFile(files, zipParameters, true, splitSizeMb!! * 1024 * 1024)
+        } else {
+            log.trace { "일반 압축을 시도합니다.." }
+            files.forEach { file ->
+                if (file.isFile) {
+                    zipFile.addFile(file, zipParameters)
+                } else if (file.isDirectory) {
+                    zipFile.addFolder(file, zipParameters)
+                }
             }
         }
+
+
     }
 
     /** 대상 경로 그대로 압축을 푼다 */
@@ -90,6 +105,10 @@ class Zip4jModule {
             zipFile.setPassword(password!!.toCharArray())
         }
         zipFile.extractAll(unzipDir.absolutePath)
+    }
+
+    companion object {
+        private val log = KotlinLogging.logger {}
     }
 
 }

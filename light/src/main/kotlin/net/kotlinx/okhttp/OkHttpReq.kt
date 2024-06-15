@@ -29,7 +29,7 @@ class OkHttpReq {
 
     /**
      * 이게 null이 아닌경우 body를 toString() 할때 해당 인코딩으로 응답을 강제변환
-     * 일반적으로 content-type 에 인코딩을 명시하지 않은애들 MS949로 바꿀때 사용
+     * 일반적으로 content-type 에 인코딩을 명시하지 않은애들 MS949 (11번가?) or UTF8 (kakao) 로 바꿀때 사용
      *  */
     var defaultChsrSet: Charset? = CharSets.MS949
 

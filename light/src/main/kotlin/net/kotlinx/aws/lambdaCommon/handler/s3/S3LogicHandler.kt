@@ -27,6 +27,7 @@ import java.io.File
  * #2 지정된 로직을 실행하고
  * #3 결과를 S3에 업로드
  *  */
+@Suppress("DuplicatedCode")
 class S3LogicHandler(
     /**
      * 버킷은 단일로 고정이다.

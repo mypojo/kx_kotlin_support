@@ -11,19 +11,30 @@ class Zip4jModuleTest : BeSpecLog() {
         initTest(KotestUtil.IGNORE)
 
         Given("Zip4jModule") {
+
             Then("비밀번호를 걸어서 압죽") {
                 val workspace = ResourceHolder.getWorkspace()
-
                 Zip4jModule {
                     files = listOf(
                         workspace.slash("temp-estimate_validate"),
-                        //workspace.slash("230925_두쓰멍 영상소재 비율 수정(롱).mp4"),
                     )
                     password = "1234"
                     targetZipFile = workspace.slash("result.zip")
                     //zip()
                     unzip()
 
+                }
+            }
+
+            Then("분할압축") {
+                val workspace = ResourceHolder.getWorkspace().slash("업체제공데이터_월간")
+                Zip4jModule {
+                    files = listOf(
+                        workspace.slash("제공데이터_202402.zip"),
+                    )
+                    targetZipFile = workspace.slash("result.zip")
+                    splitSizeMb =  5 * 1024
+                    zip()
                 }
             }
         }

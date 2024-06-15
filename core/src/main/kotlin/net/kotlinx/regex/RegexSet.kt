@@ -6,8 +6,6 @@ import java.util.regex.Pattern
  * 자주 사용되는 정규식 모음
  * 확장함수가 가능해셔서 enum으로 만들지 않음
  * 문법 참고용으로 사용
- *
- * @see net.kotlinx.regex.StringRegexParseSupport
  * */
 object RegexSet {
 

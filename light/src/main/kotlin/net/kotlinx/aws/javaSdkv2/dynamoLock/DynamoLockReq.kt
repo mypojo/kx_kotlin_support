@@ -5,17 +5,17 @@ import net.kotlinx.aws.dynamo.DynamoData
 import net.kotlinx.aws.dynamo.findOrThrow
 import net.kotlinx.core.Kdsl
 
-
 /** 나머지 구현하기 */
-class DynamoLockReq @Kdsl constructor(block: DynamoLockReq.() -> Unit) : DynamoData {
+class DynamoLockReq : DynamoData {
+
+    @Kdsl
+    constructor(block: DynamoLockReq.() -> Unit = {}) {
+        apply(block)
+    }
 
     override lateinit var pk: String
     override lateinit var sk: String
-
-    //==================================================== 디폴트설정 ======================================================
-
-    /** 테이블명의 경우  */
-    override var tableName: String = ""
+    override val tableName: String by lazy { throw UnsupportedOperationException("모듈에서 DDB 입력됨으로 여기는 사용되지 않습니다.") }
 
     //==================================================== 기본 설정값 ======================================================
 
@@ -59,10 +59,4 @@ class DynamoLockReq @Kdsl constructor(block: DynamoLockReq.() -> Unit) : DynamoD
             comment = map.findOrThrow(DynamoLockReq::comment)
         } as T
     }
-
-    init {
-        apply(block)
-    }
-
-
 }

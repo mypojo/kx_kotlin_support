@@ -1,7 +1,9 @@
 package net.kotlinx.aws.dynamo
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
+import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.gson.GsonSet
+import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.reflect.valueOf
 import net.kotlinx.string.toLocalDateTime
 import java.time.LocalDateTime
@@ -10,6 +12,16 @@ import kotlin.reflect.KProperty
 
 /** 단일값 문자열로 치환해서  가져오기 */
 fun <T> Map<String, AttributeValue>.find(key: String, conv: (data: String) -> T?): T? = this[key]?.asSOrNull()?.let { conv.invoke(it) }
+
+//==================================================== GsonData ======================================================
+fun Map<String, AttributeValue>.find(key: KMutableProperty1<*, GsonData?>): GsonData? = this[key.name]?.asSOrNull()?.toGsonData()
+fun Map<String, AttributeValue>.findOrThrow(key: KMutableProperty1<*, GsonData>): GsonData = this[key.name]?.asSOrNull()?.toGsonData()
+    ?: throw IllegalArgumentException("[${key.name}] not found")
+
+//==================================================== Bool ======================================================
+fun Map<String, AttributeValue>.find(key: KMutableProperty1<*, Boolean?>): Boolean? = this[key.name]?.asBoolOrNull()
+fun Map<String, AttributeValue>.findOrThrow(key: KMutableProperty1<*, Boolean>): Boolean = this[key.name]?.asBoolOrNull()
+    ?: throw IllegalArgumentException("[${key.name}] not found")
 
 //==================================================== Long ======================================================
 fun Map<String, AttributeValue>.find(key: KMutableProperty1<*, Long?>): Long? = this[key.name]?.asNOrNull()?.toLong()

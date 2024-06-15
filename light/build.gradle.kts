@@ -47,6 +47,16 @@ dependencies {
     api("com.amazonaws:aws-lambda-java-events:_")  //핸들러에 매핑되는 이벤트 객
     api("io.github.crac:org-crac:_")  //스냅스타트 후크 (클래스 로딩용)
 
+    //==================================================== AWS JAVA V2 client (레거시 호환) ======================================================
+    val awsJavaV2Version: String by project
+    implementation("software.amazon.awssdk:apache-client:$awsJavaV2Version") //기본 HTTP 클라이언트. okhttp 없음.. ㅠ https://docs.aws.amazon.com/ko_kr/sdk-for-java/latest/developer-guide/http-configuration-url.html
+    implementation("software.amazon.awssdk:dynamodb:$awsJavaV2Version") //DDB 분산락 작용용
+    api("com.amazonaws:dynamodb-lock-client:1.2.0") {
+        //DDB 분산락 클라이언트 정발버전 (spring tx에서 같이 사용)
+        exclude("commons-logging")
+    }
+
+
     //====================================================커먼즈 ======================================================
     api("org.apache.commons:commons-text:_") // javacript 등의 이스케이핑에 사용된다. kotlin 네이티브가 없네..
 
@@ -60,15 +70,14 @@ dependencies {
     //==================================================== 구글 API ======================================================
     //사용하기 키 발급받아서 사용하기 너무 불편함!! 일단 사용처는 없음
     //implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0") //https://github.com/googleapis/google-auth-library-java  구글인증은 이걸로 다 바뀐듯함 -> 나는 안씀
-    implementation("com.google.gdata:core:_") //구글 기본세트
+    implementation("com.google.gdata:core:_"){
+        //구글 기본세트
+        exclude("commons-logging")
+    }
 
     implementation("com.google.apis:google-api-services-oauth2:_") //구글 기본세트  v2-rev151-1.25.0
     implementation("com.google.apis:google-api-services-calendar:_") //캘린더
     implementation("com.google.apis:google-api-services-sheets:_") //구글시트
-
-    //==================================================== AWS CDK (그냥 여기 둔다) ======================================================
-    api("software.amazon.awscdk:aws-cdk-lib:_")   //https://mvnrepository.com/artifact/software.amazon.awscdk/aws-cdk-lib
-    //api("software.constructs:constructs:10.1.278") //CDK 추가 빌딩블럭 -> 쓸만한게 없음
 
     //==================================================== OPEN-AI ======================================================
     implementation("com.aallam.openai:openai-client:_") //open API (챗GPT) kotlin client
@@ -81,7 +90,11 @@ dependencies {
     //==================================================== ktor-server (UI) ======================================================
     api("io.ktor:ktor-server-core-jvm:_")
     api("io.ktor:ktor-server-netty:_")
-    api("io.ktor:ktor-server-tests-jvm:_")  // 람다용 호출 때문에 testImplementation -> implementation 로 변경
+    api("io.ktor:ktor-server-tests-jvm:_") {
+        // 람다용 호출 때문에 testImplementation -> implementation 로 변경
+        exclude("io.ktor","ktor-client-apache")
+        exclude("commons-logging")
+    }
     api("io.ktor:ktor-server-html-builder-jvm:_") //kotlin html 간단 확장
     // 인증 3종세트
     api("io.ktor:ktor-server-auth-jvm:_")

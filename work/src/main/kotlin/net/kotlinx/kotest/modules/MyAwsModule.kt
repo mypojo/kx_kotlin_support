@@ -2,6 +2,7 @@ package net.kotlinx.kotest.modules
 
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsConfig
+import net.kotlinx.aws.javaSdkv2.AwsJavaSdkV2Client
 import net.kotlinx.aws.toAwsClient
 import net.kotlinx.koin.KoinModule
 import net.kotlinx.koin.Koins.koin
@@ -23,6 +24,10 @@ object MyAwsModule : KoinModule {
             single(named(profile)) {
                 log.debug { "[${profile}] AwsClient 생성.." }
                 koin<AwsConfig>(profile).toAwsClient()
+            }
+            single(named(profile)) {
+                log.debug { "[${profile}] AwsJavaSdkV2Client 생성.." }
+                AwsJavaSdkV2Client(koin<AwsConfig>(profile))
             }
         }
     }

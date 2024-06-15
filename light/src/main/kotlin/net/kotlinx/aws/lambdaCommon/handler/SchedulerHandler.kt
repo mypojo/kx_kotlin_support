@@ -10,6 +10,7 @@ import net.kotlinx.json.gson.GsonData
  * AWS 스케쥴러 핸들러
  * 파라메터 옵션조절 가능하지만 일단 바닐라로 사용함
  * */
+@Suppress("DuplicatedCode")
 class SchedulerHandler(
 
     private val block: suspend (groupName: String, scheduleName: String) -> Unit

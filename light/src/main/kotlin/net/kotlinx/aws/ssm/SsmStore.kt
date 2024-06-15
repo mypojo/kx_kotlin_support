@@ -18,7 +18,7 @@ class SsmStore(
 ) {
 
     /** 캐시값 우선 리턴 */
-    operator fun get(key: String): String? {
+    operator fun get(key: String): String {
         synchronized(this) {
             return cache.get(key) {
                 runBlocking {

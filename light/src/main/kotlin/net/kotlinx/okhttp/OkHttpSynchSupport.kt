@@ -9,7 +9,10 @@ import java.io.FileOutputStream
 //==================================================== 경고!! 대량처리의 경우 asynch 하게 사용할것 ======================================================
 
 /** 동기화 호출 (RMI) */
-fun OkHttpClient.fetch(okHttpReq: OkHttpReq): OkHttpResp = this.newCall(okHttpReq.build()).execute().use { OkHttpResp(okHttpReq, it).load() }
+fun OkHttpClient.fetch(req: OkHttpReq): OkHttpResp{
+    this.reqInterceptor.invoke(req)
+    return this.newCall(req.build()).execute().use { OkHttpResp(req, it).load() }
+}
 
 /** 동기화 호출 (DSL) */
 @Kdsl
@@ -17,10 +20,12 @@ fun OkHttpClient.fetch(block: OkHttpReq.() -> Unit): OkHttpResp = this.fetch(OkH
 
 /** 동기화 다운로드 */
 fun OkHttpClient.download(file: File, block: OkHttpReq.() -> Unit): OkHttpResp {
-    val okHttpReq = OkHttpReq().apply {
+    val req = OkHttpReq().apply {
         mediaType = OkHttpMediaType.IMAGE  //기본 미디어타입 변경해줌
     }.apply(block)
-    return this.newCall(okHttpReq.build()).execute().use { response ->
+    this.reqInterceptor.invoke(req)
+
+    return this.newCall(req.build()).execute().use { response ->
         //파일 다운로드
         if (response.code == 200) {
             response.body.let {
@@ -31,6 +36,6 @@ fun OkHttpClient.download(file: File, block: OkHttpReq.() -> Unit): OkHttpResp {
                 }
             }
         }
-        OkHttpResp(okHttpReq, response)
+        OkHttpResp(req, response)
     }
 }

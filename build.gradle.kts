@@ -1,5 +1,8 @@
 import net.kotlinx.gradle.commandGitCurrentBrabch
 import net.kotlinx.gradle.get
+import net.kotlinx.number.halfUp
+import net.kotlinx.number.toSiText
+import net.kotlinx.string.toTextGridPrint
 
 plugins {
     //코어 플러그인
@@ -78,14 +81,18 @@ allprojects {
         description = "AWS 람다 레이어용 전체 의존성 압축파일 생성"
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-        from(configurations.runtimeClasspath.get()) {
+        val files = configurations.runtimeClasspath.get()
+        from(files) {
             into("java/lib") //java 디렉토리 안에 연관 의존성 저장
         }
         archiveFileName = "allDependencies.zip"
-        doFirst {
-            println("용량확인..")
-            configurations.runtimeClasspath.get().sortedByDescending { it.length() }.take(30).forEach {
-                println(" -> ${it.length() / 1024 / 1024}  ${it.name}")
+        doLast {
+            val sumOf = files.sumOf { it.length() }
+            println("용량확인.. $archiveFile ->  ${sumOf.toSiText()}")
+            listOf("이름", "용량", "비율").toTextGridPrint {
+                files.sortedByDescending { it.length() }.take(100).map {
+                    arrayOf(it.name, it.length().toSiText(), "${(it.length() * 100.0 / sumOf).toBigDecimal().halfUp(2)}%")
+                }
             }
         }
     }
@@ -142,17 +149,3 @@ tasks.create("gradleTest") {
         check(currentBrabch == "master")
     }
 }
-
-///** space private 배포 (public 유료라서 일단 중단) */
-//publishing {
-//    repositories {
-//        maven {
-//            url = uri("https://maven.pkg.jetbrains.space/november/p/ost/kotlin-support")
-//            credentials {
-//                username = providers["jatbrains.space.maven.username"]
-//                password = providers["jatbrains.space.maven.password"]
-//            }
-//        }
-//    }
-//}
-

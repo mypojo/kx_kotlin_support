@@ -5,9 +5,8 @@ import aws.sdk.kotlin.services.dynamodb.model.Select
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.dynamo.*
 import net.kotlinx.domain.job.define.JobDefinition
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.number.ifTrue
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 /**
  * DDB 간단접근용 헬퍼
@@ -15,15 +14,19 @@ import org.koin.core.component.inject
  *
  * 기존코드 실사용은 일단 안함
  */
-class JobRepository : KoinComponent {
+class JobRepository : DynamoRepository<Job> {
 
-    private val aws1: AwsClient1 by inject()
+    override val aws by koinLazy<AwsClient1>()
 
     //==================================================== 기본 오버라이드 ======================================================
 
-    suspend fun putItem(job: Job) = job.persist.ifTrue { aws1.dynamo.putItem(job) }
-    suspend fun updateItem(job: Job, updateKeys: List<String>) = job.persist.ifTrue { aws1.dynamo.updateItem(job, updateKeys) }
-    suspend fun getItem(data: Job): Job? = aws1.dynamo.getItem(data)
+    override suspend fun putItem(job: Job) {
+        job.persist.ifTrue { aws.dynamo.putItem(job) }
+    }
+
+    override suspend fun updateItem(job: Job, updateKeys: List<String>) {
+        job.persist.ifTrue { aws.dynamo.updateItem(job, updateKeys) }
+    }
 
     //==================================================== 인덱스 쿼리 ======================================================
 
@@ -32,7 +35,7 @@ class JobRepository : KoinComponent {
         val param = Job(jobDef.jobPk) {
             this.jobStatus = jobStatus
         }
-        return aws1.dynamo.query(param) {
+        return aws.dynamo.query(param) {
             indexName = JobIndexUtil.GID_STATUS
             scanIndexForward = false //최근 데이터 우선
             select = Select.AllProjectedAttributes

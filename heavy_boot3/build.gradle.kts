@@ -32,6 +32,9 @@ dependencies {
 
     //==================================================== 스프링 부트 시리즈 (버전x) ======================================================
     //이하 api 로 정의시 하위 프로젝트에서 문제 발생함!.
+    implementation("org.springframework.boot:spring-boot-starter") {
+        exclude("commons-logging")
+    }
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-batch")
@@ -48,7 +51,10 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:_")
 
     //==================================================== 배치 관련 ======================================================
-    implementation("com.opencsv:opencsv:_") //의존성 문제 보고됨
+    implementation("com.opencsv:opencsv:_") {
+        //의존성 문제 보고됨
+        exclude("commons-logging")
+    }
 
 
 }

@@ -31,7 +31,7 @@ abstract class AbstractRequestHandler : RequestHandler<Map<String, Any>, Map<Str
      * 스탭스타트 복구이후.
      * 딱히 할거 없음
      *  */
-    override fun afterRestore(context: org.crac.Context<out Resource>?) {
+    override fun afterRestore(context: Context<out Resource>?) {
         log.info { "AWS snapstart afterRestore" }
     }
 

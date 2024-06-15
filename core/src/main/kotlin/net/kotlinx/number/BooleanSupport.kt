@@ -1,17 +1,22 @@
 package net.kotlinx.number
 
-/** 인라인 if 대체기 */
-inline fun Boolean.ifTrue(block: Boolean.() -> Unit): Boolean {
-    if (this) {
+/**
+ * 인라인 if 대체기
+ * false 이면 null이기 때문에 ?: 가능
+ *  */
+inline fun <T> Boolean.ifTrue(block: Boolean.() -> T): T? {
+    return if (this) {
         block()
+    } else {
+        null
     }
-    return this
 }
 
 /** 인라인 if 대체기 */
-inline fun Boolean.ifFalse(block: Boolean?.() -> Unit): Boolean {
-    if (!this) {
+inline fun <T> Boolean.ifFalse(block: Boolean?.() -> T): T? {
+    return if (!this) {
         block()
+    } else {
+        null
     }
-    return this
 }

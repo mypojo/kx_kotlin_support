@@ -8,17 +8,17 @@ import net.kotlinx.kotest.modules.BeSpecLight
 
 class EntityWithIdTest : BeSpecLight() {
 
+    class Poo : EntityWithId<Long>() {
+        var pooId: Long? = null
+        var name: String? = null
+        override fun getId(): Long = pooId!!
+    }
 
     init {
         initTest(KotestUtil.FAST)
 
         Given("Entity 간단검증") {
 
-            class Poo : EntityWithId<Long>() {
-                var pooId: Long? = null
-                var name: String? = null
-                override fun getId(): Long = pooId!!
-            }
 
             Then("기본구현 확인") {
 

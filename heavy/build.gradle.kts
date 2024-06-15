@@ -41,24 +41,26 @@ dependencies {
 //    api("aws.sdk.kotlin:auth:$awsVersion")
 //    api("aws.sdk.kotlin:regions:$awsVersion")
 
-        //==================================================== AWS 이벤트 스키마 바인딩에 필요 (안씀.. 너무 구림) ======================================================
+    //==================================================== AWS 이벤트 스키마 바인딩에 필요 (안씀.. 너무 구림) ======================================================
 //        implementation("com.fasterxml.jackson.core:jackson-core:2.10.0")
 //        implementation("com.fasterxml.jackson.core:jackson-databind:2.10.0")
 //        implementation("com.fasterxml.jackson.core:jackson-annotations:2.10.0")
 
-    //==================================================== AWS JAVA V2 client (레거시 호환) ======================================================
+    //==================================================== AWS JAVA V2 RDS IAM ======================================================
     val awsJavaV2Version: String by project
-    implementation("software.amazon.awssdk:apache-client:$awsJavaV2Version") //기본 HTTP 클라이언트 (쓰던거 씀)
-    implementation("software.amazon.awssdk:dynamodb:$awsJavaV2Version") //DDB 분산락 작용용
-    api("com.amazonaws:dynamodb-lock-client:1.2.0") //DDB 분산락 클라이언트 정발버전 (spring tx에서 같이 사용)
+    implementation("software.amazon.awssdk:rds:$awsJavaV2Version") //AWS SDK2 버전의 IAM 데이터소스 (코틀린 버전 없음)
+    implementation("software.amazon.awssdk:sts:$awsJavaV2Version") //IAM 토큰 발행시 필요
+
+    //==================================================== AWS CDK  ======================================================
+    api("software.amazon.awscdk:aws-cdk-lib:_")   //https://mvnrepository.com/artifact/software.amazon.awscdk/aws-cdk-lib
+    //api("software.constructs:constructs:10.1.278") //CDK 추가 빌딩블럭 -> 쓸만한게 없음
 
     //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
     api("org.jetbrains.exposed:exposed:_") //라이트 ORM
-    api("org.jetbrains.kotlinx:dataframe:_") //주피터 노트북 코틀린버전.  리프레시 버전 적용
-
-    //==================================================== AWS JAVA V2 RDS IAM ======================================================
-    implementation("software.amazon.awssdk:rds:$awsJavaV2Version") //AWS SDK2 버전의 IAM 데이터소스 (코틀린 버전 없음)
-    implementation("software.amazon.awssdk:sts:$awsJavaV2Version") //IAM 토큰 발행시 필요
+    api("org.jetbrains.kotlinx:dataframe:_") {
+        //주피터 노트북 코틀린버전.  리프레시 버전 적용
+        exclude("commons-logging")
+    }
 
     //==================================================== RDB ======================================================
     //implementation("software.aws.rds:aws-mysql-jdbc:1.1.8") //aws 장애조치기능이 담긴 mysql 드라이버 & 모든 mysql과 호환가능. https://github.com/awslabs/aws-mysql-jdbc <-- 클러스터 설정등이 필요

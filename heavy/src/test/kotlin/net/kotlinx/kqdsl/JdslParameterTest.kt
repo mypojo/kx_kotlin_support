@@ -1,4 +1,4 @@
-package net.kotlinx.jdsl
+package net.kotlinx.kqdsl
 
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest

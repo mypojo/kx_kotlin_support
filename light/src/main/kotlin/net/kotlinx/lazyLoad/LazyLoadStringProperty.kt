@@ -13,26 +13,32 @@ import kotlin.reflect.KProperty
  *
  * 일반 lazy의 리셋 가능한 버전은 생략.. (니즈가 없고 복잡함)
  * */
-class LazyLoadStringProperty {
-
-    /** 설정된 값 */
-    lateinit var initValue: String
+class LazyLoadStringProperty(
+    /**
+     * 설정된 값.
+     * 런타임 수정도 가능하다.
+     * */
+    private var initValue: String? = null,
+    /** 프로파일 정보 */
+    private val profile: String? = null,
+) {
 
     /** 설정된 값을 바탕으로 가져온 실제 값 */
     private var resultValue: String? = null
 
     operator fun getValue(thisRef: Any?, property: KProperty<*>): String {
+        checkNotNull(initValue)
         synchronized(this) {
             if (resultValue == null) {
-                val aws = Koins.koin<AwsClient1>()
+                val aws = Koins.koin<AwsClient1>(profile)
                 resultValue = when {
 
                     /** 요건 표준 AWS 접미어 */
-                    initValue.startsWith(ProtocolPrefix.SSM) -> {
-                        val ssmUrl = initValue.removePrefix(ProtocolPrefix.SSM)
+                    initValue!!.startsWith(ProtocolPrefix.SSM) -> {
+                        val ssmUrl = initValue!!.removePrefix(ProtocolPrefix.SSM)
                         try {
                             log.debug { "SSM [$ssmUrl] 데이터 로드..." }
-                            aws.ssmStore[ssmUrl]!!
+                            aws.ssmStore[ssmUrl]
                         } catch (e: Exception) {
                             throw IllegalArgumentException("ssmStore $ssmUrl not found")
                         }
@@ -63,7 +69,7 @@ class LazyLoadStringProperty {
  * 간단 초기화
  * 그냥 일반 문자열에 붙여도 괜찮음!
  *  */
-fun lazyLoadString(initValue: String? = null): LazyLoadStringProperty = LazyLoadStringProperty().also { p -> initValue?.let { p.initValue = initValue } }
+fun lazyLoadString(initValue: String? = null, profile: String? = null): LazyLoadStringProperty = LazyLoadStringProperty(initValue, profile)
 
 /** AWS 파라메터 스토어로부터 로드 */
-fun lazyLoadStringSsm(initValue: String): LazyLoadStringProperty = lazyLoadString("${ProtocolPrefix.SSM}${initValue}")
+fun lazyLoadStringSsm(initValue: String, profile: String? = null): LazyLoadStringProperty = lazyLoadString("${ProtocolPrefix.SSM}${initValue}", profile)
