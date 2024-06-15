@@ -49,38 +49,32 @@ object Koins {
      * */
     inline fun <reified T : Any> koins(): List<T> = KoinPlatformTools.defaultContext().get().getAll<T>()
 
-    /**
-     * koin 시작
-     * ex) Koins.startup(BeSpecLight.MODULES)
-     * */
-    fun startup(modules: List<Module>) {
-        startKoin {
-            modules(modules)
-        }
-    }
+//    /**
+//     * koin 시작
+//     * ex) Koins.startup(BeSpecLight.MODULES)
+//     * */
+//    fun startup(modules: List<Module>) {
+//        startKoin {
+//            modules(modules)
+//        }
+//    }
 
     /**
-     * 한번만 시작함
+     * 한번만 시작함 & 재시작 없음
      * ex) 전체 테스트 수행
-     *  */
-    fun startupOnlyOnce(modules: List<Module>) {
-        if (!KoinPlatformTools.exist()) {
-            startKoin {
-                modules(modules)
-            }
-        }
-    }
-
-    /**
-     * 간단하게 인라인으로 시작 & 재시작 없음
      * ex) 그래들 스크립트 등
+     * synchronized 는 혹시나 해서 넣어줬음
      *  */
-    fun startupOnlyOnce(block: Module.() -> Unit) {
-        if (!KoinPlatformTools.exist()) {
-            startKoin {
-                modules(module {
-                    block()
-                })
+    fun startupOnlyOnce(modules: List<Module> = emptyList(), block: Module.() -> Unit = {}) {
+        synchronized(this) {
+            if (!KoinPlatformTools.exist()) {
+                startKoin {
+                    modules(
+                        modules + module {
+                            block()
+                        }
+                    )
+                }
             }
         }
     }
@@ -89,12 +83,16 @@ object Koins {
      * 간단하게 인라인으로 시작 & 재시작함
      * ex) CDK 스크립트
      *  */
-    fun startupReset(block: Module.() -> Unit) {
-        stopKoin()
-        startKoin {
-            modules(module {
-                block()
-            })
+    fun startupReset(modules: List<Module> = emptyList(), block: Module.() -> Unit = {}) {
+        synchronized(this) {
+            stopKoin()
+            startKoin {
+                modules(
+                    modules + module {
+                        block()
+                    }
+                )
+            }
         }
     }
 

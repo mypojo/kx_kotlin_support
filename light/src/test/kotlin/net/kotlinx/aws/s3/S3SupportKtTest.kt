@@ -8,12 +8,12 @@ import net.kotlinx.file.slash
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.logback.LogBackUtil
 import net.kotlinx.string.print
 import net.kotlinx.system.ResourceHolder
 
-internal class S3SupportKtTest : BeSpecLight() {
+internal class S3SupportKtTest : BeSpecHeavy() {
 
     private val profileName by lazy { findProfile28() }
     private val aws by lazy { koin<AwsClient1>(profileName) }

@@ -21,7 +21,7 @@ import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import java.util.concurrent.atomic.AtomicLong
 
-class KoinsTest : BeSpecLight() {
+class KoinsTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.FAST)

@@ -6,9 +6,9 @@ import com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotificatio
 import io.mockk.mockk
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 
-internal class FirehoseKrHandlerTest : BeSpecLight() {
+internal class FirehoseKrHandlerTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.IGNORE)

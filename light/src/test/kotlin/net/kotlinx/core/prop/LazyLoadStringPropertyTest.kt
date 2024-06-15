@@ -6,10 +6,10 @@ import io.kotest.matchers.shouldNotBe
 import mu.KotlinLogging
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.lazyLoad.lazyLoadStringSsm
 
-class LazyLoadStringPropertyTest : BeSpecLight() {
+class LazyLoadStringPropertyTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.SLOW)

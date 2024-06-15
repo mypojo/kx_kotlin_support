@@ -3,12 +3,12 @@ package net.kotlinx.domain.job
 import net.kotlinx.domain.job.define.JobDefinitionRepository
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.kotest.modules.job.DemoJob
 import net.kotlinx.reflect.Bean
 import net.kotlinx.string.print
 
-class JobTest : BeSpecLight() {
+class JobTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.FAST)

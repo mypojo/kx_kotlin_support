@@ -3,11 +3,11 @@ package net.kotlinx.notion
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.string.toTextGrid
 import net.kotlinx.time.TimeFormat
 
-class NotionPageBlockClientTest : BeSpecLight() {
+class NotionPageBlockClientTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.SLOW)

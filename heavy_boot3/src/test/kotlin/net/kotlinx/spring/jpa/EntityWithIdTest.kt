@@ -4,9 +4,9 @@ import io.kotest.matchers.shouldBe
 import net.kotlinx.domain.jpa.EntityWithId
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 
-class EntityWithIdTest : BeSpecLight() {
+class EntityWithIdTest : BeSpecHeavy() {
 
     class Poo : EntityWithId<Long>() {
         var pooId: Long? = null

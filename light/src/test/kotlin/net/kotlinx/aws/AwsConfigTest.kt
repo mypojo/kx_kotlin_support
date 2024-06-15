@@ -1,8 +1,8 @@
 package net.kotlinx.aws
 
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 
-class AwsConfigTest : BeSpecLight() {
+class AwsConfigTest : BeSpecHeavy() {
 
 
 

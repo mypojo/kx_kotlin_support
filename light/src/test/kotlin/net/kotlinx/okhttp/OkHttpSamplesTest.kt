@@ -3,11 +3,11 @@ package net.kotlinx.okhttp
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.time.TimeStart
 import net.kotlinx.time.measureTimeString
 
-class OkHttpSamplesTest : BeSpecLight() {
+class OkHttpSamplesTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.IGNORE)

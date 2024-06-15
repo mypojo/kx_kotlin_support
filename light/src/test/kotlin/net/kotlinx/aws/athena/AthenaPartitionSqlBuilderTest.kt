@@ -3,12 +3,12 @@ package net.kotlinx.aws.athena
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.time.toTimeString
 import net.kotlinx.time.toYmd
 import java.time.LocalDate
 
-internal class AthenaPartitionSqlBuilderTest : BeSpecLight() {
+internal class AthenaPartitionSqlBuilderTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.IGNORE)

@@ -5,13 +5,13 @@ import net.kotlinx.aws.AwsClient1
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.number.toSiText
 import net.kotlinx.regex.RegexSet
 import net.kotlinx.string.print
 import net.kotlinx.string.removeFrom
 
-internal class AthenaModuleTest : BeSpecLight() {
+internal class AthenaModuleTest : BeSpecHeavy() {
 
     private val profileName by lazy { findProfile99() }
 

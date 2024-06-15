@@ -2,10 +2,10 @@ package net.kotlinx.aws.cloudfront
 
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import java.io.File
 
-class CloudfrontUtilTest : BeSpecLight() {
+class CloudfrontUtilTest : BeSpecHeavy() {
 
 
     init {

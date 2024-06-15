@@ -3,7 +3,7 @@ package net.kotlinx.file
 import io.kotest.matchers.longs.shouldBeGreaterThan
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.lazyLoad.LazyLoadFileProperty
 import net.kotlinx.lazyLoad.lazyLoad
 import net.kotlinx.number.toSiText
@@ -12,7 +12,7 @@ import net.kotlinx.system.ResourceHolder
 import java.io.File
 
 
-class LazyLoadFilePropertyTest : BeSpecLight() {
+class LazyLoadFilePropertyTest : BeSpecHeavy() {
 
     private val profileName by lazy { findProfile28() }
 

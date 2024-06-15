@@ -10,7 +10,7 @@ import net.kotlinx.koin.Koins.koin
 import net.kotlinx.komoran.KomoClient
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.okhttp.HttpDomainConverter
 import net.kotlinx.okhttp.fetch
 import net.kotlinx.string.toTextGrid
@@ -18,7 +18,7 @@ import net.kotlinx.system.ResourceHolder
 import okhttp3.OkHttpClient
 
 
-class KomoClientTest : BeSpecLight() {
+class KomoClientTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.IGNORE)

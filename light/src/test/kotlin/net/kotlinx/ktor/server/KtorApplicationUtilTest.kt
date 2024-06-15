@@ -10,12 +10,12 @@ import io.ktor.server.testing.*
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.kotest.modules.ktor.KtorMember
 import net.kotlinx.kotest.modules.ktor.KtorMemberConverter
 import net.kotlinx.kotest.modules.ktor.allModules
 
-class KtorApplicationUtilTest : BeSpecLight() {
+class KtorApplicationUtilTest : BeSpecHeavy() {
 
     private val ktor by koinLazy<HttpClient>()
     private val memberConverter by koinLazy<KtorMemberConverter>()

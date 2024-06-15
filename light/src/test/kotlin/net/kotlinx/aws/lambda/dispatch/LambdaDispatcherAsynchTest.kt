@@ -8,10 +8,10 @@ import net.kotlinx.aws.lambda.dispatch.asynch.SchedulerEventPublisher
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.kotest.modules.lambdaDispatcher.LambdaDispatcherListener
 
-class LambdaDispatcherAsynchTest : BeSpecLight() {
+class LambdaDispatcherAsynchTest : BeSpecHeavy() {
 
     private val dispatcher by koinLazy<LambdaDispatcher>()
     private val listener by koinLazy<LambdaDispatcherListener>()

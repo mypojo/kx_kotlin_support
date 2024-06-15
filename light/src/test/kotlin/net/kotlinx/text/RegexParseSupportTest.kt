@@ -3,13 +3,13 @@ package net.kotlinx.text
 import io.kotest.matchers.shouldBe
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.okhttp.fetch
 import net.kotlinx.regex.extract
 import net.kotlinx.regex.find
 import okhttp3.OkHttpClient
 
-class RegexParseSupportTest : BeSpecLight() {
+class RegexParseSupportTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.SLOW)

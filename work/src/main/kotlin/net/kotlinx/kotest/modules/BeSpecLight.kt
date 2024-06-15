@@ -5,6 +5,9 @@ import net.kotlinx.kotest.modules.job.JobModule
 import net.kotlinx.kotest.modules.ktor.KtorModule
 import net.kotlinx.kotest.modules.lambdaDispatcher.LambdaDispatcherModule
 
+/**
+ * 거쳐가는 용도임으로 직접 사용 금지
+ * */
 abstract class BeSpecLight : BeSpecKoin(MODULES) {
 
     companion object {

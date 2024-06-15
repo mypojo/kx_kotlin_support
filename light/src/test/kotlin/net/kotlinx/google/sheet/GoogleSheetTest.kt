@@ -4,9 +4,9 @@ import net.kotlinx.google.GoogleService
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 
-internal class GoogleSheetTest : BeSpecLight() {
+internal class GoogleSheetTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.SLOW)

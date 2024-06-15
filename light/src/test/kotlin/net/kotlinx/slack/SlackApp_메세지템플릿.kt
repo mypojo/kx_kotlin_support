@@ -4,10 +4,10 @@ import net.kotlinx.domain.developer.DeveloperData
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.slack.msg.SlackSimpleAlert
 
-class SlackApp_메세지템플릿 : BeSpecLight() {
+class SlackApp_메세지템플릿 : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.SLOW)

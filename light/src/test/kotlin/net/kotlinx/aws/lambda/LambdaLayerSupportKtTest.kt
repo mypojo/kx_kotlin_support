@@ -4,9 +4,9 @@ import net.kotlinx.aws.AwsClient1
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 
-class LambdaLayerSupportKtTest : BeSpecLight() {
+class LambdaLayerSupportKtTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.IGNORE)

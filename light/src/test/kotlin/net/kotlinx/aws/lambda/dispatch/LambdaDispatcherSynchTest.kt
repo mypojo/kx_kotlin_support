@@ -8,13 +8,13 @@ import net.kotlinx.aws.lambda.LambdaUrlMap
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.kotest.modules.job.DemoJob
 import net.kotlinx.okhttp.buildUrl
 import net.kotlinx.reflect.name
 import okhttp3.HttpUrl.Companion.toHttpUrl
 
-class LambdaDispatcherSynchTest : BeSpecLight() {
+class LambdaDispatcherSynchTest : BeSpecHeavy() {
 
     private val dispatcher by koinLazy<LambdaDispatcher>()
 

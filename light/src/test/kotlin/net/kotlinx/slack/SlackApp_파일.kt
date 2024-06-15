@@ -5,12 +5,12 @@ import net.kotlinx.file.slash
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.number.toLocalDateTime
 import net.kotlinx.system.ResourceHolder
 import net.kotlinx.time.toKr01
 
-class SlackApp_파일 : BeSpecLight() {
+class SlackApp_파일 : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.SLOW)

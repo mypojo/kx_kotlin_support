@@ -4,11 +4,11 @@ import io.kotest.matchers.shouldBe
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.kotest.modules.ktor.KtorMember
 import net.kotlinx.kotest.modules.ktor.KtorMemberConverter
 
-class KtorJwtTest : BeSpecLight(){
+class KtorJwtTest : BeSpecHeavy() {
 
     private val memberConverter by koinLazy<KtorMemberConverter>()
 

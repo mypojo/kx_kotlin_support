@@ -3,10 +3,10 @@ package net.kotlinx.groupBy
 
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 
 
-class GroupByTest : BeSpecLight() {
+class GroupByTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.IGNORE)

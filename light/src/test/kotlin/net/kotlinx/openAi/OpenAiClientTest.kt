@@ -3,9 +3,9 @@ package net.kotlinx.openAi
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 
-class OpenAiClientTest : BeSpecLight() {
+class OpenAiClientTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.IGNORE)

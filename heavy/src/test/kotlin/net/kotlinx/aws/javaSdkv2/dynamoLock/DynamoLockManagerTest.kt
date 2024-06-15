@@ -16,7 +16,6 @@ class DynamoLockManagerTest : BeSpecHeavy() {
         initTest(KotestUtil.PROJECT)
 
         Given("DynamoLockModule") {
-            log.warn { "리소스 세팅되면 하기" }
 
             Then("락 테스트") {
 

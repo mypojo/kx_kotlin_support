@@ -10,7 +10,7 @@ import net.kotlinx.file.slashDir
 import net.kotlinx.guava.fromJsonList
 import net.kotlinx.json.gson.GsonSet
 import net.kotlinx.koin.Koins
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.okhttp.OkHttpSamples
 import net.kotlinx.system.ResourceHolder
 import net.kotlinx.time.toYmdF01
@@ -21,7 +21,7 @@ private val log = KotlinLogging.logger {}
 
 fun main() {
 
-    Koins.startup(BeSpecLight.MODULES)
+    Koins.startupOnlyOnce(BeSpecHeavy.MODULES)
 
     val workspace = ResourceHolder.getWorkspace().slashDir("AWS비용")
 

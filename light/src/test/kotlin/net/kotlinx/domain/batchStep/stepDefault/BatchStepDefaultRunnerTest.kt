@@ -9,10 +9,10 @@ import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.reflect.name
 
-class BatchStepDefaultRunnerTest : BeSpecLight() {
+class BatchStepDefaultRunnerTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.IGNORE)

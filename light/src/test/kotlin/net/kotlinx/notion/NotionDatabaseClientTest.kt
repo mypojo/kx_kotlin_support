@@ -4,11 +4,11 @@ import io.kotest.matchers.ints.shouldBeGreaterThan
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.string.print
 import java.time.LocalDateTime
 
-internal class NotionDatabaseClientTest : BeSpecLight() {
+internal class NotionDatabaseClientTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.SLOW)

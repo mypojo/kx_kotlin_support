@@ -5,12 +5,12 @@ import net.kotlinx.file.slash
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.system.ResourceHolder
 import okhttp3.OkHttpClient
 
 
-internal class OkHttpSupportTest : BeSpecLight() {
+internal class OkHttpSupportTest : BeSpecHeavy() {
 
     private val client by koinLazy<OkHttpClient>()
 

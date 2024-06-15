@@ -5,9 +5,9 @@ import com.slack.api.model.kotlin_extension.block.withBlocks
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 
-class SlackApp_블록 : BeSpecLight() {
+class SlackApp_블록 : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.SLOW)

@@ -4,9 +4,9 @@ import net.kotlinx.aws.AwsClient1
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 
-internal class S3PresignSupportTest : BeSpecLight() {
+internal class S3PresignSupportTest : BeSpecHeavy() {
 
     private val profileName by lazy { findProfile28() }
     private val aws by lazy { koin<AwsClient1>(profileName) }

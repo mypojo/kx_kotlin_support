@@ -4,11 +4,11 @@ import net.kotlinx.concurrent.delay
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
-import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.kotest.modules.BeSpecHeavy
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.seconds
 
-internal class GoogleCalendarTest : BeSpecLight() {
+internal class GoogleCalendarTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.SLOW)
