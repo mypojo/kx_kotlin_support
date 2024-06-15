@@ -41,6 +41,7 @@ object Aws1Module : KoinModule {
                 val profile = pair.first
                 single(named(profile)) { AwsConfig(profileName = profile, inputAwsId = pair.second) }
                 single(named(profile)) {
+                    //thread safe 확인 필요
                     log.debug { "[${profile}] AwsClient1 생성.." }
                     koin<AwsConfig>(profile).toAwsClient1()
                 }
