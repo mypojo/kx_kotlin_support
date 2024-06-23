@@ -8,6 +8,7 @@ import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
+import software.amazon.awssdk.utils.http.SdkHttpUtils
 import java.util.concurrent.Callable
 import kotlin.time.Duration.Companion.seconds
 
@@ -31,6 +32,7 @@ class ResourceLockManagerTest : BeSpecHeavy() {
                 jobs.map { job ->
                     Callable {
                         runBlocking {
+                            SdkHttpUtils.parseNonProxyHostsEnvironmentVariable()
                             val req = ResourceLockReq {
                                 resourcePk = lockName
                                 lockCnt = job.second

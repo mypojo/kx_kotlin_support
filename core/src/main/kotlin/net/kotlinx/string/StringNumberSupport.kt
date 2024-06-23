@@ -1,9 +1,11 @@
 package net.kotlinx.string
 
+import net.kotlinx.core.PackageNameSupport
 import net.kotlinx.number.halfUp
 import net.kotlinx.regex.RegexSet
 import java.math.BigDecimal
 
+object StringNumberSupport : PackageNameSupport
 
 /**
  * 간단 숫자변환

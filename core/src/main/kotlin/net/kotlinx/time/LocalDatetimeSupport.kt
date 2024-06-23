@@ -1,5 +1,6 @@
 package net.kotlinx.time
 
+import net.kotlinx.core.PackageNameSupport
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
@@ -7,21 +8,22 @@ import java.time.ZoneId
 import java.util.*
 import kotlin.time.toKotlinDuration
 
+object LocalDatetimeSupport : PackageNameSupport
 
 /** 한국 시간으로 포매팅 (로그 확인용) - 기본 시분초까지 */
-inline fun LocalDateTime.toKr01(): String = TimeFormat.YMDHMS_K01[this]
+fun LocalDateTime.toKr01(): String = TimeFormat.YMDHMS_K01[this]
 
 /** 한국 시간으로 포매팅 (로그 확인용) - 시분까지 */
-inline fun LocalDateTime.toYmdhmKr01(): String = TimeFormat.YMDHM_K01[this]
+fun LocalDateTime.toYmdhmKr01(): String = TimeFormat.YMDHM_K01[this]
 
 /** 한국 시간으로 포매팅 (로그 확인용) - 기본 시분초까지 */
 inline fun LocalDateTime.toIso(): String = TimeFormat.ISO[this]
 
 /** YMD  */
-inline fun LocalDateTime.toYmd(): String = TimeFormat.YMD[this]
+fun LocalDateTime.toYmd(): String = TimeFormat.YMD[this]
 
 /** YMDHM_F01  */
-inline fun LocalDateTime.toF01(): String = TimeFormat.YMDHM_F01[this]
+fun LocalDateTime.toF01(): String = TimeFormat.YMDHM_F01[this]
 
 /**
  * this 값을 시작시간으로 보고 둘 사이의 간격을 구함.

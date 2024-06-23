@@ -1,14 +1,20 @@
 package net.kotlinx.kotest.mockk
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
-import io.mockk.every
-import io.mockk.mockkObject
-import io.mockk.mockkStatic
+import io.mockk.*
+import net.kotlinx.collection.MapSupport
+import net.kotlinx.collection.toQueryString
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
+import net.kotlinx.string.StringNumberSupport
 import net.kotlinx.string.toBigDecimal2
 import net.kotlinx.system.DeploymentType
+import net.kotlinx.time.LocalDatetimeSupport
+import net.kotlinx.time.toIso
+import net.kotlinx.time.toKr01
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 /**
@@ -41,17 +47,61 @@ class MockkEtcTest : BeSpecLog() {
             }
 
 
-            Then("확장함수 모킹") {
+            When("확장함수 모킹") {
 
-                log.trace { "컴파일되면 이름 변경됨 StringNumberSupport.kt -> StringNumberSupportKt" }
-                mockkStatic("net.kotlinx.string.StringNumberSupportKt")
+                Then("정상 모킹됨") {
+                    log.trace { "컴파일되면 이름 변경됨 StringNumberSupport.kt -> StringNumberSupportKt" }
+                    mockkStatic(StringNumberSupport.packageName())
 
-                every { "333".toBigDecimal2() } returns 777.toBigDecimal()
+                    every { "333".toBigDecimal2() } returns BigDecimal("777")
 
-                "333".toBigDecimal2() shouldBe 777.toBigDecimal() //모킹됨
-                "444".toBigDecimal2() shouldBe 444.toBigDecimal() //모킹되지 않음
+                    "333".toBigDecimal2() shouldBe 777.toBigDecimal() //모킹됨
+                    "444".toBigDecimal2() shouldBe 444.toBigDecimal() //모킹되지 않음
+                }
+
+                Then("모킹 풀면 돌아감") {
+                    unmockkStatic(StringNumberSupport.packageName())
+                    "333".toBigDecimal2() shouldBe 333.toBigDecimal() //모킹됨
+                }
+
+                When("모킹 대상은 객체임") {
+                    mockkStatic(MapSupport.packageName())
+
+                    val 모킹적용 = mapOf(
+                        "a" to "b"
+                    )
+                    val 모킹적용x = mapOf(
+                        "a" to "x"
+                    )
+
+                    Then("모킹 적용건만 변경됨") {
+                        모킹적용.toQueryString() shouldBe "a=b"
+                        every { 모킹적용.toQueryString() } returns "몰라요"
+
+                        모킹적용.toQueryString() shouldBe "몰라요"
+                        모킹적용x.toQueryString() shouldBe "a=x"
+                    }
+
+                    unmockkStatic(MapSupport.packageName())
+
+                    Then("모킹 풀면 동일해짐") {
+                        모킹적용.toQueryString() shouldBe "a=b"
+                    }
+                }
+                Then("inline 모킹은 안된다!! 주의!!") {
+                    val mock = LocalDateTime.now()
+                    mockkStatic(LocalDatetimeSupport.packageName())
+                    every { mock.toKr01() } returns "몰라요1"
+                    mock.toKr01() shouldBe "몰라요1"
+
+                    shouldThrow<MockKException> {
+                        every { mock.toIso() } returns "몰라요2"
+                    }
+                    unmockkStatic(LocalDatetimeSupport.packageName())
+                }
 
             }
+
         }
     }
 

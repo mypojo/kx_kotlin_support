@@ -1,7 +1,9 @@
 package net.kotlinx.collection
 
+import net.kotlinx.core.PackageNameSupport
 import net.kotlinx.string.encodeUrl
 
+object MapSupport : PackageNameSupport
 
 /**
  * map을 펼쳐서 생성자에 넣을 수 있게 해준다. map에 데이터를 추가해서 새로운 map을 만들때 사용

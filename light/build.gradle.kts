@@ -48,10 +48,9 @@ dependencies {
     api("io.github.crac:org-crac:_")  //스냅스타트 후크 (클래스 로딩용)
 
     //==================================================== AWS JAVA V2 client (레거시 호환) ======================================================
-    val awsJavaV2Version: String by project
-    implementation("software.amazon.awssdk:apache-client:$awsJavaV2Version") //기본 HTTP 클라이언트. okhttp 없음.. ㅠ https://docs.aws.amazon.com/ko_kr/sdk-for-java/latest/developer-guide/http-configuration-url.html
-    implementation("software.amazon.awssdk:dynamodb:$awsJavaV2Version") //DDB 분산락 작용용
-    api("com.amazonaws:dynamodb-lock-client:1.2.0") {
+    implementation("software.amazon.awssdk:apache-client:_") //기본 HTTP 클라이언트. okhttp 없음.. ㅠ https://docs.aws.amazon.com/ko_kr/sdk-for-java/latest/developer-guide/http-configuration-url.html
+    implementation("software.amazon.awssdk:dynamodb:_") //DDB 분산락 작용용
+    api("com.amazonaws:dynamodb-lock-client:_") {
         //DDB 분산락 클라이언트 정발버전 (spring tx에서 같이 사용)
         exclude("commons-logging")
     }
