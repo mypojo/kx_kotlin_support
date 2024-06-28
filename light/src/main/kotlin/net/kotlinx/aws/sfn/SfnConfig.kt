@@ -21,7 +21,7 @@ class SfnConfig(private val awsConfig: AwsConfig) {
     /** 콘솔 링크 */
     fun consoleLink(stateMachineName: String, uuid: String): String {
         val executionArn = executionArn(stateMachineName, uuid)
-        return "https://$awsConfig.region.console.aws.amazon.com/states/home?region=$${awsConfig.region}#/v2/executions/details/$executionArn"
+        return "https://${awsConfig.region}.console.aws.amazon.com/states/home?region=$${awsConfig.region}#/v2/executions/details/$executionArn"
     }
 
     companion object {

@@ -14,10 +14,12 @@ object LambdaDispatcherModule : KoinModule {
     private val log = KotlinLogging.logger {}
 
     override fun moduleConfig(): Module = module {
-        single { LambdaDispatcherListener() }
         single {
-            log.debug { "LambdaDispatcher 로드.." }
-            koin<EventBus>().register(koin<LambdaDispatcherListener>())
+            log.debug { "LambdaDispatcher 이벤트 등록.." }
+            val eventBus = koin<EventBus>()
+            eventBus.register(LambdaDispatcherDefaultListener())
+            eventBus.register(LambdaDispatcherAwsEventListener())
+            eventBus.register(LambdaDispatcherSnsListener())
             LambdaDispatcher()
         }
 

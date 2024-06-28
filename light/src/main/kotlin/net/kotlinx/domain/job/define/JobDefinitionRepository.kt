@@ -5,7 +5,6 @@ import net.kotlinx.koin.Koins
 import net.kotlinx.reflect.name
 import org.koin.core.qualifier.named
 import org.koin.mp.KoinPlatformTools
-import kotlin.reflect.KClass
 
 object JobDefinitionRepository {
 
@@ -13,7 +12,7 @@ object JobDefinitionRepository {
      * 잡 정의 가져오기
      * ex) 단위테스트 실행
      *  */
-    fun findById(kclass: KClass<out JobTasklet>): JobDefinition = findById(kclass.name())
+    inline fun <reified T : JobTasklet> find(): JobDefinition = findById(T::class.name())
 
     /**
      * 잡 정의 가져오기
@@ -25,4 +24,6 @@ object JobDefinitionRepository {
     fun list(): List<JobDefinition> = Koins.koins<JobDefinition>()
 
 }
+
+
 

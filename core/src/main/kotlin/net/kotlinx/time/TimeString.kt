@@ -58,7 +58,7 @@ data class TimeStart(
 }
 
 /** 밀리초로 간주하고 문자로 변환 (로그 확인용) */
-inline fun Long.toTimeString(): TimeString = TimeString(this)
+fun Long.toTimeString(): TimeString = TimeString(this)
 
 /** suspend 지원하는 시간 측정기 */
 fun measureTimeString(block: suspend () -> Unit): TimeString = measureTimeMillis {

@@ -4,26 +4,27 @@ import com.amazonaws.services.lambda.runtime.Context
 import com.google.common.eventbus.EventBus
 import mu.KotlinLogging
 import net.kotlinx.aws.lambda.LambdaUtil
+import net.kotlinx.aws.lambda.dispatch.AwsLambdaEvent
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatch
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.koin.Koins.koinLazy
 
 
-data class SnsNotification(val subject: String, val message: String)
+data class SnsNotification(val subject: String, val message: String) : AwsLambdaEvent
 
-data class SnsEcsTaskStateChange(val group: String, val stoppedReason: String)
+data class SnsEcsTaskStateChange(val group: String, val stoppedReason: String) : AwsLambdaEvent
 
-data class SnsSfnFail(val jobName: String, val cause: String)
+data class SnsSfnFail(val jobName: String, val cause: String) : AwsLambdaEvent
 
-data class SnsPipeline(val pipeline: String, val state: String)
+data class SnsPipeline(val pipeline: String, val state: String) : AwsLambdaEvent
 
 /**
  * val msg = "${data["Namespace"]} ${data["MetricName"]}\n${sns["NewStateReason"]}"
  * */
-data class SnsTrigger(val alarmName: String, val data: GsonData)
+data class SnsTrigger(val alarmName: String, val data: GsonData) : AwsLambdaEvent
 
 /** 등록 안된거  */
-data class SnsUnknown(val data: GsonData)
+data class SnsUnknown(val data: GsonData) : AwsLambdaEvent
 
 
 /**

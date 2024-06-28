@@ -8,7 +8,7 @@ import net.kotlinx.kotest.modules.job.DemoJob
 import net.kotlinx.reflect.Bean
 import net.kotlinx.string.print
 
-class JobTest : BeSpecHeavy() {
+class JobDefinitionRepositoryTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.FAST)
@@ -19,7 +19,7 @@ class JobTest : BeSpecHeavy() {
                 JobDefinitionRepository.list().print()
             }
 
-            val jobDefinition = JobDefinitionRepository.findById(DemoJob::class)
+            val jobDefinition = JobDefinitionRepository.find<DemoJob>()
             Then("잡 단일 조회") {
                 Bean(jobDefinition).toTextGrid().print()
             }

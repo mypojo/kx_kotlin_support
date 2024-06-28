@@ -74,9 +74,12 @@ dependencies {
         exclude("commons-logging")
     }
 
-    implementation("com.google.apis:google-api-services-oauth2:_") //구글 기본세트  v2-rev151-1.25.0
-    implementation("com.google.apis:google-api-services-calendar:_") //캘린더
-    implementation("com.google.apis:google-api-services-sheets:_") //구글시트
+    //구글 시리즈는 순서가 이상해서, 리프레시 버전 사용하지 않는다!! 어차피 2020년 이후로 업데이트 거의 안해줌
+    //client 사용 버전이 과도하게 낮다..  이때문에 jib 쓸때 오류남. 별도로 추가해줄것.
+    //implementation("com.google.api-client:google-api-client:2.6.0") //구글 Jib 빌드시 사용.
+    implementation("com.google.apis:google-api-services-oauth2:v2-rev157-1.25.0") //구글 기본세트
+    implementation("com.google.apis:google-api-services-calendar:v3-rev411-1.25.0") //캘린더
+    implementation("com.google.apis:google-api-services-sheets:v4-rev614-1.18.0-rc") //구글시트
 
     //==================================================== OPEN-AI ======================================================
     implementation("com.aallam.openai:openai-client:_") //open API (챗GPT) kotlin client

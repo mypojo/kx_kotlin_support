@@ -1,11 +1,11 @@
 package net.kotlinx.awscdk.component
 
-import net.kotlinx.awscdk.util.HostedZoneUtil
 import net.kotlinx.awscdk.util.Route53Util
 import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.RemovalPolicy
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.certificatemanager.Certificate
+import software.amazon.awscdk.services.route53.IHostedZone
 
 
 /**
@@ -24,9 +24,9 @@ class CdkStaticHost {
 
     /**
      * 루트 도메인
-     * ex) kotlinx.net
+     * ex) HostedZoneUtil.load(stack, "kotlinx.net")
      *  */
-    lateinit var rootDomain: String
+    lateinit var hostedZone: IHostedZone
 
     /**
      * 호스팅에 사용할 도메인
@@ -39,6 +39,8 @@ class CdkStaticHost {
 
     /**
      * 북미 인증서 ARN
+     * 보통 서버 생성은 로컬리즌이지만 인증서는 북미에 있기때문에  SSM 작동아 안된다.
+     * 미리 로드해서 스택을 실행하거나 하드코딩 할것
      * */
     lateinit var certArn: String
 
@@ -66,9 +68,7 @@ class CdkStaticHost {
             iCertificate = Certificate.fromCertificateArn(stack, "hosting-${hostDomain}", certArn)
             create(stack)
         }
-
-        val zone = HostedZoneUtil.load(stack, rootDomain)
-        Route53Util.arecord(stack, zone, hostDomain, cloudFront.toRecordTarget())
+        Route53Util.arecord(stack, hostedZone, hostDomain, cloudFront.toRecordTarget())
 
     }
 }

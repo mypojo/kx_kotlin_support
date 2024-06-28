@@ -44,4 +44,17 @@ object Route53Util {
         )
     }
 
+    /**
+     * C레코드 달아주기
+     * @param domain ex) abc.kotlinx.net
+     * @param target ex) ALB 주소
+     * */
+    fun crecord(stack: Stack, iZone: IHostedZone, domain: String, target: String) {
+        CnameRecord.Builder.create(stack, "${domain}-crecord")
+            .recordName(domain)
+            .domainName(target)
+            .zone(iZone)
+            .build()
+    }
+
 }

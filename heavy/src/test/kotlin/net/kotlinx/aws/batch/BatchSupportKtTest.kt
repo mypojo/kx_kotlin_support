@@ -11,13 +11,16 @@ import net.kotlinx.string.print
 
 class BatchSupportKtTest : BeSpecHeavy() {
 
+
     init {
         initTest(KotestUtil.IGNORE)
 
         Given("BatchSupportKt") {
-            log.warn { "잡 올린데가 없음" }
-            val aws by koinLazy<AwsClient>()
-            Then("잡 리스팅") {
+
+            val profile = findProfile97()
+            val aws by koinLazy<AwsClient>(profile)
+
+            xThen("잡 리스팅") {
                 aws.batch.listJobs {
                     this.jobQueue = "sin-queue_spot-prod"
                     this.jobStatus = JobStatus.Running

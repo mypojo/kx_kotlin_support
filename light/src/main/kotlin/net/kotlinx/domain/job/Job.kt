@@ -77,7 +77,7 @@ class Job(override val pk: String, override val sk: String) : DynamoData {
     constructor() : this("", "")
 
     /** 조회 조건 입력시 */
-    constructor(pk: String, sk: String = "", block: Job.() -> Unit) : this(pk, sk) {
+    constructor(pk: String, sk: String = "", block: Job.() -> Unit = {}) : this(pk, sk) {
         block(this)
     }
 

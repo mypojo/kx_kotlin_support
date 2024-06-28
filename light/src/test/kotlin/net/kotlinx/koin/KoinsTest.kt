@@ -186,7 +186,6 @@ class KoinsTest : BeSpecHeavy() {
                     })
                 }
                 Then("각 컨텍스트에서 별도의 앱 호출가능") {
-
                     val oldContext = koin<KoinData1>("ex01")
                     oldContext.name shouldBe "테스트1-ex01"
 
@@ -194,10 +193,6 @@ class KoinsTest : BeSpecHeavy() {
                     newContext.name shouldBe "격리된 컨텍스트"
                 }
             }
-
-        }
-
-        Given("스코프 분리") {
 
         }
 

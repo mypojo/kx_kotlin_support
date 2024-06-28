@@ -6,6 +6,7 @@ import net.kotlinx.awscdk.util.TagUtil
 import net.kotlinx.system.DeploymentType
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.batch.CfnJobDefinition
+import software.amazon.awscdk.services.batch.CfnJobDefinition.RuntimePlatformProperty
 import software.amazon.awscdk.services.batch.CfnJobDefinitionProps
 import software.amazon.awscdk.services.ecs.EcrImage
 import software.amazon.awscdk.services.iam.IRole
@@ -43,6 +44,20 @@ class CdkBatchJobDefinition(
     var attemptDurationSeconds: Long = 12.hours.inWholeSeconds
 
     /**
+     * X86_64 or ARM64
+     * ARM64 로 빌드시 java 실행이 안될 수 있음!
+     *  */
+    var cpuArchitecture: String = "X86_64"
+
+    /**
+     * 환경변수. 여기에 더 추가할것
+     * ex) += Spring.ENV_PROFILE to "default,dev"
+     *  */
+    var environment: Map<String, String> = mapOf(
+        DeploymentType::class.simpleName!! to deploymentType.name
+    )
+
+    /**
      * 이름 중복으로 작업 진행이 안되는경우
      * 1. 주석 처리해서 돌림 ->   Job definitions off 됨
      * 2. 주석 풀고 다시 돌림 -> Job definitions 버전 올라가면서 활성화됨
@@ -58,11 +73,15 @@ class CdkBatchJobDefinition(
             .containerProperties(
                 CfnJobDefinition.ContainerPropertiesProperty.builder()
                     .fargatePlatformConfiguration(CfnJobDefinition.FargatePlatformConfigurationProperty.builder().platformVersion("1.4.0").build())
+                    .runtimePlatform(
+                        RuntimePlatformProperty.builder()
+                            .operatingSystemFamily("LINUX")
+                            .cpuArchitecture(cpuArchitecture)
+                            .build()
+                    )
                     .command(command)
                     .environment(
-                        listOf(
-                            CfnJobDefinition.EnvironmentProperty.builder().name(DeploymentType::class.simpleName).value(deploymentType.name).build(),
-                        )
+                        environment.entries.map { e -> CfnJobDefinition.EnvironmentProperty.builder().name(e.key).value(e.value).build() }
                     )
                     .image(ecrImage.imageName)
                     .resourceRequirements(

@@ -59,4 +59,14 @@ object AwsNaming {
     /** 여러가지 용도로 사용되는 잡의 sk.  */
     const val JOB_SK = "jobSk"
 
+    /** 스프링 관련 */
+    object Spring {
+
+        /** JVM 파라메터 프로파일 키 */
+        const val JVM_PROFILE = "-Dspring.profiles.active"
+
+        /** 환경변수 프로파일 키*/
+        const val ENV_PROFILE = "SPRING_PROFILES_ACTIVE"
+    }
+
 }

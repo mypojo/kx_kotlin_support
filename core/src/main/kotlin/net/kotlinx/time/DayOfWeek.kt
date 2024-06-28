@@ -35,4 +35,4 @@ enum class DayOfWeek(
     }
 }
 
-inline fun LocalDate.toDayOfWeek() = DayOfWeek.from(this.dayOfWeek.value)
+fun LocalDate.toDayOfWeek() = DayOfWeek.from(this.dayOfWeek.value)

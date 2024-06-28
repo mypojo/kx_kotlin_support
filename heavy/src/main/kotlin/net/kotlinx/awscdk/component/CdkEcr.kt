@@ -15,7 +15,7 @@ class CdkEcr(
     val expires: Duration = Duration.days(30),
     val maxImageCount: Int = 200,
     val imageTagMutability: TagMutability = TagMutability.IMMUTABLE,
-    val tagPrefixList: List<String> = DeploymentType.entries.map { it.name },
+    val tagPrefixList: List<String> = DeploymentType.entries.map { it.name.lowercase() },
 ) : CdkEnum {
 
     override val logicalName: String
@@ -47,11 +47,16 @@ class CdkEcr(
     }
 
     fun load(stack: Stack): CdkEcr {
-        iRepository = Repository.fromRepositoryName(stack, "ecr-$logicalName", logicalName)
+        if (!this::iRepository.isInitialized) {
+            iRepository = Repository.fromRepositoryName(stack, "ecr-$logicalName", logicalName)
+        }
         return this
     }
 
-    fun imageFromStackByTag(tag: String): EcrImage {
+    /**
+     * latest 확인필요
+     * */
+    fun imageFromStackByTag(tag: String = "latest"): EcrImage {
         return EcrImage.fromEcrRepository(iRepository, tag)
     }
 

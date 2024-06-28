@@ -31,12 +31,5 @@ object SpringHolder {
         return authenticationToken.principal as T
     }
 
-    //==================================================== 커스텀 ======================================================
-
-    /**
-     * 늦은 초기화 이후 사용할때.
-     * */
-    lateinit var BEANS: SpringBootBeans
-
 
 }

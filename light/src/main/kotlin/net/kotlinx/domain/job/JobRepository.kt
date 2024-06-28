@@ -30,7 +30,10 @@ class JobRepository : DynamoRepository<Job> {
 
     //==================================================== 인덱스 쿼리 ======================================================
 
-    /** 최근 잡 확인용 임시 메소드  */
+    /**
+     * 최근 잡 확인용 임시 메소드
+     * ex) 최근 실패잡 10건
+     *  */
     suspend fun findLastJobs(jobDef: JobDefinition, jobStatus: JobStatus, block: DynamoQuery.() -> Unit = {}): List<Job> {
         val param = Job(jobDef.jobPk) {
             this.jobStatus = jobStatus
@@ -47,6 +50,18 @@ class JobRepository : DynamoRepository<Job> {
                     ":${Job::jobStatus.name}" to AttributeValue.S(job.jobStatus.name)
                 )
             }
+            block()
+        }
+    }
+
+    /**
+     * 잡 조회 with paging
+     * */
+    suspend fun find(jobDef: JobDefinition, block: DynamoQuery.() -> Unit = {}): List<Job> {
+        val param = Job(jobDef.jobPk)
+        return aws.dynamo.query(param) {
+            scanIndexForward = false //최근 데이터 우선
+            select = Select.AllProjectedAttributes
             block()
         }
     }

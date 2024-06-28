@@ -3,10 +3,14 @@ package net.kotlinx.aws.lambda.dispatch.asynch
 import com.amazonaws.services.lambda.runtime.Context
 import com.google.common.eventbus.EventBus
 import mu.KotlinLogging
+import net.kotlinx.aws.lambda.dispatch.AwsLambdaEvent
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatch
 import net.kotlinx.guava.postEvent
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.koin.Koins.koinLazy
+
+
+data class CodeDeployHookEvent(val lifecycleEventHookExecutionId: String, val deploymentId: String) : AwsLambdaEvent
 
 
 /**
@@ -39,7 +43,3 @@ class CodeDeployHookEventPublisher : LambdaDispatch {
 
 }
 
-data class CodeDeployHookEvent(
-    val lifecycleEventHookExecutionId: String,
-    val deploymentId: String,
-)

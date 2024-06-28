@@ -2,6 +2,7 @@ package net.kotlinx.aws.lambda.dispatch.asynch
 
 import com.amazonaws.services.lambda.runtime.Context
 import com.google.common.eventbus.EventBus
+import net.kotlinx.aws.lambda.dispatch.AwsLambdaEvent
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatch
 import net.kotlinx.guava.postEvent
 import net.kotlinx.json.gson.GsonData
@@ -9,7 +10,7 @@ import net.kotlinx.koin.Koins.koinLazy
 
 
 /** SQS 본문 내용으로 트리거 */
-data class SqsEvent(val body: GsonData)
+data class SqsEvent(val body: GsonData) : AwsLambdaEvent
 
 /**
  * SQS에 데이터 입력 -> 람다 트리거

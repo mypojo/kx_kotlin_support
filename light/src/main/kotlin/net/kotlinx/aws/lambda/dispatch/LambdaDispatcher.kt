@@ -40,10 +40,10 @@ interface LambdaDispatchLogic {
 }
 
 /** 실패 이벤트 */
-data class LambdaDispatcherFailEvent(val gsonData: GsonData, val e: Throwable)
+data class LambdaDispatcherFailEvent(val gsonData: GsonData, val e: Throwable) : AwsLambdaEvent
 
 /** 매칭 결과가 하나도 없을때 이벤트 */
-data class LambdaDispatcherDeadEvent(val gsonData: GsonData)
+data class LambdaDispatcherDeadEvent(val gsonData: GsonData) : AwsLambdaEvent
 
 /**
  * 모든 요청을 한곳에서 디스패치함

@@ -22,7 +22,7 @@ fun Project.command(command: String): String {
 //==================================================== 명령어 샘플 ======================================================
 
 /** 현재 브랜치를 가져온다 */
-fun Project.commandGitCurrentBrabch(): String = this.command("git rev-parse --abbrev-ref HEAD").replace("\n", "")
+fun Project.commandGitCurrentBrabch(): String = this.command("git rev-parse --abbrev-ref HEAD").replace("\n", "").trim()
 
 /**
  * S3를 동기화한다

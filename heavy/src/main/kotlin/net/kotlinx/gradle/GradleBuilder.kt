@@ -49,9 +49,9 @@ class GradleBuilder {
     val profileCommand = if (AwsInstanceTypeUtil.IS_LOCAL && profileName != null) "--profile $profileName" else ""
 
     /**
-     * 기본 설정과는 다른 리즌에도 배포할 수 있어서 별도 지정
+     * 기본 설정과는 다른 리즌에도 배포할 수 있어서 var 로 지정
      *  */
-    lateinit var awsConfig: AwsConfig
+    var awsConfig: AwsConfig = koin<AwsConfig>()
 
     /** 배포 타입 */
     var deploymentType: DeploymentType = DeploymentType.load()
@@ -103,7 +103,7 @@ class GradleBuilder {
     //==================================================== ECR 간단 배포 (실제배포는 jib) ======================================================
 
     /** ECR 태그이름 생성기 */
-    var ecrTagName: () -> String = { "${deploymentType}-${TimeFormat.YMDHM_F02.get()}" }
+    var ecrTagName: () -> String = { "${suff}_${TimeFormat.YMDHM_F02.get()}" }
 
     /** ECR 로그인 주소 생성 */
     fun ecrLoginCommand(repositoryName: String): String {

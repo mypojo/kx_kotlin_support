@@ -32,10 +32,5 @@ object ParameterUtil {
      * */
     fun getParameter(stack: Stack, paramId: String): String = StringParameter.valueFromLookup(stack, paramId)
 
-//    return StringParameter.fromStringParameterAttributes(
-//    stack, paramId,
-//    StringParameterAttributes.builder().parameterName(paramId).build()
-//    ).stringValue
-
 
 }

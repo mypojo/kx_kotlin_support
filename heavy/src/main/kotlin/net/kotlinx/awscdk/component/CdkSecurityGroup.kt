@@ -4,15 +4,14 @@ import net.kotlinx.awscdk.CdkEnum
 import net.kotlinx.awscdk.util.TagUtil
 import net.kotlinx.regex.RegexSet
 import net.kotlinx.string.retainFrom
-import net.kotlinx.system.DeploymentType
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.ec2.*
 
 /** enum 설정 */
 class CdkSecurityGroup(
     val sgName: String,
-    /** ID 하드코딩된 맵 (캐시 등의 이유로 name으로 조회가 안될때) */
-    var idMap: Map<DeploymentType, String> = emptyMap()
+//    /** ID 하드코딩된 맵 (캐시 등의 이유로 name으로 조회가 안될때) */
+//    var idMap: Map<DeploymentType, String> = emptyMap()
 ) : CdkEnum {
 
     override val logicalName: String
@@ -42,24 +41,29 @@ class CdkSecurityGroup(
     }
 
     /**
-     * 생성된 SG를 가져온다. name으로 검색해서 가져옴
+     * 생성된 SG를 가져온다. name으로 검색해서 가져옴 -> 잘 안됨..
      * 이거로 안되면 ID 하드코딩으로 찾으면 됨
      *  */
     fun load(stack: Stack, vpc: IVpc): CdkSecurityGroup {
-        val queryString = "*${logicalName}**".retainFrom(RegexSet.ALPAH_NUMERIC.HAN).lowercase() //이거 이름으로 캐싱되니 주의! 삭제된게 자꾸 나온다면 검색어를 수정해야함
-        iSecurityGroup = SecurityGroup.fromLookupByName(stack, sgName, queryString, vpc)
+        if (!this::iSecurityGroup.isInitialized) {
+            val queryString = "*${logicalName}**".retainFrom(RegexSet.ALPAH_NUMERIC.HAN).lowercase() //이거 이름으로 캐싱되니 주의! 삭제된게 자꾸 나온다면 검색어를 수정해야함
+            iSecurityGroup = SecurityGroup.fromLookupByName(stack, sgName, queryString, vpc)
+        }
         return this
     }
 
     /** 네임으로 못찾을경우 임시 인식용 */
-    fun load(stack: Stack, id: String): ISecurityGroup {
-        return SecurityGroup.fromSecurityGroupId(stack, "sg_${this.sgName}-${deploymentType.name.lowercase()}", id)
+    fun load(stack: Stack, id: String): CdkSecurityGroup {
+        if (!this::iSecurityGroup.isInitialized) {
+            iSecurityGroup = SecurityGroup.fromSecurityGroupId(stack, "sg_${this.sgName}-${deploymentType.name.lowercase()}", id)
+        }
+        return this
     }
 
-    /** 네임으로 못찾을경우 임시 인식용 */
-    fun loadById(stack: Stack): ISecurityGroup {
-        return load(stack, idMap[deploymentType]!!)
-    }
+//    /** 네임으로 못찾을경우 임시 인식용 */
+//    fun loadById(stack: Stack): ISecurityGroup {
+//        return load(stack, idMap[deploymentType]!!)
+//    }
 
 //    /**
 //     * 순환참조 제거용
