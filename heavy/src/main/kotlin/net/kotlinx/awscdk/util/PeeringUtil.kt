@@ -38,7 +38,7 @@ object PeeringUtil {
         TagUtil.tag(peer, deploymentType)
     }
 
-    fun peering(stack: Stack, name: String,vpcId:String, ) {
+    fun peering(stack: Stack, name: String, vpcId: String) {
         peering(stack, name) {
             vpcId(vpcId)
             peerOwnerId("992365606987")
