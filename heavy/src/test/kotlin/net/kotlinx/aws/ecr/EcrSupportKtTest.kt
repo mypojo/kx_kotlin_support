@@ -14,8 +14,8 @@ internal class EcrSupportKtTest : BeSpecHeavy() {
 
         Given("EcrSupportKt") {
             val aws by koinLazy<AwsClient>()
-            val profileName = aws.awsConfig.profileName!!
-            xThen("태그로 특정 이미지 조회") {
+            val profileName = aws.awsConfig.profileName
+            Then("태그로 특정 이미지 조회") {
                 val image = aws.ecr.findByTag("$profileName-job", "prod")
                 image.imageId shouldNotBe null
             }

@@ -5,6 +5,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.*
 import net.kotlinx.collection.MapSupport
 import net.kotlinx.collection.toQueryString
+import net.kotlinx.core.PackageNameSupport
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -12,10 +13,10 @@ import net.kotlinx.string.StringNumberSupport
 import net.kotlinx.string.toBigDecimal2
 import net.kotlinx.system.DeploymentType
 import net.kotlinx.time.LocalDatetimeSupport
-import net.kotlinx.time.toIso
-import net.kotlinx.time.toKr01
 import java.math.BigDecimal
 import java.time.LocalDateTime
+
+object MockTest : PackageNameSupport
 
 /**
  *  Mockk 테스트 샘플
@@ -88,21 +89,31 @@ class MockkEtcTest : BeSpecLog() {
                         모킹적용.toQueryString() shouldBe "a=b"
                     }
                 }
-                Then("inline 모킹은 안된다!! 주의!!") {
-                    val mock = LocalDateTime.now()
-                    mockkStatic(LocalDatetimeSupport.packageName())
-                    every { mock.toKr01() } returns "몰라요1"
-                    mock.toKr01() shouldBe "몰라요1"
 
-                    shouldThrow<MockKException> {
-                        every { mock.toIso() } returns "몰라요2"
+                When("inline 함수 모킹") {
+
+                    mockkStatic(MockkTestSupport.packageName())
+
+                    Then("인라인 모킹하면 에러남") {
+                        shouldThrow<MockKException> {
+                            every { "xx".toMockkInlineString1() } returns "몰라요1"
+                        }
                     }
+
+                    Then("인라인 아닌거는 정상작동함") {
+                        every { "xx".toMockkInlineString2() } returns "몰라요2"
+                        "xx".toMockkInlineString2() shouldBe "몰라요2"
+                        "aa".toMockkInlineString2() shouldBe "인라인2"
+                    }
+
                     unmockkStatic(LocalDatetimeSupport.packageName())
                 }
 
             }
 
         }
+
+
     }
 
 }

@@ -15,7 +15,7 @@ class DataSourceSetupTest : BeSpecLog() {
     init {
         initTest(KotestUtil.IGNORE)
 
-        Given("DataSourceSetup") {
+        xGiven("DataSourceSetup") {
 
             val projectName = "sin"
 

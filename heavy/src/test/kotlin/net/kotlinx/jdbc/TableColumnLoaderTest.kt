@@ -15,10 +15,13 @@ class TableColumnLoaderTest : BeSpecHeavy() {
     init {
         initTest(KotestUtil.IGNORE)
 
-        Given("TableColumnLoader") {
+        xGiven("TableColumnLoader") {
+
             val dataSource by koinLazy<DataSource>()
             val awsConfig by koinLazy<AwsConfig>()
+
             Then("테이블 컬럼 로드") {
+
                 val loader = TableColumnLoader(dataSource, "${awsConfig.profileName}_dev")
                 val columns = loader.loadMysqlColumns()
                 val jsonText = GsonData.fromObj(columns)

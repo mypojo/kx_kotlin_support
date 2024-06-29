@@ -29,7 +29,7 @@ abstract class BeSpecLog : BehaviorSpec() {
         if (!SystemSeparator.IS_GRADLE) {
             //그래들 환경이 아니라면 테스트 중으로 간주한다.
             val log = KotlinLogging.logger {}
-            log.debug { "개별 테스트 작동 -> kotest TESTING TAG 추가.." }
+            log.warn { "개별 테스트 작동 -> kotest TESTING TAG 추가.." }
             tags(KotestUtil.TESTING)
         }
 

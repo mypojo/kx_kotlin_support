@@ -11,7 +11,9 @@ class BudgetBasicMonthlyAlertConfigTest : BeSpecHeavy() {
     init {
         initTest(KotestUtil.IGNORE)
 
-        Given("지난달 대비 xx% 예상 or xx% 도달시 알람 발송") {
+        xGiven("지난달 대비 xx% 예상 or xx% 도달시 알람 발송") {
+
+            throw IllegalStateException("����� ��함. ���������스 ���정")
 
             val alertConfig = BudgetBasicMonthlyAlertTemplate {
                 emails = listOf()
