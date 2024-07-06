@@ -14,6 +14,8 @@ import net.kotlinx.concurrent.coroutineExecute
  */
 class ResourceItemRepository(override val aws: AwsClient1) : DynamoRepository<ResourceItem> {
 
+    override val emptyData: ResourceItem = ResourceItem("", "")
+
     /** 사용중 여부 업데이트 */
     suspend fun updateItemInUse(items: List<ResourceItem>, use: Boolean) {
         items.map {
@@ -36,6 +38,5 @@ class ResourceItemRepository(override val aws: AwsClient1) : DynamoRepository<Re
             ResourceItem::cause,
         ).map { it.name }
     }
-
 
 }

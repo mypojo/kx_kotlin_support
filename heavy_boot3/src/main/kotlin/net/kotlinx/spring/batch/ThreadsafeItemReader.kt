@@ -14,7 +14,7 @@ class ThreadsafeItemReader<T>(
 
     /** 이부분을 스래드 세이프하게 변경  */
     @Synchronized
-    override fun read(): T {
+    override fun read(): T? {
         return delegate.read()
     }
 }

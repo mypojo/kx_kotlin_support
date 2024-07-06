@@ -62,13 +62,3 @@ fun HTML.setDefault(title: String, block: HEAD.() -> Unit = {}) {
         block()
     }
 }
-
-/**
- * 공백문자(nbsp) 삽입.
- * unsafe 가 없는경우 태그가 아니라 문자로 입력됨
- *  */
-fun HTMLTag.space() {
-    unsafe {
-        +Entities.nbsp.text
-    }
-}

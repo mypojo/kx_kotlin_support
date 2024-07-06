@@ -60,7 +60,9 @@ class CdkSqs(val name: String) : CdkEnum {
     }
 
     fun load(stack: Stack): CdkSqs {
-        iQueue = Queue.fromQueueArn(stack, "sqs-$logicalName", "arn:aws:sqs:ap-northeast-2:${project.awsId}:${logicalName}")
+        if (!this::iQueue.isInitialized) {
+            iQueue = Queue.fromQueueArn(stack, "sqs-$logicalName", "arn:aws:sqs:ap-northeast-2:${project.awsId}:${logicalName}")
+        }
         return this
     }
 

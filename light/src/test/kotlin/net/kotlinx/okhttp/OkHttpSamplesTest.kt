@@ -13,6 +13,12 @@ class OkHttpSamplesTest : BeSpecHeavy() {
         initTest(KotestUtil.IGNORE)
 
         Given("OkHttpSamples") {
+
+
+            Then("단건 테스트") {
+                println(OkHttpSamples.dollarWonFetch())
+            }
+
             Then("달러-원 가져오기 (동기화)") {
                 printName()
                 val timeString = measureTimeString {

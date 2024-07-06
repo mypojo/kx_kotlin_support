@@ -28,7 +28,7 @@ class SmStore(
                         this.secretId = key
                     }.secretString
                 }
-            }!!
+            }
         }
     }
 

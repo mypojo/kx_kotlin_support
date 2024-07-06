@@ -11,7 +11,8 @@ import net.kotlinx.guava.fromJsonList
 import net.kotlinx.json.gson.GsonSet
 import net.kotlinx.koin.Koins
 import net.kotlinx.kotest.modules.BeSpecHeavy
-import net.kotlinx.okhttp.OkHttpSamples
+import net.kotlinx.lazyLoad.lazyLoadStringSsm
+import net.kotlinx.openApi.KoreaeximClient
 import net.kotlinx.system.ResourceHolder
 import net.kotlinx.time.toYmdF01
 import java.io.File
@@ -67,8 +68,14 @@ fun main() {
 
     val lines = GsonSet.GSON.fromJsonList<CostExplorerLine>(dataFile.readText())
 
+    val wonDoller = runBlocking {
+        val secret by lazyLoadStringSsm("/api/koreaexim/key")
+        val client = KoreaeximClient(secret)
+        client.dollarWon()
+    }
+
     CostExplorerExcel {
-        won = runBlocking { OkHttpSamples.dollarWonAwait() }
+        won = wonDoller.toDouble()
         costDatas = lines
         groupByProject()
         eachProject()

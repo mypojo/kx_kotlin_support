@@ -3,6 +3,7 @@ import net.kotlinx.gradle.get
 import net.kotlinx.number.halfUp
 import net.kotlinx.number.toSiText
 import net.kotlinx.string.toTextGridPrint
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     //코어 플러그인
@@ -22,8 +23,12 @@ allprojects {
 
     //자바 xx로 타게팅
     tasks.compileKotlin {
-        kotlinOptions {
-            jvmTarget = providers["jvmTarget"]
+//        kotlinOptions {
+//            jvmTarget = providers["jvmTarget"]
+//        }
+        compilerOptions {
+            freeCompilerArgs.add("-Xjsr305=strict") //null값 체크 strict
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 

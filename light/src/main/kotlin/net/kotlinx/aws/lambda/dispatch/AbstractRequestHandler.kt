@@ -14,6 +14,8 @@ import org.crac.Resource
  * 스냅스타트 적용시
  * init 에서 Core.getGlobalContext().register(this) 해줄것
  * beforeCheckpoint 에서 koin 초기화 & 스냅스타트 로직 실행
+ *
+ * 도커 사용시 공식 이미지를 사용해야함! 그게 아니라면 의존성 추가 필요!
  */
 abstract class AbstractRequestHandler : RequestHandler<Map<String, Any>, Map<String, Any>>, Resource {
 

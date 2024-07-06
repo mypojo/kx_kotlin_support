@@ -9,21 +9,19 @@ import net.kotlinx.domain.job.define.JobDefinitionRepository
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.reflect.newInstance
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.time.LocalDateTime
 
 /**
  * 실제 실행서버의 로컬 머신 기준으로 job을 실행한다.
  * 여기에서는 개발 환경을 구분하지 않는다.
  */
-class JobLocalExecutor : KoinComponent {
+class JobLocalExecutor(val profile: String? = null) {
 
     private val log = KotlinLogging.logger {}
 
-    private val jobRepository: JobRepository by inject()
-    private val eventBus: EventBus by inject()
-    private val instanceMetadata by koinLazy<AwsInstanceMetadata>()
+    private val eventBus: EventBus by koinLazy()
+    private val jobRepository by koinLazy<JobRepository>(profile)
+    private val instanceMetadata by koinLazy<AwsInstanceMetadata>(profile)
 
     /**
      * @return pk 확인용 키 문자욜
@@ -58,7 +56,7 @@ class JobLocalExecutor : KoinComponent {
             //실서버 강제호출의 경우 알람 전송
             if (job.instanceMetadata!!.instanceType == AwsInstanceType.BATCH) {
                 if (job.jobExeFrom == JobExeFrom.ADMIN) {
-                    eventBus.post(JobEvent(job, msgs = listOf("강제실행 정상 종료")))
+                    eventBus.post(JobSuccessEvent(job))
                 }
             }
         } catch (e: Throwable) {
@@ -71,7 +69,7 @@ class JobLocalExecutor : KoinComponent {
                 job.endTime = LocalDateTime.now()
                 jobRepository.updateItem(job, JobUpdateSet.ERROR)
             }
-            eventBus.post(JobEvent(job, err = e))
+            eventBus.post(JobFailEvent(job, e))
             throw JobException(e) //예외를 반드시 던져야 한다.
         } finally {
             JobHolder.JOB.remove()

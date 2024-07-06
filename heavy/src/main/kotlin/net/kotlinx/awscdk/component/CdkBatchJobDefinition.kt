@@ -80,9 +80,7 @@ class CdkBatchJobDefinition(
                             .build()
                     )
                     .command(command)
-                    .environment(
-                        environment.entries.map { e -> CfnJobDefinition.EnvironmentProperty.builder().name(e.key).value(e.value).build() }
-                    )
+                    .environment(environment.entries.map { e -> CfnJobDefinition.EnvironmentProperty.builder().name(e.key).value(e.value).build() })
                     .image(ecrImage.imageName)
                     .resourceRequirements(
                         listOf(

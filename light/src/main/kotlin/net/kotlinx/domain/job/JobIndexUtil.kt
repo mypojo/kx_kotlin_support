@@ -17,5 +17,8 @@ object JobIndexUtil {
      */
     const val LID_MEMBER = "lidx-memberReqTime"
 
+    /** 인덱스 키값 */
+    val LID_MEMBER_NAME = LID_MEMBER.substringAfterLast("-")
+
 
 }

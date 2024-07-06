@@ -16,7 +16,8 @@ class FileDownloadView(
     val file: File,
     val deleteAfter: Boolean = true
 ) : View {
-    override fun render(model: MutableMap<String, *>, request: HttpServletRequest, response: HttpServletResponse) {
+
+    override fun render(model: MutableMap<String, *>?, request: HttpServletRequest, response: HttpServletResponse) {
         response.setFileName(file.name)
         response.setContentLengthLong(file.length())
         file.inputStream().use { ins ->

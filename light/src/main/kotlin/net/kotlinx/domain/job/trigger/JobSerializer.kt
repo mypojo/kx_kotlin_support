@@ -10,21 +10,20 @@ import net.kotlinx.domain.job.define.JobDefinitionRepository
 import net.kotlinx.domain.job.define.JobExecuteType
 import net.kotlinx.id.IdGenerator
 import net.kotlinx.json.gson.GsonData
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.string.enumValueOf
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 /**
  * 원격으로 잡을 실행하기 위한 잡 설정(json) <-> job 객체 변환
  */
-class JobSerializer : KoinComponent {
+class JobSerializer(val profile: String? = null) {
 
     private val log = KotlinLogging.logger {}
 
-    private val idGenerator: IdGenerator by inject()
-    private val jobRepository: JobRepository by inject()
+    private val idGenerator by koinLazy<IdGenerator>()
+    private val jobRepository by koinLazy<JobRepository>(profile)
 
     /**
      * 필요시 오버라이드

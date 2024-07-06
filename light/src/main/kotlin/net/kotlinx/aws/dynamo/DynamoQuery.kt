@@ -4,12 +4,20 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.QueryRequest
 import aws.sdk.kotlin.services.dynamodb.model.Select
 import mu.KotlinLogging
+import net.kotlinx.core.Kdsl
 
 /**
  * 각 항목들은 상속해서 사용
- * 상세 쿼리는 QueryConditional 참고
+ *
+ * 상세 문법은 아래 참고
+ * https://docs.aws.amazon.com/ko_kr/amazondynamodb/latest/developerguide/Query.KeyConditionExpressions.html
  * */
-class DynamoQuery(block: DynamoQuery.() -> Unit) {
+class DynamoQuery {
+
+    @Kdsl
+    constructor(block: DynamoQuery.() -> Unit = {}) {
+        apply(block)
+    }
 
     lateinit var param: Map<String, AttributeValue>
     lateinit var query: String
@@ -31,12 +39,14 @@ class DynamoQuery(block: DynamoQuery.() -> Unit) {
     /** 인덱스 이름 */
     var indexName: String? = null
 
-    /** 역순 조회하려면 false */
-    var scanIndexForward: Boolean? = true
+    /**
+     * 디폴트로 역순 조회인 false
+     * 최신데이터를 원하는경우가 대부분임
+     *  */
+    var scanIndexForward: Boolean? = false
 
-    init {
-        block(this)
-    }
+    /** 페이징에서 받은 last key */
+    var exclusiveStartKey: Map<String, AttributeValue>? = null
 
     /** 수정해서 사용 */
     fun toQueryRequest(data: DynamoData): QueryRequest {
@@ -58,6 +68,7 @@ class DynamoQuery(block: DynamoQuery.() -> Unit) {
             this.select = this@DynamoQuery.select
             this.indexName = this@DynamoQuery.indexName
             this.scanIndexForward = this@DynamoQuery.scanIndexForward
+            this.exclusiveStartKey = this@DynamoQuery.exclusiveStartKey
         }
     }
 

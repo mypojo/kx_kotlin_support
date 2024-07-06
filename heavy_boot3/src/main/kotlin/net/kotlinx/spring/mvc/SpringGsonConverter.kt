@@ -23,7 +23,7 @@ class SpringGsonConverter(
     }
 
     /** 템플릿으로 한번 감싸서 리턴한다 */
-    override fun writeInternal(obj: Any, type: Type, writer: Writer) {
+    override fun writeInternal(obj: Any, type: Type?, writer: Writer) {
         val converted = block(obj)
         if (type is ParameterizedType) {
             gson.toJson(converted, type, writer)

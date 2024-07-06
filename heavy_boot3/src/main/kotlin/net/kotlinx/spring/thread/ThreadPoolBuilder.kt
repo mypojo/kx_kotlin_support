@@ -72,7 +72,7 @@ class ThreadPoolBuilder(
         setAwaitTerminationSeconds(awaitTerminationSeconds)
         setErrorHandler(errorHandler)
         setThreadGroupName("$name-")
-        threadNamePrefix = name
+        setThreadNamePrefix(name)
         isDaemon = true //혹시나 메모리 문제로 추가..
         block(this)
         afterPropertiesSet()

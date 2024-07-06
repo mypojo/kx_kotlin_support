@@ -42,7 +42,9 @@ class CdkIamRole {
 
     /** 권한 가져옴 (다른 스택에서) */
     fun load(stack: Stack): CdkIamRole {
-        iRole = Role.fromRoleName(stack, this.roleName, this.roleName)
+        if (!this::iRole.isInitialized) {
+            iRole = Role.fromRoleName(stack, this.roleName, this.roleName)
+        }
         return this
     }
 
@@ -93,7 +95,7 @@ class CdkIamRole {
 }
 
 /** 자주 사용되는거 모음 */
-object CdkManagedPolicySet{
+object CdkManagedPolicySet {
 
     const val SCHEDULER = "AmazonEventBridgeSchedulerFullAccess"
     const val SSM = "AmazonSSMManagedInstanceCore"

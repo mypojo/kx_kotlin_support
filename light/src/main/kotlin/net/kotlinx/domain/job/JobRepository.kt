@@ -14,9 +14,15 @@ import net.kotlinx.number.ifTrue
  *
  * 기존코드 실사용은 일단 안함
  */
-class JobRepository : DynamoRepository<Job> {
+class JobRepository(val profile: String? = null) : DynamoRepository<Job> {
 
-    override val aws by koinLazy<AwsClient1>()
+    override val aws by koinLazy<AwsClient1>(profile)
+    override val emptyData: Job = EMPTY
+
+    companion object {
+        /** 쿼리용 빈 객체 */
+        val EMPTY: Job = Job("", "")
+    }
 
     //==================================================== 기본 오버라이드 ======================================================
 
@@ -31,88 +37,71 @@ class JobRepository : DynamoRepository<Job> {
     //==================================================== 인덱스 쿼리 ======================================================
 
     /**
-     * 최근 잡 확인용 임시 메소드
-     * ex) 최근 실패잡 10건
+     * 상태 / PK 기준으로 조회
+     * ex) 실패잡 x건
+     * 보통 모니터링에 사용됨
      *  */
-    suspend fun findLastJobs(jobDef: JobDefinition, jobStatus: JobStatus, block: DynamoQuery.() -> Unit = {}): List<Job> {
-        val param = Job(jobDef.jobPk) {
-            this.jobStatus = jobStatus
-        }
-        return aws.dynamo.query(param) {
+    suspend fun findByStatusPk(
+        jobStatus: JobStatus,
+        jobDef: JobDefinition? = null,
+        last: Map<String, AttributeValue>? = null,
+        block: DynamoQuery.() -> Unit = {}
+    ): DynamoResult<Job> {
+        return aws.dynamo.query(EMPTY) {
             indexName = JobIndexUtil.GID_STATUS
             scanIndexForward = false //최근 데이터 우선
             select = Select.AllProjectedAttributes
-            limit = 10
             createParamAndQuery = {
-                val job = it as Job
-                mapOf(
-                    ":${DynamoDbBasic.PK}" to AttributeValue.S(job.pk),
-                    ":${Job::jobStatus.name}" to AttributeValue.S(job.jobStatus.name)
-                )
+                buildMap {
+                    put(":${Job::jobStatus.name}", AttributeValue.S(jobStatus.name))
+                    jobDef?.let { put(":${DynamoDbBasic.PK}", AttributeValue.S(jobDef.jobPk)) }
+                }
+            }
+            exclusiveStartKey = last
+            block()
+        }
+    }
+
+    /** 페이징 조회 */
+    suspend fun findByPk(jobDef: JobDefinition, last: Map<String, AttributeValue>? = null, block: DynamoQuery.() -> Unit = {}): DynamoResult<Job> {
+        val param = Job(jobDef.jobPk)
+        return aws.dynamo.query(param) {
+            createParamAndQuery = {
+                buildMap {
+                    put(":${DynamoDbBasic.PK}", AttributeValue.S(jobDef.jobPk))
+                }
+            }
+            exclusiveStartKey = last
+            block()
+        }
+    }
+
+    /** 전체 조회 */
+    suspend fun findAllByPk(jobDef: JobDefinition, block: DynamoQuery.() -> Unit = {}): List<Job> {
+        val dynamoQuery = DynamoQuery {
+            createParamAndQuery = {
+                buildMap {
+                    put(":${DynamoDbBasic.PK}", AttributeValue.S(jobDef.jobPk))
+                }
             }
             block()
         }
+        return aws.dynamo.queryAll(dynamoQuery, EMPTY)
     }
 
-    /**
-     * 잡 조회 with paging
-     * */
-    suspend fun find(jobDef: JobDefinition, block: DynamoQuery.() -> Unit = {}): List<Job> {
-        val param = Job(jobDef.jobPk)
-        return aws.dynamo.query(param) {
-            scanIndexForward = false //최근 데이터 우선
+    /** 특정 사용자의 요청을 요청 최신순으로 조회*/
+    suspend fun findByMemberId(jobDef: JobDefinition, memberId: String, last: Map<String, AttributeValue>? = null, block: DynamoQuery.() -> Unit = {}): DynamoResult<Job> {
+
+        val queryExpression = DynamoExpressSet.Query.DynamoExpressSkPrefix(JobIndexUtil.LID_MEMBER, JobIndexUtil.LID_MEMBER_NAME, jobDef.jobPk,"${memberId}#")
+
+        return aws.dynamo.query(EMPTY) {
+            indexName = queryExpression.indexName
             select = Select.AllProjectedAttributes
+            param = queryExpression.expressionAttributeValues()
+            query = queryExpression.expression()
+            exclusiveStartKey = last
             block()
         }
     }
-
-
-//
-//    /**
-//     * 인덱스에는 키값만 존재한다.
-//     */
-//    fun findAllByTaskStatus(jobStatus: JobStatus): List<Job> {
-//        val query = QueryConditional.keyEqualTo(Key.builder().partitionValue(jobStatus.name).build())
-//        val params = dynamoClient!!.queryAll(Job::class.java, JobConfig.INDEX_STATUS, query) //키값만 먼저 가져온다음 처리
-//        log.debug("key load ${params.size}")
-//        return dynamoClient.getItem(params)
-//    }
-//
-//    fun findAllByTaskStatusPage(jobStatus: JobStatus, pageSize: Int, lastEvaluatedKey: Map<String?, AttributeValue?>?): Page<Job> {
-//        val query = QueryConditional.keyEqualTo(Key.builder().partitionValue(jobStatus.name).build())
-//        val req = QueryEnhancedRequest.builder().queryConditional(query).limit(pageSize).scanIndexForward(false).exclusiveStartKey(lastEvaluatedKey).build()
-//        val pageIt = dynamoClient!!.map(Job::class.java, JobConfig.INDEX_STATUS).query(req)
-//        return CollectionUtil.getFirst(pageIt)
-//    }
-//
-//    /** 회원 ID로 가져옴. UI view 용  */
-//    fun findByMemberId(
-//        jobDef: JobDefinition,
-//        memberId: String?,
-//        pageSize: Int,
-//        lastEvaluatedKey: Map<String?, AttributeValue?>?
-//    ): Page<Job> {
-//        val param = Job(jobDef.jobPk, null)
-//        val query = QueryConditional.sortBeginsWith(Key.builder().partitionValue(param.pk).sortValue(memberId).build())
-//        val req = QueryEnhancedRequest.builder().queryConditional(query).limit(pageSize).scanIndexForward(false)
-//            .exclusiveStartKey(lastEvaluatedKey).build()
-//        val pageIt = dynamoClient!!.map(
-//            Job::class.java, JobConfig.INDEX_MEMBER
-//        ).query(req)
-//        val first = CollectionUtil.getFirst(pageIt)
-//        val params = first.items()
-//        val jobs = dynamoClient.getItem(params)
-//        return Page.create(jobs, first.lastEvaluatedKey())
-//    }
-//    //==================================================== 응용 ======================================================
-//    /** 테스트로 넣은거 정리 -> 확인 한번 후 삭제할것  */
-//    fun removeAllInvalidTask() {
-//        val all = dynamoClient!!.findAll(Job::class.java)
-//        val jobs = Lists.newArrayList(all)
-//        log.info("전체 job : {}", jobs.size)
-//        val invalidTasks = jobs.stream().filter { v: Job -> v.expireTime != null }.collect(Collectors.toList())
-//        dynamoClient.deleteItem(invalidTasks)
-//    }
-
 
 }

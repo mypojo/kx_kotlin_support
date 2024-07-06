@@ -82,6 +82,14 @@ class CdkLambda : CdkEnum {
      *  */
     var retryCnt: Int = 0
 
+    /**
+     * 환경변수. 여기에 더 추가할것
+     * ex) += Spring.ENV_PROFILE to "default,dev"
+     *  */
+    var environment: Map<String, String> = mapOf(
+        DeploymentType::class.simpleName!! to deploymentType.name
+    )
+
     /** 결과 레이어 */
     var layers: List<ILayerVersion> = emptyList()
 
@@ -119,11 +127,7 @@ class CdkLambda : CdkEnum {
                 .handler(handlerName)
                 .logRetention(logRetention)
                 .code(code)
-                .environment(
-                    mapOf(
-                        DeploymentType::class.simpleName to deploymentType.name //여기는 또 map이다.. MSA의 단점을 이렇게 보여주는듯.
-                    )
-                )
+                .environment(environment)
                 .retryAttempts(retryCnt)
                 //.maxEventAge()  //동시성이 충분하지 못할경우 대기시간.. 필요없음
                 .apply {

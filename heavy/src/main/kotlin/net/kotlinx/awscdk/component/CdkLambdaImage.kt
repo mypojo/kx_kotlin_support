@@ -77,11 +77,24 @@ class CdkLambdaImage : CdkEnum {
      *  */
     var retryCnt: Int = 0
 
-    /** 다른 리소스를 보호하기 위한 람다 동시성 최대값 */
-    var reservedConcurrentExecutions: Int = if (deploymentType == DeploymentType.PROD) 200 else 10
+    /**
+     * 다른 리소스를 보호하기 위한 람다 동시성 최대값
+     * 보통 500개 안에서 분배.
+     * null 이면 적용하지 않음
+     * 오류시 해당 계정의 Unreserved account concurrency 가 1000 이하인지 확인해볼것
+     *  */
+    var reservedConcurrentExecutions: Int? = if (deploymentType == DeploymentType.PROD) 200 else 10
 
     /** 스토리지. 기본 최소 사이즈 */
     var ephemeralStorageSize = Size.mebibytes(512)
+
+    /**
+     * 환경변수. 여기에 더 추가할것
+     * ex) += Spring.ENV_PROFILE to "default,dev"
+     *  */
+    var environment: Map<String, String> = mapOf(
+        DeploymentType::class.simpleName!! to deploymentType.name
+    )
 
     /** 결과 (디폴트) */
     lateinit var defaultFun: IFunction
@@ -94,44 +107,38 @@ class CdkLambdaImage : CdkEnum {
         defaultFun = DockerImageFunction(
             stack, lambdaName, DockerImageFunctionProps.builder()
                 .functionName(lambdaName)
-                .description("${lambdaName}-$deploymentType")
+                .description("$lambdaName with docker")
                 .memorySize(memorySize)
                 .ephemeralStorageSize(ephemeralStorageSize)
                 .timeout(timeout.toCdk())
                 .role(role)
-                .apply {
-                    // VPC가 있을경우 디폴트 설정
-                    if (vpc != null) {
-                        vpc(vpc)
-                        vpcSubnets(SubnetSelection.builder().subnetType(PRIVATE_WITH_EGRESS).build())
-                        securityGroups(securityGroups)
-                    }
-                }
                 .code(
                     DockerImageCode.fromEcr(
                         ecrRepository, EcrImageCodeProps.builder()
-                            .entrypoint(
-                                listOf(
-                                    "java", "-cp", "/app/resources:/app/classes:/app/libs/*",
-                                    "com.amazonaws.services.lambda.runtime.api.client.AWSLambda"  // 도커의 경우 main(args) 가 있는 람다 런타임.
-                                )
-                            )
+                            /** 람다 런타임 고정. 해당 런타임 클래스가 cmd를 받아서 핸들러 요청을 처리해줌 */
+                            .entrypoint(listOf("java", "-cp", "/app/resources:/app/classes:/app/libs/*", "com.amazonaws.services.lambda.runtime.api.client.AWSLambda"))
                             .cmd(listOf("${handlerName}::handleRequest"))
                             .tagOrDigest("dev") //최초 생성시 한번만 필요. 다만 벨리데이션 체크 때문에 실제 있는거로 고정으로 해야할듯.. 꼬이면 전체 삭재후재생성. -> 맘에 안듬
                             .build()
                     )
                 )
                 .logRetention(logRetention)
-                .environment(
-                    mapOf(
-                        DeploymentType::class.simpleName to deploymentType.name
-                    )
-                )
+                .environment(environment)
                 .maxEventAge(Duration.hours(6)) //디폴트가 최대치임. 정확히 뭔지?
                 .retryAttempts(retryCnt) //로직의 혼란을 막기 위해 리트라이 안함!!!
                 .deadLetterQueueEnabled(true)
                 .deadLetterQueue(dlq)
-                .reservedConcurrentExecutions(reservedConcurrentExecutions) //다른 리소스 보호용. 500개 안에서 분배.
+                .apply {
+                    vpc?.let {
+                        // VPC가 있을경우 디폴트 설정
+                        vpc(it)
+                        vpcSubnets(SubnetSelection.builder().subnetType(PRIVATE_WITH_EGRESS).build())
+                        securityGroups(securityGroups)
+                    }
+                    reservedConcurrentExecutions?.let {
+                        reservedConcurrentExecutions(it)
+                    }
+                }
                 .build()
         )
         TagUtil.tag(defaultFun, deploymentType)

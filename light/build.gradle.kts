@@ -44,7 +44,8 @@ dependencies {
 
     //==================================================== AWS 람다 ======================================================
     api("com.amazonaws:aws-lambda-java-core:_") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함
-    api("com.amazonaws:aws-lambda-java-events:_")  //핸들러에 매핑되는 이벤트 객
+    api("com.amazonaws:aws-lambda-java-events:_")  //핸들러에 매핑되는 이벤트 객체들 (안쓰면 필요없음)
+    //compile("com.amazonaws:aws-lambda-java-runtime-interface-client:_") //람다 도커용 인터페이스. 실제 런타임에는 꼭 붙여야한다. (공식이미지에도 미포함임)
     api("io.github.crac:org-crac:_")  //스냅스타트 후크 (클래스 로딩용)
 
     //==================================================== AWS JAVA V2 client (레거시 호환) ======================================================

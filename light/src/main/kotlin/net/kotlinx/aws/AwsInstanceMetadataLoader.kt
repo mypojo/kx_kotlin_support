@@ -4,7 +4,6 @@ import aws.sdk.kotlin.services.batch.describeJobs
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.core.Kdsl
-import net.kotlinx.koin.Koins.koin
 
 /**
  * job 주요 정보는 프로젝트마다 다르고, AWS로 부터 호출하는것도 있다.
@@ -26,6 +25,9 @@ class AwsInstanceMetadataLoader {
      * logStreamNameWeb second ex) xxx-web/sin-web_container-dev/01150f8d44cb4ba29609dd20ba9ff76a
      * */
     lateinit var ecsLogConfig: Pair<String, String>
+
+    /** AWS 클라이언트 */
+    lateinit var aws: AwsClient1
 
     private val log = KotlinLogging.logger {}
 
@@ -86,8 +88,7 @@ class AwsInstanceMetadataLoader {
                 AwsInstanceType.BATCH -> {
                     val batchJobId = System.getenv(AwsInstanceTypeUtil.AWS_BATCH_JOB_ID)!!
 
-                    val aws1: AwsClient1 = koin()
-                    val jobDetail = runBlocking { aws1.batch.describeJobs { this.jobs = listOf(batchJobId) }.jobs!!.firstOrNull() } ?: throw IllegalStateException("잡이 없어요")
+                    val jobDetail = runBlocking { aws.batch.describeJobs { this.jobs = listOf(batchJobId) }.jobs!!.firstOrNull() } ?: throw IllegalStateException("잡이 없어요")
                     val container = jobDetail.container!!
                     return AwsInstanceMetadata(
                         AwsInstanceType.BATCH,

@@ -29,9 +29,19 @@ class JdbcUrl {
     /** 드라이버 */
     var jdbcDriver: JdbcDriver = JdbcDriver.MYSQL
 
-    /** 옵션 */
+    /**
+     * 옵션
+     * https://2ssue.github.io/programming/HikariCP-MySQL/
+     *  */
     var option: Map<String, String> = mapOf(
-        "rewriteBatchedStatements" to "true" //배치 옵션
+        /** 대량의 데이터 insert시 쿼리 변경  */
+        "rewriteBatchedStatements" to "true",
+        /** 캐시 온 */
+        "cachePrepStmts" to "true",
+        "prepStmtCacheSize" to "250",
+        "prepStmtCacheSqlLimit" to "2048",
+        /** 서버측 PreparedStatement 사용  */
+        "useServerPrepStmts" to "true",
     )
 
     /** 배스천 호스트 고려한 jdbcUrl  */

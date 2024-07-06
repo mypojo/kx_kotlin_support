@@ -12,10 +12,11 @@ import java.time.LocalDateTime
  *  */
 fun List<String>.toTextGrid(datas: List<Array<out Any?>>) = TextGrid(this, datas)
 
-/**
- * 즉시 print함
- * */
-inline fun List<String>.toTextGridPrint(block: () -> List<Array<out Any?>>) = TextGrid(this, block()).print()
+/** 즉시 print함 */
+fun List<String>.toTextGridPrint(block: () -> List<Array<out Any?>>) = TextGrid(this, block()).print()
+
+/** 즉시 print함 / suspend 버전 */
+suspend fun List<String>.toTextGridPrints(block: suspend () -> List<Array<out Any?>>) = TextGrid(this, block()).print()
 
 /**
  *

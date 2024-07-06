@@ -8,6 +8,7 @@ import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.string.toLocalDateTime
 import net.kotlinx.string.toTextGridPrint
+import net.kotlinx.string.toTextGridPrints
 import net.kotlinx.time.toKr01
 
 internal class LambdaSupportKtTest : BeSpecHeavy() {
@@ -21,7 +22,7 @@ internal class LambdaSupportKtTest : BeSpecHeavy() {
         Given("LambdaSupportKt") {
 
             Then("함수 리스팅") {
-                listOf("함수명", "코드사이즈", "ARN").toTextGridPrint {
+                listOf("함수명", "코드사이즈", "ARN").toTextGridPrints {
                     aws.lambda.listFunctions { maxItems = 10 }.functions!!.map {
                         arrayOf(it.functionName, it.codeSize, it.functionArn)
                     }

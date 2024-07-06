@@ -27,7 +27,7 @@ class SlackApp_메세지템플릿 : BeSpecHeavy() {
                     source = "demo_project"
                     workDiv = "test job"
                     workDivLink = "https://www.naver.com"
-                    workLocation = "local"
+                    workLocation = "batch2"
                     workLocationLink = "https://www.naver.com"
                     mainMsg = ":ok: [$source] $workDiv 작업 처리 완료"
                     developers = listOf(DeveloperData("sin", slackId = "U0641U84CUE"))

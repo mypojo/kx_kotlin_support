@@ -40,7 +40,7 @@ class MultiResourceItemWriterBuilder {
         workspace.mkdirs()
         check(workspace.isDirectory)
         return MultiResourceItemWriter<T>().apply {
-            setDelegate(itemWriter as ResourceAwareItemWriterItemStream<in T>?)
+            setDelegate((itemWriter as ResourceAwareItemWriterItemStream<in T>?)!!)
             setItemCountLimitPerResource(limit)
             setResourceSuffixCreator(resourceSuffixCreator)
             setResource(FileSystemResource(File(workspace, name + "_")))

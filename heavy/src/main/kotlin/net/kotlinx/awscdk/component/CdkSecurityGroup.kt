@@ -60,26 +60,22 @@ class CdkSecurityGroup(
         return this
     }
 
-//    /** 네임으로 못찾을경우 임시 인식용 */
-//    fun loadById(stack: Stack): ISecurityGroup {
-//        return load(stack, idMap[deploymentType]!!)
-//    }
-
-//    /**
-//     * 순환참조 제거용
-//     * ex) XxSecurityGroup.addIngressRule(stack, XxSecurityGroup.WEB.getName(deploymentType) + '-01', sgWeb.securityGroupId, 9000, 9000, 'spring boot admin')
-//     * 순환참조가 아닐경우 아래처럼 하면 됨
-//     * ex) sg_web.addIngressRule(Peer.securityGroupId(sg_web.securityGroupId), Port.tcp(9000), 'spring boot admin',);
-//     * ex) sgWeb.addIngressRule(Peer.anyIpv4(), Port.tcp(443), 'HTTPS',);
-//     *  */
-//    public static addIngressRule(stack: Stack, logicalId: string, sgId: string, from: number, to: number, desc: string)
-//    {
-//        new CfnSecurityGroupIngress (stack, logicalId, { groupId: sgId,
-//                                                         sourceSecurityGroupId: sgId,
-//                                                         fromPort: from, toPort: to,
-//                                                         ipProtocol: 'tcp',
-//                                                         description: desc
-//    })
-//    }
+    /**
+     * 순환참조 제거용
+     * ex) XxSecurityGroup.addIngressRule(stack, XxSecurityGroup.WEB.getName(deploymentType) + '-01', sgWeb.securityGroupId, 9000, 9000, 'spring boot admin')
+     * 순환참조가 아닐경우 아래처럼 하면 됨
+     * ex) sg_web.addIngressRule(Peer.securityGroupId(sg_web.securityGroupId), Port.tcp(9000), 'spring boot admin',);
+     * ex) sgWeb.addIngressRule(Peer.anyIpv4(), Port.tcp(443), 'HTTPS',);
+     *  */
+    fun addIngressRule(stack: Stack, logicalId: String, sgId: String, from: Int, to: Int, desc: String) {
+        CfnSecurityGroupIngressProps.builder()
+            .groupId(sgId)
+            .sourceSecurityGroupId(sgId)
+            .fromPort(from)
+            .toPort(to)
+            .description(desc)
+            .build()
+        throw UnsupportedOperationException()
+    }
 
 }

@@ -1,11 +1,9 @@
 package net.kotlinx.aws.dynamo
 
-import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
-import aws.sdk.kotlin.services.dynamodb.deleteItem
+import aws.sdk.kotlin.services.dynamodb.*
 import aws.sdk.kotlin.services.dynamodb.getItem
 import aws.sdk.kotlin.services.dynamodb.model.*
-import aws.sdk.kotlin.services.dynamodb.putItem
-import aws.sdk.kotlin.services.dynamodb.updateItem
+import net.kotlinx.collection.doUntil
 
 //==================================================== 트랜잭션 ======================================================
 //데이터 타입은 아래 문서 참고
@@ -79,4 +77,40 @@ suspend fun <T : DynamoData> DynamoDbClient.getItem(data: T): T? {
         this.key = data.toKeyMap()
     }.item ?: return null
     return data.fromAttributeMap(map)
+}
+
+
+/**
+ * 간단 스캔
+ * 1M 단위 용량으로 리턴한다.
+ * 용량 이내라면 limit 제한해서 리턴
+ * @param data 테이블정보 및 변환용.
+ *  */
+suspend fun <T : DynamoData> DynamoDbClient.scan(data: T, exp: DynamoExpress? = null, last: Map<String, AttributeValue>? = null): DynamoResult<T> {
+    val resp = this.scan {
+        this.consistentRead = false //읽기 일관성 사용안함
+        this.tableName = data.tableName
+        this.exclusiveStartKey = last
+        this.limit = 1000 //설정은 무제한임
+        exp?.let {
+            this.filterExpression = it.expression()
+            this.expressionAttributeValues = it.expressionAttributeValues()
+        }
+    }
+    val items = resp.items!!.map { data.fromAttributeMap<T>(it) }
+    return DynamoResult(items, resp.lastEvaluatedKey)
+}
+
+/**
+ * 간단 스캔. 사용시 메모리 / 비용 주의!!
+ * 쿼리와는 다르게 단순 doUntil 을 사용함
+ * @param data 테이블정보 및 변환용.
+ *  */
+suspend fun <T : DynamoData> DynamoDbClient.scanAll(data: T, exp: DynamoExpress? = null): List<T> {
+    var last: Map<String, AttributeValue>? = null
+    return doUntil {
+        val result = scan(data, exp, last)
+        last = result.lastEvaluatedKey
+        result.datas to (last != null)
+    }.flatten()
 }

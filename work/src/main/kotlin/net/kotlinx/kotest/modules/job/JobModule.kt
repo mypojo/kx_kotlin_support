@@ -9,17 +9,28 @@ import net.kotlinx.domain.job.trigger.JobLocalExecutor
 import net.kotlinx.domain.job.trigger.JobSerializer
 import net.kotlinx.koin.KoinModule
 import net.kotlinx.kotest.MyEnv
+import net.kotlinx.kotest.modules.Aws1Module.IAM_PROFILES
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 
 object JobModule : KoinModule {
 
     override fun moduleConfig(): Module = module {
+
         Job.TABLE_NAME = "job-${MyEnv.SUFFIX}"
+
         single { JobRepository() }
         single { JobSerializer() }
         single { JobLocalExecutor() }
+
+        IAM_PROFILES.profiles.forEach { pair ->
+            val profileName = pair.first
+            single(named(profileName)) { JobRepository(profileName) }
+            single(named(profileName)) { JobSerializer(profileName) }
+            single(named(profileName)) { JobLocalExecutor(profileName) }
+        }
 
         jobReg {
             jobClass = DemoJob::class
@@ -31,6 +42,8 @@ object JobModule : KoinModule {
             jobExecuteType = JobExecuteType.LAMBDA_SYNCH_NOLOG
             jobScheduleType = JobScheduleType.MINUTES
         }
+
+
     }
 
 }

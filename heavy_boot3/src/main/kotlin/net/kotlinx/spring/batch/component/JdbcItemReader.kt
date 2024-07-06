@@ -35,7 +35,7 @@ class JdbcItemReader<T> : JdbcCursorItemReader<T>() {
      */
     @Synchronized
     @Throws(Exception::class)
-    override fun read(): T {
+    override fun read(): T? {
         return super.read()
     }
 
@@ -59,7 +59,7 @@ class JdbcItemReader<T> : JdbcCursorItemReader<T>() {
         return this
     }
 
-    fun rowMapper(rowMapper: RowMapper<T>?): JdbcItemReader<T> {
+    fun rowMapper(rowMapper: RowMapper<T>): JdbcItemReader<T> {
         setRowMapper(rowMapper)
         return this
     }

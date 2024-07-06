@@ -15,7 +15,12 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 
-/** AWS 설정정보 */
+/**
+ * AWS 설정정보
+ *
+ * 재시도 관련 설정은 아래 참고
+ * https://docs.aws.amazon.com/sdkref/latest/guide/feature-retry-behavior.html
+ *  */
 data class AwsConfig(
     /** 프로필 없으면 환경변서(체인 순서대로) 적용 */
     val profileName: String? = null,
@@ -27,9 +32,11 @@ data class AwsConfig(
     /** http client의 타임아웃 */
     val httpConnectTimeout: Duration = 4.seconds, //디폴트 2초
 
-    val httpSocketReadTimeout: Duration = 30.seconds, //이게 디폴트임
+    /** 람다 호출의 경우 콜드 스타트 동안 초기화가 안되서 타임아웃 날 수 있음. 따라서 넉넉히 설정 */
+    val httpSocketReadTimeout: Duration = 90.seconds, //이게 디폴트임
 
-    val httpSocketWriteTimeout: Duration = 30.seconds, //이게 디폴트임
+    /** 람다 호출의 경우 콜드 스타트 동안 초기화가 안되서 타임아웃 날 수 있음. 따라서 넉넉히 설정 */
+    val httpSocketWriteTimeout: Duration = 90.seconds, //이게 디폴트임
     /**
      * 쓰고난 커넥션을 풀에 얼마나 보관할지?
      * 이거 기본 60초인데, 이러면 람다 코루틴 등에서 재사용시 오류남. x초 이상 연속호출 없으면 닫게 설정

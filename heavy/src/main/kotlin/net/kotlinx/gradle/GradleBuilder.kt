@@ -9,7 +9,6 @@ import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.code.CodedeployUtil
 import net.kotlinx.aws.code.EcsDeployData
 import net.kotlinx.aws.code.createDeployment
-import net.kotlinx.aws.ecr.findAndUpdateTag
 import net.kotlinx.aws.ecs.touch
 import net.kotlinx.aws.lambda.*
 import net.kotlinx.aws.s3.putObject
@@ -66,50 +65,57 @@ class GradleBuilder {
      * */
     var commitId: String = System.getenv("COMMIT_ID") ?: "unknown"
 
-    /**
-     * 브랜치 명 (최종 벨리데이션 체크에 사용)
-     * 코드디플로이 -> 경우 환경변수에 넣어줌
-     * 로컬 ->  git branch
-     * */
-    val branchName: String? = System.getenv("BRANCH_NAME")
-
     /** 기본 리트라이 */
     var awsRetry: RetryTemplate = RetryTemplate {
         interval = 3.seconds
         predicate = RetryTemplate.match(ResourceConflictException::class.java)
     }
 
+    /** 람다 함수명 */
+    lateinit var functionName: String
+
     /** 로깅용 문구 */
-    override fun toString(): String = "OS(${OsType.OS_TYPE}) : deploymentType/branchName(${deploymentType}/${branchName}) / commitId($commitId)"
-
-    //==================================================== 커맨드 ======================================================
-
-    /**
-     * os에 따른 커멘드 라인을 리턴해줌
-     * ex)  commandLine(build.command(command))
-     * 일반 js build 명령은 cmd 등이 앞에 있어야 하고 AWS 호출은 cmd 없어도 됨..
-     * 한번에 한개의 커맨드만 exec{} 안에 둘것!
-     * js 번들링의 경우 각 플젝 루트에서 실행하면 됨
-     * ex) npx vite build
-     * ex) aws s3 sync ${project(":demo-svelte").projectDir}\dist s3://demo.kotlinx.net/
-     * */
-    @Deprecated("OS 패키지꺼 쓰세요")
-    fun command(command: String): List<String> = when (OsType.OS_TYPE) {
-        OsType.LINUX -> listOf("bash", "-c", command)
-        OsType.WINDOWS -> listOf("cmd", "/c", command)
-        OsType.MAC -> listOf("bash", "-c", command) // mac 은 잘 모름
-    }
+    override fun toString(): String = "OS(${OsType.OS_TYPE}) : deploymentType(${deploymentType}) / commitId($commitId)"
 
     //==================================================== ECR 간단 배포 (실제배포는 jib) ======================================================
 
-    /** ECR 태그이름 생성기 */
-    var ecrTagName: () -> String = { "${suff}_${TimeFormat.YMDHM_F02.get()}" }
+    /**
+     * ECR 태그이름 생성기.
+     *  */
+    var ecrTagNameGenerator: () -> String = { "${suff}_${TimeFormat.YMDHM_F02.get()}" }
 
-    /** ECR 로그인 주소 생성 */
-    fun ecrLoginCommand(repositoryName: String): String {
-        val ecrUrl = awsConfig.ecrPath(repositoryName)
-        return "aws ecr get-login-password --region ${awsConfig.region} $profileCommand | docker login --username AWS --password-stdin $ecrUrl"
+    /** 태그 이뮤터블 */
+    var immutable = false
+
+    /**
+     * ECR 태그이름
+     * 불변 태그 사용시, 이걸로 이미지 정의
+     * 가변 태그 사용시에는 단순 마킹용
+     *  */
+    val ecrTagName by lazy { ecrTagNameGenerator() }
+
+    /**
+     * 리파지토리 명
+     * ex) job-dev
+     *  */
+    lateinit var ecrRepositoryName: String
+
+    /** Repository 주소*/
+    val ecrRepositoryUri: String by lazy { awsConfig.ecrPath(ecrRepositoryName) }
+
+    /** ECR 로그인 명령어 */
+    val ecrLoginCommand: String by lazy { "aws ecr get-login-password --region ${awsConfig.region} $profileCommand | docker login --username AWS --password-stdin $ecrRepositoryUri" }
+
+    //==================================================== 람다(ECR) 간단 배포 ======================================================
+
+    /** RCR 람다 함수 업데이트 */
+    fun ecrUpdateLambda() {
+        runBlocking {
+            log.info { "[${functionName}] 람다 함수 $ecrTagName ECR 터치" }
+            aws.lambda.updateFunctionCode(functionName, ecrRepositoryUri, ecrTagName) //터치만 해줌
+        }
     }
+
 
     //====================================================  ECS(ECR) 간단 배포 ======================================================
 
@@ -129,22 +135,6 @@ class GradleBuilder {
         runBlocking {
             val deployment = aws.codeDeploy.createDeployment(ecsDeployData)
             log.info { "[${ecsDeployData.containerName}] 코드디플로이 배포 완료 ->  ${CodedeployUtil.toConsoleLink(deployment.deploymentId!!)}" }
-        }
-    }
-
-    //==================================================== 람다(ECR) 간단 배포 ======================================================
-
-    /** RCR 람다 함수 업데이트 */
-    fun lambdaUpdateFunction(repositoryName: String, functionName: String) {
-        runBlocking {
-            checkNotNull(branchName) { "branchName is required" }
-            val tagName = ecrTagName()
-            log.trace { "이번에 배포한 ECR을 찾아서 branchName 태그를 이동시켜줌" }
-            aws.ecr.findAndUpdateTag(repositoryName, tagName, branchName)
-
-            log.info { "람다 함수 ECR 터치" }
-            val imageUrl = awsConfig.ecrPath(repositoryName)
-            aws.lambda.updateFunctionCode(functionName, imageUrl, branchName) //터치만 해줌
         }
     }
 

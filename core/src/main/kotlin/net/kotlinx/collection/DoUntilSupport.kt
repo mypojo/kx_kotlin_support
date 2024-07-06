@@ -36,7 +36,8 @@ suspend fun <T> doUntilNotEmpty(maxTimes: Int = 100, action: suspend (Int) -> Li
 
 /**
  * 단축 메소드.
- * 결과가 특정 숫자 이상인경우
+ * 결과가 특정 숫자와 같거나 이상인경우
+ * ex) 페이징 API 전체 호출
  * */
 suspend fun <T> doUntilMax(resultMax: Int, maxTimes: Int = 100, action: suspend (Int) -> List<T>): List<List<T>> {
     return doUntil(maxTimes) {

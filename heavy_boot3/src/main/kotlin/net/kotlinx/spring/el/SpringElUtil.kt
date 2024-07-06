@@ -15,7 +15,7 @@ object SpringElUtil {
     private val EXPRESSION_PARSER: ExpressionParser = SpelExpressionParser()
 
     /** 간단 템플릿 */
-    fun elFormat(pattern: String): String = EXPRESSION_PARSER.parseExpression(pattern, TemplateParserContext()).getValue(String::class.java)
+    fun elFormat(pattern: String): String = EXPRESSION_PARSER.parseExpression(pattern, TemplateParserContext()).getValue(String::class.java)!!
 
     /**
      * http://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
@@ -30,7 +30,7 @@ object SpringElUtil {
      *
      * 근데 json이 안됨..
      */
-    fun elFormat(templateText: String, bean: Any): String = EXPRESSION_PARSER.parseExpression(templateText, TemplateParserContext()).getValue(bean, String::class.java)
+    fun elFormat(templateText: String, bean: Any): String = EXPRESSION_PARSER.parseExpression(templateText, TemplateParserContext()).getValue(bean, String::class.java)!!
 
     /** 객체에서 해당 값을 추출  */
     fun <T> extract(express: String, bean: Any): T {

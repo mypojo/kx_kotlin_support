@@ -65,6 +65,9 @@ class Menu : Treeable<String, Menu> {
     /** URL 호출경로. /로 시작하게 강제 수정 */
     val path: String by lazy { "/" + trees.joinToString("/") { it.id } }
 
+    /** 부모 제목을 포함한 전체 이름 */
+    fun title(separator: String = "->") = trees.joinToString(separator) { it.name }
+
     /** UI로 보여질 메뉴인지?  */
     var show = true
 

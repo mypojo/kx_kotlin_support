@@ -46,7 +46,7 @@ internal class DynamoQuery_쿼리테스트 : BeSpecHeavy() {
 
             Then("쿼리 -> 고정된 스펙") {
                 val byStatusPk = DynamoQuery { queryConfig() }
-                val jobs = aws.dynamo.query(byStatusPk, param)
+                val jobs = aws.dynamo.query(byStatusPk, param).datas
                 jobs.print()
                 jobs.size shouldBe byStatusPk.limit
             }
@@ -56,7 +56,7 @@ internal class DynamoQuery_쿼리테스트 : BeSpecHeavy() {
                 val jobs = aws.dynamo.query(param) {
                     queryConfig()
                     limit = newLimit
-                }
+                }.datas
                 jobs.print()
                 jobs.size shouldBe newLimit
             }
