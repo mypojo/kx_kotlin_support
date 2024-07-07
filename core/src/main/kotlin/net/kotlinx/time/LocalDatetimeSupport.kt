@@ -35,6 +35,12 @@ fun LocalDateTime.toF01(): String = TimeFormat.YMDHM_F01[this]
  * */
 fun LocalDateTime.between(endTime: LocalDateTime = LocalDateTime.now()): kotlin.time.Duration = Duration.between(this, endTime).toKotlinDuration()
 
+
+/**
+ * 노션 등에서 날짜/시간 이렇게 두가지 타입을 같이 줄때 사용
+ * */
+fun LocalDateTime.isDate(): Boolean = this.hour == 0 && this.minute == 0 && this.second == 0 && this.nano == 0
+
 //==================================================== 존 관련 (테스트 필요) ======================================================
 
 /** Instant 변환 */

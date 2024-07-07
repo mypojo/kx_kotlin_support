@@ -24,7 +24,13 @@ class CdkEcr(
     lateinit var iRepository: IRepository
 
     fun create(stack: Stack): CdkEcr {
-        iRepository = Repository(stack, "ecr-$logicalName", RepositoryProps.builder().repositoryName(logicalName).imageTagMutability(imageTagMutability).build()).apply {
+        iRepository = Repository(
+            stack, "ecr-$logicalName", RepositoryProps.builder()
+                .repositoryName(logicalName)
+                .imageTagMutability(imageTagMutability)
+                .imageScanOnPush(true) //디폴트로 스캔 온
+                .build()
+        ).apply {
             addLifecycleRule(
                 LifecycleRule.builder()
                     .rulePriority(100)

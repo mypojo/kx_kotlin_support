@@ -27,6 +27,9 @@ import net.kotlinx.reflect.name
 import net.kotlinx.slack.SlackApp
 import net.kotlinx.slack.SlackMessageSenders
 import okhttp3.OkHttpClient
+import org.jraf.klibnotion.client.Authentication
+import org.jraf.klibnotion.client.ClientConfiguration
+import org.jraf.klibnotion.client.NotionClient
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import java.util.concurrent.atomic.AtomicLong
@@ -79,6 +82,16 @@ object BasicModule : KoinModule {
         }
 
         //==================================================== 각종 오픈 API  ======================================================
+
+        /** 오픈소스 노션 SDK */
+        single {
+            val secretValue by lazyLoadStringSsm("/notion/key")
+            NotionClient.newInstance(
+                ClientConfiguration(
+                    Authentication(secretValue)
+                )
+            )
+        }
 
         single {
             val secretValue by lazyLoadStringSsm("/notion/key")
