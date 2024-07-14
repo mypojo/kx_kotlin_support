@@ -17,6 +17,7 @@ import net.kotlinx.domain.job.JobExeFrom
 import net.kotlinx.domain.job.JobRepository
 import net.kotlinx.domain.job.JobStatus
 import net.kotlinx.json.gson.GsonData
+import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.json.serial.LocalDateTimeSerializer
 import net.kotlinx.json.serial.SerialJsonSet
 import net.kotlinx.json.serial.SerialParseJson
@@ -57,7 +58,7 @@ class StepStart : LambdaDispatchLogic {
             instanceMetadata = this@StepStart.instanceMetadata
 
             //파싱값 입력 4개
-            jobOption = input[AwsNaming.OPTION].str
+            jobOption = input[AwsNaming.OPTION].str!!.toGsonData()
             jobExeFrom = JobExeFrom.SFN
             sfnId = option.sfnId
         }

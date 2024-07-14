@@ -6,6 +6,7 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.iam.IamCredential
 import net.kotlinx.aws.toAwsClient
+import net.kotlinx.exception.toSimpleString
 import net.kotlinx.file.slashDir
 import net.kotlinx.guava.fromJsonList
 import net.kotlinx.json.gson.GsonSet
@@ -42,7 +43,7 @@ fun main() {
                 val byService = try {
                     client.cost.monthService().onEach { it.projectName = profileName }
                 } catch (e: CostExplorerException) {
-                    log.warn { " -> 프로파일 [${profileName}] 무시" }
+                    log.warn { " -> 프로파일 [${profileName}] 무시 : ${e.toSimpleString()}" }
                     emptyList()
                 }
                 val byTag = when (profileName in tagRequired) {
@@ -70,8 +71,13 @@ fun main() {
 
     val wonDoller = runBlocking {
         val secret by lazyLoadStringSsm("/api/koreaexim/key")
-        val client = KoreaeximClient(secret)
-        client.dollarWon()
+        try {
+            val client = KoreaeximClient(secret)
+            client.dollarWon()
+        } catch (e: Exception) {
+            log.warn { "달러원 오류!! -> 강제 매핑  ${e.toSimpleString()}" }
+            1380
+        }
     }
 
     CostExplorerExcel {

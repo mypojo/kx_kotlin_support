@@ -13,6 +13,7 @@ import net.kotlinx.domain.job.JobRepository
 import net.kotlinx.domain.job.JobStatus
 import net.kotlinx.domain.job.JobUpdateSet
 import net.kotlinx.json.gson.GsonData
+import net.kotlinx.json.koson.toGsonData
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.retry.RetryTemplate
 import net.kotlinx.time.toTimeString
@@ -84,7 +85,7 @@ class StepEnd : LambdaDispatchLogic {
         jobRepository.getItem(net.kotlinx.domain.job.Job(option.jobPk, option.jobSk))!!.apply {
             jobStatus = JobStatus.SUCCEEDED
             endTime = LocalDateTime.now()
-            jobContext = resultJson.toString()
+            jobContext = resultJson.toGsonData()
             jobRepository.updateItem(this, JobUpdateSet.END)
             log.debug { "job [${this.toKeyString()}] 로그 update" }
         }

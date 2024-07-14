@@ -3,6 +3,7 @@ package net.kotlinx.domain.job
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.aws.AwsInstanceMetadata
 import net.kotlinx.aws.dynamo.*
+import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.gson.GsonSet
 import net.kotlinx.lazyLoad.LazyLatchProperty
 import net.kotlinx.time.toIso
@@ -31,7 +32,8 @@ class Job(override val pk: String, override val sk: String) : DynamoData {
             this += Job::memberReqTime.name to AttributeValue.S(memberReqTime) //인덱스용 입력
             this += Job::jobStatus.name to AttributeValue.S(jobStatus.name)
             this += Job::jobExeFrom.name to AttributeValue.S(jobExeFrom.name)
-            this += Job::jobContext.name to AttributeValue.S(jobContext)
+            this += Job::jobContext.name to AttributeValue.S(jobContext.toString())
+            this += Job::jobOption.name to AttributeValue.S(jobOption.toString())
             //==================================================== 공통 시스템 자동(필수) 입력값 ======================================================
             startTime?.let { this += Job::startTime.name to AttributeValue.S(it.toIso()) }
             updateTime?.let { this += Job::updateTime.name to AttributeValue.S(it.toIso()) }
@@ -40,7 +42,6 @@ class Job(override val pk: String, override val sk: String) : DynamoData {
             jobErrMsg?.let { this += Job::jobErrMsg.name to AttributeValue.S(it) }
             instanceMetadata?.let { this += Job::instanceMetadata.name to AttributeValue.S(GsonSet.GSON.toJson(instanceMetadata)) }
 
-            jobOption?.let { this += Job::jobOption.name to AttributeValue.S(it) }
             sfnId?.let { this += Job::sfnId.name to AttributeValue.S(it) }
             jobEnv?.let { this += Job::jobEnv.name to AttributeValue.S(it) }
         }
@@ -65,7 +66,7 @@ class Job(override val pk: String, override val sk: String) : DynamoData {
 
         jobErrMsg = map.find(Job::jobErrMsg)
         instanceMetadata = map.findJson(Job::instanceMetadata)
-        jobOption = map.find(Job::jobOption)
+        jobOption = map.findOrThrow(Job::jobOption)
         sfnId = map.find(Job::sfnId)
         jobEnv = map.find(Job::jobEnv)
 
@@ -102,7 +103,7 @@ class Job(override val pk: String, override val sk: String) : DynamoData {
     var jobEnv: String? = null
 
     /** JOB context (json형식). 중단 인덱스, 블락수 등의 컨텍스트 입력 . 강제 업데이트 함으로 null 아님  */
-    var jobContext: String = "{}"
+    var jobContext: GsonData = GsonData.empty()
 
     //==================================================== 시스템 자동 입력값 ======================================================
     /** 사용자가 자신이 요청한 job를 찾는용도. (인덱싱) -> {memberId}#{요청시간 밀리초}  */
@@ -140,7 +141,7 @@ class Job(override val pk: String, override val sk: String) : DynamoData {
     //==================================================== 공통 옵션 입력값 ======================================================
 
     /** JOB 옵션 (json형식). 해당 잡에서 필요한 설정/옵션 값을 입력. ex) 처리 타입, 시작 날짜 등등   */
-    var jobOption: String? = null
+    var jobOption: GsonData = GsonData.empty()
 
     //==================================================== 비연동값 ======================================================
 

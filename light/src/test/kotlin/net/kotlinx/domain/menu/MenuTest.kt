@@ -26,16 +26,16 @@ internal class MenuTest : BeSpecLog() {
             menu("market", "마켓") {
                 child("make01", "메뉴A") {
                     child("buy1", "최종구매1") {
-                        configRoles = listOf(Role.A, Role.B)
+                        configRoles = setOf(Role.A, Role.B)
                         icon = "market.gif"
                     }
                     child("buy2", "최종구매2") {
-                        configRoles = listOf(Role.A, Role.C)
+                        configRoles = setOf(Role.A, Role.C)
                         BUY2 = this // companion 할당
                     }
                 }
                 child("make02", "메뉴B") {
-                    authors = listOf(DeveloperData("sin"))
+                    authors = setOf(DeveloperData("sin"))
                 }
             }
             menu("member", "회원") {

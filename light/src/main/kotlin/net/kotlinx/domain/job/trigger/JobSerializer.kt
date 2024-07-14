@@ -10,6 +10,7 @@ import net.kotlinx.domain.job.define.JobDefinitionRepository
 import net.kotlinx.domain.job.define.JobExecuteType
 import net.kotlinx.id.IdGenerator
 import net.kotlinx.json.gson.GsonData
+import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.string.enumValueOf
 import java.time.LocalDateTime
@@ -45,7 +46,7 @@ class JobSerializer(val profile: String? = null) {
             }
 
             //파싱값 입력 4개
-            jobOption = input[Job::jobOption.name].str
+            jobOption = input[Job::jobOption.name].str!!.toGsonData()
             input[Job::memberId.name].str?.let { memberId = it }
             jobExeFrom = enumValueOf(input[Job::jobExeFrom.name].str, JobExeFrom.UNKNOWN)
             sfnId = input[Job::sfnId.name].str

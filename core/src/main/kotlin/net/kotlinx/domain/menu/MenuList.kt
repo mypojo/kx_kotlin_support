@@ -26,7 +26,7 @@ class MenuList {
         if (roles.isNotEmpty()) {
             //설정된게 있을때만 오버라이드 한다.
             check(menu.configRoles.isEmpty()) { "[$id] configRoles을 둘다 설정하면 안됩니다." }
-            menu.configRoles = roles.toList()
+            menu.configRoles = roles.toSet()
         }
         _roots.add(menu)
     }

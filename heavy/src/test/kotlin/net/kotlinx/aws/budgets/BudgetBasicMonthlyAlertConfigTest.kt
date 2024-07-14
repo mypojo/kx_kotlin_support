@@ -11,13 +11,8 @@ class BudgetBasicMonthlyAlertConfigTest : BeSpecHeavy() {
     init {
         initTest(KotestUtil.IGNORE)
 
-        xGiven("지난달 대비 xx% 예상 or xx% 도달시 알람 발송") {
+        Given("지난달 대비 xx% 예상 or xx% 도달시 알람 발송") {
 
-            throw IllegalStateException("����� ��함. ���������스 ���정")
-
-            val alertConfig = BudgetBasicMonthlyAlertTemplate {
-                emails = listOf()
-            }
 
             val profiles = listOf(
                 findProfile28(),
@@ -30,8 +25,12 @@ class BudgetBasicMonthlyAlertConfigTest : BeSpecHeavy() {
             profiles.forEach { profile ->
                 val aws = koin<AwsClient>(profile)
                 Then("profile $profile") {
-                    alertConfig.awsId = aws.awsConfig.awsId
-                    alertConfig.budgetName = "${alertConfig.budgetName}-${profile}" //프로파일이 이름에 있어야, 이메일만으로 확인이 쉬움
+                    val alertConfig = BudgetBasicMonthlyAlertTemplate {
+                        //아래 채워서 실행할것!
+                        emails = listOf("seunghan.shin@nhnad.com")
+                        awsId = aws.awsConfig.awsId
+                        budgetName = "${budgetName}-${profile}" //프로파일이 이름에 있어야, 이메일만으로 확인이 쉬움
+                    }
                     aws.budget.deleteAndCreateBudget(alertConfig)
                 }
             }

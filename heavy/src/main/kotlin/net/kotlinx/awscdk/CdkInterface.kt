@@ -1,8 +1,7 @@
 package net.kotlinx.awscdk
 
+import net.kotlinx.koin.Koins.koin
 import net.kotlinx.system.DeploymentType
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 
 
 /**
@@ -17,16 +16,16 @@ import org.koin.core.component.get
  *  1. 같은 스택에서 create 한 객체인경우 -> load() 하지말고 그냥 사용
  *  2. 같은 스택에서 create 하지 않은 경우 -> load() 로 초기화 후 사용해야함 (cycle 에러남)
  *  */
-interface CdkInterface : KoinComponent {
+interface CdkInterface {
 
     /** CDK에 사용할 논리적 이름을 리턴한다. 동적으로 변경 가능 */
     val logicalName: String
 
     val project: CdkProject
-        get() = get<CdkProject>()
+        get() = koin<CdkProject>()
 
     val deploymentType: DeploymentType
-        get() = get<DeploymentType>()
+        get() = koin<DeploymentType>()
 
 }
 

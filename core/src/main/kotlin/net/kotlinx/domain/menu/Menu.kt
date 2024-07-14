@@ -7,6 +7,8 @@ import net.kotlinx.domain.tree.Treeable
 /**
  * 뎁스를 가지는 메뉴 구조
  * 각 프로젝트별로 커스터마이징(확장프로퍼티)해서 사용
+ *
+ * 대부분의 설정시 하위 객체도 같이 설정
  * */
 class Menu : Treeable<String, Menu> {
 
@@ -25,11 +27,26 @@ class Menu : Treeable<String, Menu> {
     /** 메뉴 설명. 길어질 수 있음 */
     var descs: List<String> = emptyList()
 
-    /** 권한 (하나라도 매핑되면 허용) */
-    var configRoles: List<Enum<*>> = emptyList()
+    /** 권한 (보통 하나라도 매핑되면 허용) */
+    var configRoles: Set<Enum<*>> = emptySet()
+        set(value) {
+            field = value
+            this.children.forEach { if (it.configRoles.isEmpty()) it.configRoles = value }
+        }
 
-    /** 담당자 */
-    var authors: List<DeveloperData> = emptyList()
+    /** 담당자. */
+    var authors: Set<DeveloperData> = emptySet()
+        set(value) {
+            field = value
+            this.children.forEach { if (it.authors.isEmpty()) it.authors = value }
+        }
+
+    /** UI로 보여질 메뉴인지?  */
+    var show = true
+        set(value) {
+            field = value
+            this.children.forEach { it.show = value }
+        }
 
     /**
      * 메뉴 속성
@@ -53,7 +70,7 @@ class Menu : Treeable<String, Menu> {
         if (roles.isNotEmpty()) {
             //설정된게 있을때만 오버라이드 한다.
             check(child.configRoles.isEmpty()) { "[$id] configRoles을 둘다 설정하면 안됩니다." }
-            child.configRoles = roles.toList()
+            child.configRoles = roles.toSet()
         }
         child.parent = this  //호출자를 부모로 할당
         this.children += child
@@ -67,9 +84,6 @@ class Menu : Treeable<String, Menu> {
 
     /** 부모 제목을 포함한 전체 이름 */
     fun title(separator: String = "->") = trees.joinToString(separator) { it.name }
-
-    /** UI로 보여질 메뉴인지?  */
-    var show = true
 
     /**
      * 매핑된 메소드들

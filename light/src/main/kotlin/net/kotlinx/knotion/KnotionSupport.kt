@@ -38,6 +38,6 @@ fun PropertyValue<*>.toValueString(): String {
             }
         }
 
-        else -> throw IllegalArgumentException("${value::class} is not required")
+        else -> throw IllegalArgumentException("${value::class} is not supported => $value")
     }
 }
