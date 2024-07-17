@@ -37,11 +37,25 @@ suspend fun <T> doUntilNotEmpty(maxTimes: Int = 100, action: suspend (Int) -> Li
 /**
  * 단축 메소드.
  * 결과가 특정 숫자와 같거나 이상인경우
- * ex) 페이징 API 전체 호출
+ * ex) 토큰이 없고 페이징 번호를 호출하는 페이징 API 전체 호출  (AWS 등에는 사용안함)
  * */
 suspend fun <T> doUntilMax(resultMax: Int, maxTimes: Int = 100, action: suspend (Int) -> List<T>): List<List<T>> {
     return doUntil(maxTimes) {
         val list = action.invoke(it)
         list to (list.size >= resultMax)
+    }
+}
+
+/**
+ * 단축 메소드.
+ * 최초 이후 토큰이 null일때까지
+ * ex) 중단 토큰을 주는 AWS API
+ * */
+suspend fun <T> doUntilTokenNull(firstToken: Any? = null, maxTimes: Int = 100, action: suspend (Int, Any?) -> Pair<List<T>, Any?>): List<List<T>> {
+    var token: Any? = firstToken
+    return doUntil(maxTimes) {
+        val (list, currentToken) = action.invoke(it, token)
+        token = currentToken
+        list to (currentToken != null)
     }
 }

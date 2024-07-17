@@ -35,6 +35,9 @@ fun LocalDateTime.toF01(): String = TimeFormat.YMDHM_F01[this]
  * */
 fun LocalDateTime.between(endTime: LocalDateTime = LocalDateTime.now()): kotlin.time.Duration = Duration.between(this, endTime).toKotlinDuration()
 
+/** 해당 시간과 현재(옵션)와의 시간차이를 간단하게 구한다. */
+fun LocalDateTime.toTimeString(endTime: LocalDateTime = LocalDateTime.now()): TimeString = (endTime.toLong() - this.toLong()).toTimeString()
+
 
 /**
  * 노션 등에서 날짜/시간 이렇게 두가지 타입을 같이 줄때 사용

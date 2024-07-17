@@ -59,6 +59,9 @@ object AwsNaming {
     /** 여러가지 용도로 사용되는 잡의 sk.  */
     const val JOB_SK = "jobSk"
 
+    /** 여러가지 용도로 사용되는 잡의 soption  */
+    const val JOB_OPTION = "jobOption"
+
     /** 스프링 관련 */
     object Spring {
 
@@ -68,5 +71,11 @@ object AwsNaming {
         /** 환경변수 프로파일 키*/
         const val ENV_PROFILE = "SPRING_PROFILES_ACTIVE"
     }
+
+    //==================================================== CICD ======================================================
+
+    /** 환경변수의 커밋ID  */
+    const val COMMIT_ID = "COMMIT_ID"
+
 
 }

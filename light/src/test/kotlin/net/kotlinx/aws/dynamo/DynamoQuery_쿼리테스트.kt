@@ -14,7 +14,7 @@ import net.kotlinx.string.print
 
 internal class DynamoQuery_쿼리테스트 : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile28() }
+    private val profileName by lazy { findProfile97() }
     private val aws by lazy { koin<AwsClient1>(profileName) }
 
     init {
@@ -24,47 +24,51 @@ internal class DynamoQuery_쿼리테스트 : BeSpecHeavy() {
 
             net.kotlinx.domain.job.Job.TABLE_NAME = "job-dev"
 
-            /** 쿼리 설정 */
-            fun DynamoQuery.queryConfig() {
-                indexName = "gidx-jobStatus-pk"
-                scanIndexForward = false //최근 데이터 우선
-                select = Select.AllProjectedAttributes
-                limit = 4
-                createParamAndQuery = {
-                    val job = it as net.kotlinx.domain.job.Job
-                    mapOf(
-                        ":${DynamoDbBasic.PK}" to AttributeValue.S(job.pk),
-                        ":${net.kotlinx.domain.job.Job::jobStatus.name}" to AttributeValue.S(job.jobStatus!!.name)
-                    )
+            When("잡 상태 인덱스를 통한 조회"){
+                /** 쿼리 설정 */
+                fun DynamoQuery.queryConfig() {
+                    indexName = "gidx-jobStatus-pk"
+                    scanIndexForward = false //최근 데이터 우선
+                    select = Select.AllProjectedAttributes
+                    limit = 4
+                    createParamAndQuery = {
+                        val job = it as net.kotlinx.domain.job.Job
+                        mapOf(
+                            ":${DynamoDbBasic.PK}" to AttributeValue.S(job.pk),
+                            ":${net.kotlinx.domain.job.Job::jobStatus.name}" to AttributeValue.S(job.jobStatus!!.name)
+                        )
+                    }
+                }
+
+                /** 쿼리 파라메터 */
+                val param = net.kotlinx.domain.job.Job("nplCampUpdate01Job", "").apply {
+                    jobStatus = JobStatus.SUCCEEDED
+                }
+
+                Then("쿼리 실행") {
+                    val byStatusPk = DynamoQuery { queryConfig() }
+                    val jobs = aws.dynamo.query(byStatusPk, param).datas
+                    jobs.print()
+                    jobs.size shouldBe byStatusPk.limit
+                }
+
+                Then("쿼리를 런타임으로 수정 가능") {
+                    var newLimit = 2
+                    val jobs = aws.dynamo.query(param) {
+                        queryConfig()
+                        limit = newLimit
+                    }.datas
+                    jobs.print()
+                    jobs.size shouldBe newLimit
+                }
+
+                xThen("전체 쿼리 로드 -> 오래걸림") {
+                    val byStatusPk = DynamoQuery { queryConfig() }
+                    aws.dynamo.queryAll(byStatusPk, param)
                 }
             }
 
-            /** 쿼리 파라메터 */
-            val param = net.kotlinx.domain.job.Job("kwdBaseLogic", "").apply {
-                jobStatus = JobStatus.SUCCEEDED
-            }
 
-            Then("쿼리 -> 고정된 스펙") {
-                val byStatusPk = DynamoQuery { queryConfig() }
-                val jobs = aws.dynamo.query(byStatusPk, param).datas
-                jobs.print()
-                jobs.size shouldBe byStatusPk.limit
-            }
-
-            Then("쿼리 -> 런타임 수정") {
-                var newLimit = 2
-                val jobs = aws.dynamo.query(param) {
-                    queryConfig()
-                    limit = newLimit
-                }.datas
-                jobs.print()
-                jobs.size shouldBe newLimit
-            }
-
-            xThen("전체 쿼리 로드 -> 오래걸림") {
-                val byStatusPk = DynamoQuery { queryConfig() }
-                aws.dynamo.queryAll(byStatusPk, param)
-            }
         }
     }
 

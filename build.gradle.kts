@@ -3,7 +3,9 @@ import net.kotlinx.gradle.get
 import net.kotlinx.number.halfUp
 import net.kotlinx.number.toSiText
 import net.kotlinx.string.toTextGridPrint
+import net.kotlinx.time.toKr01
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.time.LocalDateTime
 
 plugins {
     //코어 플러그인
@@ -21,14 +23,19 @@ allprojects {
         plugin("org.jetbrains.kotlin.jvm")
     }
 
+    //두 버전 일치시켜야함
+    java {
+        toolchain { languageVersion = JavaLanguageVersion.of(21) }
+        withSourcesJar() //소스코드 포함해서 배포
+        //withJavadocJar() //메이븐 센트럴 빌드에 필요 (지금 안씀)
+    }
+    kotlin { jvmToolchain(21) }
+
     //자바 xx로 타게팅
     tasks.compileKotlin {
-//        kotlinOptions {
-//            jvmTarget = providers["jvmTarget"]
-//        }
         compilerOptions {
             freeCompilerArgs.add("-Xjsr305=strict") //null값 체크 strict
-            jvmTarget.set(JvmTarget.JVM_17)
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
 
@@ -54,11 +61,6 @@ allprojects {
             showStandardStreams = true //혹시 테스트가 실행될 수 있어서 로그 활성화
             //events("passed", "skipped", "failed")
         }
-    }
-
-    java {
-        withSourcesJar() //소스코드 포함해서 배포
-        //withJavadocJar() //메이븐 센트럴 빌드에 필요
     }
 
     //==================================================== 공통 의존성 ======================================================
@@ -152,5 +154,44 @@ tasks.create("gradleTest") {
     doLast {
         val currentBrabch = this.project.commandGitCurrentBrabch()
         check(currentBrabch == "master")
+    }
+}
+
+
+/**
+ * org.gradle.configuration-cache=true 가 있어야 병렬 실행됨
+ * */
+tasks.register("deployAll") {
+    group = "aws"
+    dependsOn(":t1",":t2",":t3")
+    doLast {
+        println("배포 3종 완료!")
+    }
+}
+
+tasks.register("t1") {
+    group = "aws"
+    doLast {
+        println("작업1!! ${LocalDateTime.now().toKr01()}")
+        Thread.sleep(1000 * 3)
+        println("작업1!! ${LocalDateTime.now().toKr01()}")
+    }
+}
+
+tasks.register("t2") {
+    group = "aws"
+    doLast {
+        println("작업2!! ${LocalDateTime.now().toKr01()}")
+        Thread.sleep(1000 * 3)
+        println("작업2!! ${LocalDateTime.now().toKr01()}")
+    }
+}
+
+tasks.register("t3") {
+    group = "aws"
+    doLast {
+        println("작업3!! ${LocalDateTime.now().toKr01()}")
+        Thread.sleep(1000 * 3)
+        println("작업3!! ${LocalDateTime.now().toKr01()}")
     }
 }

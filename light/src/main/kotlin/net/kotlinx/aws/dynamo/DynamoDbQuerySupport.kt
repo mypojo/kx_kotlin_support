@@ -16,7 +16,7 @@ suspend fun <T : DynamoData> DynamoDbClient.query(query: DynamoQuery, data: T): 
     val firstQuery = resp.items!!
     if (firstQuery.isEmpty()) return DynamoResult(emptyList(), resp.lastEvaluatedKey)
 
-    //부분 데이터만 가지고있을경우(보통 인덱스) 다시 조회 해준다
+    //부분 데이터만 가지고있을경우(보통 인덱스) 다시 조회 해준다. 이때 정렬이 풀림으로 재정렬 해줘야함
     val itemMaps = when (query.select) {
         Select.AllProjectedAttributes -> batchGetItem(data.tableName, firstQuery)
         else -> firstQuery
@@ -31,19 +31,28 @@ suspend fun <T : DynamoData> DynamoDbClient.query(query: DynamoQuery, data: T): 
  *  */
 suspend fun <T : DynamoData> DynamoDbClient.query(data: T, block: DynamoQuery.() -> Unit = {}): DynamoResult<T> = query(DynamoQuery(block), data)
 
-/** batchGetItem 의 로우 API 버전 */
-suspend fun DynamoDbClient.batchGetItem(tableName: String, params: List<Map<String, AttributeValue>>): List<Map<String, AttributeValue>> = this.batchGetItem {
-    this.requestItems = mapOf(
-        tableName to KeysAndAttributes {
-            this.keys = params.map {
-                mapOf(
-                    DynamoDbBasic.PK to it[DynamoDbBasic.PK]!!,
-                    DynamoDbBasic.SK to it[DynamoDbBasic.SK]!!,
-                )
+/**
+ * batchGetItem 의 로우 API 버전
+ * 재정렬 작업을 추가해준다.
+ *  */
+suspend fun DynamoDbClient.batchGetItem(tableName: String, params: List<Map<String, AttributeValue>>): List<Map<String, AttributeValue>> {
+    val orders = params.map { it[DynamoDbBasic.SK]!! }
+    val results = this.batchGetItem {
+        this.requestItems = mapOf(
+            tableName to KeysAndAttributes {
+                this.keys = params.map {
+                    mapOf(
+                        DynamoDbBasic.PK to it[DynamoDbBasic.PK]!!,
+                        DynamoDbBasic.SK to it[DynamoDbBasic.SK]!!,
+                    )
+                }
             }
-        }
-    )
-}.responses!!.values.flatten()
+        )
+    }.responses!!.values.flatten()
+
+    val groupBySk = results.associateBy { it[DynamoDbBasic.SK]!! }
+    return orders.map { sk -> groupBySk[sk]!! }
+}
 
 
 /** batchGetItem 의 DynamoData 버전 */

@@ -9,6 +9,9 @@ import okhttp3.MediaType.Companion.toMediaType
  * */
 object OkHttpMediaType {
 
+    /** 헤더 키값 */
+    const val KEY = "Content-Type"
+
     /** JSON */
     val JSON: MediaType = "application/json; charset=utf-8".toMediaType()
 
@@ -17,5 +20,8 @@ object OkHttpMediaType {
 
     /** HTML */
     val HTML: MediaType = "text/html".toMediaType()
+
+    /** multipart */
+    val MULTIPART: MediaType = "multipart/form-data".toMediaType()
 
 }

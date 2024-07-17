@@ -1,6 +1,6 @@
 package net.kotlinx.awscdk.iam
 
-/** 
+/**
  * 어플리케이션이 실행되는 대표적인 서비스들. 런타임 권한용에 붙일것
  * ## 그외 ##
  *  cloudtrail - 클라우드 트레일
@@ -33,6 +33,13 @@ enum class CdkIamService(
 
     /** 스케쥴링 기능 */
     SCHEDULER("scheduler"),
+
+    /**
+     * 퀵사이트.
+     * 디폴트 역할은 athena-워크스페이스 primary 미선택시 오류남.
+     * 개별 설정하기 귀찮아서 이걸로 통일
+     * */
+    QUICKSIGHT("quicksight"),
     ;
 
     val serviceName: String

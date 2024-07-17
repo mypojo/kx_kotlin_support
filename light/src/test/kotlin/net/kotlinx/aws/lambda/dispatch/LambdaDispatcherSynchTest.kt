@@ -1,9 +1,7 @@
 package net.kotlinx.aws.lambda.dispatch
 
-import com.lectra.koson.obj
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.contain
-import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.lambda.LambdaUrlMap
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
@@ -11,7 +9,6 @@ import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.kotest.modules.job.DemoJob
 import net.kotlinx.okhttp.buildUrl
-import net.kotlinx.reflect.name
 import okhttp3.HttpUrl.Companion.toHttpUrl
 
 class LambdaDispatcherSynchTest : BeSpecHeavy() {
@@ -24,10 +21,7 @@ class LambdaDispatcherSynchTest : BeSpecHeavy() {
         Given("잡 실행 요청") {
             DemoJob.cnt.get() shouldBe 0
 
-            val input = obj {
-                AwsNaming.JOB_PK to DemoJob::class.name()
-            }
-
+            val input = DemoJob().createEmptyJob()
             Then("잡 실행됨") {
                 dispatcher.handleRequest(input)
                 DemoJob.cnt.get() shouldBe 1

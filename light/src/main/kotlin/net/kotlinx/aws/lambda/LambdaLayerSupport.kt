@@ -7,10 +7,15 @@ import aws.sdk.kotlin.services.lambda.publishLayerVersion
 import aws.sdk.kotlin.services.lambda.updateFunctionConfiguration
 
 /** 레이어 업데이트 될때마다 버전이 올라가니 주의할것!  */
-suspend fun LambdaClient.publishLayerVersion(bucket: String, key: String, layerName: String): String {
+suspend fun LambdaClient.publishLayerVersion(
+    bucket: String,
+    key: String,
+    layerName: String,
+    runtimes: List<aws.sdk.kotlin.services.lambda.model.Runtime> = listOf(aws.sdk.kotlin.services.lambda.model.Runtime.Java21)
+): String {
     val layer = this.publishLayerVersion {
         this.layerName = layerName
-        this.compatibleRuntimes = listOf(aws.sdk.kotlin.services.lambda.model.Runtime.Java11)
+        this.compatibleRuntimes = runtimes
         this.content {
             this.s3Key = key
             this.s3Bucket = bucket
@@ -24,7 +29,7 @@ suspend fun LambdaClient.publishLayerVersion(bucket: String, key: String, layerN
  * updateFunctionLayers 호출할 용도로 사용됨
  *  */
 suspend fun LambdaClient.listLayerVersions(layerNames: List<String>): List<LayerVersionsListItem> {
-    return layerNames.map {layerName ->
+    return layerNames.map { layerName ->
         this.listLayerVersions {
             this.layerName = layerName
             this.maxItems = 1

@@ -57,7 +57,7 @@ class CdkLambda : CdkEnum {
     var dlq: IQueue? = null
 
     /** 런타임 */
-    var runtime: Runtime = Runtime.JAVA_17!!
+    var runtime: Runtime = Runtime.JAVA_21!!
 
     /** 스냅스타트를 사용할것인지 */
     var snapstart: Boolean = false
@@ -99,6 +99,9 @@ class CdkLambda : CdkEnum {
     /** 결과 (네임드) */
     lateinit var aliasFun: IFunction
 
+    /** 설명 */
+    var desc: String = ""
+
 
     /** 일반 로드 */
     fun load(stack: Stack): CdkLambda {
@@ -115,7 +118,7 @@ class CdkLambda : CdkEnum {
         return this
     }
 
-    fun create(stack: Stack) {
+    fun create(stack: Stack, block: FunctionProps.Builder.() -> Unit) {
 
         defaultFun = Function(
             stack, logicalName, FunctionProps.builder()
@@ -139,6 +142,8 @@ class CdkLambda : CdkEnum {
                         architecture(Architecture.ARM_64) //ARM이 더 쌈. 하지만 SnapStart를 지원하지 않음 ㅠㅠ
                     }
                 }
+                .description(desc)
+                .apply(block)
                 .build()
         )
 

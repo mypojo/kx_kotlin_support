@@ -22,9 +22,9 @@ class KoreaeximClient(private val secret: String, private val client: OkHttpClie
     /**
      * 실시간 달러 원 환율 리턴
      * 비동기 버전
-     * @param date  주말기준 3일 전 해야 보통 나옴
+     * @param date  주말기준 3일 전 해야 보통 나옴 -> 3도 안되길래 넉넉하게 5
      *  */
-    suspend fun dollarWon(date: String = LocalDate.now().minusDays(3).toYmd()): BigDecimal {
+    suspend fun dollarWon(date: String = LocalDate.now().minusDays(5).toYmd()): BigDecimal {
         val resp = client.await {
             url(HOST) {
                 addQueryParameter("authkey", secret)
@@ -33,7 +33,7 @@ class KoreaeximClient(private val secret: String, private val client: OkHttpClie
             }
         }
         val result = GsonData.parse(resp.respText)
-        check(!result.empty)
+        check(!result.empty) { "${resp.response.code} ${resp.respText}" }
         return result.first { it["cur_unit"].str == "USD" }["deal_bas_r"].str!!.toBigDecimal2()
     }
 

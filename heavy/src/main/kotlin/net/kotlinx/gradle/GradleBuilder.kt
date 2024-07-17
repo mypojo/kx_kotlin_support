@@ -6,6 +6,7 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.AwsInstanceTypeUtil
+import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.code.CodedeployUtil
 import net.kotlinx.aws.code.EcsDeployData
 import net.kotlinx.aws.code.createDeployment
@@ -63,7 +64,7 @@ class GradleBuilder {
      * 이 빌드의 커밋 id 정보
      * AWS 코드빌드 환경의 경우 환경변수 설정을 통해 입력받을 수 있음
      * */
-    var commitId: String = System.getenv("COMMIT_ID") ?: "unknown"
+    var commitId: String = System.getenv(AwsNaming.COMMIT_ID) ?: "unknown"
 
     /** 기본 리트라이 */
     var awsRetry: RetryTemplate = RetryTemplate {
@@ -165,7 +166,10 @@ class GradleBuilder {
         }
     }
 
-    /** 람다배포의 경우 단계별로 진행해야 해서 여기 단축함수를 넣음 */
+    /**
+     * 람다배포의 경우 단계별로 진행해야 해서 여기 단축함수를 넣음
+     * 펑션이 여러개일 수 있어서 functionName 를 별도 받는다.
+     *  */
     fun lambdaUpdateFunction(functionName: String, jarFile: File, alias: String? = null) {
         val aws by koinLazy<AwsClient>()
         runBlocking {

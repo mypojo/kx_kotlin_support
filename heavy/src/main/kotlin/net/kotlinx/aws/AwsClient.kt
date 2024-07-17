@@ -4,7 +4,6 @@ import aws.sdk.kotlin.services.budgets.BudgetsClient
 import aws.sdk.kotlin.services.codecommit.CodeCommitClient
 import aws.sdk.kotlin.services.codedeploy.CodeDeployClient
 import aws.sdk.kotlin.services.costexplorer.CostExplorerClient
-import aws.sdk.kotlin.services.ec2.Ec2Client
 import aws.sdk.kotlin.services.ecr.EcrClient
 import aws.sdk.kotlin.services.elasticloadbalancingv2.ElasticLoadBalancingV2Client
 import aws.sdk.kotlin.services.eventbridge.EventBridgeClient
@@ -23,7 +22,7 @@ class AwsClient(awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     val cost: CostExplorerClient by lazy { CostExplorerClient { awsConfig.build(this) }.regist(awsConfig) }
     val budget: BudgetsClient by lazy { BudgetsClient { awsConfig.build(this) }.regist(awsConfig) }
     val ses: SesClient by lazy { SesClient { awsConfig.build(this) }.regist(awsConfig) }
-    val elb: ElasticLoadBalancingV2Client by lazy { ElasticLoadBalancingV2Client  { awsConfig.build(this) }.regist(awsConfig) }
+    val elb: ElasticLoadBalancingV2Client by lazy { ElasticLoadBalancingV2Client { awsConfig.build(this) }.regist(awsConfig) }
 
     //==================================================== 저장소 ======================================================
     val rds: RdsClient by lazy { RdsClient { awsConfig.build(this) }.regist(awsConfig) }
@@ -31,8 +30,8 @@ class AwsClient(awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     val sm: SecretsManagerClient by lazy { SecretsManagerClient { awsConfig.build(this) }.regist(awsConfig) }
     val event: EventBridgeClient by lazy { EventBridgeClient { awsConfig.build(this) }.regist(awsConfig) }
 
-    //==================================================== 컴퓨팅 인프라 ======================================================
-    val ec2: Ec2Client by lazy { Ec2Client { awsConfig.build(this) }.regist(awsConfig) }
+//    //==================================================== 컴퓨팅 인프라 ======================================================
+//    val ec2: Ec2Client by lazy { Ec2Client { awsConfig.build(this) }.regist(awsConfig) }  //이거 안써서 일단 주석처리
 
     //==================================================== 코드 시리즈 ======================================================
     val codeDeploy: CodeDeployClient by lazy { CodeDeployClient { awsConfig.build(this) }.regist(awsConfig) }

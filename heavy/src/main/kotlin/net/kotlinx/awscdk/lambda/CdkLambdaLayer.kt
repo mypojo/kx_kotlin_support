@@ -17,6 +17,7 @@ import software.amazon.awscdk.services.s3.IBucket
  *
  * 주의!!! 그냥 함수 퍼블링하면 자동으로 레이어 생긴다. 굳이 CDK로 만들 필요 없음
  * */
+@Deprecated("그냥 SDK API 호출하세요")
 class CdkLambdaLayer : CdkInterface {
 
     @Kdsl
