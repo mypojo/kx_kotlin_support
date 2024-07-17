@@ -136,10 +136,9 @@ publishing {
     }
     repositories {
         maven {
-            val name = providers["repsy.maven.username"]
-            url = uri("https://repo.repsy.io/mvn/${name}/kotlin_support")
+            url = uri("https://repo.repsy.io/mvn/mypojo/kotlin_support")
             credentials {
-                username = name
+                username = providers["repsy.maven.username"]
                 password = providers["repsy.maven.password"]
             }
         }

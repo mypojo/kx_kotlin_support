@@ -4,7 +4,7 @@ import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 
 /**
- * 자주 사용되는거 모음
+ * 자주 사용되는거 모음.
  * 은근히 공통화가 안되어있음
  * */
 object OkHttpMediaType {
