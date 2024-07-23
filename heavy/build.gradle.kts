@@ -27,7 +27,7 @@ dependencies {
     api("aws.sdk.kotlin:codedeploy:$awsVersion")
     api("aws.sdk.kotlin:codecommit:$awsVersion")
     api("aws.sdk.kotlin:secretsmanager:$awsVersion")
-    //api("aws.sdk.kotlin:ec2:$awsVersion") //용량 큼 -> 거의 사용하지 않아서 일단 중지
+    api("aws.sdk.kotlin:ec2:$awsVersion") //용량 큼. 27 mbyte
     api("aws.sdk.kotlin:ecr:$awsVersion")
 
     //덜중요한것들

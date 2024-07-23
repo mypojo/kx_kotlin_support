@@ -25,7 +25,7 @@ fun main() {
 
     Koins.startupOnlyOnce(BeSpecHeavy.MODULES)
 
-    val workspace = ResourceHolder.getWorkspace().slashDir("AWS비용")
+    val workspace = ResourceHolder.WORKSPACE.slashDir("AWS비용")
 
     log.trace { "먼저 비용정보를 AWS에서 받아온 후 캐싱한다. (API 호출당 비용 발생함)" }
     val dataFile = File(workspace, "AWS비용캐시_.${LocalDate.now().toYmdF01()}.json")

@@ -13,7 +13,7 @@ class Zip4jModuleTest : BeSpecLog() {
         Given("Zip4jModule") {
 
             Then("비밀번호를 걸어서 압죽") {
-                val workspace = ResourceHolder.getWorkspace()
+                val workspace = ResourceHolder.WORKSPACE
                 Zip4jModule {
                     files = listOf(
                         workspace.slash("temp-estimate_validate"),
@@ -27,7 +27,7 @@ class Zip4jModuleTest : BeSpecLog() {
             }
 
             Then("분할압축") {
-                val workspace = ResourceHolder.getWorkspace().slash("업체제공데이터_월간")
+                val workspace = ResourceHolder.WORKSPACE.slash("업체제공데이터_월간")
                 Zip4jModule {
                     files = listOf(
                         workspace.slash("제공데이터_202402.zip"),

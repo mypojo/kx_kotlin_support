@@ -10,8 +10,7 @@ import net.kotlinx.kotest.modules.BeSpecHeavy
 
 class SsmStoreTest : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile28() }
-    private val aws by lazy { koin<AwsClient1>(profileName) }
+    private val aws by lazy { koin<AwsClient1>(findProfile28) }
 
     init {
         initTest(KotestUtil.PROJECT)

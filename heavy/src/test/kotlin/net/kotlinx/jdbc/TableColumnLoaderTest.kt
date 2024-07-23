@@ -25,7 +25,7 @@ class TableColumnLoaderTest : BeSpecHeavy() {
                 val loader = TableColumnLoader(dataSource, "${awsConfig.profileName}_dev")
                 val columns = loader.loadMysqlColumns()
                 val jsonText = GsonData.fromObj(columns)
-                ResourceHolder.getWorkspace().slash("test").slash("tables.txt").writeText(jsonText.toString())
+                ResourceHolder.WORKSPACE.slash("test").slash("tables.txt").writeText(jsonText.toString())
             }
         }
     }

@@ -13,7 +13,10 @@ suspend fun EcsClient.touch(clusterName: String, serviceName: String): UpdateSer
 }
 
 
-/** 테스트 필요! */
+/**
+ * desiredCount 수만 변경한다
+ * 만약 Min tasks 이상으로 늘리더라도 오토스케일링이 작동하면 Min tasks 로 돌아간다
+ *  */
 suspend fun EcsClient.updateServiceCount(clusterName: String, serviceName: String, cnt: Int): UpdateServiceResponse = this.updateService {
     this.cluster = clusterName
     this.service = serviceName

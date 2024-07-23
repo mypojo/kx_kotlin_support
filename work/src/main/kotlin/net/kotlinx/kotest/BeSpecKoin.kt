@@ -21,30 +21,30 @@ abstract class BeSpecKoin(modules: List<Module>) : BeSpecLog() {
     }
 
     /** sk */
-    fun findProfile28(): String = findProfile("28")
+    val findProfile28 by lazy { findProfile("28") }
 
     /** nd */
-    fun findProfile46(): String = findProfile("46")
+    val findProfile46 by lazy { findProfile("46", "80") }
 
     /** ct */
-    fun findProfile48(): String = findProfile("48")
+    val findProfile48 by lazy { findProfile("48") }
 
     /** ap */
-    fun findProfile97(): String = findProfile("97","71")
+    val findProfile97 by lazy { findProfile("97", "71") }
 
     /** nb */
-    fun findProfile99(): String = findProfile("99")
+    val findProfile99 by lazy { findProfile("99") }
 
     /** sm */
-    fun findProfile9780(): String = findProfile("97","80")
+    val findProfile9780 by lazy { findProfile("97", "80") }
 
 
     /**
      * ex)
-     * private val profileName by lazy { findProfile99() }
+     * private val profileName by lazy { findProfile99 }
      * private val aws by lazy { koin<AwsClient1>(profileName) }
      * */
-    private fun findProfile(id: String,suff: String? = null): String = Aws1Module.IAM_PROFILES.findProfileByAwsId(id,suff)
+    private fun findProfile(id: String, suff: String? = null): String = Aws1Module.IAM_PROFILES.findProfileByAwsId(id, suff)
 
 //    override fun extensions() = listOf(
 //        io.kotest.koin.KoinExtension(

@@ -10,7 +10,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class DynamoLockManagerTest : BeSpecHeavy() {
 
-    private val lockModule by lazy { koin<DynamoLockManager>(findProfile97()) }
+    private val lockModule by lazy { koin<DynamoLockManager>(findProfile97) }
 
     init {
         initTest(KotestUtil.PROJECT)
@@ -38,7 +38,7 @@ class DynamoLockManagerTest : BeSpecHeavy() {
                     }
                     lockModule.acquireLock(req02).use {
                         log.info { "두번째 락(다른값)을 잡습니다..." }
-                        3.seconds.sleep()
+                        2.seconds.sleep()
                         log.info { "두번째 락 종료" }
                     }
 

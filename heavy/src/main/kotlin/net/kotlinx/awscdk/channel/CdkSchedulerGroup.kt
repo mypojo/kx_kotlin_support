@@ -72,7 +72,11 @@ class CdkSchedulerGroup : CdkInterface {
 
         /**
          * 한국 시간으로 입력하면됨
-         * ex) 1 3 * * ? *
+         * 분/시/일/월/요일/년
+         * ex) 55 07 ? * 2-6 *  => 평일(월~금) 7시 55분
+         *
+         * 주의!! 2가 월요일이다!!!
+         * 주의!! 요일을 지정할경우 날짜에는 알 수 없다는 의미인 ? 를 지정해야 한다
          * */
         lateinit var cronExpression: String
 

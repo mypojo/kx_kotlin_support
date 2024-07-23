@@ -14,14 +14,14 @@ import java.io.File
 
 class LazyLoadFilePropertyTest : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile28() }
+    private val profileName by lazy { findProfile28 }
 
     init {
         initTest(KotestUtil.PROJECT)
 
         Given("LazyLoadFileProperty") {
 
-            val workspace = ResourceHolder.getWorkspace().slash(LazyLoadFilePropertyTest::class.name())
+            val workspace = ResourceHolder.WORKSPACE.slash(LazyLoadFilePropertyTest::class.name())
 
             When("간단한 설정으로 외부 리소스를 로컬 File로 가져온다") {
 

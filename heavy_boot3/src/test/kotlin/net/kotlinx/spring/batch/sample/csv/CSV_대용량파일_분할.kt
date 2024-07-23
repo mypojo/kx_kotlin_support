@@ -17,7 +17,7 @@ class CSV_대용량파일_분할 : BeSpecLog() {
         Given("BatchExecutor") {
             val limitSize = 300
             Then("파일분리 - 해당 파일을 $limitSize 건당 1개의 파일로 분리") {
-                val out = ResourceHolder.getWorkspace().slash("파일분리").apply { mkdirs() }
+                val out = ResourceHolder.WORKSPACE.slash("파일분리").apply { mkdirs() }
                 val context = BatchExecutor {
                     itemReader = (0..1000).toItemReader()
                     itemProcessor = { arrayOf("N${it}", "X${it}") }

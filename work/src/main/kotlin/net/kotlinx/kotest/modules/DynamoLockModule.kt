@@ -24,7 +24,7 @@ object DynamoLockModule : KoinModule {
                     tableName = "dist_lock-dev"
                     leaseDuration = 2
                     heartbeatPeriod = 1
-                    defaultAdditionalTimeout = 3
+                    defaultAdditionalTimeout = 4
                 }
             }
         }

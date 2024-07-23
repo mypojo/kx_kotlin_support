@@ -27,7 +27,7 @@ internal class OkHttpSupportTest : BeSpecHeavy() {
             }
 
             When("파일 다운로드시 - 캐시 적용") {
-                val file = ResourceHolder.getWorkspace().slash("kotest").slash("demo.jpg")
+                val file = ResourceHolder.WORKSPACE.slash("kotest").slash("demo.jpg")
                 file.delete()
                 val url = "https://flexible.img.hani.co.kr/flexible/normal/970/777/imgdb/resize/2019/0926/00501881_20190926.JPG" //이미지는 아무거나
 

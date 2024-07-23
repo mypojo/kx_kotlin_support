@@ -14,7 +14,7 @@ import net.kotlinx.kotest.modules.BeSpecHeavy
 
 class SesSupportKtTest : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile28() }
+    private val profileName by lazy { findProfile99 }
     private val aws by lazy { koin<AwsClient>(profileName) }
 
     init {

@@ -11,14 +11,13 @@ import net.kotlinx.kotest.modules.BeSpecHeavy
 
 class DynamoDbSupportRawKtTest : BeSpecHeavy() {
 
-    val profile = findProfile97()
 
     init {
         initTest(KotestUtil.IGNORE)
 
         Given("DDB 로우 API 조회") {
 
-            val aws = koin<AwsClient1>(profile)
+            val aws = koin<AwsClient1>(findProfile97)
 
             Then("getItem") {
 
@@ -43,7 +42,7 @@ class DynamoDbSupportRawKtTest : BeSpecHeavy() {
                     this.consistentRead = false
                     this.limit = 10
                     this.filterExpression = exp.expression()
-                    this.expressionAttributeValues =exp.expressionAttributeValues()
+                    this.expressionAttributeValues = exp.expressionAttributeValues()
                 }
                 resp.items!!.forEach {
                     println(it)

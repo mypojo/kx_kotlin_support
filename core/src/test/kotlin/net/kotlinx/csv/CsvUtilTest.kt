@@ -14,7 +14,7 @@ internal class CsvUtilTest : BeSpecLog() {
 
         Given("CsvUtil") {
 
-            val workspace = ResourceHolder.getWorkspace()
+            val workspace = ResourceHolder.WORKSPACE
 
             Then("기본기능테스트") {
                 val rows = listOf(

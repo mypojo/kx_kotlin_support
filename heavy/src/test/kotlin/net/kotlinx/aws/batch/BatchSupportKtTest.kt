@@ -17,8 +17,7 @@ class BatchSupportKtTest : BeSpecHeavy() {
 
         Given("BatchSupportKt") {
 
-            val profile = findProfile97()
-            val aws by koinLazy<AwsClient>(profile)
+            val aws by koinLazy<AwsClient>(findProfile97)
 
             xThen("잡 리스팅") {
                 aws.batch.listJobs {

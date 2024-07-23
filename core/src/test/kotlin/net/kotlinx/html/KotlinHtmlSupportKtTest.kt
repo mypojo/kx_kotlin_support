@@ -74,7 +74,7 @@ class KotlinHtmlSupportKtTest : BeSpecLog() {
                 }
 
                 html.length shouldBeGreaterThan 10
-                val htmlFile = ResourceHolder.getWorkspace().slash("KotlinHtmlSupport").slash("index.html")
+                val htmlFile = ResourceHolder.WORKSPACE.slash("KotlinHtmlSupport").slash("index.html")
                 htmlFile.writeText(html)
                 log.info { "htmlFile $htmlFile" }
             }

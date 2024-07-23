@@ -22,7 +22,7 @@ class CsvItemWriterTemplateTest : BeSpecLog() {
 
         Given("CsvItemWriterTemplate") {
 
-            val workspace = ResourceHolder.getWorkspace().slash(CsvItemWriterTemplate::class.name())
+            val workspace = ResourceHolder.WORKSPACE.slash(CsvItemWriterTemplate::class.name())
             workspace.deleteRecursively() //주의!!
             log.info { "workspace : $workspace" }
 

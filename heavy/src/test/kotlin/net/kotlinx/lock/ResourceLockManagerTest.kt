@@ -8,31 +8,33 @@ import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
-import software.amazon.awssdk.utils.http.SdkHttpUtils
 import java.util.concurrent.Callable
 import kotlin.time.Duration.Companion.seconds
 
 class ResourceLockManagerTest : BeSpecHeavy() {
 
-    private val lockManager by lazy { koin<ResourceLockManager>(findProfile97()) }
+    private val lockManager by lazy { koin<ResourceLockManager>(findProfile97) }
 
     init {
         initTest(KotestUtil.FAST)
 
         Given("lockModule 기본테스트") {
             val lockName = "metaApiToken#987"
+            log.trace { "system 테이블에 ${lockName}/일련번호 로 락이 생김" }
+
             val repository = lockManager.repository
+
             val jobs = listOf(
                 "작업A" to 2,
                 "작업B" to 4,
                 "작업C" to 3,
             )
+            log.trace { "${jobs.size}개의 잡이 각각 x개의 리소스를 요청함" }
 
             Then("동시 스래드 실행 -> 락 확보") {
                 jobs.map { job ->
                     Callable {
                         runBlocking {
-                            SdkHttpUtils.parseNonProxyHostsEnvironmentVariable()
                             val req = ResourceLockReq {
                                 resourcePk = lockName
                                 lockCnt = job.second
@@ -50,9 +52,26 @@ class ResourceLockManagerTest : BeSpecHeavy() {
                 }.parallelExecute() //락모듈은 스래드로 실행해야함!! 코루틴 ㄴㄴ
             }
 
+            Then("추가 작업 실행 -> 기존 리소스 재사용") {
+                val req = ResourceLockReq {
+                    resourcePk = lockName
+                    lockCnt = 4
+                    div = "추가작업"
+                    cause = "테스트"
+                }
+                lockManager.acquireLock(req).use {
+                    1.seconds.delay()
+                }
+            }
+
+            Then("리소스 숫자 체크") {
+                val resoueces = repository.findAllByPk(lockName)
+                log.trace { "추가 작업을 했더라도 리소스가 더 늘지는 않음" }
+                resoueces.size shouldBe jobs.sumOf { it.second }
+            }
+
             Then("클리어") {
                 val resoueces = repository.findAllByPk(lockName)
-                resoueces.size shouldBe jobs.sumOf { it.second }
                 resoueces.forEach { repository.deleteItem(it) }
             }
         }

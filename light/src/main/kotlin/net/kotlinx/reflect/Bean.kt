@@ -51,14 +51,30 @@ class Bean(
 
     //==================================================== 간단출력 ======================================================
 
-    /** 단건 그리드 변환 */
-    fun toTextGrid(): TextGrid = props.keys.toList().toTextGrid(listOf(toArray()))
+    /**
+     * 순서를 가진 키 리스트
+     * 데이터클래스 && 생성자 있으면 넣어주고, 아니면 그냥 쓴다.
+     *  */
+    val ordered: List<String> by lazy {
+        if (clazz.isData) {
+            val constructor = clazz.constructors.maxBy { it.parameters.size }
+            constructor.parameters.map { it.name!! }
+        } else {
+            props.keys.toList()
+        }
+    }
 
-    /** 단건 어레이로 변환 */
-    fun toArray(): Array<Any?> = props.values.map { it.getter.call(data) }.toTypedArray<Any?>()
+    /** 단건 그리드 변환 */
+    fun toTextGrid(): TextGrid = ordered.toTextGrid(listOf(toArray()))
+
+    /** 리스트 변환 */
+    fun toList(): List<Any?> = ordered.map { props[it]!!.getter.call(data) }
+
+    /** 어레이로 변환 (편의용도) */
+    fun toArray(): Array<Any?> = toList().toTypedArray<Any?>()
 
     /** 헤더값 추출 */
-    fun toHeader(): List<String> = props.keys.toList()
+    fun toHeader(): List<String> = ordered.toList()
 
     //==================================================== 변환 ======================================================
 
@@ -90,6 +106,7 @@ class Bean(
         /**
          * CSV 등에서 객체를 생성할때 사용함
          * 수신 객체는 단순한 dto 여야 함
+         * 생성자와 라인의 순서가 완전히 일치해야함
          *  */
         fun <T : Any> fromLine(to: KClass<T>, lines: List<String>): T {
             try {

@@ -1,6 +1,6 @@
 package net.kotlinx.aws
 
-import net.kotlinx.system.ResourceHolder.getWorkspace
+import net.kotlinx.system.ResourceHolder
 import java.io.File
 
 /**
@@ -29,7 +29,7 @@ enum class AwsInstanceType(val root: File) {
     //==================================================== 기타 ======================================================
 
     /** 로컬  */
-    LOCAL(getWorkspace());
+    LOCAL(ResourceHolder.WORKSPACE);
 
     /** 클라우드와치 로그 링크가 가능한 타입들 */
     fun isLogLinkAble(): Boolean = this in setOf(LAMBDA, BATCH, ECS)

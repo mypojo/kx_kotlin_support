@@ -13,13 +13,12 @@ class BudgetBasicMonthlyAlertConfigTest : BeSpecHeavy() {
 
         Given("지난달 대비 xx% 예상 or xx% 도달시 알람 발송") {
 
-
             val profiles = listOf(
-                findProfile28(),
-                findProfile46(),
-                findProfile48(),
-                findProfile97(),
-                findProfile99(),
+                findProfile99,
+                findProfile46,
+                findProfile48,
+                findProfile97,
+                findProfile99,
             )
 
             profiles.forEach { profile ->

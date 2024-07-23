@@ -13,7 +13,7 @@ import net.kotlinx.string.removeFrom
 
 internal class AthenaModuleTest : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile99() }
+    private val profileName by lazy { findProfile99 }
 
     init {
         initTest(KotestUtil.PROJECT)

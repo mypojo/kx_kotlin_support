@@ -8,7 +8,7 @@ import net.kotlinx.kotest.modules.BeSpecHeavy
 
 internal class S3PresignSupportTest : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile28() }
+    private val profileName by lazy { findProfile99 }
     private val aws by lazy { koin<AwsClient1>(profileName) }
 
     init {

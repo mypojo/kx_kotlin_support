@@ -6,8 +6,6 @@ import jakarta.servlet.http.HttpServletResponse
 import net.kotlinx.aws.AwsInstanceMetadata
 import net.kotlinx.domain.eventLog.EventPublishClient
 import net.kotlinx.domain.eventLog.EventUtil
-import net.kotlinx.domain.menu.Menu
-import net.kotlinx.domain.menu.MenuMapping
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.number.toLocalDateTime
@@ -57,8 +55,8 @@ class EventWebPublisherSample : OncePerRequestFilter() {
 //                event.errMsg = ExceptionUtil.toString(exception)
 //            }
 
-            val menuMapping = load()
-            event.eventDiv = menuMapping?.url ?: request.requestURI
+//            val menuMapping = load()
+//            event.eventDiv = menuMapping?.url ?: request.requestURI
 
 
             true
@@ -67,7 +65,7 @@ class EventWebPublisherSample : OncePerRequestFilter() {
 
     }
 
-    private fun load(): MenuMapping? = MenuMapping("", "", "", "", "", Menu())
+    //private fun load(): MenuMapping? = MenuMapping("", "", "", "", "", Menu())
 
 
 }

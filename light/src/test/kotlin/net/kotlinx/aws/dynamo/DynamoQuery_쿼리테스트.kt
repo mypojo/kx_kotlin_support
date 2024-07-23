@@ -14,8 +14,7 @@ import net.kotlinx.string.print
 
 internal class DynamoQuery_쿼리테스트 : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile97() }
-    private val aws by lazy { koin<AwsClient1>(profileName) }
+    private val aws by lazy { koin<AwsClient1>(findProfile97) }
 
     init {
         initTest(KotestUtil.PROJECT)
@@ -24,7 +23,7 @@ internal class DynamoQuery_쿼리테스트 : BeSpecHeavy() {
 
             net.kotlinx.domain.job.Job.TABLE_NAME = "job-dev"
 
-            When("잡 상태 인덱스를 통한 조회"){
+            When("잡 상태 인덱스를 통한 조회") {
                 /** 쿼리 설정 */
                 fun DynamoQuery.queryConfig() {
                     indexName = "gidx-jobStatus-pk"

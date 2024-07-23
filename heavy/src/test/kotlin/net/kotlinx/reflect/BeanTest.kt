@@ -1,9 +1,16 @@
 package net.kotlinx.reflect
 
+import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
+import net.kotlinx.csv.readCsvLines
+import net.kotlinx.csv.writeCsvLines
+import net.kotlinx.file.slash
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
+import net.kotlinx.string.print
+import net.kotlinx.system.OsType
+import net.kotlinx.system.ResourceHolder
 
 class BeanTest : BeSpecLog() {
 
@@ -34,6 +41,16 @@ class BeanTest : BeSpecLog() {
         var tag: String? = null,
     )
 
+    data class Common01(
+        val name: String,
+        val age: Int,
+        val osType: OsType,
+    )
+
+    class Common02 {
+        var tag: String? = null
+    }
+
     init {
         initTest(KotestUtil.FAST)
 
@@ -63,6 +80,37 @@ class BeanTest : BeSpecLog() {
 
                 val fromLine = Bean.fromLine(PooDto3::class, listOf("김철수", "26", "myTag"))
                 Bean(fromLine).toTextGrid().print()
+            }
+        }
+
+        Given("CSV 읽고 쓰기 처리") {
+
+            val file = ResourceHolder.WORKSPACE.slash("csvReadWriteTest").slash("demo.csv")
+
+            val datas = listOf(
+                Common01("댕댕이", 2, OsType.MAC),
+                Common01("고양이", 3, OsType.LINUX),
+                Common01("영감님", 67, OsType.WINDOWS),
+            )
+
+            Then("객체 -> csv") {
+                file.writeCsvLines(datas.map { Bean(it).toList() })
+                file.length() shouldBeGreaterThan 10
+            }
+
+            Then("csv -> 객체") {
+                file.readCsvLines().forEach {
+                    log.info { " -> 라인 : $it" }
+                }
+                val lines = file.readCsvLines().fromLines<Common01>()
+                lines.print()
+            }
+        }
+
+        Given("임시테스트") {
+            Then("csv -> 객체") {
+                println(Common01::class.constructors.maxBy { it.parameters.size })
+                println(Common02::class.constructors.maxBy { it.parameters.size })
             }
         }
     }

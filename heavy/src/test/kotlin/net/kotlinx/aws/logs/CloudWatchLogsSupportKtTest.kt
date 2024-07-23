@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 
 class CloudWatchLogsSupportKtTest : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile28() }
+    private val profileName by lazy { findProfile99 }
     private val aws by lazy { koin<AwsClient1>(profileName) }
 
     init {
@@ -23,7 +23,7 @@ class CloudWatchLogsSupportKtTest : BeSpecHeavy() {
 
         Given("CloudWatchLogsSupportKt") {
             xThen("로그 다운로드") {
-                var out = ResourceHolder.getWorkspace().slash("로그다운로드").slash("log.txt")
+                var out = ResourceHolder.WORKSPACE.slash("로그다운로드").slash("log.txt")
                 aws.logs.download(
                     logGroupName = "/a/b/c",
                     logStreamName = "xxx",

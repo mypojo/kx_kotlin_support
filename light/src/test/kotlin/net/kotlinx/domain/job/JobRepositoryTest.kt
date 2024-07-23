@@ -11,7 +11,7 @@ import net.kotlinx.kotest.modules.BeSpecLight
 
 class JobRepositoryTest : BeSpecLight() {
 
-    private val jobRepository by koinLazy<JobRepository>(findProfile97())
+    private val jobRepository by koinLazy<JobRepository>(findProfile97)
 
     init {
         initTest(KotestUtil.PROJECT)

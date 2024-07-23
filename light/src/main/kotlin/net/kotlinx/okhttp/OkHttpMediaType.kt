@@ -24,4 +24,9 @@ object OkHttpMediaType {
     /** multipart */
     val MULTIPART: MediaType = "multipart/form-data".toMediaType()
 
+    /** octet-stream */
+    val STREAM: MediaType = "application/octet-stream".toMediaType()
+
+
+
 }

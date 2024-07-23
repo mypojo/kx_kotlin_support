@@ -5,6 +5,7 @@ import net.kotlinx.string.CharSets
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType
+import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.nio.charset.Charset
@@ -24,7 +25,7 @@ class OkHttpReq {
     /** 헤더 */
     var header: Map<String, String> = emptyMap()
 
-    /** post 등 */
+    /** post / 파일업로드\ 등 */
     var body: Any? = null
 
     /**
@@ -40,9 +41,14 @@ class OkHttpReq {
     }
 
     fun build(): Request {
+        //멀티파트가 아닌경우 json 등으로 간주해서 toString
+        val requestBody = when (val input = body) {
+            is MultipartBody -> input
+            else -> input?.toString()?.toRequestBody(mediaType)
+        }
         val builder = Request.Builder()
             .url(url)
-            .method(method, body?.toString()?.toRequestBody(mediaType))
+            .method(method, requestBody)
         header.forEach { (k, v) -> builder.addHeader(k, v) }
         return builder.build()
     }

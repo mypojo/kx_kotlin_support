@@ -4,7 +4,7 @@ import java.io.File
 
 /**
  * 파일을 패스 형식으로 나타낼때
- * ex) ResourceHolder.getWorkspace().slash("work").slash("kotlin.html")
+ * ex) ResourceHolder.WORKSPACE.slash("work").slash("kotlin.html")
  *  */
 fun File.slash(name: String): File {
     this.mkdirs()

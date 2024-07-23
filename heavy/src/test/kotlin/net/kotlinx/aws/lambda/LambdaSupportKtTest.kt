@@ -13,8 +13,7 @@ import net.kotlinx.time.toKr01
 
 internal class LambdaSupportKtTest : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile28() }
-    private val aws by lazy { koin<AwsClient1>(profileName) }
+    private val aws by lazy { koin<AwsClient1>(findProfile28) }
 
     init {
         initTest(KotestUtil.PROJECT)
@@ -31,9 +30,9 @@ internal class LambdaSupportKtTest : BeSpecHeavy() {
 
             Then("레이어 최신버전 확인") {
                 val layerNames = listOf(
-                    "$profileName-layer_v1-dev",
-                    "$profileName-layer_v2-dev",
-                    "$profileName-layer_v3-dev",
+                    "$findProfile28-layer_v1-dev",
+                    "$findProfile28-layer_v2-dev",
+                    "$findProfile28-layer_v3-dev",
                 )
                 val layers = aws.lambda.listLayerVersions(layerNames)
 

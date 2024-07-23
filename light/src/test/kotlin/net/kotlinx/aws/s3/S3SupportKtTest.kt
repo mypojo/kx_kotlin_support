@@ -15,8 +15,7 @@ import net.kotlinx.system.ResourceHolder
 
 internal class S3SupportKtTest : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile28() }
-    private val aws by lazy { koin<AwsClient1>(profileName) }
+    private val aws by lazy { koin<AwsClient1>(findProfile28) }
 
     init {
         initTest(KotestUtil.PROJECT)
@@ -30,21 +29,21 @@ internal class S3SupportKtTest : BeSpecHeavy() {
             }
 
             Then("페이징읽기") {
-                val files = aws.s3.listFiles("$profileName-work-dev", "code/")
+                val files = aws.s3.listFiles("$findProfile28-work-dev", "code/")
                 files.size shouldBeGreaterThan 0
                 files.print()
             }
 
             Then("디렉토링") {
-                val files = aws.s3.listDirs("$profileName-work-dev", "collect/")
+                val files = aws.s3.listDirs("$findProfile28-work-dev", "collect/")
                 files.size shouldBeGreaterThan 0
                 files.print()
             }
 
             xThen("멀티파트 업로드") {
                 LogBackUtil.logLevelTo(testClassName, Level.TRACE)
-                val file = ResourceHolder.getWorkspace().slash("aa").slash("bb-202405.csv.zip")
-                aws.s3.putObjectMultipart("$profileName-work-dev", "upload/temp.csv", file, 100)
+                val file = ResourceHolder.WORKSPACE.slash("aa").slash("bb-202405.csv.zip")
+                aws.s3.putObjectMultipart("$findProfile28-work-dev", "upload/temp.csv", file, 100)
             }
         }
     }

@@ -45,9 +45,25 @@ class CdkCodeBuild : CdkInterface {
 
     /**
      * 그래들 명령어들
-     * ex)  :service:batch:deployBatch
      *  */
     lateinit var gradleCmds: List<String>
+
+    /**
+     * 그래들 명령어 간단등록
+     * ex)  :service:batch:deployBatch
+     *  */
+    fun gradleCmds(vararg cmds: String) {
+        gradleCmds = cmds.map {
+            listOf(
+                "/opt/gradle/gradle-$gradleVersion/bin/gradle",
+                "--parallel",  //병렬처리
+                "--build-cache", //캐시온
+                "-g /opt/.gradle",
+                it,
+                "-Djib.console=plain",  //JIB 로그 제거
+            ).joinToString(" ")
+        }
+    }
 
     /** 내부에서 테스트 등을 수행할 수 있음으로 프로그램 가동용 역할 넣으면됨 */
     lateinit var role: IRole
@@ -137,7 +153,7 @@ class CdkCodeBuild : CdkInterface {
                                 ),
                                 "build" to mapOf(
                                     "commands" to gradleCmds.map {
-                                        "/opt/gradle/gradle-$gradleVersion/bin/gradle --build-cache -g /opt/.gradle $it -Djib.console=plain" //JIB 로그 제거
+                                        "/opt/gradle/gradle-$gradleVersion/bin/gradle --parallel --build-cache -g /opt/.gradle $it -Djib.console=plain" //JIB 로그 제거
                                     }
                                 ),
                             ),

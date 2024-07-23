@@ -1,4 +1,4 @@
-import net.kotlinx.gradle.commandGitCurrentBrabch
+
 import net.kotlinx.gradle.get
 import net.kotlinx.number.halfUp
 import net.kotlinx.number.toSiText
@@ -119,20 +119,12 @@ publishing {
                 from(project(":${projectName}").components["java"])
             }
         }
-        //모든 의존성이 순서대로 다 있어야함. 선언적 설정이라 병렬 처리는 안되는듯..
+        //모든 의존성이 순서대로 다 있어야함.
         pub("core")
-
-        val pubConfig = System.getenv()["pubConfig"]
-        if (pubConfig == null) {
-            pub("light")
-            pub("heavy").run {
-                pub("heavy_boot3")
-            }
-        } else {
-            println("pubConfig = $pubConfig")
-            pubConfig.split(",").forEach { pub(it) }
+        pub("light")
+        pub("heavy").run {
+            pub("heavy_boot3")
         }
-
     }
     repositories {
         maven {
@@ -146,23 +138,12 @@ publishing {
 }
 
 /**
- * 테스트용 메소드
- * other -> gradleTest
- *  */
-tasks.create("gradleTest") {
-    doLast {
-        val currentBrabch = this.project.commandGitCurrentBrabch()
-        check(currentBrabch == "master")
-    }
-}
-
-
-/**
- * org.gradle.configuration-cache=true 가 있어야 병렬 실행됨
+ * org.gradle.configuration-cache=true 가 있어야 doLast가 병렬 실행됨
+ * 일반적인 빌드는 --parallel 만 있어도 병렬 처리됨
  * */
 tasks.register("deployAll") {
     group = "aws"
-    dependsOn(":t1",":t2",":t3")
+    dependsOn(":t1", ":t2", ":t3")
     doLast {
         println("배포 3종 완료!")
     }

@@ -9,7 +9,7 @@ import net.kotlinx.string.print
 
 class ResourceItemRepositoryTest : BeSpecHeavy() {
 
-    private val lock by lazy { koin<ResourceLockManager>(findProfile97()) }
+    private val lock by lazy { koin<ResourceLockManager>(findProfile97) }
 
 
     init {

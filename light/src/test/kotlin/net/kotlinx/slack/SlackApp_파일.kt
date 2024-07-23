@@ -18,7 +18,7 @@ class SlackApp_파일 : BeSpecHeavy() {
         Given("SlackApp") {
 
             val app by koinLazy<SlackApp>()
-            val imgFile = ResourceHolder.getWorkspace().slash("test").slash("img.jpg")
+            val imgFile = ResourceHolder.WORKSPACE.slash("test").slash("img.jpg")
 
             xThen("파일 업로드 (업로드 먼저 해야함)") {
                 log.warn { "안되는데 이유몰랑. 일단 필요없어서 그냥 두기 -> 나중에 모듈화 하자." }

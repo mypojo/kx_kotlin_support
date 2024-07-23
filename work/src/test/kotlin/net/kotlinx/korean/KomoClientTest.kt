@@ -69,7 +69,7 @@ class KomoClientTest : BeSpecHeavy() {
                         }
                     }
                 }
-                val out = ResourceHolder.getWorkspace().slash("crw").slash("crw_kwd.xls")
+                val out = ResourceHolder.WORKSPACE.slash("crw").slash("crw_kwd.xls")
                 xls.wrap().write(out)
                 log.warn { "결과파일 $out" }
             }

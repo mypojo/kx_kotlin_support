@@ -11,8 +11,7 @@ import net.kotlinx.string.print
 
 class SfnSupportKtTest : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile28() }
-    private val aws by lazy { koin<AwsClient1>(profileName) }
+    private val aws by lazy { koin<AwsClient1>(findProfile28) }
 
     init {
         initTest(KotestUtil.PROJECT)
@@ -20,7 +19,7 @@ class SfnSupportKtTest : BeSpecHeavy() {
         Given("SfnSupportKt") {
             Then("SFN 리스팅 & 상세조회") {
 
-                val lists = aws.sfn.listExecutions("${profileName}-batchStep-dev", ExecutionStatus.Succeeded)
+                val lists = aws.sfn.listExecutions("${findProfile28}-batchStep-dev", ExecutionStatus.Succeeded)
                 lists.executions.size shouldBeGreaterThan 0
                 lists.executions.take(10).print()
 

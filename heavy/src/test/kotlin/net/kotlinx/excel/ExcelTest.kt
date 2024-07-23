@@ -41,7 +41,7 @@ class ExcelTest : BeSpecLog() {
                 }
 
                 //래핑해주고 파일로 쓰기
-                val file = File(ResourceHolder.getWorkspace(), "excel/demo.xlsx").apply { parentFile.mkdir() }
+                val file = File(ResourceHolder.WORKSPACE, "excel/demo.xlsx").apply { parentFile.mkdir() }
                 xls.wrap().write(file)
                 log.info("다음 경로에 샘플 파일이 저장됨 -> {}", file.absolutePath)
 

@@ -13,7 +13,9 @@ import kotlin.reflect.full.isSubclassOf
 /**
  * * 간단한 리플렉션 도구
  * 패키지 크기가 커서 의존관계 하위로 이동시킴
+ * @see Bean
  * */
+@Deprecated("Bean 사용")
 object ReflectionLineUtil {
 
     /**
@@ -38,6 +40,7 @@ object ReflectionLineUtil {
      * 한정된 용도로만 사용하자
      * @see Serializable 확인
      * */
+    @Deprecated("Bean 사용")
     fun <T : Any> lineToData(from: Array<String?>, to: KClass<T>): T {
         val constructor = to.constructors.firstOrNull { it.parameters.size == from.size }
         checkNotNull(constructor) { "클래스 [${to.simpleName}] 에 입력인자 길이 ${from.size} 와 일치하는 생성자가 존재하지 않습니다. " }
