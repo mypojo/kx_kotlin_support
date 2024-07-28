@@ -32,6 +32,6 @@ object BatchUtil {
      * 배치 UI 링크를 생성해준다.
      * 리즌은 서울로 고정
      */
-    fun toBatchUiLink(jobId: String, region: String = AwsConfig.SEOUL): String = "https://$region.console.aws.amazon.com/batch/v2/home?region=$region#jobs/detail/$jobId"
+    fun toBatchUiLink(jobId: String, region: String = AwsConfig.REGION_KR): String = "https://$region.console.aws.amazon.com/batch/v2/home?region=$region#jobs/detail/$jobId"
 
 }

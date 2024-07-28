@@ -83,7 +83,10 @@ suspend fun <T : DynamoData> DynamoDbClient.queryAll(query: DynamoQuery, data: T
     }
 }
 
-/** 전체 로드 (메모리 주의) */
+/**
+ * 전체 로드 (메모리 주의)
+ * 아마 내부적으로는 연속 페이징하고 동일할듯?
+ *  */
 suspend fun <T : DynamoData> DynamoDbClient.queryAll(query: DynamoQuery, data: T): List<T> =
     mutableListOf<T>().also { list -> this.queryAll(query, data) { list.addAll(it) } }.toList()
 

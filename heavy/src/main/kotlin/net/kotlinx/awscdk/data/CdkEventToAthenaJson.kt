@@ -38,7 +38,7 @@ class EventLogModule : CdkInterface {
     }
 
     override val logicalName: String
-        get() = "${project.projectName}-event_${eventName}-${deploymentType.name.lowercase()}"
+        get() = "${project.profileName}-event_${eventName}-${deploymentType.name.lowercase()}"
 
     /**
      * 이벤트명.

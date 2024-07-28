@@ -31,7 +31,7 @@ class CdkKdfToAthenaJson : CdkInterface {
     lateinit var role: IRole
 
     /** 아테나 테이블의 데이터베이스 */
-    var databaseName: String = project.projectName.substring(1)
+    var databaseName: String = project.profileName!!.substring(1)
 
     /** 아테나 테이블 네임 */
     lateinit var tableName: String

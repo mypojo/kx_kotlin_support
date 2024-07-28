@@ -17,6 +17,10 @@ enum class DeploymentType {
     DEV
     ;
 
+    /** 접미어 */
+    val suff: String
+        get() = this.name.lowercase()
+
     companion object {
 
         private val log = KotlinLogging.logger {}

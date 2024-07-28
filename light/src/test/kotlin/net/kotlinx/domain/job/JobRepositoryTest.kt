@@ -38,6 +38,11 @@ class JobRepositoryTest : BeSpecLight() {
                     val lastJobs = jobRepository.findByStatusPk(JobStatus.SUCCEEDED).datas
                     lastJobs.printSimple()
                 }
+
+                Then("페이징 없이 전체 쿼리") {
+                    val lastJobs = jobRepository.findAllByStatusPk(JobStatus.SUCCEEDED)
+                    lastJobs.printSimple()
+                }
             }
 
             When("findByPk - PK로 조회") {
@@ -59,7 +64,7 @@ class JobRepositoryTest : BeSpecLight() {
                     jobs.datas.printSimple()
                 }
 
-                Then("동일한걸 페이징으로 나눠서 조회") {
+                Then("동일한걸 페이징으로 나눠서 조회 (jobRepository.findAllByMemberId() 메소드 테스트용)") {
                     val allDatas = doUntilTokenNull { i, last ->
                         log.debug { "[${i}] 페이징 토큰 -> $last" }
                         val jobs = jobRepository.findByMemberId(jobDef, "test1", last as Map<String, AttributeValue>?) {

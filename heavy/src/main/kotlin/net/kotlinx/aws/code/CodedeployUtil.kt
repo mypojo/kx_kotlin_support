@@ -4,6 +4,6 @@ import net.kotlinx.aws.AwsConfig
 
 object CodedeployUtil {
 
-    fun toConsoleLink(deploymentId: String, region: String = AwsConfig.SEOUL): String = "https://$region.console.aws.amazon.com/codesuite/codedeploy/deployments/${deploymentId}?region=$region"
+    fun toConsoleLink(deploymentId: String, region: String = AwsConfig.REGION_KR): String = "https://$region.console.aws.amazon.com/codesuite/codedeploy/deployments/${deploymentId}?region=$region"
 
 }

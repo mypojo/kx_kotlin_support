@@ -2,6 +2,7 @@ package net.kotlinx.awscdk.channel
 
 import net.kotlinx.awscdk.CdkInterface
 import net.kotlinx.awscdk.basic.TagUtil
+import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.events.*
 import software.amazon.awscdk.services.events.targets.SnsTopic
@@ -13,8 +14,13 @@ import software.amazon.awscdk.services.sns.ITopic
  * */
 class CdkEventBus : CdkInterface {
 
+    @Kdsl
+    constructor(block: CdkEventBus.() -> Unit = {}) {
+        apply(block)
+    }
+
     override val logicalName: String
-        get() = "${project.projectName}-ev_${eventBusName}-${deploymentType.name.lowercase()}"
+        get() = "${project.profileName}-ev_${eventBusName}-${deploymentType.name.lowercase()}"
 
     /** 이벤트버스 명 */
     lateinit var eventBusName: String
@@ -32,13 +38,13 @@ class CdkEventBus : CdkInterface {
      * 이들중 특정 패턴을 이 커스텀 이벤트버스로 디스패치함
      * 코드 참고용임!
      *  */
-    fun subscribeFromDefault(stack: Stack, eventPattern: EventPattern = EventPatternUtil.fromSource(DEFAULT_EVENT_LIST)) {
-        val ruleName = "${project.projectName}-event_dispatch_${eventBusName}-${deploymentType.name.lowercase()}"
+    fun subscribeFromDefault(stack: Stack, eventPattern: EventPattern = EventPatternUtil.AWS_CORE) {
+        val ruleName = "${project.profileName}-event_dispatch_${eventBusName}-${deploymentType.name.lowercase()}"
         val eventDisRule = Rule(
             stack, ruleName, RuleProps.builder()
                 .enabled(true)
                 .ruleName(ruleName)
-                .description("AWS(eventbus) => ${project.projectName}(eventbus) / $deploymentType")
+                .description("AWS(eventbus) => ${project.profileName}(eventbus) / $deploymentType")
                 .targets(listOf(software.amazon.awscdk.services.events.targets.EventBus(iEventBus)))
                 .eventPattern(eventPattern)
                 .build()
@@ -47,14 +53,14 @@ class CdkEventBus : CdkInterface {
     }
 
     /** 해당 패턴에 걸린 애들을 SNS로 전송 */
-    fun toSns(stack: Stack, topic: ITopic,toSnsName:String, eventPattern: EventPattern) {
-        val ruleName = "${project.projectName}-event_sns_${toSnsName}-${deploymentType}"
+    fun toSns(stack: Stack, topic: ITopic, toSnsName: String, eventPattern: EventPattern) {
+        val ruleName = "${project.profileName}-event_sns_${toSnsName}-${deploymentType}"
         val eventDisRule = Rule(
             stack, ruleName,
             RuleProps.builder()
                 .enabled(true)
                 .ruleName(ruleName)
-                .description("${project.projectName}(${toSnsName}) => SNS - ${deploymentType.name.lowercase()}")
+                .description("${project.profileName}(${toSnsName}) => SNS - ${deploymentType.name.lowercase()}")
                 .eventBus(iEventBus)
                 .eventPattern(eventPattern)
                 .targets(listOf(SnsTopic(topic)))
@@ -62,18 +68,6 @@ class CdkEventBus : CdkInterface {
         )
         TagUtil.tag(eventDisRule, deploymentType)
     }
-
-
-    companion object {
-        /** 참고 샘플 */
-        val DEFAULT_EVENT_LIST = listOf(
-            "aws.ecs",
-            "aws.sns",
-            "aws.codecommit",
-            "aws.autoscaling",
-        )
-    }
-
 
     //커스텀 정책이 피요할때 (외부 이벤트 주입 등.)
 // new CfnEventBusPolicy(stack, eventBusName+'-policy', {

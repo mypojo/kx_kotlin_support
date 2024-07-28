@@ -13,7 +13,7 @@ class CdkParameter(
 ) : CdkEnum {
 
     override val logicalName: String
-        get() = "/cdk/${project.projectName}/${this.name}/${deploymentType.name.lowercase()}"
+        get() = "/cdk/${project.profileName}/${this.name}/${deploymentType.name.lowercase()}"
 
 
     /**

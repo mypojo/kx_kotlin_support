@@ -46,7 +46,7 @@ class EcsDeployData {
     /** 리즌 */
     lateinit var awsConfig: AwsConfig
 //    /** 리즌 */
-//    var region: String = AwsConfig.SEOUL
+//    var region: String = AwsConfig.REGION_KR
 
     /** ?? */
     lateinit var applicationName: String

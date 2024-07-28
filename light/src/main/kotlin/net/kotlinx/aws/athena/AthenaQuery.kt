@@ -21,6 +21,9 @@ data class AthenaExecute(
     val callback: (suspend (QueryExecution) -> Unit)? = null,
 ) : AthenaQuery {
     override var token: String? = UUID.randomUUID().toString()
+
+    /** S3 결과 저장 */
+    lateinit var outputLocation:String
 }
 
 data class AthenaReadAll(

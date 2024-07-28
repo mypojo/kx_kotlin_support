@@ -1,12 +1,10 @@
 package net.kotlinx.awscdk.data
 
 import net.kotlinx.aws.athena.AthenaTable
-import net.kotlinx.awscdk.CdkProject
+import net.kotlinx.awscdk.CdkInterface
 import net.kotlinx.awscdk.basic.TagSet
 import net.kotlinx.awscdk.iam.*
 import net.kotlinx.core.Kdsl
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.athena.CfnWorkGroup
 import software.amazon.awscdk.services.athena.CfnWorkGroupProps
@@ -17,12 +15,16 @@ import software.amazon.awscdk.services.athena.CfnWorkGroupProps
  * 테이블별 권한부여, 비용분리 등의 기능 포함
  * 권한 샘플 참고용
  * */
-class CdkAthenaUser : KoinComponent {
+class CdkAthenaUser : CdkInterface {
 
     @Kdsl
     constructor(block: CdkAthenaUser.() -> Unit = {}) {
         apply(block)
     }
+
+    /** 사용안함 */
+    override val logicalName: String
+        get() = groupName
 
     /** 팀 이름 (IAM 그룹으로 만들어짐) */
     lateinit var groupName: String
@@ -67,7 +69,6 @@ class CdkAthenaUser : KoinComponent {
      * 태그 적용시 aws:PrincipalTag 를 사용할것
      *  */
     private fun createAthenaTablesStatement(): CdkPolicyStatement {
-        val project: CdkProject by inject()
         return CdkPolicyStatement {
             actions = listOf(
                 "glue:BatchGetPartition",

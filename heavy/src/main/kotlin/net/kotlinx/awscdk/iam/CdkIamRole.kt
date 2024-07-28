@@ -45,7 +45,7 @@ class CdkIamRole {
         try {
             iRole = Role.fromRoleName(stack, this.roleName, this.roleName)
         } catch (e: Exception) {
-            println(" -> [${stack.stackName}] 이미 로드된 객체 -> $roleName")
+            println(" -> [${stack.stackName}] object already loaded -> $roleName")
         }
         return this
     }

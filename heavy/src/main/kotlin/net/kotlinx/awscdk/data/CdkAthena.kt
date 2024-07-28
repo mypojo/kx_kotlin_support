@@ -52,7 +52,7 @@ class CdkAthena : CdkInterface {
         workGroup = CfnWorkGroup(
             stack, workgroupName, CfnWorkGroupProps.builder()
                 .name(workgroupName)
-                .description("${project.projectName} workGroup for $depName")
+                .description("${project.profileName} workGroup for $depName")
                 .workGroupConfiguration(
                     CfnWorkGroup.WorkGroupConfigurationProperty.builder()
                         .bytesScannedCutoffPerQuery(GB_TO_BYTE * bytesScannedCutoffPerQueryGb)

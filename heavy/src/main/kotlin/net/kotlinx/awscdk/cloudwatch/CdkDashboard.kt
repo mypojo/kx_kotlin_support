@@ -18,7 +18,7 @@ class CdkDashboard : CdkInterface {
     }
 
     override val logicalName: String
-        get() = "${project.projectName}-${name}-${deploymentType}"
+        get() = "${project.profileName}-${name}-${deploymentType}"
 
     var name: String = "dashboard"
 

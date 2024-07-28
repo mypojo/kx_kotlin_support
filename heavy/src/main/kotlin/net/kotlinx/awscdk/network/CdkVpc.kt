@@ -34,7 +34,7 @@ class CdkVpc : CdkInterface {
     var natGateways: Int = 1
 
     /** VPC 이름 */
-    override val logicalName: String = "${project.projectName}_vpc-${deploymentType.name.lowercase()}"
+    override val logicalName: String = "${project.profileName}_vpc-${deploymentType.name.lowercase()}"
 
     val feer: IPeer
         get() = Peer.ipv4(iVpc.vpcCidrBlock)
@@ -55,7 +55,7 @@ class CdkVpc : CdkInterface {
             .natGateways(natGateways)
             .vpcName(logicalName)
             .maxAzs(maxAzs)
-            .subnetConfiguration(subnetTypes.map { subnetConfiguration(project.projectName, it) })
+            .subnetConfiguration(subnetTypes.map { subnetConfiguration(project.profileName!!, it) })
             .apply(block)
             .build()
         iVpc = Vpc(stack, logicalName, vpcProps)
@@ -118,7 +118,7 @@ class CdkVpc : CdkInterface {
         try {
             iVpc = Vpc.fromLookup(stack, logicalName, VpcLookupOptions.builder().vpcId(vpcId).isDefault(false).build())
         } catch (e: Exception) {
-            println(" -> [${stack.stackName}] 이미 로드된 객체 -> $logicalName")
+            println(" -> [${stack.stackName}] object already loaded -> $logicalName")
         }
         return this
     }
@@ -129,7 +129,7 @@ class CdkVpc : CdkInterface {
     fun gatewayVpcEndpoint(services: List<GatewayVpcEndpointAwsService> = listOf(GatewayVpcEndpointAwsService.S3, GatewayVpcEndpointAwsService.DYNAMODB)) {
         services.forEach { service ->
             val serviceName = service.name.substringAfterLast(".")
-            val endpointName = "${this.project.projectName}_${this.deploymentType}_endpoint_${serviceName}"
+            val endpointName = "${this.project.profileName}_${this.deploymentType}_endpoint_${serviceName}"
             val endpoint = iVpc.addGatewayEndpoint(endpointName, GatewayVpcEndpointOptions.builder().service(service).build())
             endpoint.addToPolicy(
                 PolicyStatement.Builder.create()
@@ -147,7 +147,7 @@ class CdkVpc : CdkInterface {
      * 하위 프로젝트에서 그대로 호출해도 추가된 부분만 잘 적용됨
      *  */
     fun nacl(stack: Stack, subnetType: SubnetType, entrys: Map<String, CommonNetworkAclEntryOptions>) {
-        val naclId = "${project.projectName}_nacl_${subnetType.name.lowercase()}-${deploymentType.name.lowercase()}"
+        val naclId = "${project.profileName}_nacl_${subnetType.name.lowercase()}-${deploymentType.name.lowercase()}"
         val nacl = NetworkAcl.Builder.create(stack, naclId).vpc(iVpc).subnetSelection(
             SubnetSelection.builder().subnetType(subnetType).build()
         ).build()

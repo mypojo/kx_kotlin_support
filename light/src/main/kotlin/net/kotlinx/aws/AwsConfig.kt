@@ -27,7 +27,7 @@ data class AwsConfig(
     /** AWS ID. API에 따라 필요한 경우가 있음 */
     private val inputAwsId: String? = null,
     /** 기본으로 서울 */
-    val region: String = SEOUL,
+    val region: String = REGION_KR,
 
     /** http client의 타임아웃 */
     val httpConnectTimeout: Duration = 4.seconds, //디폴트 2초
@@ -101,6 +101,10 @@ data class AwsConfig(
 
         private val log = KotlinLogging.logger {}
 
-        const val SEOUL = "ap-northeast-2"
+        /** 한국-서울 */
+        const val REGION_KR: String = "ap-northeast-2"
+
+        /** 북미서버 메인 (인증서 등록 등) */
+        const val REGION_US: String = "us-east-1"
     }
 }

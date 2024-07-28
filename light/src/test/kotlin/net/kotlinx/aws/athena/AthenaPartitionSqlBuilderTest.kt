@@ -19,7 +19,10 @@ internal class AthenaPartitionSqlBuilderTest : BeSpecHeavy() {
 
             Then("파티션_LIMIT") {
                 val start = System.currentTimeMillis()
-                val builder = AthenaPartitionSqlBuilder("sin-data-dev", "data")
+                val builder = AthenaPartitionSqlBuilder {
+                    bucketName = "sin-data-dev"
+                    prefix = "data"
+                }
                 val basicDates = listOf(LocalDate.now().minusDays(1), LocalDate.now(), LocalDate.now().plusDays(1)).map { it.toYmd() }
 
                 val datas = basicDates.flatMap { basicDate ->
@@ -37,7 +40,10 @@ internal class AthenaPartitionSqlBuilderTest : BeSpecHeavy() {
             }
 
             Then("파티션_생성") {
-                val builder = AthenaPartitionSqlBuilder("sin-autobid", "data")
+                val builder = AthenaPartitionSqlBuilder {
+                    bucketName = "sin-autobid"
+                    prefix = "data"
+                }
 
                 //전후 하루씩 추가
                 val basicDates = listOf(LocalDate.now().minusDays(1), LocalDate.now(), LocalDate.now().plusDays(1)).map { it.toYmd() }

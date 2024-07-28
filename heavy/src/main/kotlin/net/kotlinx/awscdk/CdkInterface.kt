@@ -1,5 +1,6 @@
 package net.kotlinx.awscdk
 
+import net.kotlinx.aws.AwsConfig
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.system.DeploymentType
 
@@ -21,11 +22,43 @@ interface CdkInterface {
     /** CDK에 사용할 논리적 이름을 리턴한다. 동적으로 변경 가능 */
     val logicalName: String
 
-    val project: CdkProject
-        get() = koin<CdkProject>()
+    //==================================================== 편의용 단축 도구 ======================================================
 
+    /** 내부 간단 사용용 */
     val deploymentType: DeploymentType
-        get() = koin<DeploymentType>()
+        get() = DEPLOYMENT_TYPE
+
+    /** 내부 간단 사용용 */
+    val suff: String
+        get() = SUFF
+
+    /** 내부 간단 사용용 */
+    val project: AwsConfig
+        get() = PROJECT
+
+    /** 내부 간단 사용용 */
+    val projectName: String
+        get() = PROJECT_NAME
+
+    companion object {
+
+        /** 배포 타입 */
+        val DEPLOYMENT_TYPE: DeploymentType
+            get() = koin<DeploymentType>()
+
+        /** 배포 타입의 접미어 소문자 버전 */
+        val SUFF: String
+            get() = DEPLOYMENT_TYPE.name.lowercase()
+
+        /** 레거시때문에 PROJECT 라는 이름 유지 */
+        val PROJECT: AwsConfig
+            get() = koin<AwsConfig>()
+
+        /** 레거시때문에 PROJECT 라는 이름 유지 */
+        val PROJECT_NAME: String
+            get() = koin<AwsConfig>().profileName!!
+
+    }
 
 }
 

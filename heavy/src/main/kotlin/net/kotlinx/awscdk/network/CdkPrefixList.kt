@@ -27,7 +27,7 @@ class CdkPrefixList : CdkInterface {
     val maxEntries: Int = 50
 
     override val logicalName: String
-        get() = "${project.projectName}-prefix_${name}-${deploymentType.name.lowercase()}"
+        get() = "${project.profileName}-prefix_${name}-${deploymentType.name.lowercase()}"
 
     val feer: IPeer
         get() = Peer.prefixList(prefixList.attrPrefixListId)

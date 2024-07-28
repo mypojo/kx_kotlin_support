@@ -1,5 +1,6 @@
 package net.kotlinx.aws.athena
 
+import net.kotlinx.core.Kdsl
 import java.time.LocalDate
 
 /**
@@ -16,16 +17,34 @@ private const val PARTITION_ADD_LIMIT = 1000
  *
  * 주의!! 가능하면 파티션 대신 projection 이나 아이스버그를 사용하세요
  */
-class AthenaPartitionSqlBuilder(
+class AthenaPartitionSqlBuilder {
+
+    @Kdsl
+    constructor(block: AthenaPartitionSqlBuilder.() -> Unit = {}) {
+        apply(block)
+    }
+
 
     /** ex) sin-work-dev */
-    private val bucketName: String,
+    lateinit var bucketName: String
+
     /**
      * ex) collect
      * ex) cloudtrail/AWSLogs/xxxxxxxxxxx/CloudTrail/ap-northeast-2
      *  */
-    private val prefix: String = "collect",
-) {
+    lateinit var prefix: String
+
+    /**
+     * 다른 데이터베이스에 적용할경우 사용
+     * ex) dev
+     *  */
+    var database: String? = null
+
+    /**
+     * SQL에 사용할 .이 포함된 데이터베이스 이름
+     *  */
+    private val tablePrefix: String by lazy { database?.let { "${it}." } ?: "" }
+
 
     //==================================================== 쿼리 생성 ======================================================
 
@@ -41,7 +60,7 @@ class AthenaPartitionSqlBuilder(
             val pPath = dataMap.entries.joinToString("/") { "${it.key}=${it.value}" }
             "PARTITION (${pData}) LOCATION '${s3Path}/${pPath}/'"
         }
-        return "ALTER TABLE $tableName ADD IF NOT EXISTS\n${append}"
+        return "ALTER TABLE `${tablePrefix}${tableName}` ADD IF NOT EXISTS\n${append}"
     }
 
     /** 대량의 경우 limit로 분리해서 만들어줌 */
@@ -53,7 +72,7 @@ class AthenaPartitionSqlBuilder(
             val pData = dataMap.entries.joinToString(",") { "${it.key}='${it.value}'" }
             "PARTITION (${pData})"
         }
-        return "ALTER TABLE $tableName DROP IF EXISTS\n${append}"
+        return "ALTER TABLE `${tablePrefix}${tableName}` DROP IF EXISTS\n${append}"
     }
 
     /**
@@ -72,7 +91,7 @@ class AthenaPartitionSqlBuilder(
             val pPath = param.values.joinToString("/")
             "PARTITION (${pData}) LOCATION '${s3Path}/${pPath}/'"
         }
-        return "ALTER TABLE $tableName ADD IF NOT EXISTS\n${append}"
+        return "ALTER TABLE `${tablePrefix}${tableName}` ADD IF NOT EXISTS\n${append}"
     }
 
     //==================================================== 데이터 생성 ======================================================

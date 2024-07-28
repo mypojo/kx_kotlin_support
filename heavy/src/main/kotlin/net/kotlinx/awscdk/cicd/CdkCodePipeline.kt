@@ -31,7 +31,7 @@ class CdkCodePipeline : CdkInterface {
 
     /** VPC 이름 */
     override val logicalName: String
-        get() = "${project.projectName}-${name}-${deploymentType.name.lowercase()}"
+        get() = "${project.profileName}-${name}-${deploymentType.name.lowercase()}"
 
     /** 이름 */
     var name: String = "codepipeline"
@@ -109,7 +109,7 @@ class CdkCodePipeline : CdkInterface {
         TagUtil.tag(pipeline, deploymentType)
 
         //성공 실패 등의 알람 추가
-        val snsName = "${project.projectName}-sns_${name}-${deploymentType.name.lowercase()}"
+        val snsName = "${project.profileName}-sns_${name}-${deploymentType.name.lowercase()}"
         NotificationRule(
             stack, snsName, NotificationRuleProps.builder()
                 .notificationRuleName(snsName)

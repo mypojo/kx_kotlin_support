@@ -2,7 +2,7 @@
 
 package net.kotlinx.awscdk.channel
 
-import net.kotlinx.awscdk.CdkProject
+import net.kotlinx.aws.AwsConfig
 import net.kotlinx.awscdk.basic.TagUtil
 import net.kotlinx.json.gson.GsonSet
 import net.kotlinx.system.DeploymentType
@@ -18,7 +18,7 @@ import software.amazon.awscdk.services.events.RuleProps
  * */
 @Deprecated("신제품 출시로 더이상 사용하지 않음")
 class CdkEventBridgeSchedule(
-    val project: CdkProject,
+    val project: AwsConfig,
     val deploymentType: DeploymentType,
     val stack: Stack,
     /** 해당 시케줄에 트리거 할 대상 (람다 등..) */
@@ -33,7 +33,7 @@ class CdkEventBridgeSchedule(
     /** 스케쥴을 등록함. 가능하면 인라인 가능하도록 구성 */
     fun addSchedule(jobName: String, enabled: Boolean, block: CronKrOptions.() -> Unit = {}): Rule {
         val options = CronKrOptions().apply(block)
-        val ruleName = "${project.projectName}-${jobName}-${this.deploymentType}"
+        val ruleName = "${project.profileName}-${jobName}-${this.deploymentType}"
         val comment = GsonSet.TABLE_UTC.toJson(options) //변환 전으로 해야함
         val rule = Rule(
             this.stack, ruleName, RuleProps.builder()

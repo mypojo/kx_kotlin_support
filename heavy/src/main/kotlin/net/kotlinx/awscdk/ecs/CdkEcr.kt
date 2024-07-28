@@ -19,7 +19,7 @@ class CdkEcr(
 ) : CdkEnum {
 
     override val logicalName: String
-        get() = "${project.projectName}-${name}"
+        get() = "${project.profileName}-${name}"
 
     lateinit var iRepository: IRepository
 
@@ -56,7 +56,7 @@ class CdkEcr(
         try {
             iRepository = Repository.fromRepositoryName(stack, "ecr-$logicalName", logicalName)
         } catch (e: Exception) {
-            println(" -> [${stack.stackName}] 이미 로드된 객체 -> $logicalName")
+            println(" -> [${stack.stackName}] object already loaded -> $logicalName")
         }
 
         return this

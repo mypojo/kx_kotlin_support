@@ -117,6 +117,7 @@ class AthenaModule {
             //편의성 콜백 정의
             when (athenaQuery) {
                 is AthenaExecute -> {
+                    athenaQuery.outputLocation = currentQueryExecution!!.resultConfiguration!!.outputLocation!!
                     athenaQuery.callback?.invoke(currentQueryExecution!!) //콜백이 없으면 작동 안함.
                 }
 
@@ -209,14 +210,14 @@ class AthenaModule {
     //==================================================== 폐기 ======================================================
 
     /** 모든 쿼리 로직을 동시에 처리 (동시 실행 제한수 주의) */
-    @Deprecated("일반 코루틴 사용하세요!!")
+    @Deprecated("일반 코루틴 startAndWait 사용하세요!!")
     fun startAndWaitAndExecute(querys: List<AthenaQuery>): List<AthenaQuery> {
         runBlocking { startExecute(querys) }
         return querys
     }
 
     /** 정상 작동하긴 하지만, 코루틴 로직이 여기 있을 필요가 없음. */
-    @Deprecated("일반 코루틴 사용하세요!!")
+    @Deprecated("일반 코루틴 startAndWait 사용하세요!!")
     suspend fun startExecute(querys: List<AthenaQuery>): List<AthenaQuery> {
         val list = querys.map { AthenaExecution(it) }
         withTimeout(checkTimeout) {

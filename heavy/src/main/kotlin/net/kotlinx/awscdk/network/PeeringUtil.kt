@@ -44,7 +44,7 @@ object PeeringUtil {
             vpcId(vpcId)
             peerOwnerId("992365606987")
             peerVpcId("vpc-051199316c97f0013")
-            peerRegion(AwsConfig.SEOUL)
+            peerRegion(AwsConfig.REGION_KR)
             peerRoleArn("arn:aws:iam::992365606987:role/DEV")
         }
     }

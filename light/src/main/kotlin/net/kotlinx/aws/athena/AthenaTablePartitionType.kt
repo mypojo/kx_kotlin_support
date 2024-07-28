@@ -28,6 +28,8 @@ enum class AthenaTablePartitionType {
     INDEX,
 
     /**
+     * 주의!! INDEX 로 만들어진 external 테이블을 PROJECTION 로 읽을 수 없음 (파티션 정보 누락)
+     *
      * 1. where 조건으로, 파티션 추측해서 작동
      * 2. 빠름 → 이틀치 데이터 조회시 3초 걸림
      * 3. storage.location.template 은 접미어 지정임

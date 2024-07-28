@@ -4,6 +4,7 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.Select
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.dynamo.*
+import net.kotlinx.collection.doUntilTokenNull
 import net.kotlinx.domain.job.define.JobDefinition
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.number.ifTrue
@@ -34,33 +35,7 @@ class JobRepository(val profile: String? = null) : DynamoRepository<Job> {
         job.persist.ifTrue { aws.dynamo.updateItem(job, updateKeys) }
     }
 
-    //==================================================== 인덱스 쿼리 ======================================================
-
-    /**
-     * 상태 / PK 기준으로 조회
-     * ex) 실패잡 x건
-     * 보통 모니터링에 사용됨
-     *  */
-    suspend fun findByStatusPk(
-        jobStatus: JobStatus,
-        jobDef: JobDefinition? = null,
-        last: Map<String, AttributeValue>? = null,
-        block: DynamoQuery.() -> Unit = {}
-    ): DynamoResult<Job> {
-        return aws.dynamo.query(EMPTY) {
-            indexName = JobIndexUtil.GID_STATUS
-            scanIndexForward = false //최근 데이터 우선
-            select = Select.AllProjectedAttributes
-            createParamAndQuery = {
-                buildMap {
-                    put(":${Job::jobStatus.name}", AttributeValue.S(jobStatus.name))
-                    jobDef?.let { put(":${DynamoDbBasic.PK}", AttributeValue.S(jobDef.jobPk)) }
-                }
-            }
-            exclusiveStartKey = last
-            block()
-        }
-    }
+    //==================================================== 기본 쿼리 ======================================================
 
     /** 페이징 조회 */
     suspend fun findByPk(jobDef: JobDefinition, last: Map<String, AttributeValue>? = null, block: DynamoQuery.() -> Unit = {}): DynamoResult<Job> {
@@ -89,11 +64,47 @@ class JobRepository(val profile: String? = null) : DynamoRepository<Job> {
         return aws.dynamo.queryAll(dynamoQuery, EMPTY)
     }
 
+    //==================================================== 인덱스 쿼리 ======================================================
+
+    /**
+     * 상태 / PK 기준으로 조회
+     * ex) 실패잡 x건
+     * 보통 모니터링에 사용됨
+     *  */
+    suspend fun findByStatusPk(
+        jobStatus: JobStatus,
+        jobDef: JobDefinition? = null,
+        last: Map<String, AttributeValue>? = null,
+        block: DynamoQuery.() -> Unit = {}
+    ): DynamoResult<Job> {
+        return aws.dynamo.query(EMPTY) {
+            indexName = JobIndexUtil.GID_STATUS
+            scanIndexForward = false //최근 데이터 우선
+            select = Select.AllProjectedAttributes
+            createParamAndQuery = {
+                buildMap {
+                    put(":${Job::jobStatus.name}", AttributeValue.S(jobStatus.name))
+                    jobDef?.let { put(":${DynamoDbBasic.PK}", AttributeValue.S(jobDef.jobPk)) }
+                }
+            }
+            exclusiveStartKey = last
+            block()
+        }
+    }
+
+    /** findByStatusPk 전체 버전 */
+    suspend fun findAllByStatusPk(jobStatus: JobStatus, jobDef: JobDefinition? = null, block: DynamoQuery.() -> Unit = {}): List<Job> {
+        return doUntilTokenNull { _, last ->
+            val jobs = findByStatusPk(jobStatus, jobDef, last as Map<String, AttributeValue>?) {
+                block()
+            }
+            jobs.datas to jobs.lastEvaluatedKey
+        }.flatten()
+    }
+
     /** 특정 사용자의 요청을 요청 최신순으로 조회*/
     suspend fun findByMemberId(jobDef: JobDefinition, memberId: String, last: Map<String, AttributeValue>? = null, block: DynamoQuery.() -> Unit = {}): DynamoResult<Job> {
-
-        val queryExpression = DynamoExpressSet.Query.DynamoExpressSkPrefix(JobIndexUtil.LID_MEMBER, JobIndexUtil.LID_MEMBER_NAME, jobDef.jobPk,"${memberId}#")
-
+        val queryExpression = DynamoExpressSet.Query.DynamoExpressSkPrefix(JobIndexUtil.LID_MEMBER, JobIndexUtil.LID_MEMBER_NAME, jobDef.jobPk, "${memberId}#")
         return aws.dynamo.query(EMPTY) {
             indexName = queryExpression.indexName
             select = Select.AllProjectedAttributes
@@ -102,6 +113,16 @@ class JobRepository(val profile: String? = null) : DynamoRepository<Job> {
             exclusiveStartKey = last
             block()
         }
+    }
+
+    /** 특정 사용자의 요청을 요청 최신순으로 조회 -> 전체 */
+    suspend fun findAllByMemberId(jobDef: JobDefinition, memberId: String, block: DynamoQuery.() -> Unit = {}): List<Job> {
+        return doUntilTokenNull { _, last ->
+            val jobs = findByMemberId(jobDef, memberId, last as Map<String, AttributeValue>?) {
+                block()
+            }
+            jobs.datas to jobs.lastEvaluatedKey
+        }.flatten()
     }
 
 }

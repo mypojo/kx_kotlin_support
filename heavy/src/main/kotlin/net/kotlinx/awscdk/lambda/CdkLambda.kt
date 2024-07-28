@@ -35,7 +35,7 @@ class CdkLambda : CdkEnum {
     lateinit var lambdaName: String
 
     override val logicalName: String
-        get() = "${project.projectName}-${lambdaName}-${deploymentType.name.lowercase()}"
+        get() = "${project.profileName}-${lambdaName}-${deploymentType.name.lowercase()}"
 
     /** 필수 권한 */
     lateinit var role: IRole
@@ -118,7 +118,7 @@ class CdkLambda : CdkEnum {
         return this
     }
 
-    fun create(stack: Stack, block: FunctionProps.Builder.() -> Unit) {
+    fun create(stack: Stack, block: FunctionProps.Builder.() -> Unit = {}) {
 
         defaultFun = Function(
             stack, logicalName, FunctionProps.builder()

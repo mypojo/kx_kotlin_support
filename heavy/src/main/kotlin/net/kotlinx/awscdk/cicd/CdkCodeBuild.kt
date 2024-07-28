@@ -26,7 +26,7 @@ class CdkCodeBuild : CdkInterface {
 
     /** VPC 이름 */
     override val logicalName: String
-        get() = "${project.projectName}-${branchName}-${deploymentType.name.lowercase()}"
+        get() = "${project.profileName}-${branchName}-${deploymentType.name.lowercase()}"
 
     /** 코드커밋 저장소 */
     lateinit var codeRepository: IRepository
@@ -152,9 +152,7 @@ class CdkCodeBuild : CdkInterface {
                                     "commands" to emptyList<String>()
                                 ),
                                 "build" to mapOf(
-                                    "commands" to gradleCmds.map {
-                                        "/opt/gradle/gradle-$gradleVersion/bin/gradle --parallel --build-cache -g /opt/.gradle $it -Djib.console=plain" //JIB 로그 제거
-                                    }
+                                    "commands" to gradleCmds
                                 ),
                             ),
                             "cache" to mapOf(

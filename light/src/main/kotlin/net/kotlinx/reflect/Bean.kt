@@ -106,7 +106,7 @@ class Bean(
         /**
          * CSV 등에서 객체를 생성할때 사용함
          * 수신 객체는 단순한 dto 여야 함
-         * 생성자와 라인의 순서가 완전히 일치해야함
+         * 생성자와 라인의 순서가 완전히 일치하는게 있어야 파싱이됨
          *  */
         fun <T : Any> fromLine(to: KClass<T>, lines: List<String>): T {
             try {

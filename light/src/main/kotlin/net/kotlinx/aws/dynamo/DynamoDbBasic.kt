@@ -46,6 +46,6 @@ interface DynamoData : DynamoDbBasic {
     fun <T : DynamoData> fromAttributeMap(map: Map<String, AttributeValue>): T
 
     /** 콘솔링크 */
-    fun toConsoleLink(region: String = AwsConfig.SEOUL): String = DynamoUtil.toConsoleLink(tableName, this, region)
+    fun toConsoleLink(region: String = AwsConfig.REGION_KR): String = DynamoUtil.toConsoleLink(tableName, this, region)
 }
 
