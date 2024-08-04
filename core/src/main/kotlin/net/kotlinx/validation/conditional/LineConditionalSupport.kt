@@ -1,7 +1,6 @@
 package net.kotlinx.validation.conditional
 
 import com.linecorp.conditional.kotlin.CoroutineCondition
-import com.linecorp.conditional.kotlin.CoroutineConditionContext
 import com.linecorp.conditional.kotlin.coroutineCondition
 import net.kotlinx.regex.extract
 
@@ -23,7 +22,7 @@ fun condition(alias: String, block: suspend (ConditionContextData) -> String): C
 /**
  * 벨리데이션 실행
  *  */
-suspend fun CoroutineCondition.validate(): ConditionResult {
+suspend fun CoroutineCondition.validate(): LineConditionalResult {
     val ctx = conditionContext()
     val conditionSuccess = this.matches(ctx)
     val messageMap = ctx.messageMap()
@@ -38,27 +37,9 @@ suspend fun CoroutineCondition.validate(): ConditionResult {
             true -> listOf(contextData.successMsg)
             false -> contextData.failMsgs
         }
-        ConditionResultLog(condition, matches, logLines)
+        LineConditionalResultLog(condition, matches, logLines)
     }
-    return ConditionResult(ctx, conditionSuccess, eachResults)
+    return LineConditionalResult(ctx, conditionSuccess, eachResults)
 }
 
 
-data class ConditionResult(
-    /** context */
-    val ctx: CoroutineConditionContext,
-    /** 전체 성공 여부. */
-    val ok: Boolean,
-    /** 상세 로그 결과 */
-    val logs: List<ConditionResultLog>,
-)
-
-/**
- * CoroutineConditionMatchResult 가 다 private 이다.. 왜지???
- * 이때문에 따로 만든다.
- *  */
-data class ConditionResultLog(
-    val condition: String,
-    val matches: Boolean,
-    val message: List<String>,
-)

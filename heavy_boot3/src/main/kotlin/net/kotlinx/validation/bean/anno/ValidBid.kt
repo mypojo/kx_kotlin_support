@@ -1,6 +1,5 @@
-package net.kotlinx.validation.bg.ann
+package net.kotlinx.validation.bean.anno
 
-import com.google.common.base.Strings
 import jakarta.validation.Constraint
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
@@ -15,7 +14,7 @@ import kotlin.reflect.KClass
 @Constraint(validatedBy = [ValidBidValidator::class])
 @Length(min = 10, max = 10)
 annotation class ValidBid(
-    val message: String = "적합한 사업자 등록번호가 아닙니다",
+    val message: String = "{net.kotlinx.validation.bean.anno.ValidBid.message}",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<out Payload>> = []
 )
@@ -23,7 +22,7 @@ annotation class ValidBid(
 internal class ValidBidValidator : ConstraintValidator<ValidBid, String> {
     override fun initialize(annotation: ValidBid) {}
     override fun isValid(text: String?, context: ConstraintValidatorContext): Boolean {
-        if (text == null) return true
-        return if (Strings.isNullOrEmpty(text)) true else isBusinessId(text)
+        if (text.isNullOrEmpty()) return true
+        return isBusinessId(text)
     }
 }

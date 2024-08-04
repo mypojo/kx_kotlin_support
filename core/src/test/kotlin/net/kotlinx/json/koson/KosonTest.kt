@@ -4,7 +4,6 @@ import com.lectra.koson.arr
 import com.lectra.koson.obj
 import com.lectra.koson.rawJson
 import io.kotest.matchers.shouldBe
-import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -35,6 +34,24 @@ internal class KosonTest : BeSpecLog() {
                 json2["option"].isObject shouldBe true
                 json2["optionText"].isPrimitive shouldBe true
             }
+
+            Then("array 확인하기") {
+                val aar = arr[1, 2, 3]
+                val data = obj {
+                    "arr" to arr[1, 2, 3]
+                    "aar" to aar
+                }
+                data.toGsonData()["aar"].size shouldBe 3
+            }
+
+            Then("map 변환하기") {
+                val map = mapOf(
+                    "a" to 3,
+                    "b" to 4,
+                )
+                map.toKoson().toGsonData()["a"].str == "3"
+            }
         }
     }
+
 }

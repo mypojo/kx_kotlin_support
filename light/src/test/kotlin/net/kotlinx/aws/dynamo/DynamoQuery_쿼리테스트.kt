@@ -17,7 +17,8 @@ internal class DynamoQuery_쿼리테스트 : BeSpecHeavy() {
     private val aws by lazy { koin<AwsClient1>(findProfile97) }
 
     init {
-        initTest(KotestUtil.PROJECT)
+        log.trace { "실데이터 스캔이라서, 필요할때 켜서 테스트" }
+        initTest(KotestUtil.IGNORE)
 
         Given("DynamoQuery") {
 

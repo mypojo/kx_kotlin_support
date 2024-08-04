@@ -1,4 +1,4 @@
-package net.kotlinx.validation.bg.ann
+package net.kotlinx.validation.bean.anno
 
 import jakarta.validation.Constraint
 import jakarta.validation.ConstraintValidator
@@ -13,16 +13,16 @@ import kotlin.reflect.KClass
  */
 @Target(AnnotationTarget.FIELD, AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.PROPERTY_GETTER)
 @Retention(AnnotationRetention.RUNTIME)
-@Constraint(validatedBy = [ValidDateStringValidator::class])
-annotation class ValidDateString(
+@Constraint(validatedBy = [ValidDateValidator::class])
+annotation class ValidDate(
     val pattern: TimeFormat = TimeFormat.YMD,
-    val message: String = "적합한 날짜 형식이 아닙니다",
+    val message: String = "{net.kotlinx.validation.bean.anno.ValidDate.message}",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<out Payload>> = [],
 )
 
 /** 직접 파싱하는 방법을 사용함으로, 무거운 로직에는 사용하면 안된다.  */
-class ValidDateStringValidator : ConstraintValidator<ValidDateString, String?> {
+class ValidDateValidator : ConstraintValidator<ValidDate, String?> {
 
     private lateinit var pattern: TimeFormat
 
@@ -36,7 +36,7 @@ class ValidDateStringValidator : ConstraintValidator<ValidDateString, String?> {
         }
     }
 
-    override fun initialize(constraintAnnotation: ValidDateString) {
+    override fun initialize(constraintAnnotation: ValidDate) {
         pattern = constraintAnnotation.pattern
     }
 }

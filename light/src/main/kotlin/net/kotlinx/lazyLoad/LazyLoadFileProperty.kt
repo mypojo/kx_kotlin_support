@@ -19,23 +19,23 @@ import kotlin.reflect.KProperty
 /**
  * 각종 리소스에서 늦은 로드를 해주는 프로퍼티
  *  */
-class LazyLoadFileProperty(
-    /** 설정된 파일 */
-    private val configFile: File,
+class LazyLoadFileProperty(val configFile: File) {
+
+    //==================================================== 설정 ======================================================
+
     /** 파일에 기록할 내용의 위치 정보 */
-    private val info: String,
+    lateinit var info: String
+
     /** 프로파일 정보 */
-    private val profile: String? = null,
-) {
+    var profile: String? = null
+
+    //==================================================== 로직 ======================================================
 
     /**
      * 실제 위임 파일
      * 디렉토리 입력일 경우 path로 재조정 해줌 ex) S3 파일
      *  */
-    private var delegateFile = when {
-        configFile.isDirectory -> configFile.slash(info.substringAfterLast("/"))
-        else -> configFile
-    }
+    private var delegateFile = if (configFile.isDirectory) configFile.slash(info.substringAfterLast("/")) else configFile
 
     /** 데이터가 없으면 로드한다. */
     operator fun getValue(thisRef: Any?, property: KProperty<*>): File {
@@ -96,10 +96,16 @@ class LazyLoadFileProperty(
 
 //==================================================== 간단호출 ======================================================
 
-/** 늦은 초기화  & 중위함수 지원 */
-infix fun File.lazyLoad(path: String): LazyLoadFileProperty = LazyLoadFileProperty(this, path)
+/** 프로파일 설정 등 상세 설정을 다 할때 */
+infix fun File.lazyLoad(block: LazyLoadFileProperty.() -> Unit): LazyLoadFileProperty = LazyLoadFileProperty(this).apply(block)
 
 /** 늦은 초기화  & 중위함수 지원 */
-infix fun File.lazyLoad(path: S3Data): LazyLoadFileProperty = LazyLoadFileProperty(this, path.toFullPath())
+infix fun File.lazyLoad(path: String): LazyLoadFileProperty = lazyLoad {
+    this.info = path
+}
 
-infix fun File.lazyLoadSsm(path: String): LazyLoadFileProperty = LazyLoadFileProperty(this, "${ProtocolPrefix.SSM}$path")
+/** 늦은 초기화  & 중위함수 지원 */
+infix fun File.lazyLoad(path: S3Data): LazyLoadFileProperty = this.lazyLoad(path.toFullPath())
+
+/** 늦은 초기화 by SSM */
+infix fun File.lazyLoadSsm(path: String): LazyLoadFileProperty = this.lazyLoad("${ProtocolPrefix.SSM}$path")

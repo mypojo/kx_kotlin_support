@@ -1,4 +1,4 @@
-package net.kotlinx.validation.bg.ann
+package net.kotlinx.validation.bean.anno
 
 import jakarta.validation.Constraint
 import jakarta.validation.ConstraintValidator
@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
 @Constraint(validatedBy = [ValidMultiNumberValidator::class])
 annotation class ValidMultiNumber(
     val value: Int = 10,
-    val message: String = "{value}의 배수로만 입력되어야 합니다",
+    val message: String = "{net.kotlinx.validation.bean.anno.ValidMultiNumber.message}",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<Payload>> = []
 )

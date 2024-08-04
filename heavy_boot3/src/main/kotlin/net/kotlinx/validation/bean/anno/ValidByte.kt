@@ -1,4 +1,4 @@
-package net.kotlinx.validation.bg.ann
+package net.kotlinx.validation.bean.anno
 
 import jakarta.validation.Constraint
 import jakarta.validation.ConstraintValidator
@@ -15,13 +15,13 @@ import kotlin.reflect.KClass
 @Constraint(validatedBy = [ValidByteValidator::class])
 annotation class ValidByte(
     val max: Int,
-    val message: String = "최대 바이트수({max}byte) 를 초과했습니다",
+    val message: String = "{net.kotlinx.validation.bean.anno.ValidByte.message}",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<out Payload>> = []
 )
 
 internal class ValidByteValidator : ConstraintValidator<ValidByte, String?> {
-    var maxByteSize = 0
+    private var maxByteSize = 0
     override fun isValid(text: String?, arg1: ConstraintValidatorContext): Boolean {
         if (text == null) return true
         return text.toByteArray().size <= maxByteSize

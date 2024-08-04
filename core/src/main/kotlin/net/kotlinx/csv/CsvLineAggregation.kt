@@ -19,10 +19,10 @@ class CsvLineAggregation : (List<String>) -> Unit {
     //==================================================== 입력 ======================================================
 
     /** sum 대상 로우 */
-    lateinit var sumIndexs: Set<Int>
+    var sumIndexs: Set<Int> = emptySet()
 
     /** distinct 대상 로우 */
-    lateinit var distinctIndexs: Set<Int>
+    var distinctIndexs: Set<Int> = emptySet()
 
     /** 스킵 카운트. 1이면 헤더 한줄 스킵 */
     var skipCnt: Int = 0

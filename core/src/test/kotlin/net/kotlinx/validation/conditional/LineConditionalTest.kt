@@ -48,6 +48,7 @@ class LineConditionalTest : BeSpecLog() {
 
                     val condition = (사용자검증 and 관리자검증) or VIP검증
 
+                    //시간체크
                     val result = condition.validate()
                     log.info { "작업 $condition => 결과 ${result.ok}" }
                     result.logs.print()

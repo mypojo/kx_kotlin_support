@@ -1,4 +1,4 @@
-package net.kotlinx.validation.bg.ann
+package net.kotlinx.validation.bean.anno
 
 import jakarta.validation.Constraint
 import jakarta.validation.Payload
@@ -9,8 +9,8 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY_GETTER)
 @Retention(AnnotationRetention.RUNTIME)
 @Constraint(validatedBy = [])
-@Pattern(regexp = "^01[016789]-[0-9]{3,4}-[0-9]{4}$", message = "적합한 전화번호 형식이 아닙니다")
-annotation class ValidTel(
+@Pattern(regexp = "^01[016789]-[0-9]{3,4}-[0-9]{4}$", message = "{net.kotlinx.validation.bean.anno.ValidHp.message}")
+annotation class ValidHp(
     val message: String = "-",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<out Payload>> = []

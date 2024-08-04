@@ -4,6 +4,16 @@ import com.lectra.koson.*
 import net.kotlinx.json.gson.GsonData
 
 //==================================================== block: Koson.() -> Unit  =>  NotionPageBlockClient 참고 ======================================================
+/**
+ * map을 간단 변환해줌.
+ * 이걸로 다 되는 상황에만 사용!
+ *  */
+fun Map<String, *>.toKoson(): ObjectType {
+    val map = this
+    return obj {
+        map.entries.forEach { e -> e.key to e.value }
+    }
+}
 
 /** 이런식으로 변환 가능하다. list map 할때 참고 */
 fun List<KosonType>.toKsonArray(): ArrayType = arr[this]

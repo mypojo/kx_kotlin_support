@@ -7,7 +7,7 @@ import net.kotlinx.excel.Excel
 import net.kotlinx.excel.XlsComment
 import net.kotlinx.excel.XlsFormula
 import net.kotlinx.number.StringIntUtil
-import net.kotlinx.string.ifNullOrEmpty
+import net.kotlinx.string.ifEmpty
 import net.kotlinx.time.TimeFormat
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -193,7 +193,7 @@ class CostExplorerExcel(block: CostExplorerExcel.() -> Unit = {}) {
                 //헤더 네임은 태그 접두어 제거
                 keyNames.map { key ->
                     when {
-                        key.contains("$") -> key.substringAfter("$").ifNullOrEmpty { "-" }
+                        key.contains("$") -> key.substringAfter("$").ifEmpty { "-" }
                         else -> key
                     }
                 },

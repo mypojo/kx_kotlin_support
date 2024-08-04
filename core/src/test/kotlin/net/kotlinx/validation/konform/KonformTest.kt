@@ -6,12 +6,16 @@ import io.konform.validation.jsonschema.maxItems
 import io.konform.validation.jsonschema.maxLength
 import io.konform.validation.jsonschema.maximum
 import io.konform.validation.jsonschema.minimum
+import io.konform.validation.required
 import io.kotest.matchers.shouldBe
 import net.kotlinx.json.koson.toGsonData
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
 
+/**
+ * 사용해보니 프로젝트와 잘 맞지 않아서 포기
+ * */
 class KonformTest : BeSpecHeavy() {
 
     init {
@@ -24,7 +28,8 @@ class KonformTest : BeSpecHeavy() {
                 val fullName: String,
                 val age: Int?,
                 val type: String,
-                val attendees: List<String>
+                val attendees: List<String>,
+                val hint: String? = null,
             )
 
             val defaultValidate = Validation {
@@ -43,11 +48,17 @@ class KonformTest : BeSpecHeavy() {
                 }
 
                 UserProfile::attendees required {
-                    maxItems(2)
+                    maxItems(2) hint "참여자 수는 2명 이내여야 합니다."
                 }
 
                 UserProfile::type {
                     maxLength(4)
+                }
+
+                UserProfile::hint {
+                    required {
+                        maxLength(100)
+                    }
                 }
             }
 
@@ -55,7 +66,7 @@ class KonformTest : BeSpecHeavy() {
                 val user = UserProfile("A", -1, "type", listOf("a", "b", "c"))
                 val results = validateUser(user)
                 results.printSimple()
-                results.errors.size shouldBe 3
+                results.errors.size shouldBe 4
             }
 
             Then("http 요청 -> gson 변환 ->  벨리데이션 체크") {
@@ -68,7 +79,7 @@ class KonformTest : BeSpecHeavy() {
                 val user = json.fromJson<UserProfile>()
                 val results = validateUser(user)
                 results.printSimple()
-                results.errors.size shouldBe 2
+                results.errors.size shouldBe 3
             }
 
         }

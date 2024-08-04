@@ -48,7 +48,7 @@ dependencies {
     //==================================================== JWT 관련 ======================================================
     api("io.jsonwebtoken:jjwt-api:_")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:_")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:_")
+    runtimeOnly("io.jsonwebtoken:jjwt-gson:_")  // jackson -> gson 으로 변경
 
     //==================================================== 배치 관련 ======================================================
     implementation("com.opencsv:opencsv:_") {
