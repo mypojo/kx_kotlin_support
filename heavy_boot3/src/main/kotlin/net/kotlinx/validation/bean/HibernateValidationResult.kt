@@ -43,7 +43,7 @@ class HibernateValidationResult(val violation: ConstraintViolation<*>) {
     fun toValidationResult(): ValidationResult = ValidationResult(
         code = code,
         fieldId = fieldId,
-        fieldName = field?.annotaionAll()?.findClass<Comment>()?.firstOrNull()?.value ?: fieldId,
+        fieldName = fieldName,
         invalidValue = invalidValue,
         attr = attr,
         message = message,

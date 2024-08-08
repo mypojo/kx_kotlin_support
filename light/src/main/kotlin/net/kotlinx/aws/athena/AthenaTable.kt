@@ -45,7 +45,7 @@ class AthenaTable {
     var athenaTableType: AthenaTableType = AthenaTableType.EXTERNAL
 
     /** 포맷 */
-    var athenaTableFormat: AthenaTableFormat = AthenaTableFormat.IonDdb
+    var athenaTableFormat: AthenaTableFormat = AthenaTableFormat.Parquet
 
     /** 테이블명  */
     lateinit var tableName: String
@@ -83,6 +83,10 @@ class AthenaTable {
 
     /** 테이블 생성시에는 대부분 필요없음 (기본 스키마) */
     var database: String = ""
+
+    /** 데이터베이스를 포함한 테이블명  */
+    val tableNameWithDatabase: String
+        get() = if (database.isEmpty()) tableName else "${database}.${tableName}"
 
     //==================================================== 간단설정 ======================================================
     fun icebugTable() {
@@ -163,8 +167,10 @@ class AthenaTable {
 
     fun drop(): String {
         check(athenaTableType == AthenaTableType.EXTERNAL) { "EXTERNAL 테이블이 아니라면 직접 drop 해주세요 (위험합니다)" }
-        return "DROP TABLE IF EXISTS ${tableName};"
+        return dropForce()
     }
+
+    fun dropForce(): String = "DROP TABLE IF EXISTS ${tableNameWithDatabase};"
 
     fun create(): String {
 
@@ -241,9 +247,8 @@ class AthenaTable {
             else -> "TBLPROPERTIES ( ${props.map { "   '${it.key}' = '${it.value}'" }.joinToString(",")} )"
         }
 
-        val tableDatabase = if (database.isEmpty()) "" else "${database}."
         return listOf(
-            "CREATE ${athenaTableType.schema} TABLE ${tableDatabase}${tableName}(",
+            "CREATE ${athenaTableType.schema} TABLE ${tableNameWithDatabase}(",
             schemaText,
             ")",
             partitionText,

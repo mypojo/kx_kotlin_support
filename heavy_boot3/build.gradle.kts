@@ -43,7 +43,7 @@ dependencies {
     implementation("org.springframework.retry:spring-retry") //이건 사용 안할수도 있음
 
     //==================================================== 벨리데이션 ======================================================
-    implementation("org.hibernate.validator:hibernate-validator") //버전표기 X
+    implementation("org.hibernate.validator:hibernate-validator") //버전표기 X. 약 1mb
 
     //==================================================== JWT 관련 ======================================================
     api("io.jsonwebtoken:jjwt-api:_")

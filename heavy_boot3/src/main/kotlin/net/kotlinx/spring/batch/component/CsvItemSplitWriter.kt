@@ -59,6 +59,7 @@ class CsvItemSplitWriter(
      * 라이터가 없으면 스트림을 오픈해준다.
      */
     fun getOrMakeWriter(id: String): CsvItemWriter {
+
         synchronized(writerMap) {
             val writer: CsvItemWriter = writerMap[id] ?: run {
                 val currentFile = File(workDir, "$id.csv")

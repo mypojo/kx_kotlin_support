@@ -21,6 +21,9 @@ import software.amazon.awscdk.services.sns.ITopic
 
 /**
  * AWS 코드빌드
+ *
+ * 깃헙 연결
+ * https://docs.aws.amazon.com/ko_kr/codepipeline/latest/userguide/connections-github.html
  * */
 class CdkCodePipeline : CdkInterface {
 

@@ -2,7 +2,10 @@ package net.kotlinx.validation.bean
 
 /**
  * 결과메세지를 만들기 위한 템플릿용 빈
- * jakarta ConstraintViolation 와 호환된다.
+ * 
+ * 아래 규격을 맞추기 외해서 만들었다
+ * #1 jakarta ConstraintViolation 자바 표준 벨리데이션
+ *
  */
 data class ValidationResult(
 
@@ -23,6 +26,11 @@ data class ValidationResult(
      *  */
     val fieldName: String,
 
+    /**
+     * 사용자가 보게되는 최종 메세지
+     *  */
+    val message: String,
+
     /** 거부된 값 */
     val invalidValue: Any? = null,
 
@@ -31,11 +39,6 @@ data class ValidationResult(
      * ex) maxSize, limitCnt 등..
      *  */
     val attr: Map<String, Any?>? = null,
-
-    /**
-     * 사용자가 보게되는 최종 메세지
-     *  */
-    val message: String,
 
 
     )

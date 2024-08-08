@@ -2,12 +2,14 @@ package net.kotlinx.validation.conditional
 
 import com.linecorp.conditional.kotlin.and
 import com.linecorp.conditional.kotlin.or
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import net.kotlinx.concurrent.delay
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.string.print
+import net.kotlinx.validation.bean.ValidationResultException
 import kotlin.time.Duration.Companion.milliseconds
 
 
@@ -53,9 +55,38 @@ class LineConditionalTest : BeSpecLog() {
                     log.info { "작업 $condition => 결과 ${result.ok}" }
                     result.logs.print()
                     result.ok shouldBe true
-                    result.logs.first { it.condition == "VIP검증" }.message.size shouldBe 2
+                    result.logs.first { it.condition == "VIP검증" }.messages.size shouldBe 2
+                }
+
+                Then("전부 and인 경우") {
+                    val condition = (사용자검증 and 관리자검증) and VIP검증
+                    val result = condition.validate()
+                    log.info { "작업 $condition => 결과 ${result.ok}" }
+                    result.logs.print()
                 }
             }
+        }
+
+        Given("인라인 테스트") {
+            Then("정상통과") {
+                condition("check1") {
+                    if (1 == 2) {
+                        it.failMsgs += "요청 xx / 검증값 bb -> cc를 만족해서 실패"
+                    }
+                    "DB 조회 후 각종 지표 검사 성공"
+                }.validate().throwIfFail()
+            }
+            Then("에러 발생해야함") {
+                shouldThrow<ValidationResultException> {
+                    condition("check1") {
+                        if (1 == 1) {
+                            it.failMsgs += "요청 xx / 검증값 bb -> cc를 만족해서 실패"
+                        }
+                        "DB 조회 후 각종 지표 검사 성공"
+                    }.validate().throwIfFail()
+                }
+            }
+
         }
 
     }

@@ -8,5 +8,5 @@ data class LineConditionalResultLog(
     val condition: String,
     val matches: Boolean,
     /** 다수의 로그가 있을 수 있음 */
-    val message: List<String>,
+    val messages: List<String>,
 )

@@ -9,6 +9,9 @@ import software.amazon.awscdk.services.athena.CfnWorkGroupProps
 import software.amazon.awscdk.services.glue.CfnDatabase
 import software.amazon.awscdk.services.glue.CfnDatabaseProps
 
+/**
+ * 따로 만들게 수정하자.. database 분리할일이 많음
+ * */
 class CdkAthena : CdkInterface {
 
     @Kdsl
@@ -46,7 +49,7 @@ class CdkAthena : CdkInterface {
                 )
                 .build()
         )
-        TagUtil.tag(database,deploymentType)
+        TagUtil.tag(database, deploymentType)
 
         val workgroupName = "workgroup-$depName"
         workGroup = CfnWorkGroup(
@@ -64,7 +67,7 @@ class CdkAthena : CdkInterface {
                 )
                 .build()
         )
-        TagUtil.tag(workGroup,deploymentType)
+        TagUtil.tag(workGroup, deploymentType)
     }
 
     companion object {

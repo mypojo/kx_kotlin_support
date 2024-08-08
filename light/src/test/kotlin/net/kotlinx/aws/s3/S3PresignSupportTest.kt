@@ -8,7 +8,7 @@ import net.kotlinx.kotest.modules.BeSpecHeavy
 
 internal class S3PresignSupportTest : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile99 }
+    private val profileName by lazy { findProfile28 }
     private val aws by lazy { koin<AwsClient1>(profileName) }
 
     init {
@@ -20,6 +20,16 @@ internal class S3PresignSupportTest : BeSpecHeavy() {
                 val url = aws.s3.presignGetObject("$profileName-work-dev", "code/$profileName-layer_v1-dev/deployLayerV1.zip")
                 log.debug { "presignGetObject url : $url" }
             }
+
+            Then("버킷 프리사인_다운로드URL 생성 (이름변경)") {
+                val url = aws.s3.presignGetObjectUrl {
+                    bucket = "$profileName-work-dev"
+                    key = "code/$profileName-layer_v1-dev/deployLayerV1.zip"
+                    downloadName = "커스텀V2 데이터 SM.zip"
+                }
+                log.debug { "presignGetObject url : $url" }
+            }
+
             Then("프리사인_업로드URL 생성") {
                 val url = aws.s3.presignPutObject("$profileName-work-dev", "code/$profileName-layer_v1-dev/")
                 log.debug { "presignPutObject url : $url" }
