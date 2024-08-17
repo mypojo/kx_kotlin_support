@@ -1,6 +1,7 @@
 package net.kotlinx.aws
 
 import aws.sdk.kotlin.runtime.auth.credentials.DefaultChainCredentialsProvider
+import aws.sdk.kotlin.runtime.auth.credentials.StsAssumeRoleCredentialsProvider
 import aws.sdk.kotlin.runtime.client.AwsSdkClientConfig
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProviderConfig
@@ -22,7 +23,10 @@ import kotlin.time.Duration.Companion.seconds
  * https://docs.aws.amazon.com/sdkref/latest/guide/feature-retry-behavior.html
  *  */
 data class AwsConfig(
-    /** 프로필 없으면 환경변서(체인 순서대로) 적용 */
+    /**
+     * patent가 없다면 로컬 프로파일로 사용 ex) projectName
+     * patent가 있다면 STS ROLE 이름으로 사용  ex) ROLE_DEV
+     * */
     val profileName: String? = null,
     /** AWS ID. API에 따라 필요한 경우가 있음 */
     private val inputAwsId: String? = null,
@@ -44,14 +48,13 @@ data class AwsConfig(
      * */
     val connectionIdleTimeout: Duration = 2.seconds,
 
-    ) {
     /**
-     * 체인 기본순서 : 환경변수 -> 프로파일
-     * https://docs.aws.amazon.com/sdkref/latest/guide/settings-reference.html 에서 설정 확인
-     * https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html
-     *  -> DurationSeconds : 900초(15분) ~ 최대값 43200 ?? -> duration_seconds = 43200
-     * */
-    val credentialsProvider: CredentialsProvider? = profileName?.let { DefaultChainCredentialsProvider(profileName = profileName) }
+     * 부모가 있다면 부모를 기준으로 STS를 생성한다.
+     * ex) lakeFormation 역할을 부여받아서, 해당 테이블에 접속
+     *  */
+    val patent: AwsConfig? = null,
+
+    ) {
 
     /** SDK 기본 클라이언트는 버려진듯. 근데 이러면 클라이언트가 어려개 생기지 않는지? */
     val httpClientEngine: HttpClientEngine = OkHttpEngine {
@@ -74,10 +77,44 @@ data class AwsConfig(
         }
     }
 
+    /**
+     * 체인 기본순서 : 환경변수 -> 프로파일
+     * https://docs.aws.amazon.com/sdkref/latest/guide/settings-reference.html 에서 설정 확인
+     * https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html
+     *  -> DurationSeconds : 900초(15분) ~ 최대값 43200 ?? -> duration_seconds = 43200
+     * */
+    val credentialsProvider: CredentialsProvider = if (patent == null) {
+        log.trace { "기본 환경에서 프로바이더 생성" }
+        DefaultChainCredentialsProvider(
+            profileName = profileName,
+            region = region,
+            httpClient = httpClientEngine,
+        )
+    } else {
+        log.trace { "기본 환경의 데이터에서 STS로 프로바이더 생성" }
+        StsAssumeRoleCredentialsProvider(
+            bootstrapCredentialsProvider = patent.credentialsProvider,
+            roleArn = "arn:aws:iam::${awsId}:role/${profileName}",
+            roleSessionName = "sts", //공백문자 허용안함
+            region = region
+        )
+    }
+
+    /**
+     * STS를 사용해서 새로운 연결은 만든다
+     * ex) 중앙계정 lakeformation 접근
+     *  */
+    fun toSts(awsId: String, role: String): AwsConfig = AwsConfig(
+        inputAwsId = awsId,
+        profileName = role,
+        patent = this
+    )
+
     //==================================================== client 빌드 옵션 추가 ======================================================
 
     /** 빌더에 각종 설정을 추가해줌 */
     fun build(clientBuilder: Any) {
+        //이제 credentialsProvider 에서 설정했기 때문에엔진하고 리전은 필요 없을지도?
         if (clientBuilder is AwsSdkClientConfig.Builder) clientBuilder.region = region
         if (clientBuilder is CredentialsProviderConfig.Builder) clientBuilder.credentialsProvider = credentialsProvider
         if (clientBuilder is HttpEngineConfig.Builder) clientBuilder.httpClient = httpClientEngine
@@ -95,7 +132,6 @@ data class AwsConfig(
      * ex) 331671628331.dkr.ecr.ap-northeast-2.amazonaws.com/media-data@sha256:24c4d31fc292a57f32ffcd4d2719f0b10bfea9d08786af589196547af5bb960f
      */
     fun ecrPath(repositoryName: String): String = "${awsId}.dkr.ecr.${region}.amazonaws.com/${repositoryName}"
-
 
     companion object {
 

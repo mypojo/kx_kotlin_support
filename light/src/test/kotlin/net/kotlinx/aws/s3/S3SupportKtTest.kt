@@ -40,6 +40,22 @@ internal class S3SupportKtTest : BeSpecHeavy() {
                 files.print()
             }
 
+            xThen("메타데이터 추가 업로드") {
+                val file = ResourceHolder.WORKSPACE.slash("input.csv")
+                aws.s3.putObject(
+                    "$findProfile28-work-dev", "upload/temp.csv", file, mapOf(
+                        "aa" to "bb",
+                        "cc" to "dd",
+                        "fileName" to "영감님ab12만세"
+                    )
+                )
+            }
+
+            xThen("메타데이터 읽기") {
+                val metadata = aws.s3.getObjectMetadata("$findProfile28-work-dev", "upload/temp.csv")!!
+                println(metadata)
+            }
+
             xThen("멀티파트 업로드") {
                 LogBackUtil.logLevelTo(testClassName, Level.TRACE)
                 val file = ResourceHolder.WORKSPACE.slash("aa").slash("bb-202405.csv.zip")

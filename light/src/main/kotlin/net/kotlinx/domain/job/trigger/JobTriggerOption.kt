@@ -20,6 +20,9 @@ class JobTriggerOption(
 
     //==================================================== 이하 job 입력 전달값 ======================================================
 
+    /** 여기 입력되면 이거 사용. 없으면 새로 채번함 */
+    var jobSk: String? = null
+
     /** 잡이 호출된 경로 */
     var jobExeFrom: JobExeFrom = JobExeFrom.ADMIN
 

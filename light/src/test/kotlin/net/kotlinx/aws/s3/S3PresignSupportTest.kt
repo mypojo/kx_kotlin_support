@@ -1,10 +1,15 @@
 package net.kotlinx.aws.s3
 
+import io.kotest.matchers.shouldBe
 import net.kotlinx.aws.AwsClient1
+import net.kotlinx.file.slash
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
+import net.kotlinx.okhttp.fetch
+import net.kotlinx.system.ResourceHolder
+import okhttp3.OkHttpClient
 
 internal class S3PresignSupportTest : BeSpecHeavy() {
 
@@ -30,9 +35,29 @@ internal class S3PresignSupportTest : BeSpecHeavy() {
                 log.debug { "presignGetObject url : $url" }
             }
 
-            Then("프리사인_업로드URL 생성") {
-                val url = aws.s3.presignPutObject("$profileName-work-dev", "code/$profileName-layer_v1-dev/")
-                log.debug { "presignPutObject url : $url" }
+            Then("프리사인_업로드") {
+                val file = ResourceHolder.WORKSPACE.slash("input.csv")
+                val metadata = mapOf(
+                    "type" to "test1",
+                    "name" to "영감님Mk2",
+                    "div" to "타입^^;",
+                )
+                val s3Obj = S3Data("$profileName-work-dev", "upload/presignPutObject/${file.name}")
+                val presign = aws.s3.presignPutObject(s3Obj.bucket, s3Obj.key, metadata = metadata)
+
+                val client = koin<OkHttpClient>()
+                val resp = client.fetch {
+                    url = presign.url.toString()
+                    method = presign.method.name
+                    header = presign.headerMap
+                    body = file
+                }
+
+                resp.response.code shouldBe 200
+
+                val objMetadata = aws.s3.getObjectMetadata(s3Obj.bucket, s3Obj.key)
+                objMetadata["div"] shouldBe "타입^^;"
+
             }
 
         }

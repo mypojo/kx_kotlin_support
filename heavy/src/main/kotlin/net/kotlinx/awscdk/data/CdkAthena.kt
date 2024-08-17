@@ -19,7 +19,7 @@ class CdkAthena : CdkInterface {
         apply(block)
     }
 
-    /** DB 명 */
+    /** DB 명.. 좋지 않음 */
     override val logicalName: String
         get() = deploymentType.name.lowercase().substring(0, 1)
 

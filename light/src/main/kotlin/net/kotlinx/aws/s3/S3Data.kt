@@ -15,8 +15,12 @@ data class S3Data(
     var versionId: String? = null
 
     /** 파일명 추출 */
-    val fileName:String
+    val fileName: String
         get() = key.substringAfterLast("/")
+
+    /** 부모 디렉토리 */
+    val parent: S3Data
+        get() = S3Data(bucket, key.substringBeforeLast("/"))
 
     /**
      * 업로드 파일에 접근 가능한 S3 프로토콜을 리턴한다. 이 URL은 다운로드나 스파크 등  내부 API에서 사용된다.

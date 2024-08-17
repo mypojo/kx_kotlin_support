@@ -135,10 +135,10 @@ class CdkS3 : CdkEnum {
 
     /** 디폴트 CORS (Cross-Origin Resource Sharing). 필요하면 더 추가해서 사용할것 */
     companion object {
-        val CORS_OPEN = CorsRule.builder()
+        val ALL_OPEN = CorsRule.builder()
             .allowedOrigins(listOf("*"))
             .allowedHeaders(listOf("*"))
-            .allowedMethods(listOf(HttpMethods.GET, HttpMethods.HEAD))
+            .allowedMethods(listOf(HttpMethods.GET, HttpMethods.POST, HttpMethods.PUT, HttpMethods.DELETE, HttpMethods.HEAD)) //전부다
             .build()!!
     }
 }

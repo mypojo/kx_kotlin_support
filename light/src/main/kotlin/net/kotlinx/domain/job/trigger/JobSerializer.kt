@@ -4,8 +4,10 @@ import com.lectra.koson.ObjectType
 import com.lectra.koson.obj
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsNaming
-import net.kotlinx.aws.dynamo.DynamoUtil
-import net.kotlinx.domain.job.*
+import net.kotlinx.domain.job.Job
+import net.kotlinx.domain.job.JobExeFrom
+import net.kotlinx.domain.job.JobRepository
+import net.kotlinx.domain.job.JobStatus
 import net.kotlinx.domain.job.define.JobDefinitionRepository
 import net.kotlinx.domain.job.define.JobExecuteType
 import net.kotlinx.id.IdGenerator
@@ -14,7 +16,6 @@ import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.string.enumValueOf
 import java.time.LocalDateTime
-import java.util.concurrent.TimeUnit
 
 /**
  * 원격으로 잡을 실행하기 위한 잡 설정(json) <-> job 객체 변환
@@ -40,11 +41,6 @@ class JobSerializer(val profile: String? = null) {
             reqTime = LocalDateTime.now()
             jobStatus = JobStatus.STARTING
             jobEnv = jobTrigger.name
-            ttl = when (jobTrigger.jobExeDiv) {
-                JobExeDiv.LOCAL -> DynamoUtil.ttlFromNow(TimeUnit.HOURS, 1)  //로컬은 테스트로 간주하고 1시간 보관
-                else -> DynamoUtil.ttlFromNow(TimeUnit.DAYS, 7 * 2)
-            }
-
             //파싱값 입력 4개
             jobOption = input[Job::jobOption.name].str!!.toGsonData()
             input[Job::memberId.name].str?.let { memberId = it }

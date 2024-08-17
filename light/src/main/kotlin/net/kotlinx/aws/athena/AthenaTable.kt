@@ -31,10 +31,7 @@ class AthenaTable {
      * 스키마
      * 기본적으로 언더스코어 구조이지만,
      * 예외적으로 json 입력 기본 스키마는 카멜케이스로 구성한다 (어차피 AWS가 시작을 잘못잡아서 엉망임)
-     *
-     * string
-     * int / bigint
-     * timestamp
+     * Any 로 입력받아서 , 각 로직별로 처리함
      * */
     lateinit var schema: Map<String, Any>
 
@@ -259,6 +256,9 @@ class AthenaTable {
         ).joinToString("\n")
     }
 
+    /**
+     * 스키마에는 Any가 들어온다!!
+     * */
     private fun toSchema(value: Any?): String = when (value) {
 
         null -> throw NullPointerException()

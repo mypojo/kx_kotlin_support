@@ -31,6 +31,16 @@ inline fun <reified T> List<T>.print(limitSize: Int = TextGrid.TEXT_ABBR_LIMIT) 
             headers.toTextGrid(datas).print()
         }
 
+        Map.Entry::class -> {
+            val real = list as List<Map.Entry<Any?, Any?>>
+            listOf("key", "value").toTextGrid(real.map { arrayOf(it.key?.toString() ?: "", it.value?.toString() ?: "") }).print()
+        }
+
+        Pair::class -> {
+            val real = list as List<Pair<Any?, Any?>>
+            listOf("key", "value").toTextGrid(real.map { arrayOf(it.first?.toString() ?: "", it.second?.toString() ?: "") }).print()
+        }
+
         Bean::class -> {
             val real = list as List<Bean>
             if (real.isEmpty()) return //비어있을때 예외처리하지 않음

@@ -33,8 +33,7 @@ class ListPageSupportKtTest : BeSpecLog() {
 
         Given("athena 쿼리 페이징 테스트") {
             val req = PageRequest.of(0, 4)
-            println(req.offset)
-            println(req.pageSize)
+            req.pageingAthena shouldBe "OFFSET 0 ROWS LIMIT 4"
         }
     }
 

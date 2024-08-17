@@ -24,6 +24,7 @@ internal class GsonData_데이터클래스 : BeSpecLog() {
         var cnt: Long? = null,
         var time: LocalDateTime? = null,
         var parent: TestPoo01? = null,
+        var option: GsonData? = null,
     )
 
     @Serializable
@@ -38,6 +39,25 @@ internal class GsonData_데이터클래스 : BeSpecLog() {
         initTest(KotestUtil.FAST)
 
         Given("데이터 클래스 테스트") {
+
+            When("GsonData 되나?") {
+                val vo1 = TestPoo01(
+                    name = "할매",
+                    option = obj {
+                        "aa" to "영감님"
+                        "dd" to 123
+                    }.toGsonData()
+                )
+                Then("정상 변환됨") {
+                    val json = GsonData.fromObj(vo1)
+                    json.toString() shouldBe "{\"name\":\"할매\",\"option\":{\"aa\":\"영감님\",\"dd\":123}}"
+
+                    val vo2 = json.fromJson<TestPoo01>()
+                    vo2.name shouldBe "할매"
+                    vo2.option!!["dd"].long shouldBe 123
+                }
+            }
+
 
             When("낫널 클래스에 널 json을 변환하는경우") {
                 val gsonData = obj {

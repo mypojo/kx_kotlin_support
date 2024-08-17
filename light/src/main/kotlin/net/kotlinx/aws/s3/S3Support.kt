@@ -3,6 +3,8 @@ package net.kotlinx.aws.s3
 import aws.sdk.kotlin.services.s3.*
 import aws.sdk.kotlin.services.s3.model.*
 import aws.smithy.kotlin.runtime.content.*
+import aws.smithy.kotlin.runtime.text.encoding.decodeBase64
+import aws.smithy.kotlin.runtime.text.encoding.encodeBase64
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -39,19 +41,20 @@ suspend inline fun S3Client.getObjectDownload(bucket: String, key: String, file:
  * 간단 업로드
  * @param key 업로드 디렉토리 path.  /로 시작하지 않음!!
  *  */
-suspend inline fun S3Client.putObject(bucket: String, key: String, byteStream: ByteStream) {
+suspend inline fun S3Client.putObject(bucket: String, key: String, byteStream: ByteStream, metadata: Map<String, String>? = null) {
     this.putObject {
         this.bucket = bucket
         this.key = key
         this.body = byteStream
+        this.metadata = metadata?.map { it.key to it.value.encodeBase64() }?.toMap()
     }
 }
 
 /** 파일 업로드 */
-suspend inline fun S3Client.putObject(bucket: String, key: String, file: File) {
+suspend inline fun S3Client.putObject(bucket: String, key: String, file: File, metadata: Map<String, String>? = null) {
     when {
-        file.length() > 1024 * 1024 * 10 -> putObjectMultipart(bucket, key, file)
-        else -> putObject(bucket, key, file.asByteStream())
+        file.length() > 1024 * 1024 * 10 -> putObjectMultipart(bucket, key, file, metadata = metadata)
+        else -> putObject(bucket, key, file.asByteStream(), metadata)
     }
 }
 
@@ -63,7 +66,7 @@ suspend inline fun S3Client.putObject(bucket: String, key: String, byteArray: By
  * @param key 업로드 디렉토리 path.  /로 시작하지 않음!!
  * @param splitMb 분할처리할 용량
  *  */
-suspend inline fun S3Client.putObjectMultipart(bucket: String, key: String, file: File, splitMb: Int = 1024) {
+suspend inline fun S3Client.putObjectMultipart(bucket: String, key: String, file: File, splitMb: Int = 1024, metadata: Map<String, String>? = null) {
 
     check(splitMb > 0)
     check(splitMb <= 1024 * 5) { "1회당 업로드 크기는 최대 5GB 용량 지원" }
@@ -76,6 +79,7 @@ suspend inline fun S3Client.putObjectMultipart(bucket: String, key: String, file
     val initiateMPUResult = this.createMultipartUpload {
         this.bucket = bucket
         this.key = key
+        this.metadata = metadata
     }
 
     val partSize = splitMb * 1024L * 1024L
@@ -134,23 +138,34 @@ suspend inline fun S3Client.objectSize(data: S3Data) {
  * 대상 디렉토리를 변경한다
  * ex) DDB 변환후 지정된 장소로 이동
  * 실제 move는 존재하지 않고, 카피 후 삭제 해야함.
+ * 기본 설정으로 메타데이터는 동일하게 복제됨
  *  */
-suspend inline fun S3Client.moveDir(fromDir: S3Data, toDir: S3Data) {
-    val log = KotlinLogging.logger {}
-    for (i in 0..100) {
-        val fromDatas = this.listFiles(fromDir.bucket, fromDir.key)
-        log.info { "moveDir [$i/100] -> ${fromDatas.size}건 이동 : $fromDir -> $toDir" }
-        for (fromData in fromDatas) {
-            this.copyObject {
-                this.copySource = fromData.toPath()
-                this.bucket = toDir.bucket
-                this.key = toDir.key + fromData.fileName
-            }
+suspend fun S3Client.moveDir(fromDir: S3Data, toDir: S3Data) {
+    val fromDatas = this.listFiles(fromDir.bucket, fromDir.key)
+    for (fromData in fromDatas) {
+        this.copyObject {
+            this.copySource = fromData.toPath()
+            this.bucket = toDir.bucket
+            this.key = toDir.key + fromData.fileName
         }
-        this.deleteAll(fromDatas)
-        if (fromDatas.size < LIMIT_PER_REQ) break
+    }
+    this.deleteAll(fromDatas)
+}
+
+/** 파일 이동 단건 버전 */
+suspend fun S3Client.moveFile(fromFile: S3Data, toFile: S3Data) {
+    copyObject {
+        copySource = fromFile.toPath()
+        bucket = toFile.bucket
+        key = toFile.key
+    }
+    deleteObject {
+        bucket = fromFile.bucket
+        key = fromFile.key
+        versionId = fromFile.versionId
     }
 }
+
 
 //==================================================== list ======================================================
 
@@ -173,15 +188,6 @@ suspend inline fun S3Client.listFiles(bucket: String, prefix: String): List<S3Da
     this.bucket = bucket
     this.prefix = prefix
 }.contents?.map { S3Data(bucket, it.key!!) } ?: emptyList()
-
-///** 페이징 조회 */
-//fun S3Client.getObjectListPaging(s3data: AwsS3Data, pageCnt: Int = 1, pageSize: Int = 100, header: Int = 1): List<Array<String>> {
-//    val inputStream = this.getObject(s3data)
-//    val inputStreamResource = InputStreamResource(inputStream)
-//    val lineToSkip = (pageCnt - 1) * pageSize + header
-//    val maxItemCount = pageCnt * pageSize + header
-//    return CsvItemReader.of<Array<String>>(inputStreamResource).utf8().linesToSkip(lineToSkip).maxItemCount(maxItemCount).open().readAndClose()
-//}
 
 //==================================================== 삭제 ======================================================
 
@@ -259,5 +265,21 @@ suspend inline fun S3Client.getObjectText(bucket: String, key: String): String? 
         }
     } catch (e: NoSuchKey) {
         null
+    }
+}
+
+/**
+ * 본문 안읽고 User defined 메타데이터만 읽음
+ * User defined 메타데이터는 x-amz-meta-aa 이런식으로 입력되지만 , 실제 가져오면 정상 출력됨
+ * 사용자 정의 메타데이터는 크기가 2KB로 제한
+ *  */
+suspend inline fun S3Client.getObjectMetadata(bucket: String, key: String): Map<String, String> {
+    return this.getObject(
+        GetObjectRequest {
+            this.bucket = bucket
+            this.key = key
+        }
+    ) { resp ->
+        resp.metadata?.map { it.key to it.value.decodeBase64() }?.toMap() ?: emptyMap()
     }
 }

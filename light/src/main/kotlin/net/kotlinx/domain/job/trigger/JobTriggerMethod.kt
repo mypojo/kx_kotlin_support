@@ -68,7 +68,7 @@ class JobTriggerLambda(
     private val jobRepository: JobRepository by inject()
 
     override suspend fun trigger(op: JobTriggerOption): String {
-        val jobSk = idGenerator.nextvalAsString()
+        val jobSk = op.jobSk ?: idGenerator.nextvalAsString()
         val jobParam = jobSerializer.toJson(op, jobSk)
         if (op.synch) {
             val resultText = aws1.lambda.invokeSynch(lambdaFunctionName, jobParam)
@@ -109,7 +109,7 @@ class JobTriggerBatch(
     private val aws1: AwsClient1 by inject()
 
     override suspend fun trigger(op: JobTriggerOption): String {
-        val jobSk = idGenerator.nextvalAsString()
+        val jobSk = op.jobSk ?: idGenerator.nextvalAsString()
         val jobParam = jobSerializer.toJson(op, jobSk)
         val findJob = Job(op.jobDefinition.jobPk, jobSk)
         if (op.synch) {

@@ -35,6 +35,12 @@ enum class CdkIamService(
     SCHEDULER("scheduler"),
 
     /**
+     * 레이크포메이션.
+     * 레이크포메이션으로 변경시 어플리케이션 권한(app-admin)에도 있어야 하고  로그인 한 역할(DEV)에도 이게 필요함!
+     *  */
+    LAKEFORMATION("lakeformation"),
+
+    /**
      * 퀵사이트.
      * 디폴트 역할은 athena-워크스페이스 primary 미선택시 오류남.
      * 개별 설정하기 귀찮아서 이걸로 통일

@@ -5,9 +5,12 @@ import net.kotlinx.string.CharSets
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import java.nio.charset.Charset
 
 /** 직렬화 가능한 요청 객체 : 응답이 텍스트인경우 */
@@ -44,6 +47,7 @@ class OkHttpReq {
         //멀티파트가 아닌경우 json 등으로 간주해서 toString
         val requestBody = when (val input = body) {
             is MultipartBody -> input
+            is File -> input.asRequestBody("application/octet-stream".toMediaTypeOrNull()) //상세 옵션은 향후 입력
             else -> input?.toString()?.toRequestBody(mediaType)
         }
         val builder = Request.Builder()

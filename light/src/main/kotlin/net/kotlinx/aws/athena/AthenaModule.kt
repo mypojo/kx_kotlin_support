@@ -7,6 +7,7 @@ import aws.sdk.kotlin.services.athena.model.QueryExecutionState
 import aws.sdk.kotlin.services.athena.model.QueryExecutionState.*
 import aws.sdk.kotlin.services.athena.model.TooManyRequestsException
 import aws.sdk.kotlin.services.athena.startQueryExecution
+import ch.qos.logback.classic.Level
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -19,6 +20,7 @@ import net.kotlinx.aws.s3.getObjectLines
 import net.kotlinx.concurrent.CoroutineSleepTool
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.core.Kdsl
+import net.kotlinx.logback.LogBackUtil
 import net.kotlinx.retry.RetryTemplate
 import java.io.File
 import kotlin.time.Duration
@@ -198,7 +200,7 @@ class AthenaModule {
     /**
      * 동시 처리하는 간단 샘플
      *  */
-    suspend fun <T : AthenaQuery> startAndWait(query: List<T>): List<T> {
+    fun <T : AthenaQuery> startAndWait(query: List<T>): List<T> {
         query.map {
             suspend {
                 startAndWait(it)
@@ -232,6 +234,16 @@ class AthenaModule {
             }
         }
         return querys
+    }
+
+
+    companion object {
+
+        /** 디버깅 로그 끄고싶을때 사용 */
+        fun logLevel(level: Level) {
+            LogBackUtil.logLevelTo(this::class.java.packageName!!, level)
+        }
+
     }
 
 }

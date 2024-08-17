@@ -3,11 +3,14 @@ package net.kotlinx.domain.job
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.Select
 import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsInstanceType
+import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.dynamo.*
 import net.kotlinx.collection.doUntilTokenNull
 import net.kotlinx.domain.job.define.JobDefinition
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.number.ifTrue
+import java.util.concurrent.TimeUnit
 
 /**
  * DDB 간단접근용 헬퍼
@@ -25,9 +28,18 @@ class JobRepository(val profile: String? = null) : DynamoRepository<Job> {
         val EMPTY: Job = Job("", "")
     }
 
+    /** 디폴트 put 후크 */
+    var beforePutHook: (Job) -> Unit = { job ->
+        job.ttl = when (AwsInstanceTypeUtil.INSTANCE_TYPE) {
+            AwsInstanceType.LOCAL -> DynamoUtil.ttlFromNow(TimeUnit.HOURS, 1)  //로컬은 테스트로 간주하고 1시간 보관
+            else -> DynamoUtil.ttlFromNow(TimeUnit.DAYS, 7 * 2)
+        }
+    }
+
     //==================================================== 기본 오버라이드 ======================================================
 
     override suspend fun putItem(job: Job) {
+        beforePutHook(job)
         job.persist.ifTrue { aws.dynamo.putItem(job) }
     }
 
