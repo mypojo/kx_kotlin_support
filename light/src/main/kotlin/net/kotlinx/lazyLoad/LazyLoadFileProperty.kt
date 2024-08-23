@@ -5,6 +5,7 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.s3.getObjectDownload
+import net.kotlinx.aws.s3.listFiles
 import net.kotlinx.aws.ssm.find
 import net.kotlinx.core.ProtocolPrefix
 import net.kotlinx.file.slash
@@ -19,7 +20,7 @@ import kotlin.reflect.KProperty
 /**
  * 각종 리소스에서 늦은 로드를 해주는 프로퍼티
  *  */
-class LazyLoadFileProperty(val configFile: File) {
+class LazyLoadFileProperty(val inputFile: File) {
 
     //==================================================== 설정 ======================================================
 
@@ -33,13 +34,12 @@ class LazyLoadFileProperty(val configFile: File) {
 
     /**
      * 실제 위임 파일
-     * 디렉토리 입력일 경우 path로 재조정 해줌 ex) S3 파일
      *  */
-    private var delegateFile = if (configFile.isDirectory) configFile.slash(info.substringAfterLast("/")) else configFile
+    private var delegateFile = inputFile
 
     /** 데이터가 없으면 로드한다. */
     operator fun getValue(thisRef: Any?, property: KProperty<*>): File {
-        if (delegateFile.exists()) {
+        if (delegateFile.exists() && delegateFile.isFile) {
             log.trace { " -> File이 이미 존재합니다. 로드 스킵!! $info" }
         } else {
             load()
@@ -47,7 +47,8 @@ class LazyLoadFileProperty(val configFile: File) {
         return delegateFile
     }
 
-    fun load(): File {
+    /** 외부에서 강제 로드도 가능하다 */
+    fun load() {
         when {
             info.startsWith(ProtocolPrefix.HTTP) || info.startsWith(ProtocolPrefix.HTTPS) -> {
                 log.debug { " -> File을 http에서 로드합니다 $info -> $delegateFile" }
@@ -60,12 +61,23 @@ class LazyLoadFileProperty(val configFile: File) {
 
             info.startsWith(ProtocolPrefix.S3) -> {
                 log.debug { " -> File을 S3에서 로드합니다 $info -> $delegateFile" }
-                val s3Data = S3Data.parse(info)
                 val aws: AwsClient1 = koin(profile)
+                val input = S3Data.parse(info)
                 runBlocking {
-                    aws.s3.getObjectDownload(s3Data.bucket, s3Data.key, delegateFile)
+                    if (input.isDirectory) {
+                        val s3Files = aws.s3.listFiles(input.bucket, input.key)
+                        s3Files.forEach { s3File ->
+                            val eachFile = delegateFile.slash(s3File.fileName)
+                            if (eachFile.exists()) return@forEach
+
+                            aws.s3.getObjectDownload(s3File.bucket, s3File.key, eachFile)
+                        }
+                        log.debug { " -> File을 S3에서 ${s3Files.size}건 로드 완료 -> ${delegateFile.listFiles().sumOf { it.length() }.toSiText()} : ${delegateFile.absolutePath}" }
+                    } else {
+                        aws.s3.getObjectDownload(input.bucket, input.key, delegateFile)
+                        log.debug { " -> File을 S3에서 로드 완료 -> ${delegateFile.length().toSiText()} : ${delegateFile.absolutePath}" }
+                    }
                 }
-                log.debug { " -> File을 S3에서 로드 완료 -> ${delegateFile.length().toSiText()} : ${delegateFile.absolutePath}" }
             }
 
             info.startsWith(ProtocolPrefix.SSM) -> {
@@ -81,7 +93,6 @@ class LazyLoadFileProperty(val configFile: File) {
 
             else -> throw IllegalArgumentException("지원하지 않는 형식입니다. $info")
         }
-        return delegateFile
     }
 
     /** 도중에 변경 가능하다!! */

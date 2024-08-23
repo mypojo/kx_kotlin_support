@@ -4,7 +4,13 @@ import net.kotlinx.json.gson.GsonSet
 import net.kotlinx.string.ResultText
 import java.io.File
 
-/** 람다 유틸들  */
+/**
+ * 람다 유틸들
+ *
+ * 람다 파워툴스라는걸 제공하긴 한데, .. 크게 쓸모가 없어보인다
+ * https://docs.powertools.aws.dev/lambda/java/
+ *
+ * */
 object LambdaUtil {
 
     /** 람다의 로컬디렉토리 디폴트 경로. 여기부터 512mb가 할당된다.  */

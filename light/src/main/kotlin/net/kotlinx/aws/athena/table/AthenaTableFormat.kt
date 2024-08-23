@@ -1,6 +1,5 @@
-package net.kotlinx.aws.athena
+package net.kotlinx.aws.athena.table
 
-@Deprecated("net.kotlinx.aws.athena.table 사용하세요")
 sealed interface AthenaTableFormat {
 
     fun toRowFormat(table: AthenaTable): List<String>
@@ -16,7 +15,7 @@ sealed interface AthenaTableFormat {
             return listOf(
                 "ROW FORMAT SERDE 'com.amazon.ionhiveserde.IonHiveSerDe'",
                 "WITH SERDEPROPERTIES (",
-                table.schema.keys.joinToString(",\n") { "    \"ion.${it}.path_extractor\" = \"(${table.ionFlatPath} ${it})\"" },  //ex) ion.pk.path_extractor" = "(Item pk)
+                table.schema.entries.joinToString(",\n") { "    \"ion.${it.key}.path_extractor\" = \"(${table.ionFlatPath} ${it})\"" },  //ex) ion.pk.path_extractor" = "(Item pk)
                 ")",
                 "STORED AS INPUTFORMAT 'com.amazon.ionhiveserde.formats.IonInputFormat'",
                 "OUTPUTFORMAT 'com.amazon.ionhiveserde.formats.IonOutputFormat'",

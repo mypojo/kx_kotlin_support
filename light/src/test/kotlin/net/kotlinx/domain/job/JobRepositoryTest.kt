@@ -19,7 +19,7 @@ class JobRepositoryTest : BeSpecLight() {
         Given("기본 조회기능") {
 
             class NplCampUpdate01Job : JobTasklet {
-                override fun doRun(job: Job) {}
+                override suspend fun doRun(job: Job) {}
             }
 
             val jobDef = JobDefinition {

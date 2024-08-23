@@ -1,10 +1,9 @@
-package net.kotlinx.aws.athena
+package net.kotlinx.aws.athena.table
 
 
 /**
  * 일단 EXTERNAL 만 지원
  * */
-@Deprecated("net.kotlinx.aws.athena.table 사용하세요")
 enum class AthenaTableType(
     /** 생성 스키마에 포함될 명령어 */
     val schema: String

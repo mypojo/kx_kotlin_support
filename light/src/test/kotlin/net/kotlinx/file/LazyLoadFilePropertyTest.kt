@@ -1,5 +1,6 @@
 package net.kotlinx.file
 
+import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.longs.shouldBeGreaterThan
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -13,8 +14,6 @@ import java.io.File
 
 class LazyLoadFilePropertyTest : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile28 }
-
     init {
         initTest(KotestUtil.PROJECT)
 
@@ -26,6 +25,7 @@ class LazyLoadFilePropertyTest : BeSpecHeavy() {
 
                 Then("S3 파일 늦은로드 (프로파일 입력버전)") {
 
+                    val profileName by lazy { findProfile28 }
                     val localFile = workspace.slash("s3.json")
                     localFile.delete()
 
@@ -36,6 +36,21 @@ class LazyLoadFilePropertyTest : BeSpecHeavy() {
                     }
                     file.length() shouldBeGreaterThan 1000
                     log.info { "fileS3 ${file.absolutePath} : ${file.length().toSiText()}" }
+                }
+
+
+                Then("S3 디렉토리 늦은로드 (프로파일 입력버전)") {
+
+                    val profileName by lazy { findProfile97 }
+                    val localFile = workspace.slash("fonts")
+                    //localFile.deleteRecursively()
+
+                    val filePath = "s3://adpriv-data-dev/resource/font/"
+                    val file: File by localFile lazyLoad {
+                        info = filePath
+                        profile = profileName
+                    }
+                    file.listFiles().size shouldBeGreaterThan  1
                 }
 
                 Then("http 파일 늦은로드 (단축 버전)") {

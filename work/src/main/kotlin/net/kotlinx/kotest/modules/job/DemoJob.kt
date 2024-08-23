@@ -9,7 +9,7 @@ class DemoJob : JobTasklet {
 
     private val log = KotlinLogging.logger {}
 
-    override fun doRun(job: Job) {
+    override suspend fun doRun(job: Job) {
         log.debug { "데모 잡이 실행됩니다.. " }
         cnt.incrementAndGet()
     }

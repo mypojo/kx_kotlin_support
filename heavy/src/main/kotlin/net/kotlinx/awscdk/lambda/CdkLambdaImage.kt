@@ -63,7 +63,11 @@ class CdkLambdaImage : CdkEnum {
     /** 디폴트로 최대인 15분 */
     var timeout: kotlin.time.Duration = 15.minutes
 
-    /** 최저 보다는 여유있게 줌 */
+    /**
+     * 최저 보다는 여유있게 줌
+     * 아래 사이트에서 최적화된 메모리를 구할 수 있으니 참고
+     * https://github.com/alexcasalboni/aws-lambda-power-tuning
+     *  */
     var memorySize: Int = 512 * 2
 
     /** 람다 로그설정 변경시, 별도 람다가 생겨서 보기싫게됨  */

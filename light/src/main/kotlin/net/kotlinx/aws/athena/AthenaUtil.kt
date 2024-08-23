@@ -11,7 +11,8 @@ object AthenaUtil {
     const val API_LIMIT_SIZE = 50
 
     /**
-     * 키와 타입을 리턴해준다. 스키마 만들때 사용
+     * 키와 타입을 리턴해준다.
+     * data class 로 아테나 스키마 만들때 사용
      * @see  net.kotlinx.aws.athena.AthenaTable
      * */
     fun toSchema(clazz: KClass<*>): Map<String, String> {

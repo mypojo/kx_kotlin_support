@@ -22,6 +22,10 @@ data class S3Data(
     val parent: S3Data
         get() = S3Data(bucket, key.substringBeforeLast("/"))
 
+    /** 디렉토리인지 */
+    val isDirectory: Boolean
+        get() = key.endsWith("/")
+
     /**
      * 업로드 파일에 접근 가능한 S3 프로토콜을 리턴한다. 이 URL은 다운로드나 스파크 등  내부 API에서 사용된다.
      * https://gpdb.docs.pivotal.io/4390/admin_guide/load/topics/g-s3-protocol.html

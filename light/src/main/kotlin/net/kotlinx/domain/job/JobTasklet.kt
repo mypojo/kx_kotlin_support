@@ -11,7 +11,8 @@ import net.kotlinx.reflect.name
  * 만약 spring-batch 가 필요한 경우라면 SFN으로 분산처리하게 할것
  */
 interface JobTasklet {
-    fun doRun(job: Job)
+
+    suspend fun doRun(job: Job)
 
     /**
      * Task를 실행할 Job을 json 으로 구성해준다.

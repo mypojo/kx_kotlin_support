@@ -4,14 +4,14 @@ package net.kotlinx.domain.job
  * 잡 상태에 없는게 있어서 새로 만들었음
  *
  * 중간에 상태 생략 가능
- * SCHEDULED -> STARTING -> RUNNING -> WAITING -> SUCCEEDED or FAILED or CANCELED
+ * (SCHEDULED) -> STARTING -> RUNNING -> (WAITING) -> SUCCEEDED or FAILED or CANCELED
  *
  */
 enum class JobStatus(val desc: String) {
 
     //==================================================== 시작전 최초 상태 ======================================================
     /**
-     * 작업이 제출되어 스케쥴링 된 상태 (상태머신 전용)
+     * 작업이 제출되어 스케쥴링 된 상태 (상태머신 or 스케쥴링 전용)
      * 상태머신의 wait = 고정시간(Timestamp) 사용됨
      * ex) 특정 작업이 다음주 월요일 오후 X시에 실행되길 원함
      */

@@ -20,6 +20,7 @@ import kotlin.time.Duration.Companion.days
  *
  * 네이밍 컨벤션 = mysql 표준인 소문자 언더스코어로 통일한다.
  *  */
+@Deprecated("net.kotlinx.aws.athena.table 사용하세요")
 class AthenaTable {
 
     @Kdsl
@@ -27,13 +28,6 @@ class AthenaTable {
         apply(block)
     }
 
-    /**
-     * 스키마
-     * 기본적으로 언더스코어 구조이지만,
-     * 예외적으로 json 입력 기본 스키마는 카멜케이스로 구성한다 (어차피 AWS가 시작을 잘못잡아서 엉망임)
-     * Any 로 입력받아서 , 각 로직별로 처리함
-     * */
-    lateinit var schema: Map<String, Any>
 
     /** 파티션 타입 */
     var athenaTablePartitionType: AthenaTablePartitionType = AthenaTablePartitionType.NONE
@@ -57,12 +51,6 @@ class AthenaTable {
      *  */
     lateinit var s3Key: String
 
-    /**
-     * 파티션 정보
-     * ice버그의 경우 value에 함수형을 입력할 수 있음
-     *  -> https://docs.aws.amazon.com/ko_kr/athena/latest/ug/querying-iceberg-creating-tables.html 참고
-     *  */
-    var partition: Map<String, String> = emptyMap()
 
     /** 헤더가 있으면 true로 지정할것 */
     var skipHeader: Boolean = false
@@ -84,6 +72,45 @@ class AthenaTable {
     /** 데이터베이스를 포함한 테이블명  */
     val tableNameWithDatabase: String
         get() = if (database.isEmpty()) tableName else "${database}.${tableName}"
+
+    //==================================================== 테이블 컬럼 설정정보 ======================================================
+
+    /**
+     * 스키마
+     * 기본적으로 언더스코어 구조이지만,
+     * 예외적으로 json 입력 기본 스키마는 카멜케이스로 구성한다 (어차피 AWS가 시작을 잘못잡아서 엉망임)
+     * Any 로 입력받아서 , 각 로직별로 처리함
+     * */
+    lateinit var schema: Map<String, Any>
+
+    /**
+     * 파티션 정보
+     * ice버그의 경우 value에 함수형을 입력할 수 있음
+     *  -> https://docs.aws.amazon.com/ko_kr/athena/latest/ug/querying-iceberg-creating-tables.html 참고
+     *  */
+    var partition: Map<String, String> = emptyMap()
+
+    /**
+     * 참고로 STRUCT 안의 데이터는 eventId:bigint 이런식으로 스키마가 들어간다
+     * */
+    private fun toSchema(value: Any): String = when (value) {
+
+        null -> throw NullPointerException()
+
+        /** 주로 JSON 매핑에 사용 */
+        is Map<*, *> -> "STRUCT< ${value.entries.joinToString(",") { toSchema(it) }} >"
+
+        /** 주로 JSON 매핑에 사용 */
+        is List<*> -> "ARRAY<STRUCT< ${value.joinToString(",") { toSchema(it!!) }} >>"
+
+        is Map.Entry<*, *> -> "${value.key}:${toSchema(value.value!!)}"
+        is Pair<*, *> -> "${value.first}:${toSchema(value.second!!)}"
+
+        is CharSequence -> value.toString()
+
+        else -> throw IllegalArgumentException("${value::class} is not required!")
+    }
+
 
     //==================================================== 간단설정 ======================================================
     fun icebugTable() {
@@ -210,19 +237,6 @@ class AthenaTable {
             else -> if (partition.isEmpty()) "" else "PARTITIONED BY (${partition.map { "${it.key} ${it.value}" }.joinToString(",")})"
         }
 
-//        val partitionText = when (athenaTablePartitionType) {
-//            AthenaTablePartitionType.INDEX -> {
-//                when (athenaTableFormat) {
-//                    /** 아이스버그의 경우 일반 컬럼에 파티션 데이터가 있어야 한다. */
-//                    AthenaTableFormat.Iceberg -> if (partition.isEmpty()) "" else "PARTITIONED BY (${partition.map { "${it.value}" }.joinToString(",")})"
-//
-//                    else -> if (partition.isEmpty()) "" else "PARTITIONED BY (${partition.map { "${it.key} ${it.value}" }.joinToString(",")})"
-//                }
-//            }
-//
-//            else -> ""
-//        }
-
         //==================================================== 포맷정보 ======================================================
         val formatText = athenaTableFormat.toRowFormat(this).joinToString("\n")
         when (athenaTableFormat) {
@@ -254,28 +268,6 @@ class AthenaTable {
             propsText,
             ";",
         ).joinToString("\n")
-    }
-
-    /**
-     * 스키마에는 Any가 들어온다!!
-     * */
-    private fun toSchema(value: Any?): String = when (value) {
-
-        null -> throw NullPointerException()
-
-        /** 주로 JSON 매핑에 사용 */
-        is Map<*, *> -> "STRUCT< ${value.entries.joinToString(",") { toSchema(it) }} >"
-
-        /** 주로 JSON 매핑에 사용 */
-        is List<*> -> "ARRAY<STRUCT< ${value.joinToString(",") { toSchema(it) }} >>"
-
-        //is Map.Entry<*, *> -> "`${value.key}` ${toSchema(value.value!!)}"
-        is Map.Entry<*, *> -> "${value.key}:${toSchema(value.value!!)}"
-        is Pair<*, *> -> "${value.first}:${toSchema(value.second!!)}"
-
-        is CharSequence -> value.toString()
-
-        else -> throw IllegalArgumentException("${value::class} is not required!")
     }
 
     //==================================================== athena type 입력용 (하드코딩 방지) ======================================================

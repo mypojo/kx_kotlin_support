@@ -1,4 +1,4 @@
-package net.kotlinx.aws.athena
+package net.kotlinx.aws.athena.table
 
 
 /**
@@ -13,7 +13,6 @@ package net.kotlinx.aws.athena
  *
  * INDEX & PROJECTION 둘다, 파티션이 뒤에 붙어서 나오게됨
  * */
-@Deprecated("net.kotlinx.aws.athena.table 사용하세요")
 enum class AthenaTablePartitionType {
 
     /** 파티션 없음 */

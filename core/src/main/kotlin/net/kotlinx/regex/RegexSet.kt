@@ -27,6 +27,10 @@ object RegexSet {
     /**  스네이크 케이스 */
     val SNAKE = "_[a-zA-Z]".toRegex()
 
+    /**  파일명 */
+    val FILE_NAME = "[\\\\/:*?\"<>|]".toRegex()
+
+
     /** 알바벳+숫자 */
     object ALPAH_NUMERIC {
 
