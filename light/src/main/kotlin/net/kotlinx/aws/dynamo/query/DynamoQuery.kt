@@ -1,4 +1,4 @@
-package net.kotlinx.aws.dynamo
+package net.kotlinx.aws.dynamo.query
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.QueryRequest
@@ -7,7 +7,7 @@ import mu.KotlinLogging
 import net.kotlinx.core.Kdsl
 
 /**
- * 각 항목들은 상속해서 사용
+ * 원래 QueryRequest 의 기본세팅 정의 버전
  *
  * 상세 문법은 아래 참고
  * https://docs.aws.amazon.com/ko_kr/amazondynamodb/latest/developerguide/Query.KeyConditionExpressions.html
@@ -19,14 +19,8 @@ class DynamoQuery {
         apply(block)
     }
 
-    lateinit var param: Map<String, AttributeValue>
-    lateinit var query: String
-
-    /**
-     * 주어진 데이터로 쿼리 파라메터를 어떻게 만들것인지 정의
-     * 간단히 정의 가능한곳에만 사용.
-     *  */
-    var createParamAndQuery: ((data: DynamoData) -> Map<String, AttributeValue>)? = null
+    /** 쿼리 표현식 */
+    lateinit var expression: DynamoExpression
 
     var limit: Int = 100
 
@@ -49,20 +43,13 @@ class DynamoQuery {
     var exclusiveStartKey: Map<String, AttributeValue>? = null
 
     /** 수정해서 사용 */
-    fun toQueryRequest(data: DynamoData): QueryRequest {
+    fun toQueryRequest(tableName: String): QueryRequest {
 
         log.trace { "쿼리 파라메터 생성 로직이 있다면 적용" }
-        createParamAndQuery?.let {
-            val returnParam = it(data)
-            this.param = returnParam
-            this.query = returnParam.keys.joinToString(" AND ") { "${it.replaceFirst(":", "")} = $it" }
-        }
-        check(this::param.isInitialized)
-        check(this::query.isInitialized)
         return QueryRequest {
-            this.expressionAttributeValues = param
-            this.keyConditionExpression = query
-            this.tableName = data.tableName
+            this.expressionAttributeValues = expression.expressionAttributeValues()
+            this.keyConditionExpression = expression.expression()
+            this.tableName = tableName
             this.consistentRead = this@DynamoQuery.consistentRead
             this.limit = this@DynamoQuery.limit
             this.select = this@DynamoQuery.select

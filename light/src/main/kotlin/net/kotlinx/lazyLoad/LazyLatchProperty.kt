@@ -11,7 +11,7 @@ class LazyLatchProperty {
     /** 설정된 값을 바탕으로 가져온 실제 값 */
     private var resultValue: String? = null
 
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): String = resultValue!!
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): String = resultValue ?: throw IllegalStateException("Property 값이 없습니다")
 
     /** 재할당 해서 초기화 가능하다. */
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {

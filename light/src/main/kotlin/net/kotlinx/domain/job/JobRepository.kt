@@ -6,6 +6,10 @@ import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.AwsInstanceType
 import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.dynamo.*
+import net.kotlinx.aws.dynamo.query.DynamoExpressionSet
+import net.kotlinx.aws.dynamo.query.DynamoQuery
+import net.kotlinx.aws.dynamo.query.query
+import net.kotlinx.aws.dynamo.query.queryAll
 import net.kotlinx.collection.doUntilTokenNull
 import net.kotlinx.domain.job.define.JobDefinition
 import net.kotlinx.koin.Koins.koinLazy
@@ -53,10 +57,8 @@ class JobRepository(val profile: String? = null) : DynamoRepository<Job> {
     suspend fun findByPk(jobDef: JobDefinition, last: Map<String, AttributeValue>? = null, block: DynamoQuery.() -> Unit = {}): DynamoResult<Job> {
         val param = Job(jobDef.jobPk)
         return aws.dynamo.query(param) {
-            createParamAndQuery = {
-                buildMap {
-                    put(":${DynamoDbBasic.PK}", AttributeValue.S(jobDef.jobPk))
-                }
+            expression = DynamoExpressionSet.PkSkEq {
+                pk = jobDef.jobPk
             }
             exclusiveStartKey = last
             block()
@@ -66,10 +68,8 @@ class JobRepository(val profile: String? = null) : DynamoRepository<Job> {
     /** 전체 조회 */
     suspend fun findAllByPk(jobDef: JobDefinition, block: DynamoQuery.() -> Unit = {}): List<Job> {
         val dynamoQuery = DynamoQuery {
-            createParamAndQuery = {
-                buildMap {
-                    put(":${DynamoDbBasic.PK}", AttributeValue.S(jobDef.jobPk))
-                }
+            expression = DynamoExpressionSet.PkSkEq {
+                pk = jobDef.jobPk
             }
             block()
         }
@@ -93,10 +93,12 @@ class JobRepository(val profile: String? = null) : DynamoRepository<Job> {
             indexName = JobIndexUtil.GID_STATUS
             scanIndexForward = false //최근 데이터 우선
             select = Select.AllProjectedAttributes
-            createParamAndQuery = {
-                buildMap {
-                    put(":${Job::jobStatus.name}", AttributeValue.S(jobStatus.name))
-                    jobDef?.let { put(":${DynamoDbBasic.PK}", AttributeValue.S(jobDef.jobPk)) }
+            expression = DynamoExpressionSet.PkSkEq {
+                pkName = Job::jobStatus.name
+                pk = jobStatus.name
+                jobDef?.let {
+                    skName = DynamoDbBasic.PK
+                    sk = it.jobPk
                 }
             }
             exclusiveStartKey = last
@@ -116,12 +118,14 @@ class JobRepository(val profile: String? = null) : DynamoRepository<Job> {
 
     /** 특정 사용자의 요청을 요청 최신순으로 조회*/
     suspend fun findByMemberId(jobDef: JobDefinition, memberId: String, last: Map<String, AttributeValue>? = null, block: DynamoQuery.() -> Unit = {}): DynamoResult<Job> {
-        val queryExpression = DynamoExpressSet.Query.DynamoExpressSkPrefix(JobIndexUtil.LID_MEMBER, JobIndexUtil.LID_MEMBER_NAME, jobDef.jobPk, "${memberId}#")
         return aws.dynamo.query(EMPTY) {
-            indexName = queryExpression.indexName
+            indexName = JobIndexUtil.LID_MEMBER
             select = Select.AllProjectedAttributes
-            param = queryExpression.expressionAttributeValues()
-            query = queryExpression.expression()
+            expression = DynamoExpressionSet.SkPrefix {
+                skName = JobIndexUtil.LID_MEMBER_NAME
+                pk = jobDef.jobPk
+                sk = "${memberId}#"
+            }
             exclusiveStartKey = last
             block()
         }

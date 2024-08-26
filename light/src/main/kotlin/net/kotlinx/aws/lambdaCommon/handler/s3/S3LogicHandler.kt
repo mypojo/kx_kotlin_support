@@ -97,7 +97,6 @@ class S3LogicHandler(
             return LambdaUtil.FAIL
         }
 
-
         val resultJson = GsonData.obj().apply {
             put("sfn_id", path.pathId)
             put("file_name", path.fileName)

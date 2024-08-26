@@ -3,6 +3,7 @@ package net.kotlinx.aws.dynamo
 import aws.sdk.kotlin.services.dynamodb.*
 import aws.sdk.kotlin.services.dynamodb.getItem
 import aws.sdk.kotlin.services.dynamodb.model.*
+import net.kotlinx.aws.dynamo.query.DynamoExpression
 import net.kotlinx.collection.doUntil
 
 //==================================================== 트랜잭션 ======================================================
@@ -86,7 +87,7 @@ suspend fun <T : DynamoData> DynamoDbClient.getItem(data: T): T? {
  * 용량 이내라면 limit 제한해서 리턴
  * @param data 테이블정보 및 변환용.
  *  */
-suspend fun <T : DynamoData> DynamoDbClient.scan(data: T, exp: DynamoExpress? = null, last: Map<String, AttributeValue>? = null): DynamoResult<T> {
+suspend fun <T : DynamoData> DynamoDbClient.scan(data: T, exp: DynamoExpression? = null, last: Map<String, AttributeValue>? = null): DynamoResult<T> {
     val resp = this.scan {
         this.consistentRead = false //읽기 일관성 사용안함
         this.tableName = data.tableName
@@ -106,7 +107,7 @@ suspend fun <T : DynamoData> DynamoDbClient.scan(data: T, exp: DynamoExpress? = 
  * 쿼리와는 다르게 단순 doUntil 을 사용함
  * @param data 테이블정보 및 변환용.
  *  */
-suspend fun <T : DynamoData> DynamoDbClient.scanAll(data: T, exp: DynamoExpress? = null): List<T> {
+suspend fun <T : DynamoData> DynamoDbClient.scanAll(data: T, exp: DynamoExpression? = null): List<T> {
     var last: Map<String, AttributeValue>? = null
     return doUntil {
         val result = scan(data, exp, last)

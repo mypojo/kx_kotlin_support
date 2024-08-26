@@ -1,4 +1,4 @@
-package net.kotlinx.aws.dynamo
+package net.kotlinx.aws.dynamo.query
 
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import aws.sdk.kotlin.services.dynamodb.batchGetItem
@@ -6,12 +6,15 @@ import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.KeysAndAttributes
 import aws.sdk.kotlin.services.dynamodb.model.Select
 import aws.sdk.kotlin.services.dynamodb.paginators.queryPaginated
+import net.kotlinx.aws.dynamo.DynamoData
+import net.kotlinx.aws.dynamo.DynamoDbBasic
+import net.kotlinx.aws.dynamo.DynamoResult
 
 //==================================================== 단일 쿼리 ======================================================
 
 /** 고정된 쿼리 사용 */
 suspend fun <T : DynamoData> DynamoDbClient.query(query: DynamoQuery, data: T): DynamoResult<T> {
-    val req = query.toQueryRequest(data)
+    val req = query.toQueryRequest(data.tableName)
     val resp = this.query(req)
     val firstQuery = resp.items!!
     if (firstQuery.isEmpty()) return DynamoResult(emptyList(), resp.lastEvaluatedKey)
@@ -68,7 +71,7 @@ suspend fun <T : DynamoData> DynamoDbClient.batchGetItem(items: List<T>): List<T
 
 /** 청크 단위 처리. (Flow는 멈추는거 불가능) */
 suspend fun <T : DynamoData> DynamoDbClient.queryAll(query: DynamoQuery, data: T, action: suspend (List<T>) -> Unit) {
-    val paginated = this.queryPaginated(query.toQueryRequest(data))
+    val paginated = this.queryPaginated(query.toQueryRequest(data.tableName))
     //처리 단위가 달라서 컬렉트 리스트는 쓰지않음
     paginated.collect { v ->
         val firstScan = v.items!!

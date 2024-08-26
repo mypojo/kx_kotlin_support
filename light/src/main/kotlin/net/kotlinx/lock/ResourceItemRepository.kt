@@ -1,9 +1,10 @@
 package net.kotlinx.lock
 
 import net.kotlinx.aws.AwsClient1
-import net.kotlinx.aws.dynamo.DynamoQuerySet
 import net.kotlinx.aws.dynamo.DynamoRepository
-import net.kotlinx.aws.dynamo.queryAll
+import net.kotlinx.aws.dynamo.query.DynamoExpressionSet
+import net.kotlinx.aws.dynamo.query.DynamoQuery
+import net.kotlinx.aws.dynamo.query.queryAll
 import net.kotlinx.concurrent.coroutineExecute
 
 /**
@@ -28,7 +29,15 @@ class ResourceItemRepository(override val aws: AwsClient1) : DynamoRepository<Re
     }
 
     /** 리소스 전체 리스팅  */
-    suspend fun findAllByPk(pk: String): List<ResourceItem> = aws.dynamo.queryAll(DynamoQuerySet.KeyEqualTo, ResourceItem(pk, ""))
+    suspend fun findAllByPk(pk: String): List<ResourceItem> {
+        //xxxx
+        val query = DynamoQuery {
+            expression = DynamoExpressionSet.PkSkEq {
+                this.pk = pk
+            }
+        }
+        return aws.dynamo.queryAll(query, ResourceItem(pk, ""))
+    }
 
     companion object {
         /** 업데이트할거 */

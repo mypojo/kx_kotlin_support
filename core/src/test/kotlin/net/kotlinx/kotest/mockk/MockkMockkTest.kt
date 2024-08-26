@@ -1,6 +1,11 @@
 package net.kotlinx.kotest.mockk
 
 import io.kotest.matchers.shouldBe
+import io.mockk.every
+import io.mockk.mockk
+import net.kotlinx.domain.job.Job
+import net.kotlinx.domain.job.JobTasklet
+import net.kotlinx.domain.job.define.JobDefinition
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -32,6 +37,29 @@ class MockkMockkTest : BeSpecLog() {
                     val updateUser = demoService.updateUser("123")
                     updateUser.age shouldBe user.age
                 }
+            }
+
+            When("val getter 모킹") {
+
+                class DemoUpdate01Job : JobTasklet {
+                    override suspend fun doRun(job: Job) {}
+                }
+
+                Then("일반적인 사용"){
+                    val jobDef = JobDefinition { jobClass = DemoUpdate01Job::class }
+                    jobDef.jobPk shouldBe "demoUpdate01Job"
+                }
+
+                Then("객체 모킹"){
+                    // 객체 모킹
+                    val jobDef = mockk<JobDefinition>()
+                    every { jobDef.jobPk } returns "xxxx"
+                    jobDef.jobPk shouldBe "xxxx"
+                }
+
+
+
+
             }
 
         }

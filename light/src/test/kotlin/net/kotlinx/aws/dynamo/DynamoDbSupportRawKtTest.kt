@@ -4,6 +4,7 @@ import aws.sdk.kotlin.services.dynamodb.getItem
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.scan
 import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.dynamo.query.DynamoExpressionSet
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -33,9 +34,11 @@ class DynamoDbSupportRawKtTest : BeSpecHeavy() {
 
             }
 
-            Then("scan") {
+            Then("scan 필터링") {
 
-                val exp = DynamoExpressSet.Scan.DynamoExpressPkPrefix("NV#adv#")
+                val exp = DynamoExpressionSet.PkPrefix {
+                    pk = "NV#adv#"
+                }
 
                 val resp = aws.dynamo.scan {
                     this.tableName = "adv-dev"

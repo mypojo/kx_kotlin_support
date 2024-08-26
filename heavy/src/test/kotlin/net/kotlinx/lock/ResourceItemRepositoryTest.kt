@@ -17,8 +17,8 @@ class ResourceItemRepositoryTest : BeSpecHeavy() {
 
         Given("ResourceItemRepository 기본테스트") {
 
-            val pk1 = "test#1"
-            val pk2 = "test#2"
+            val pk1 = "ResourceItemRepositoryTest#1"
+            val pk2 = "ResourceItemRepositoryTest#2"
             val repository = lock.repository
             Then("입력") {
 

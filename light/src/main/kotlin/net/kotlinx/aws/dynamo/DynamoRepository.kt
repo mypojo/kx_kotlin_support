@@ -2,6 +2,8 @@ package net.kotlinx.aws.dynamo
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.dynamo.query.DynamoExpression
+import net.kotlinx.aws.dynamo.query.batchGetItem
 
 /**
  * DDB 네이밍 맞춤용 리파지토리
@@ -10,6 +12,7 @@ interface DynamoRepository<T : DynamoData> {
 
     val aws: AwsClient1
 
+    /** 네이블 네임 & 컨버터용 */
     val emptyData: T
 
     suspend fun putItem(item: T) {
@@ -28,8 +31,8 @@ interface DynamoRepository<T : DynamoData> {
         aws.dynamo.deleteItem(item)
     }
 
-    suspend fun scan(exp: DynamoExpress? = null, last: Map<String, AttributeValue>? = null): DynamoResult<T> = aws.dynamo.scan(emptyData, exp, last)
+    suspend fun scan(exp: DynamoExpression? = null, last: Map<String, AttributeValue>? = null): DynamoResult<T> = aws.dynamo.scan(emptyData, exp, last)
 
-    suspend fun scanAll(exp: DynamoExpress? = null): List<T> = aws.dynamo.scanAll(emptyData, exp)
+    suspend fun scanAll(exp: DynamoExpression? = null): List<T> = aws.dynamo.scanAll(emptyData, exp)
 
 }
