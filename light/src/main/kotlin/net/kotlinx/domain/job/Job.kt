@@ -22,8 +22,8 @@ class Job(override val pk: String, override val sk: String) : DynamoData {
     override fun toAttribute(): Map<String, AttributeValue> {
         //인덱스 조합. 참고로 가져올때는 인덱스 없어도 됨
         return mutableMapOf<String, AttributeValue>().apply {
-            this += DynamoDbBasic.PK to AttributeValue.S(pk)
-            this += DynamoDbBasic.SK to AttributeValue.S(sk)
+            this += DynamoBasic.PK to AttributeValue.S(pk)
+            this += DynamoBasic.SK to AttributeValue.S(sk)
 
             //==================================================== 최초 생성시 필수 입력값 ======================================================
             this += Job::reqTime.name to AttributeValue.S(reqTime.toIso())
@@ -49,7 +49,7 @@ class Job(override val pk: String, override val sk: String) : DynamoData {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : DynamoData> fromAttributeMap(map: Map<String, AttributeValue>): T = Job(
-        map[DynamoDbBasic.PK]!!.asS(), map[DynamoDbBasic.SK]!!.asS()
+        map[DynamoBasic.PK]!!.asS(), map[DynamoBasic.SK]!!.asS()
     ).apply {
         //==================================================== 최초 생성시 필수 입력값 ======================================================
         reqTime = map.findOrThrow(Job::reqTime)
@@ -163,7 +163,7 @@ class Job(override val pk: String, override val sk: String) : DynamoData {
      * 클라우드와치 로그 링크를 리턴
      * 이 뒤에 필터를 붙일 수 있다.
      */
-    fun toLogLink(): String = instanceMetadata?.toLogLink(startTime) ?: "awsInfo is required"
+    fun toLogLink(): String? = instanceMetadata?.toLogLink(startTime)
 
     /** DDB 콘솔 링크 */
     fun toConsoleLink(): String = DynamoUtil.toConsoleLink(tableName, this)

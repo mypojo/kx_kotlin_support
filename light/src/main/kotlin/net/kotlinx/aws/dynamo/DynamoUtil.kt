@@ -11,7 +11,7 @@ import kotlin.time.Duration
 object DynamoUtil {
 
     /** DDB 콘솔 링크  */
-    fun toConsoleLink(tableName: String, key: DynamoDbBasic, region: String = AwsConfig.REGION_KR): String {
+    fun toConsoleLink(tableName: String, key: DynamoBasic, region: String = AwsConfig.REGION_KR): String {
         return "https://$region.console.aws.amazon.com/dynamodbv2/home?region=$region#edit-item?table=$tableName&itemMode=2&pk=${key.pk.encodeUrl()}&sk=${key.sk.encodeUrl()}&route=ROUTE_ITEM_EXPLORER"
     }
 

@@ -17,7 +17,7 @@ import kotlin.time.Duration.Companion.seconds
  * https://aws.amazon.com/ko/blogs/korea/new-export-amazon-dynamodb-table-data-to-data-lake-amazon-s3/
  * 2023 서울기준 GB당 0.1083 USD -> 매우 저렴함
  * */
-class DynamoDbExporter(private val aws: AwsClient1, block: DynamoDbExporter.() -> Unit = {}) {
+class DynamoExporter(private val aws: AwsClient1, block: DynamoExporter.() -> Unit = {}) {
 
     private val log = KotlinLogging.logger {}
 
@@ -78,9 +78,9 @@ class DynamoDbExporter(private val aws: AwsClient1, block: DynamoDbExporter.() -
         val tableArn = "arn:aws:dynamodb:${aws.awsConfig.region}:${aws.awsConfig.awsId}:table/${tableName}"
         val resp = aws.dynamo.exportTableToPointInTime {
             this.tableArn = tableArn
-            this.s3Bucket = this@DynamoDbExporter.s3Bucket
-            this.s3Prefix = this@DynamoDbExporter.s3Prefix
-            this.exportFormat = this@DynamoDbExporter.exportFormat
+            this.s3Bucket = this@DynamoExporter.s3Bucket
+            this.s3Prefix = this@DynamoExporter.s3Prefix
+            this.exportFormat = this@DynamoExporter.exportFormat
         }
         exportArn = resp.exportDescription!!.exportArn!!
         log.info { "expor 요청 성공 : exportArn : $exportArn" }
@@ -93,7 +93,7 @@ class DynamoDbExporter(private val aws: AwsClient1, block: DynamoDbExporter.() -
             delay(startDelay)
 
             for (i in 0..repeatCnt) {
-                val target = aws.dynamo.describeExport { this.exportArn = this@DynamoDbExporter.exportArn }.exportDescription!!
+                val target = aws.dynamo.describeExport { this.exportArn = this@DynamoExporter.exportArn }.exportDescription!!
                 //val target = client.listExports { this.tableArn }.exportSummaries!!.first { it.exportArn == exportArn }
                 when (target.exportStatus!!) {
                     ExportStatus.InProgress -> log.debug { " -> 진행중.." }

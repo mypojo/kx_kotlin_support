@@ -37,6 +37,9 @@ internal class S3PresignSupportTest : BeSpecHeavy() {
 
             Then("프리사인_업로드") {
                 val file = ResourceHolder.WORKSPACE.slash("input.csv")
+                if(!file.exists()){
+                    file.writeText("test")
+                }
                 val metadata = mapOf(
                     "type" to "test1",
                     "name" to "영감님Mk2",

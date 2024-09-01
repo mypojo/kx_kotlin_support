@@ -38,6 +38,19 @@ internal class GsonData_데이터클래스 : BeSpecLog() {
     init {
         initTest(KotestUtil.FAST)
 
+        Given("테이터타입 테스트") {
+            Then("객체를 파싱할때만 GsonSet이 작동한다") {
+                val poo = TestPoo01(time = LocalDateTime.now())
+                val data = GsonData.fromObj(poo)
+                println(data["time"].str)
+
+                println(data)
+                println(data.remove("time")!!.str)
+                println(data)
+
+            }
+        }
+
         Given("데이터 클래스 테스트") {
 
             When("GsonData 되나?") {

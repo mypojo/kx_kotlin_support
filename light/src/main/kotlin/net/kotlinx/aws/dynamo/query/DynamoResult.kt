@@ -1,4 +1,4 @@
-package net.kotlinx.aws.dynamo
+package net.kotlinx.aws.dynamo.query
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 

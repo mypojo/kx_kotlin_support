@@ -15,7 +15,7 @@ class EventJobPublisherSample {
     fun pubEventJob(job: Job) {
 
         client.pub { event ->
-            event.logLink = job.toLogLink()
+            event.logLink = job.toLogLink() ?: "no log link"
             event.eventStatus = job.jobStatus.toString()
             event.errMsg = job.jobErrMsg
             event.eventDiv = job.toKeyString()

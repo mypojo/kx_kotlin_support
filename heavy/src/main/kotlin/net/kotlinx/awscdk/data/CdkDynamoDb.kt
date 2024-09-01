@@ -91,10 +91,14 @@ class CdkDynamoDb : CdkInterface {
         TagUtil.tag(iTable, deploymentType)
     }
 
+    /** 단축 명령어 */
     fun addGlobalSecondaryIndex(pk: String, sk: String, projectionType: ProjectionType = ProjectionType.KEYS_ONLY) =
         addGlobalSecondaryIndex(pk.cdkDynamoAttS(), sk.cdkDynamoAttS(), projectionType)
 
-    /** 글로벌 기본은 키값만 */
+    /**
+     * 글로벌 기본은 키값만
+     * 운영중인 테이블에 인덱스를 달경우 시간이 걸릴 수 있으니, 다수 인덱스 달때는 하나씩 할것
+     * */
     fun addGlobalSecondaryIndex(pk: Attribute, sk: Attribute, projectionType: ProjectionType = ProjectionType.KEYS_ONLY) {
         iTable.addGlobalSecondaryIndex(
             GlobalSecondaryIndexProps.builder()

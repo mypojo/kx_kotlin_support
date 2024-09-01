@@ -1,14 +1,12 @@
+@file:Suppress("DuplicatedCode")
+
 package net.kotlinx.aws.dynamo.query
 
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
-import aws.sdk.kotlin.services.dynamodb.batchGetItem
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import aws.sdk.kotlin.services.dynamodb.model.KeysAndAttributes
 import aws.sdk.kotlin.services.dynamodb.model.Select
 import aws.sdk.kotlin.services.dynamodb.paginators.queryPaginated
 import net.kotlinx.aws.dynamo.DynamoData
-import net.kotlinx.aws.dynamo.DynamoDbBasic
-import net.kotlinx.aws.dynamo.DynamoResult
 
 //==================================================== 단일 쿼리 ======================================================
 
@@ -34,30 +32,6 @@ suspend fun <T : DynamoData> DynamoDbClient.query(query: DynamoQuery, data: T): 
  *  */
 suspend fun <T : DynamoData> DynamoDbClient.query(data: T, block: DynamoQuery.() -> Unit = {}): DynamoResult<T> = query(DynamoQuery(block), data)
 
-/**
- * batchGetItem 의 로우 API 버전
- * 재정렬 작업을 추가해준다.
- *  */
-suspend fun DynamoDbClient.batchGetItem(tableName: String, params: List<Map<String, AttributeValue>>): List<Map<String, AttributeValue>> {
-    val orders = params.map { it[DynamoDbBasic.SK]!! }
-    val results = this.batchGetItem {
-        this.requestItems = mapOf(
-            tableName to KeysAndAttributes {
-                this.keys = params.map {
-                    mapOf(
-                        DynamoDbBasic.PK to it[DynamoDbBasic.PK]!!,
-                        DynamoDbBasic.SK to it[DynamoDbBasic.SK]!!,
-                    )
-                }
-            }
-        )
-    }.responses!!.values.flatten()
-
-    val groupBySk = results.associateBy { it[DynamoDbBasic.SK]!! }
-    return orders.map { sk -> groupBySk[sk]!! }
-}
-
-
 /** batchGetItem 의 DynamoData 버전 */
 suspend fun <T : DynamoData> DynamoDbClient.batchGetItem(items: List<T>): List<T> {
     if (items.isEmpty()) return emptyList()
@@ -70,6 +44,7 @@ suspend fun <T : DynamoData> DynamoDbClient.batchGetItem(items: List<T>): List<T
 //==================================================== 페이징 쿼리 ======================================================
 
 /** 청크 단위 처리. (Flow는 멈추는거 불가능) */
+@Deprecated("expression 쓰세요")
 suspend fun <T : DynamoData> DynamoDbClient.queryAll(query: DynamoQuery, data: T, action: suspend (List<T>) -> Unit) {
     val paginated = this.queryPaginated(query.toQueryRequest(data.tableName))
     //처리 단위가 달라서 컬렉트 리스트는 쓰지않음
@@ -90,6 +65,7 @@ suspend fun <T : DynamoData> DynamoDbClient.queryAll(query: DynamoQuery, data: T
  * 전체 로드 (메모리 주의)
  * 아마 내부적으로는 연속 페이징하고 동일할듯?
  *  */
+@Deprecated("expression 쓰세요")
 suspend fun <T : DynamoData> DynamoDbClient.queryAll(query: DynamoQuery, data: T): List<T> =
     mutableListOf<T>().also { list -> this.queryAll(query, data) { list.addAll(it) } }.toList()
 

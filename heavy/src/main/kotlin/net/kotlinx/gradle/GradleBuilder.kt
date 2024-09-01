@@ -1,8 +1,8 @@
 package net.kotlinx.gradle
 
 import aws.sdk.kotlin.services.lambda.model.ResourceConflictException
+import ch.qos.logback.classic.Level
 import kotlinx.coroutines.runBlocking
-import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.AwsInstanceTypeUtil
@@ -17,6 +17,7 @@ import net.kotlinx.concurrent.delay
 import net.kotlinx.core.Kdsl
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.koin.Koins.koinLazy
+import net.kotlinx.logback.TempLogger
 import net.kotlinx.retry.RetryTemplate
 import net.kotlinx.system.DeploymentType
 import net.kotlinx.system.OsType
@@ -68,7 +69,8 @@ class GradleBuilder {
 
     /** 기본 리트라이 */
     var awsRetry: RetryTemplate = RetryTemplate {
-        interval = 3.seconds
+        retries = 4
+        interval = 20.seconds
         predicate = RetryTemplate.match(ResourceConflictException::class.java)
     }
 
@@ -150,6 +152,12 @@ class GradleBuilder {
     /** 람다 레이어 리스트 */
     lateinit var lambdaLayers: List<String>
 
+    /** 람다에 레이어가 반영되기를 기다리는 시간. 2초 내로 끝날때도 있고 오래 걸릴때도 있음 */
+    var lambdaLayerApplyDelay = 5.seconds
+
+    /** 담다에 코드가 반영되기를 기다리는 시간. */
+    var lambdaCodeApplyDelay = 3.seconds
+
     /** 레이어배포의 경우 단계별로 진행해야 해서 여기 단축함수를 넣음 */
     fun lambdaUpdateLayer(layerName: String, zipFile: File) {
         val aws by koinLazy<AwsClient>()
@@ -175,32 +183,41 @@ class GradleBuilder {
         runBlocking {
 
             val layerArns = aws.lambda.listLayerVersions(lambdaLayers).map { it.layerVersionArn!! }
-            aws.lambda.updateFunctionLayers(functionName, layerArns)
             log.info { "###### step1 람다[${functionName}] = 레이어 최신버전으로 업데이트" }
+            aws.lambda.updateFunctionLayers(functionName, layerArns)
             layerArns.forEach { log.debug { " -> $it" } }
 
-            log.trace { "코드반영까지 잠시 대기" }
-            2.seconds.delay()
+            log.info { " -> 업데이트된 레이어가 람다에 반영되는것을  ${lambdaLayerApplyDelay}동안 잠시 대기.." }
+            lambdaLayerApplyDelay.delay()
+
             awsRetry.withRetry {
-                aws.lambda.updateFunctionCode(functionName, jarFile)
                 log.info { "###### step2 람다 코드 업데이트 from ${jarFile.absolutePath} (${jarFile.length() / 1024 / 1024}mb)" }
+                aws.lambda.updateFunctionCode(functionName, jarFile)
             }
 
             alias?.let {
-                3.seconds.delay() //코드반영까지 잠시 대기
-                try {
-                    val updatedVersion = aws.lambda.publishVersionAndUpdateAlias(functionName, it) //초기화시 오류나면 여기서 에러남
-                    log.info { "###### step3 람다 버전 & alias 업데이트 -> (${updatedVersion})" }
-                } catch (e: Throwable) {
-                    log.error { "###### 스냅스타트에서 오류가 발생했습니다. 로그 확인해주세요" }
-                    throw e
+                log.info { " -> 업데이트된 코드가 람다에 반영되는것을  ${lambdaLayerApplyDelay}동안 잠시 대기.." }
+                lambdaCodeApplyDelay.delay()
+
+                awsRetry.withRetry {
+                    try {
+                        val timeStart = TimeStart()
+                        log.info { "###### step3 람다 버전 & alias 업데이트" }
+                        val updatedVersion = aws.lambda.publishVersionAndUpdateAlias(functionName, it) //초기화시 오류나면 여기서 에러남
+                        log.info { " -> 람다 버전 & alias 업데이트 완료 -> (${updatedVersion}) $timeStart" }
+                    } catch (e: ResourceConflictException) {
+                        throw e
+                    } catch (e: Throwable) {
+                        log.error { "###### 스냅스타트에서 오류가 발생했습니다. 로그 확인해주세요" }
+                        throw e
+                    }
                 }
             }
         }
     }
 
     companion object {
-        private val log = KotlinLogging.logger {}
+        private val log = TempLogger(Level.DEBUG)
     }
 
 }

@@ -70,7 +70,7 @@ class DynamoDBSessionRepository(
             return cached.value
         }
         return try {
-            val sessionItem: DynamoDbSessionItem? = runBlocking { dynamo.getItem(DynamoDbSessionItem(id)) }
+            val sessionItem: DynamoSessionItem? = runBlocking { dynamo.getItem(DynamoSessionItem(id)) }
             if (sessionItem == null) {
                 log.trace { "findById $id -> null" }
                 return null
@@ -98,12 +98,12 @@ class DynamoDBSessionRepository(
 
     override fun deleteById(id: String) {
         log.warn { "[로그아웃!] DDB 삭제됩니다." }
-        runBlocking { dynamo.deleteItem(DynamoDbSessionItem(id)) }
+        runBlocking { dynamo.deleteItem(DynamoSessionItem(id)) }
         sessionCache.invalidate(id)
     }
 
-    private fun toDynamoDBItem(session: DynamoDbSession): DynamoDbSessionItem {
-        return DynamoDbSessionItem(session.id).apply {
+    private fun toDynamoDBItem(session: DynamoDbSession): DynamoSessionItem {
+        return DynamoSessionItem(session.id).apply {
 
             if (session.maxInactiveInterval.seconds >= 0) {
                 val lastAccessTimeSeconds = TimeUnit.MILLISECONDS.toSeconds(session.lastAccessedTime.toEpochMilli())
@@ -118,7 +118,7 @@ class DynamoDBSessionRepository(
         }
     }
 
-    private fun toSession(item: DynamoDbSessionItem): DynamoDbSession {
+    private fun toSession(item: DynamoSessionItem): DynamoDbSession {
         return ObjectInputStream(ByteArrayInputStream(item.data)).use {
             it.readObject()
         } as DynamoDbSession

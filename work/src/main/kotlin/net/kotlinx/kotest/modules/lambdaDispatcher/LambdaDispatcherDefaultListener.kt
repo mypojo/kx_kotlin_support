@@ -4,6 +4,7 @@ import com.google.common.eventbus.Subscribe
 import mu.KotlinLogging
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatcherDeadEvent
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatcherFailEvent
+import net.kotlinx.aws.lambda.dispatch.synch.LambdaDispatcherCommandEvent
 import net.kotlinx.reflect.name
 import net.kotlinx.slack.SlackMessageSenders
 import net.kotlinx.string.abbr
@@ -36,5 +37,16 @@ class LambdaDispatcherDefaultListener {
             body = listOf(event.gsonData.toPreety().abbr(BODY_LIMIT))
         }
     }
+
+    @Subscribe
+    fun onEvent(event: LambdaDispatcherCommandEvent) {
+        log.info { "[${event.commandName}] 로직이 처리됩니다.." }
+        event.output = mapOf(
+            "a" to "b",
+            "c" to "d"
+        )
+
+    }
+
 
 }

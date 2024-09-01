@@ -10,6 +10,7 @@ import aws.sdk.kotlin.services.elasticloadbalancingv2.ElasticLoadBalancingV2Clie
 import aws.sdk.kotlin.services.eventbridge.EventBridgeClient
 import aws.sdk.kotlin.services.iam.IamClient
 import aws.sdk.kotlin.services.rds.RdsClient
+import aws.sdk.kotlin.services.scheduler.SchedulerClient
 import aws.sdk.kotlin.services.secretsmanager.SecretsManagerClient
 import aws.sdk.kotlin.services.ses.SesClient
 import aws.sdk.kotlin.services.sqs.SqsClient
@@ -30,6 +31,7 @@ class AwsClient(awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     val sqs: SqsClient by lazy { SqsClient { awsConfig.build(this) }.regist(awsConfig) }
     val sm: SecretsManagerClient by lazy { SecretsManagerClient { awsConfig.build(this) }.regist(awsConfig) }
     val event: EventBridgeClient by lazy { EventBridgeClient { awsConfig.build(this) }.regist(awsConfig) }
+    val schedule: SchedulerClient by lazy { SchedulerClient { awsConfig.build(this) }.regist(awsConfig) }
 
     //==================================================== 컴퓨팅 인프라 ======================================================
     val ec2: Ec2Client by lazy { Ec2Client { awsConfig.build(this) }.regist(awsConfig) }

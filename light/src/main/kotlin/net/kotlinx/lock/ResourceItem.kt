@@ -1,8 +1,8 @@
 package net.kotlinx.lock
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
+import net.kotlinx.aws.dynamo.DynamoBasic
 import net.kotlinx.aws.dynamo.DynamoData
-import net.kotlinx.aws.dynamo.DynamoDbBasic
 import net.kotlinx.aws.dynamo.findOrThrow
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.lazyLoad.LazyLatchProperty
@@ -15,8 +15,8 @@ class ResourceItem(override val pk: String, override val sk: String) : DynamoDat
 
     override fun toAttribute(): Map<String, AttributeValue> {
         return mutableMapOf<String, AttributeValue>().apply {
-            this += DynamoDbBasic.PK to AttributeValue.S(pk)
-            this += DynamoDbBasic.SK to AttributeValue.S(sk)
+            this += DynamoBasic.PK to AttributeValue.S(pk)
+            this += DynamoBasic.SK to AttributeValue.S(sk)
 
             //==================================================== 최초 생성시 필수 입력값 ======================================================
             this += ResourceItem::inUse.name to AttributeValue.Bool(inUse)
@@ -29,7 +29,7 @@ class ResourceItem(override val pk: String, override val sk: String) : DynamoDat
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : DynamoData> fromAttributeMap(map: Map<String, AttributeValue>): T = ResourceItem(
-        map[DynamoDbBasic.PK]!!.asS(), map[DynamoDbBasic.SK]!!.asS()
+        map[DynamoBasic.PK]!!.asS(), map[DynamoBasic.SK]!!.asS()
     ).apply {
         //==================================================== 최초 생성시 필수 입력값 ======================================================
         inUse = map.findOrThrow(ResourceItem::inUse)

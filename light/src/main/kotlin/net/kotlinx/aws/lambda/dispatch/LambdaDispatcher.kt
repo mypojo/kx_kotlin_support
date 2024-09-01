@@ -9,10 +9,7 @@ import net.kotlinx.aws.lambda.dispatch.asynch.CodeDeployHookEventPublisher
 import net.kotlinx.aws.lambda.dispatch.asynch.SchedulerEventPublisher
 import net.kotlinx.aws.lambda.dispatch.asynch.SnsEventPublisher
 import net.kotlinx.aws.lambda.dispatch.asynch.SqsEventPublisher
-import net.kotlinx.aws.lambda.dispatch.synch.BatchStepDispatcher
-import net.kotlinx.aws.lambda.dispatch.synch.JobDispatcher
-import net.kotlinx.aws.lambda.dispatch.synch.KtorDispatcher
-import net.kotlinx.aws.lambda.dispatch.synch.S3LogicDispatcher
+import net.kotlinx.aws.lambda.dispatch.synch.*
 import net.kotlinx.core.Kdsl
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.guava.postEvent
@@ -74,6 +71,7 @@ class LambdaDispatcher {
         SnsEventPublisher(),
         SqsEventPublisher(),
         //==================================================== synch ======================================================
+        CommandDispatcher(),
         BatchStepDispatcher(),
         JobDispatcher(),
         KtorDispatcher(),

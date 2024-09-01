@@ -22,15 +22,15 @@ class KnotionSupportKtTest : BeSpecLight() {
             Then("조회") {
                 val resps = client.databases.queryDatabase(dbId)
 
-                listOf("ID", "등록", "수정", "구분", "날짜", "내용").toTextGridPrint {
+                listOf("ID", "등록", "수정", "날짜", "이벤트명", "내용상세").toTextGridPrint {
                     resps.results.map { page ->
                         arrayOf(
                             page.id,
                             page.created.toText(),
                             page.lastEdited.toText(),
-                            page.propertyValues.first { it.name == "구분" }.toValueString(),
-                            page.propertyValues.first { it.name == "날짜" }.toValueString(),
-                            page.propertyValues.first { it.name == "이벤트명" }.toValueString(),
+                            page.propertyValues.firstOrNull { it.name == "날짜" }?.toValueString(),
+                            page.propertyValues.firstOrNull { it.name == "이벤트명" }?.toValueString(),
+                            page.propertyValues.firstOrNull { it.name == "내용상세" }?.toValueString(),
                         )
                     }
                 }

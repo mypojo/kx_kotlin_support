@@ -21,7 +21,7 @@ class DynamoDbExporterKtTest : BeSpecLog() {
             val aws by koinLazy<AwsClient1>()
 
             Then("step1 - S3로 익스포트") {
-                val exporter = DynamoDbExporter(aws) {
+                val exporter = DynamoExporter(aws) {
                     tableName = "job-dev"
                     s3Bucket = "sin-work-dev"
                     s3Prefix = "temp/ddb-export/job-dev/"

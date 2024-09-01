@@ -5,6 +5,9 @@ package net.kotlinx.awscdk.channel
 object EventSets {
 
 
+    /**
+     * https://docs.aws.amazon.com/dtconsole/latest/userguide/concepts.html
+     * */
     object CodekPipeline {
         /** 실패 */
         const val FAILED: String = "codepipeline-pipeline-pipeline-execution-failed"

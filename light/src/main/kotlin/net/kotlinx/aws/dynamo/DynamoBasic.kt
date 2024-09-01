@@ -5,7 +5,7 @@ import net.kotlinx.aws.AwsConfig
 
 
 /** 권장하는 키값 스타일 마킹 인터페이스 */
-interface DynamoDbBasic {
+interface DynamoBasic {
 
     val pk: String
     val sk: String
@@ -20,14 +20,14 @@ interface DynamoDbBasic {
  * 제너릭 때문에 이 클래스를 끝까지 유지 해야함
  *
  *  */
-interface DynamoData : DynamoDbBasic {
+interface DynamoData : DynamoBasic {
 
     val tableName: String
 
     fun toKeyMap(): Map<String, AttributeValue> {
         return mapOf(
-            DynamoDbBasic.PK to AttributeValue.S(this.pk),
-            DynamoDbBasic.SK to AttributeValue.S(this.sk),
+            DynamoBasic.PK to AttributeValue.S(this.pk),
+            DynamoBasic.SK to AttributeValue.S(this.sk),
         )
     }
 

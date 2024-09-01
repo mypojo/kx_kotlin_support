@@ -48,42 +48,46 @@ class SnsEventPublisher : LambdaDispatch {
     override suspend fun postOrSkip(input: GsonData, context: Context?): Any? {
         if (input[EVENT_SOURCE].str != SOURCE_SNS) return null
 
-        val connverted = input["Sns"].let { sns ->
-            /** JSON 그 자체가 메세지인 경우가 있고, 단순 텍스트(Budget Notification 등)인 경우도 있다 */
-            try {
-                val body = sns["Message"].str!!
-                GsonData.parse(body)
-            } catch (e: Exception) {
-                sns
-            }
-        }
+        log.trace { "SNS는 무조건 아래 형식으로 Message 가 포함된다" }
+        val msg = GsonData.parse(input["Sns"]["Message"].str!!)
+        log.debug { " -> SNS 입력데이터 $msg" } //가능하면 있는게 디버깅하기 좋음
 
-        doParseString(connverted)
-        doParseJson(connverted)
+        /** 편의상  sns["Type"].str == "Notification" 이런가 안하고 msg로만 구분함 */
+        when {
+
+            /** SNS 노티*/
+            msg["detailType"].str != null -> doNotification(msg)
+
+            /** 클라우드와치 알람 */
+            msg["AlarmName"].str != null -> {
+                val alarmName = msg["AlarmName"].str!!
+                val data = msg["Trigger"]
+                bus.post(SnsTrigger(alarmName, data))
+            }
+
+            /** 간단 메세지 */
+            msg["Subject"].str != null -> {
+                val subject = msg["Subject"].str!!
+                val message = msg["Message"].str!!
+                bus.post(SnsNotification(subject, message))
+            }
+
+            else -> {
+                bus.post(SnsUnknown(msg))
+            }
+
+        }
 
         return LambdaUtil.OK
     }
 
-    /** String 형태 알림인 경우 */
-    private fun doParseString(sns: GsonData) {
-        val type = sns["Type"].str ?: return
-        check(type == "Notification")
-
-        val subject = sns["Subject"].str!!
-        val message = sns["Message"].str!!
-        bus.post(SnsNotification(subject, message))
-    }
-
-    /** JSON 형태 알림인 경우 */
-    private fun doParseJson(sns: GsonData) {
-        val detailType = sns["detail-type"].str ?: return
-
-
+    private fun doNotification(msg: GsonData) {
+        val detailType = msg["detailType"].str
+        val detail = msg["detail"]
         when (detailType) {
 
             /** ECS 상태변경 알림 */
             "ECS Task State Change" -> {
-                val detail = sns["detail"]
                 val stoppedReason = detail["stoppedReason"].str!!
                 val group = detail["group"].str!!
                 bus.post(SnsEcsTaskStateChange(group, stoppedReason))
@@ -91,7 +95,6 @@ class SnsEventPublisher : LambdaDispatch {
 
             /** SFN 실패 알람 */
             "Step Functions Execution Status Change" -> {
-                val detail = sns["detail"]
                 val jobName = detail["stateMachineArn"].str!!.substringAfterLast(":")
                 val msg = detail["cause"].str!!
                 bus.post(SnsSfnFail(jobName, msg))
@@ -99,28 +102,15 @@ class SnsEventPublisher : LambdaDispatch {
 
             /** 빌드 알림 */
             "CodePipeline Pipeline Execution State Change" -> {
-                val detail = sns["detail"]
                 val pipeline = detail["pipeline"].str!!
                 val state = detail["state"].str!!
                 bus.post(SnsPipeline(pipeline, state))
             }
 
-            else -> {
+            else -> bus.post(SnsUnknown(msg))
 
-                //클라우드 와치 알람 먼저 체크
-                when (val alarmName = sns["AlarmName"].str) {
-                    "unknown" -> {
-                        //이거 알람별로 수정확인
-                        val data = sns["Trigger"]
-                        bus.post(SnsTrigger(alarmName, data))
-                    }
-
-                    else -> {
-                        bus.post(SnsUnknown(sns))
-                    }
-                }
-            }
         }
     }
+
 
 }

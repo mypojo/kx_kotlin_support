@@ -76,10 +76,9 @@ class JobTriggerLambda(
         } else {
             aws1.lambda.invokeAsynch(lambdaFunctionName, jobParam)
             log.info { "람다 실행 [$jobParam] - 동기화(${op.synch})" }
-
         }
         if (log.isDebugEnabled) {
-            val findJob = Job(op.jobDefinition.jobPk, jobSk)
+            val findJob = Job(op.jobPk, jobSk)
             if (op.synch) {
                 jobRepository.getItem(findJob)?.let {
                     log.debug { "로그링크 : ${it.toLogLink()}" }
@@ -111,7 +110,7 @@ class JobTriggerBatch(
     override suspend fun trigger(op: JobTriggerOption): String {
         val jobSk = op.jobSk ?: idGenerator.nextvalAsString()
         val jobParam = jobSerializer.toJson(op, jobSk)
-        val findJob = Job(op.jobDefinition.jobPk, jobSk)
+        val findJob = Job(op.jobPk, jobSk)
         if (op.synch) {
             val jobDetail = aws1.batch.submitJobAndWaitStarting(jobQueueName, jobDefinitionName, jobParam)
             log.debug { "잡 UI 링크 -> ${BatchUtil.toBatchUiLink(jobDetail.jobId!!)}" }

@@ -67,6 +67,16 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
     fun put(key: String, value: Boolean?) = (delegate as? JsonObject)?.addProperty(key, value)
     fun put(key: String, value: GsonData?) = (delegate as? JsonObject)?.add(key, value?.delegate)
 
+    /** 키밸류 전부 추가 */
+    fun putAll(data: GsonData) {
+        if (data == null) return
+        if (delegate !is JsonObject) return
+        if (data.delegate !is JsonObject) return
+        data.delegate.asJsonObject.entrySet().forEach { e ->
+            delegate.add(e.key, e.value)
+        }
+    }
+
     /** 삭제. */
     fun remove(key: String): GsonData? = (delegate as? JsonObject)?.remove(key)?.let { GsonData(it) }
 

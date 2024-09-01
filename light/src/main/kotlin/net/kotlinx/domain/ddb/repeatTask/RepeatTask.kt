@@ -1,6 +1,7 @@
 package net.kotlinx.domain.ddb.repeatTask
 
 import net.kotlinx.core.Kdsl
+import net.kotlinx.json.gson.GsonData
 
 /**
  * 반복되는 작업을 람다에서 빠르게 조회하기 위한 테이블
@@ -18,19 +19,19 @@ class RepeatTask {
      * 사용할 목적의 group
      * ex) job, task, system ..
      *  */
-    lateinit var group: String
+    var group: String? = null
 
     /**
      * 사용할 목적의 div
      * ex) xxjob, xxtask ..
      *  */
-    lateinit var div: String
+    var div: String? = null
 
     /** 관련 회원 ID  */
-    lateinit var memberId: String
+    var memberId: String? = null
 
     /** 유니크 ID  */
-    lateinit var id: String
+    var id: String? = null
 
     //==================================================== 내용 ======================================================
 
@@ -41,7 +42,10 @@ class RepeatTask {
      * 실행시간
      * ex) 18:22 , MON:18 ...
      *  */
-    lateinit var time: String
+    var time: String? = null
+
+    /** 기타등등 입력 */
+    var body: GsonData = GsonData.empty()
 
 
 }

@@ -6,10 +6,7 @@ import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.AwsInstanceType
 import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.dynamo.*
-import net.kotlinx.aws.dynamo.query.DynamoExpressionSet
-import net.kotlinx.aws.dynamo.query.DynamoQuery
-import net.kotlinx.aws.dynamo.query.query
-import net.kotlinx.aws.dynamo.query.queryAll
+import net.kotlinx.aws.dynamo.query.*
 import net.kotlinx.collection.doUntilTokenNull
 import net.kotlinx.domain.job.define.JobDefinition
 import net.kotlinx.koin.Koins.koinLazy
@@ -97,7 +94,7 @@ class JobRepository(val profile: String? = null) : DynamoRepository<Job> {
                 pkName = Job::jobStatus.name
                 pk = jobStatus.name
                 jobDef?.let {
-                    skName = DynamoDbBasic.PK
+                    skName = DynamoBasic.PK
                     sk = it.jobPk
                 }
             }

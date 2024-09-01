@@ -5,7 +5,6 @@ import aws.sdk.kotlin.services.lambda.model.*
 import aws.sdk.kotlin.services.lambda.waiters.waitUntilPublishedVersionActive
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.string.ResultText
-import net.kotlinx.time.TimeStart
 import net.kotlinx.time.toKr01
 import org.apache.commons.text.StringEscapeUtils
 import java.io.File
@@ -87,13 +86,10 @@ suspend fun LambdaClient.publishVersionAndUpdateAlias(functionName: String, alia
     val version = versionResponse.version!!
 
     //기다려야 한다. 스냅스타트의 경우 2~5분 정도 걸리는듯
-    val timeStart = TimeStart()
-    println(" -> lambda [${functionName}:${version}] 스냅스타트 퍼블리싱 중입니다...")
     this.waitUntilPublishedVersionActive {
         this.functionName = functionName
         this.qualifier = version
     }
-    println(" -> lambda [${functionName}:${version}] 스냅스타트 퍼블리싱 종료. $timeStart => alias [$alias] 갱신")
 
     return try {
         updateAlias(functionName, version, alias).functionVersion!!

@@ -12,6 +12,7 @@ import net.kotlinx.core.Kdsl
  * 상세 문법은 아래 참고
  * https://docs.aws.amazon.com/ko_kr/amazondynamodb/latest/developerguide/Query.KeyConditionExpressions.html
  * */
+@Deprecated("expression 쓰세요")
 class DynamoQuery {
 
     @Kdsl
@@ -48,7 +49,7 @@ class DynamoQuery {
         log.trace { "쿼리 파라메터 생성 로직이 있다면 적용" }
         return QueryRequest {
             this.expressionAttributeValues = expression.expressionAttributeValues()
-            this.keyConditionExpression = expression.expression()
+            this.keyConditionExpression = expression.keyConditionExpression()
             this.tableName = tableName
             this.consistentRead = this@DynamoQuery.consistentRead
             this.limit = this@DynamoQuery.limit
@@ -58,6 +59,7 @@ class DynamoQuery {
             this.exclusiveStartKey = this@DynamoQuery.exclusiveStartKey
         }
     }
+
 
     companion object {
 

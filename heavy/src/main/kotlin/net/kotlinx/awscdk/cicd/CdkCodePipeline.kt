@@ -5,7 +5,6 @@ import net.kotlinx.awscdk.CdkInterface
 import net.kotlinx.awscdk.basic.TagUtil
 import net.kotlinx.awscdk.channel.EventSets
 import net.kotlinx.core.Kdsl
-import net.kotlinx.system.DeploymentType
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.codebuild.BuildEnvironmentVariable
 import software.amazon.awscdk.services.codebuild.BuildEnvironmentVariableType
@@ -56,6 +55,12 @@ class CdkCodePipeline : CdkInterface {
 
     /** 결과 */
     lateinit var pipeline: Pipeline
+
+    /**
+     * SNS 알림을 받을 이벤트
+     * 라이브 서버의 경우 성공도 받을 수 있게 하면 됨
+     *  */
+    var events: List<String> = listOf(EventSets.CodekPipeline.FAILED)
 
 
     fun create(stack: Stack, block: PipelineProps.Builder.() -> Unit = {}): CdkCodePipeline {
@@ -111,18 +116,13 @@ class CdkCodePipeline : CdkInterface {
         )
         TagUtil.tag(pipeline, deploymentType)
 
-        //성공 실패 등의 알람 추가
+        //성공 실패 등의 알람 추가. 이 알람은 이벤트브릿지 트리거가 아니고 , SNS를 다이렉트로 트리거한다.
         val snsName = "${project.profileName}-sns_${name}-${deploymentType.name.lowercase()}"
         NotificationRule(
             stack, snsName, NotificationRuleProps.builder()
                 .notificationRuleName(snsName)
-                .detailType(DetailType.BASIC)
-                .events(
-                    when (deploymentType) {
-                        DeploymentType.PROD -> listOf(EventSets.CodekPipeline.FAILED, EventSets.CodekPipeline.STARTED, EventSets.CodekPipeline.SUCCESSED)
-                        DeploymentType.DEV -> listOf(EventSets.CodekPipeline.FAILED)
-                    }
-                )
+                .detailType(DetailType.BASIC) //메세지 바디에 간단한 메세지만 출력
+                .events(events)
                 .source(pipeline)
                 .targets(topics)
                 .build()

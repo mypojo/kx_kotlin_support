@@ -3,6 +3,7 @@ package net.kotlinx.lazyLoad
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.core.ProtocolPrefix
+import net.kotlinx.exception.toSimpleString
 import net.kotlinx.koin.Koins
 import kotlin.reflect.KProperty
 
@@ -39,8 +40,8 @@ class LazyLoadStringProperty(
                         try {
                             log.debug { "SSM [$ssmUrl] 데이터 로드..." }
                             aws.ssmStore[ssmUrl]
-                        } catch (e: Exception) {
-                            throw IllegalArgumentException("ssmStore $ssmUrl not found")
+                        } catch (e: IllegalStateException) {
+                            throw IllegalArgumentException("ssmStore $ssmUrl not found  -> ${e.toSimpleString()}")
                         }
                     }
 

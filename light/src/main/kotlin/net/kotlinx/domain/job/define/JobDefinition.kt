@@ -27,7 +27,11 @@ class JobDefinition {
         apply(block)
     }
 
-    /** 잡의 구현체 등록. 이 설정은 말 그대로 설정이라서 실제 인스턴스화까지는 되지 말아야함  */
+    /**
+     * 잡의 구현체 등록.
+     * 이 설정은 말 그대로 설정이라서 등록 단계에서는 실제 인스턴스화까지는 되지 말아야함
+     * 잡을 트리거 하는 단계에서는 이걸 몰라도 됨
+     * */
     lateinit var jobClass: KClass<out JobTasklet>
 
     /** 잡 이름. 전체 설정에서 유니크 해야함. 보통 jobClass 의 decapital()  */

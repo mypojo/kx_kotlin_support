@@ -10,6 +10,9 @@ import java.time.LocalDateTime
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
 
+/** map을 AttributeValue.M 으로 변환해줌 */
+fun Map<String, String>.toDynamoAttribute(): AttributeValue = AttributeValue.M(this.map { it.key to AttributeValue.S(it.value) }.toMap())
+
 /** 단일값 문자열로 치환해서  가져오기 */
 fun <T> Map<String, AttributeValue>.find(key: String, conv: (data: String) -> T?): T? = this[key]?.asSOrNull()?.let { conv.invoke(it) }
 
@@ -72,21 +75,3 @@ fun Map<String, AttributeValue>.find(key: KProperty1<*, Map<String, String>?>): 
 
 fun Map<String, AttributeValue>.findOrThrow(key: KProperty1<*, Map<String, String>>): Map<String, String> =
     this[key.name]?.asM()?.entries?.associate { it.key to it.value.asS() } ?: throw IllegalArgumentException("[${key.name}] not found")
-
-//==================================================== pair  ======================================================
-
-/** PK / SK 입력 */
-fun MutableMap<String, AttributeValue>.add(key: KProperty1<*, Pair<String, String>?>, pair: Pair<String, String>?) {
-    pair?.let {
-        this += "${key.name}Pk" to AttributeValue.S(it.first)
-        this += "${key.name}Sk" to AttributeValue.S(it.second)
-    }
-}
-
-/** PK / SK 로드 */
-fun Map<String, AttributeValue>.findPair(key: KProperty1<*, Pair<String, String>?>): Pair<String, String>? {
-    val pk = this["${key.name}Pk"]?.asSOrNull()
-    val sk = this["${key.name}Sk"]?.asSOrNull()
-    return if (pk == null || sk == null) return null else pk to sk
-}
-

@@ -26,8 +26,8 @@ class DynamoDbSupportRawKtTest : BeSpecHeavy() {
                     this.tableName = "adv-dev"
                     this.consistentRead = false
                     this.key = mapOf(
-                        DynamoDbBasic.PK to AttributeValue.S("aaaa"),
-                        DynamoDbBasic.SK to AttributeValue.S("info"),
+                        DynamoBasic.PK to AttributeValue.S("aaaa"),
+                        DynamoBasic.SK to AttributeValue.S("info"),
                     )
                 }
                 println(resp.item)
@@ -44,12 +44,10 @@ class DynamoDbSupportRawKtTest : BeSpecHeavy() {
                     this.tableName = "adv-dev"
                     this.consistentRead = false
                     this.limit = 10
-                    this.filterExpression = exp.expression()
+                    this.filterExpression = exp.filterExpression()
                     this.expressionAttributeValues = exp.expressionAttributeValues()
                 }
-                resp.items!!.forEach {
-                    println(it)
-                }
+                resp.items!!.forEach { println(it) }
 
 
             }

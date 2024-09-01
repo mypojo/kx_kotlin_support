@@ -3,6 +3,7 @@ package net.kotlinx.aws.dynamo
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.dynamo.query.DynamoExpression
+import net.kotlinx.aws.dynamo.query.DynamoResult
 import net.kotlinx.aws.dynamo.query.batchGetItem
 
 /**
