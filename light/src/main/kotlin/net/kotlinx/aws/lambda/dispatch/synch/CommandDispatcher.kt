@@ -20,7 +20,7 @@ class CommandDispatcher : LambdaDispatch {
         val commandName = input[COMMAND_NAME].str ?: return null
         val event = LambdaDispatcherCommandEvent(commandName, input)
         bus.post(event)
-        return event.output ?: throw IllegalStateException("이벤트 처리후 output가 등록되지 않았습니다")
+        return event.output ?: throw IllegalStateException("이벤트 처리되었으나 결과파일 없음. 이벤트에서 오류 발생했는지 확인 필요")
     }
 
     companion object {

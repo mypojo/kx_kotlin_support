@@ -15,6 +15,7 @@ import net.kotlinx.aws.lambda.*
 import net.kotlinx.aws.s3.putObject
 import net.kotlinx.concurrent.delay
 import net.kotlinx.core.Kdsl
+import net.kotlinx.exception.toSimpleString
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.logback.TempLogger
@@ -183,32 +184,31 @@ class GradleBuilder {
         runBlocking {
 
             val layerArns = aws.lambda.listLayerVersions(lambdaLayers).map { it.layerVersionArn!! }
-            log.info { "###### step1 람다[${functionName}] = 레이어 최신버전으로 업데이트" }
+            log.info { "###### lambda[${functionName}] step1 layer update to ${layerArns.joinToString(",")}" }
             aws.lambda.updateFunctionLayers(functionName, layerArns)
-            layerArns.forEach { log.debug { " -> $it" } }
 
-            log.info { " -> 업데이트된 레이어가 람다에 반영되는것을  ${lambdaLayerApplyDelay}동안 잠시 대기.." }
+            log.info { " -> wait lambda $lambdaLayerApplyDelay for layer update.." }
             lambdaLayerApplyDelay.delay()
 
             awsRetry.withRetry {
-                log.info { "###### step2 람다 코드 업데이트 from ${jarFile.absolutePath} (${jarFile.length() / 1024 / 1024}mb)" }
+                log.info { "###### lambda[${functionName}] step2 code update from ${jarFile.absolutePath} (${jarFile.length() / 1024 / 1024}mb)" }
                 aws.lambda.updateFunctionCode(functionName, jarFile)
             }
 
             alias?.let {
-                log.info { " -> 업데이트된 코드가 람다에 반영되는것을  ${lambdaLayerApplyDelay}동안 잠시 대기.." }
+                log.info { " -> wait lambda $lambdaLayerApplyDelay for code update.." }
                 lambdaCodeApplyDelay.delay()
 
                 awsRetry.withRetry {
                     try {
                         val timeStart = TimeStart()
-                        log.info { "###### step3 람다 버전 & alias 업데이트" }
+                        log.info { "###### lambda[${functionName}] step3 version up & alias update" }
                         val updatedVersion = aws.lambda.publishVersionAndUpdateAlias(functionName, it) //초기화시 오류나면 여기서 에러남
-                        log.info { " -> 람다 버전 & alias 업데이트 완료 -> (${updatedVersion}) $timeStart" }
+                        log.info { " -> update complete -> (${updatedVersion}) $timeStart" }
                     } catch (e: ResourceConflictException) {
                         throw e
                     } catch (e: Throwable) {
-                        log.error { "###### 스냅스타트에서 오류가 발생했습니다. 로그 확인해주세요" }
+                        log.error { "###### error on snapstart!!  plz debug!  ${e.toSimpleString()}" }
                         throw e
                     }
                 }

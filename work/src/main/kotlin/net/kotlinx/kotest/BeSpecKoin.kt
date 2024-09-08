@@ -1,6 +1,9 @@
 package net.kotlinx.kotest
 
+import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.athena.AthenaModule
 import net.kotlinx.koin.Koins
+import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.modules.Aws1Module
 import org.koin.core.module.Module
 
@@ -40,6 +43,14 @@ abstract class BeSpecKoin(modules: List<Module>) : BeSpecLog() {
 
     /** mt */
     val findProfile59 by lazy { findProfile("59") }
+
+    val athenaModule97 by lazy {
+        AthenaModule {
+            aws = koin<AwsClient1>(findProfile97)
+            workGroup = "workgroup-dev"
+            database = "d1"
+        }
+    }
 
 
     /**

@@ -27,28 +27,6 @@ fun File.readCsvLines(charset: Charset = CharSets.UTF_8, callback: (List<String>
     }
 }
 
-/** 간단하게 인코딩 변경해서 재저장 */
-fun File.readAndwriteCsvToCharset(
-    /** 결과파일 */
-    outFile: File,
-    /** 이 파일의 인코딩 */
-    thisFileCharset: Charset = CharSets.UTF_8,
-    /** 새로 만들 파일의 인코딩 */
-    toCharset: Charset = CharSets.MS949,
-    /** 커스텀 */
-    block: (List<String>) -> List<String> = { it }
-): File {
-    val reader = csvReader { charset = thisFileCharset.toString() }
-    val writer = csvWriter { charset = toCharset.toString() }
-    reader.open(this) {
-        writer.open(outFile) {
-            readAllAsSequence().forEach { line ->
-                writeRow(block(line))
-            }
-        }
-    }
-    return outFile
-}
 
 
 

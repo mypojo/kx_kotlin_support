@@ -79,7 +79,7 @@ suspend inline fun S3Client.putObjectMultipart(bucket: String, key: String, file
     val initiateMPUResult = this.createMultipartUpload {
         this.bucket = bucket
         this.key = key
-        this.metadata = metadata
+        this.metadata = metadata?.map { it.key to it.value.encodeBase64() }?.toMap()
     }
 
     val partSize = splitMb * 1024L * 1024L

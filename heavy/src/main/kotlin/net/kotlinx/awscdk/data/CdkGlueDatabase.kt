@@ -10,6 +10,7 @@ import software.amazon.awscdk.services.glue.CfnDatabaseProps
 /**
  * 아테나, 글루, 데이터레이크용
  * */
+@Deprecated("권한이슈 많음!! 가능하면 SDK 사용")
 class CdkGlueDatabase : CdkInterface {
 
     @Kdsl
@@ -53,6 +54,14 @@ class CdkGlueDatabase : CdkInterface {
                                 )
                             }
                         }
+//                        .createTableDefaultPermissions(
+//                            listOf(
+//                                PrincipalPrivilegesProperty.builder()
+//                                    .permissions(listOf("CREATE_TABLE","DESCRIBE"))
+//                                    .principal(DataLakePrincipalProperty.builder().dataLakePrincipalIdentifier("arn:aws:iam::xxx:role/xxx").build())
+//                                    .build()
+//                            )
+//                        )
                         .build()
                 )
                 .build()

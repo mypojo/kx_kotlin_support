@@ -38,6 +38,7 @@ object IamPolicyUtil {
         "firehose:*",
         "states:*", //sfn.. 애네 이름에 일관성이 없음.
         "events:*", //이벤트브릿지
+        "lakeformation:*", //레이크 포메이션
         "codepipeline:StartPipelineExecution", //코드파이프라인 트리거용 (파이프라인 시작 트리거에 부여해야함). 향후 별도 권한으로 뺄것
     )
 

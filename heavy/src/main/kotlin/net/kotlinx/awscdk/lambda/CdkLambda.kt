@@ -5,6 +5,7 @@ import net.kotlinx.awscdk.basic.TagUtil
 import net.kotlinx.core.Kdsl
 import net.kotlinx.system.DeploymentType
 import software.amazon.awscdk.Duration
+import software.amazon.awscdk.Size
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.iam.IRole
 import software.amazon.awscdk.services.lambda.*
@@ -71,6 +72,12 @@ class CdkLambda : CdkEnum {
     /** 보통 이게 최저 */
     var memorySize = 256
 
+    /**
+     * 기본값은 무료. 초과시 초당 비용 받음
+     * 참고로 스냅스타트 사용시 용량조절 불가능함!
+     *  */
+    var ephemeralStorageSize = 512
+
     /** 람다 로그설정 변경시, 별도 람다가 생겨서 보기싫게됨  */
     var logRetention = RetentionDays.SIX_MONTHS
 
@@ -126,6 +133,7 @@ class CdkLambda : CdkEnum {
                 .runtime(runtime)
                 .role(role)
                 .memorySize(memorySize)
+                .ephemeralStorageSize(Size.mebibytes(ephemeralStorageSize))
                 .timeout(Duration.seconds(timeout.inWholeSeconds)) //초단위로 입력
                 .handler(handlerName)
                 .logRetention(logRetention)

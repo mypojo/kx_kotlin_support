@@ -77,6 +77,9 @@ class AthenaTable {
     /** NK(자연키) 설정 */
     private val nks: MutableList<String> = mutableListOf()
 
+    /** 프로젝션 정보 설정 */
+    private val projectionMap: MutableMap<String, Map<String, String>> = mutableMapOf()
+
     //==================================================== 테이블 컬럼 설정정보 ======================================================
 
     /**
@@ -108,6 +111,12 @@ class AthenaTable {
     infix fun String.NK(columnType: AthenaType): Pair<String, AthenaType> {
         nks += this
         return this to columnType
+    }
+
+    /** 프로젝션 옵션 입력 */
+    infix fun Pair<String, AthenaType>.PROJECTION(option: Map<String, String>): Pair<String, AthenaType> {
+        projectionMap[this.first] = option
+        return this
     }
 
     /** 옵션 커스텀 */
@@ -143,7 +152,12 @@ class AthenaTable {
                     "projection.enabled" to "true",
                     "storage.location.template" to "${location}${partitions.joinToString("/") { "\${${it}}" }}/",
                 )
-                val columnProps = partitions.associate { "projection.${it}.type" to "injected" }
+                val columnProps = partitions.flatMap { colimnName ->
+                    val projectionConfig = projectionMap[colimnName] ?: mapOf("type" to "injected") //아무 설정 없으면 injected로 설정
+                    projectionConfig.entries.map { "projection.${colimnName}.${it.key}" to it.value }
+                }.toMap()
+
+                //val columnProps = partitions.associate { "projection.${it}.type" to "injected" }
                 props = props + basicProps + columnProps
 
             }
@@ -152,10 +166,18 @@ class AthenaTable {
             AthenaTablePartitionType.NONE -> {}
         }
 
-        /**
-         * 아이스버그인경우라도, 수동으로 스키마 입력해야함 -> 컬럼 정의와 PK 정의(버킷팅 등)가 틀릴 수 있음
-         * */
-        val schemaText = schema.entries.joinToString(",\n") { "`${it.key}` ${it.value}" } //특문 가능하도록 `` 로 감싸준다
+        /** 파티션 설정과 스키마가 중복되는거도 있고 아닌거도 있다.. */
+        val schemaText = run {
+            val targetSchemas = when (athenaTableFormat) {
+
+                /** 파티션 정의와 스키마 정의가 중복되면 안되는거 */
+                in setOf(AthenaTableFormat.Json, AthenaTableFormat.Csv) -> schema.filter { !nks.contains(it.key) }
+
+                /** 파티션 정의와 스키마 정의가 중복되도 되는가 */
+                else -> schema
+            }
+            targetSchemas.entries.joinToString(",\n") { "`${it.key}` ${it.value}" } //특문 가능하도록 `` 로 감싸준다
+        }
 
         val partitionText = when (athenaTableFormat) {
             /**

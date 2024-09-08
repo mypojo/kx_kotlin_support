@@ -12,6 +12,7 @@ import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.number.halfUp
 import net.kotlinx.string.print
+import net.kotlinx.system.DeploymentType
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -48,6 +49,15 @@ internal class GsonData_데이터클래스 : BeSpecLog() {
                 println(data.remove("time")!!.str)
                 println(data)
 
+            }
+
+            Then("enum 테스트") {
+                val data = GsonData.obj {
+                    put("aaa", DeploymentType.PROD.name)
+                    put("bbb", "")
+                }
+                println(data.enum<DeploymentType>("aaa"))
+                println(data.enum<DeploymentType>("bbb"))
             }
         }
 

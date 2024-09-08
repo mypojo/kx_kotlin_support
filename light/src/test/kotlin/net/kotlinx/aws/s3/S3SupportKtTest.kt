@@ -1,8 +1,10 @@
 package net.kotlinx.aws.s3
 
+import aws.sdk.kotlin.services.s3.deleteObject
 import aws.sdk.kotlin.services.s3.listBuckets
 import ch.qos.logback.classic.Level
 import io.kotest.matchers.ints.shouldBeGreaterThan
+import io.kotest.matchers.shouldBe
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.file.slash
 import net.kotlinx.koin.Koins.koin
@@ -42,19 +44,36 @@ internal class S3SupportKtTest : BeSpecHeavy() {
                 files.print()
             }
 
-            xThen("메타데이터 추가 업로드") {
-                val file = ResourceHolder.WORKSPACE.slash("input.csv")
-                aws.s3.putObject(
-                    "$profile-work-dev", "upload/temp.csv", file, mapOf(
-                        "aa" to "bb",
-                        "cc" to "dd",
-                        "fileName" to "영감님ab12만세"
+            When("메타데이터") {
+                val file = ResourceHolder.WORKSPACE.slash("input.txt")
+                val s3Data = S3Data("$profile-work-dev", "upload/input.txt")
+
+                Then("메타데이터 추가 업로드") {
+                    file.writeText("영감님 멍멍")
+                    aws.s3.putObject(
+                        s3Data.bucket, s3Data.key, file, mapOf(
+                            "aa" to "bb",
+                            "cc" to "7788",
+                            "fileName" to "영감님ab12만세"
+                        )
                     )
-                )
+                }
+                Then("메타데이터 읽기 - key는 소문자로 저장된다") {
+                    val metadata = aws.s3.getObjectMetadata(s3Data.bucket, s3Data.key)!!
+                    metadata["fileName"] shouldBe null
+                    metadata["filename"] shouldBe  "영감님ab12만세"
+                }
+                Then("데이터 정리") {
+                    aws.s3.deleteObject {
+                        bucket = s3Data.bucket
+                        key = s3Data.key
+                    }
+                }
             }
 
-            xThen("메타데이터 읽기") {
-                val metadata = aws.s3.getObjectMetadata("$profile-work-dev", "upload/temp.csv")!!
+
+            xThen("메타데이터 읽기 2") {
+                val metadata = aws.s3.getObjectMetadata("$profile-work-dev", "work/job/nplKwdDown01Job/20050001/OUTPUT.csv")!!
                 println(metadata)
             }
 

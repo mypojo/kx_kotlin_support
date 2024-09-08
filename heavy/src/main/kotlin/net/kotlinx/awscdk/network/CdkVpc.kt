@@ -29,6 +29,13 @@ class CdkVpc : CdkInterface {
 
     /** 최초  */
     var cidrMask: Int = 24
+
+    /**
+     * 보통 NAT가 ALB에 비해서 3배 정도 비싸니 확인할것
+     * ALB 월비용 16$ / EIP비용 11$
+     * NAT가 있어야 ip 화이트리스트 업무에 대응 가능하다
+     * NAT 월비용 44$
+     * */
     var subnetTypes: List<SubnetType> = listOf(SubnetType.PUBLIC, SubnetType.PRIVATE_WITH_EGRESS)
     var maxAzs: Int = 2
     var natGateways: Int = 1

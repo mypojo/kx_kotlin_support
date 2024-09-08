@@ -3,6 +3,7 @@ package net.kotlinx.json.gson
 import com.google.gson.*
 import mu.KotlinLogging
 import net.kotlinx.json.serial.SerialToJson
+import net.kotlinx.string.lett
 
 /** 간단 변환. 없으면 빈거 리턴 */
 fun String?.toGsonDataOrEmpty(): GsonData {
@@ -137,6 +138,9 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
         if (empty) return null
         return block(this)
     }
+
+    /** enum값 추출 */
+    inline fun <reified T : Enum<T>> enum(key: String): T? = get(key).str?.lett { enumValueOf<T>(it) } ?: null
 
     val str: String?
         get() = (delegate as? JsonPrimitive)?.asString
