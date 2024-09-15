@@ -23,7 +23,7 @@ class AthenaMs949Test : BeSpecLight() {
                         WHERE basic_date = '20240801' 
                         limit 10
                     """
-                    uploadInfo = S3Data("adpriv-work-dev", "athena/outputLocation/${UUID.randomUUID()}/쿼리결과.csv") to null
+                    uploadInfo = S3Data("$findProfile97-work-dev", "athena/outputLocation/${UUID.randomUUID()}/쿼리결과.csv") to null
                 }
                 val data = download.uploadInfo!!.first
                 val presign = athenaModule97.aws.s3.presignGetObject(data.bucket, data.key)

@@ -1,6 +1,8 @@
 package net.kotlinx.gradle
 
 import aws.sdk.kotlin.services.lambda.model.ResourceConflictException
+import aws.sdk.kotlin.services.lambda.model.ResourceNotFoundException
+import aws.sdk.kotlin.services.lambda.waiters.waitUntilPublishedVersionActive
 import ch.qos.logback.classic.Level
 import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.AwsClient
@@ -31,6 +33,11 @@ import kotlin.time.Duration.Companion.seconds
  * 그래들 빌드용 유틸. 그냥 그래들에 하드코딩하면 너무 지저분해져서 만들었음
  * 그래들의 buildSrc + 이것을 조합해서 발드함.
  * buildSrc 까지 같이쓰는 이유는 프로젝트별로 설정이 조금씩 다르고, 여기는 그래들 의존성을 추가할 수 없어서임 (maven에 찾을 수 없음)
+ *
+ *
+ * JIB 빌드시 주의!
+ * https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin
+ * JIB 빌드전에 out 데이터가 완료 되어있어야 한다. ex) processResources 의존성에 react script 빌드 task가 있어야 한다.
  *  */
 class GradleBuilder {
 
@@ -193,26 +200,48 @@ class GradleBuilder {
             awsRetry.withRetry {
                 log.info { "###### lambda[${functionName}] step2 code update from ${jarFile.absolutePath} (${jarFile.length() / 1024 / 1024}mb)" }
                 aws.lambda.updateFunctionCode(functionName, jarFile)
+
             }
 
-            alias?.let {
-                log.info { " -> wait lambda $lambdaLayerApplyDelay for code update.." }
-                lambdaCodeApplyDelay.delay()
+            log.trace { "latest 람다를 직접 사용한다면 여기까지만 하면 됨" }
+            if (alias == null) return@runBlocking
 
-                awsRetry.withRetry {
-                    try {
-                        val timeStart = TimeStart()
-                        log.info { "###### lambda[${functionName}] step3 version up & alias update" }
-                        val updatedVersion = aws.lambda.publishVersionAndUpdateAlias(functionName, it) //초기화시 오류나면 여기서 에러남
-                        log.info { " -> update complete -> (${updatedVersion}) $timeStart" }
-                    } catch (e: ResourceConflictException) {
-                        throw e
-                    } catch (e: Throwable) {
-                        log.error { "###### error on snapstart!!  plz debug!  ${e.toSimpleString()}" }
-                        throw e
+            log.info { " -> wait lambda $lambdaLayerApplyDelay for code update.." }
+            lambdaCodeApplyDelay.delay()
+
+            val version = awsRetry.withRetry {
+                log.info { "###### lambda[${functionName}] step3 publish version " }
+                val versionResponse = aws.lambda.publishVersion(functionName)
+                versionResponse.version!!
+            }
+
+            awsRetry.withRetry {
+                try {
+                    val timeStart = TimeStart()
+                    log.trace { "기다려야 한다. 스냅스타트의 경우 2~5분 정도 걸리는듯" }
+                    log.info { "###### lambda[${functionName}] step4 waiting new version($version) for snapstart " }
+                    aws.lambda.waitUntilPublishedVersionActive {
+                        this.functionName = functionName
+                        this.qualifier = version
                     }
+                    log.info { " -> published version($version) active -> $timeStart" }
+                } catch (e: ResourceConflictException) {
+                    //그대로 던져서 재시도
+                    throw e
+                } catch (e: Throwable) {
+                    log.error { "###### error on snapstart!!  plz debug!  ${e.toSimpleString()}" }
+                    throw e
                 }
             }
+
+            log.info { "###### lambda[${functionName}] step5 updateAlias" }
+            val updatedVersion = try {
+                aws.lambda.updateAlias(functionName, version, alias).functionVersion!!
+            } catch (e: ResourceNotFoundException) {
+                log.trace { "alias 는  CDK에서 이미 만들어져있어야 하기 때문에 아마 없을리는 없지만 혹시나 해서 세트로 제작" }
+                aws.lambda.createAlias(functionName, version, alias).functionVersion!!
+            }
+            log.info { " -> update complete -> (${updatedVersion})" }
         }
     }
 

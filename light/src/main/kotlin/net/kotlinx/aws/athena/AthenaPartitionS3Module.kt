@@ -38,7 +38,11 @@ class AthenaPartitionS3Module {
             return
         }
 
-        val prefixList = listOf(partitionSqlBuilder.prefix) + tableName + prefixs.mapIndexed { i, v -> "${partitionKeys[i]}=${v}" }
+        val appended = when (partitionSqlBuilder.keyValue) {
+            true -> prefixs.mapIndexed { i, v -> "${partitionKeys[i]}=${v}" }
+            false -> prefixs.mapIndexed { _, v -> v }
+        }
+        val prefixList = listOf(partitionSqlBuilder.prefix) + tableName + appended
         val dirPrefix = "${prefixList.joinToString("/")}/"
         log.debug { "버킷[${partitionSqlBuilder.bucketName}] 조회 : $dirPrefix" }
         athenaModule.aws.s3.listDirs(partitionSqlBuilder.bucketName, dirPrefix).forEach { dir ->
@@ -78,7 +82,8 @@ class AthenaPartitionS3Module {
         if (log.isTraceEnabled) {
             sqls.forEachIndexed { i, it -> log.debug { " -> sql[$i]\n$it" } }
         }
-        athenaModule.startAndWait(sqls.map { AthenaExecute(it) })
+        println(sqls)
+        //athenaModule.startAndWait(sqls.map { AthenaExecute(it) })
     }
 
 }

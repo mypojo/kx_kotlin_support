@@ -31,10 +31,10 @@ suspend fun AthenaModule.download(block: AthenaMs949.() -> Unit): AthenaMs949 {
         }
     ) {
         CsvReadWriteTool {
-            inInputStream = it.body?.toInputStream()!!
-            outFile = ct.queryResultFile
-            outFileCharset = CharSets.MS949
-            gzip = ct.gzip
+            readerInputStream = it.body?.toInputStream()!!
+            writerFile = ct.queryResultFile
+            writerCharset(CharSets.MS949)
+            writerGzip = ct.gzip
             processor = ct.processor
         }
     }

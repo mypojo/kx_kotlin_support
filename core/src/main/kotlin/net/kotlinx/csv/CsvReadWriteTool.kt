@@ -1,9 +1,10 @@
 package net.kotlinx.csv
 
+import com.github.doyaaaaaken.kotlincsv.client.CsvReader
+import com.github.doyaaaaaken.kotlincsv.client.CsvWriter
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import net.kotlinx.core.Kdsl
-import net.kotlinx.string.CharSets
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -21,11 +22,11 @@ class CsvReadWriteTool {
     constructor(block: CsvReadWriteTool.() -> Unit = {}) {
         apply(block)
 
-        val reader = csvReader { charset = inFileCharset.toString() }
-        val writer = csvWriter { charset = outFileCharset.toString() }
+        val reader = readerFactory()
+        val writer = writerFactory()
 
-        reader.open(inInputStream) {
-            val stream = if (gzip) GZIPOutputStream(FileOutputStream(outFile)) else FileOutputStream(outFile)
+        reader.open(readerInputStream) {
+            val stream = if (writerGzip) GZIPOutputStream(FileOutputStream(writerFile)) else FileOutputStream(writerFile)
             writer.open(stream) {
                 readAllAsSequence().forEach { line ->
                     writeRow(processor(line))
@@ -34,30 +35,47 @@ class CsvReadWriteTool {
         }
     }
 
+    /** 라인단위 처리 */
+    var processor: (List<String>) -> List<String> = { it }
+
+    //==================================================== IN ======================================================
+
     /** 입력파일 */
-    var inFile: File? = null
+    var readerFile: File? = null
         set(value) {
-            inInputStream = value!!.inputStream()
+            readerInputStream = value!!.inputStream()
             field = value
         }
 
-    /** 입력파일 스트림 */
-    lateinit var inInputStream: InputStream
+    /**
+     * reader factory
+     * 인코딩이나 delimiter 등을 조절
+     *  */
+    var readerFactory: () -> CsvReader = { csvReader() }
 
-    /** 입력파일 인코딩 */
-    var inFileCharset: Charset = CharSets.UTF_8
+    /** 간단 캐릭터셋 변경 */
+    fun readerCharset(value: Charset) {
+        readerFactory = { csvReader { charset = value.name() } }
+    }
+
+    /** 입력파일 스트림 */
+    lateinit var readerInputStream: InputStream
+
+    //==================================================== OUT ======================================================
 
     /** 결과파일 */
-    lateinit var outFile: File
+    lateinit var writerFile: File
 
-    /** 결과파일 인코딩 */
-    var outFileCharset: Charset = CharSets.UTF_8
+    /** writer 팩토리 */
+    var writerFactory: () -> CsvWriter = { csvWriter() }
+
+    /** 간단 캐릭터셋 변경 */
+    fun writerCharset(value: Charset) {
+        writerFactory = { csvWriter { charset = value.name() } }
+    }
 
     /** 압축 여부 */
-    var gzip: Boolean = false
-
-    /** 라인단위 처리 */
-    var processor: (List<String>) -> List<String> = { it }
+    var writerGzip: Boolean = false
 
 
 }

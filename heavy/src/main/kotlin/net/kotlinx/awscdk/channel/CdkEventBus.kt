@@ -5,8 +5,6 @@ import net.kotlinx.awscdk.basic.TagUtil
 import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.events.*
-import software.amazon.awscdk.services.events.targets.SnsTopic
-import software.amazon.awscdk.services.sns.ITopic
 
 
 /**
@@ -20,7 +18,7 @@ class CdkEventBus : CdkInterface {
     }
 
     override val logicalName: String
-        get() = "${project.profileName}-ev_${eventBusName}-${deploymentType.name.lowercase()}"
+        get() = "${eventBusName}-${suff}"
 
     /** 이벤트버스 명 */
     lateinit var eventBusName: String
@@ -29,7 +27,8 @@ class CdkEventBus : CdkInterface {
     lateinit var iEventBus: IEventBus
 
     fun create(stack: Stack) {
-        iEventBus = EventBus(stack, logicalName, EventBusProps.builder().eventBusName(logicalName).build())
+        val stackId = "${project.profileName}-ev_${logicalName}"
+        iEventBus = EventBus(stack, stackId, EventBusProps.builder().eventBusName(logicalName).build())
         TagUtil.tag(iEventBus, deploymentType)
     }
 
@@ -38,8 +37,8 @@ class CdkEventBus : CdkInterface {
      * 이들중 특정 패턴을 이 커스텀 이벤트버스로 디스패치함
      * 코드 참고용임!
      *  */
-    fun subscribeFromDefault(stack: Stack, eventPattern: EventPattern = EventPatternUtil.AWS_CORE) {
-        val ruleName = "${project.profileName}-event_dispatch_${eventBusName}-${deploymentType.name.lowercase()}"
+    fun fromDefaultEventbus(stack: Stack, eventPattern: EventPattern = EventPatternUtil.AWS_CORE) {
+        val ruleName = "${project.profileName}-event_dispatch_${eventBusName}-${suff}"
         val eventDisRule = Rule(
             stack, ruleName, RuleProps.builder()
                 .enabled(true)
@@ -52,18 +51,25 @@ class CdkEventBus : CdkInterface {
         TagUtil.tag(eventDisRule, deploymentType)
     }
 
-    /** 해당 패턴에 걸린 애들을 SNS로 전송 */
-    fun toSns(stack: Stack, topic: ITopic, toSnsName: String, eventPattern: EventPattern) {
-        val ruleName = "${project.profileName}-event_sns_${toSnsName}-${deploymentType}"
+    /**
+     * 특정 패턴을 구독해서 target으로 전송
+     * ex)                 .eventPattern(eventPattern)
+     *                 .targets(listOf(SnsTopic(topic)))
+     *
+     * 타겟정보 정리
+     * SnsTopic -> 정의되지 않은경우 파싱되지 않은 SNS
+     * LambdaFunction -> 정의되지 않은경우 데드메시지
+     * */
+    fun substribe(stack: Stack, name: String, block: RuleProps.Builder.() -> Unit) {
+        val ruleName = "${name}-${suff}"
         val eventDisRule = Rule(
             stack, ruleName,
             RuleProps.builder()
                 .enabled(true)
                 .ruleName(ruleName)
-                .description("${project.profileName}(${toSnsName}) => SNS - ${deploymentType.name.lowercase()}")
+                .description("eventbridge substribe $name-$suff")
                 .eventBus(iEventBus)
-                .eventPattern(eventPattern)
-                .targets(listOf(SnsTopic(topic)))
+                .apply(block)
                 .build(),
         )
         TagUtil.tag(eventDisRule, deploymentType)

@@ -8,13 +8,6 @@ import aws.sdk.kotlin.services.costexplorer.startCostAllocationTagBackfill
 import net.kotlinx.time.toYmdF01
 import java.time.LocalDate
 
-/** map 의 내용을 전부 replace 한다. */
-fun String.replaceAll(replacements: Map<String, String>): String {
-    var result = this
-    replacements.entries.forEach { result = result.replace(it.key, it.value) }
-    return result
-}
-
 /**
  * 간단 조회 샘플
  * 최근 12개월(최대한도) 월단위 / 서비스별 조회
@@ -71,7 +64,6 @@ suspend fun CostExplorerClient.startCostAllocationTagBackfill() {
     }
     throw UnsupportedOperationException()
 }
-
 
 
 /**

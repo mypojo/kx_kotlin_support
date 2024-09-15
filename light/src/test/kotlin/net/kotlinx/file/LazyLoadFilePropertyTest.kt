@@ -45,7 +45,7 @@ class LazyLoadFilePropertyTest : BeSpecHeavy() {
                     val localFile = workspace.slash("fonts")
                     //localFile.deleteRecursively()
 
-                    val filePath = "s3://adpriv-data-dev/resource/font/"
+                    val filePath = "s3://${findProfile97}-data-dev/resource/font/"
                     val file: File by localFile lazyLoad {
                         info = filePath
                         profile = profileName

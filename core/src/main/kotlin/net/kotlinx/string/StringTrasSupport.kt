@@ -5,6 +5,16 @@ import java.net.URLDecoder
 import java.net.URLEncoder
 import java.util.*
 
+/**
+ * map 의 내용을 전부 replace 한다
+ * 주로 쿼리 등을 치환할때 사용함
+ *  */
+fun String.replaceAll(replacements: Map<String, String>): String {
+    var result = this
+    replacements.entries.forEach { result = result.replace(it.key, it.value) }
+    return result
+}
+
 /** 간단 마스킹 */
 fun String.mask(start: Int = 2, end: Int = this.length): String {
     val input = this

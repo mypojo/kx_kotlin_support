@@ -156,10 +156,7 @@ class AthenaTable {
                     val projectionConfig = projectionMap[colimnName] ?: mapOf("type" to "injected") //아무 설정 없으면 injected로 설정
                     projectionConfig.entries.map { "projection.${colimnName}.${it.key}" to it.value }
                 }.toMap()
-
-                //val columnProps = partitions.associate { "projection.${it}.type" to "injected" }
                 props = props + basicProps + columnProps
-
             }
 
             AthenaTablePartitionType.INDEX -> {}

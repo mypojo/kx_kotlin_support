@@ -1,8 +1,9 @@
 package net.kotlinx.domain.batchStep
 
-import net.kotlinx.aws.athena.AthenaTable
-import net.kotlinx.aws.athena.AthenaTableFormat
-import net.kotlinx.aws.athena.AthenaTablePartitionType
+import net.kotlinx.aws.athena.table.AthenaTable
+import net.kotlinx.aws.athena.table.AthenaTableFormat
+import net.kotlinx.aws.athena.table.AthenaTablePartitionType
+
 
 /**
  * 아테나 테이블 정의
@@ -17,14 +18,12 @@ object BatchStepTable {
         tableName = "batch_step"
         s3Key = "upload/sfnBatchModuleOutput/"
         schema = mapOf(
-            "file_name" to "string",
-            "total_interval" to "bigint",
-            "total_size" to "int",
-            "input" to "string",
-            "output" to "string",
-        )
-        partition = mapOf(
-            "sfn_id" to "string",
+            "sfn_id" PARTITION string,
+            "file_name" to string,
+            "total_interval" to bigint,
+            "total_size" to int,
+            "input" to string,
+            "output" to string,
         )
         athenaTableFormat = AthenaTableFormat.Json
         athenaTablePartitionType = AthenaTablePartitionType.PROJECTION

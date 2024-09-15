@@ -16,6 +16,11 @@ import java.nio.charset.Charset
 /** 직렬화 가능한 요청 객체 : 응답이 텍스트인경우 */
 class OkHttpReq {
 
+    @Kdsl
+    constructor(block: OkHttpReq.() -> Unit = {}) {
+        apply(block)
+    }
+
     /** url */
     lateinit var url: String
 

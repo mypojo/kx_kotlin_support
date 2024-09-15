@@ -23,7 +23,7 @@ object EventPatternUtil {
         .detailType(listOf("ECS Task State Change"))
         .detail(
             mapOf(
-                "lastStatus" to listOf("RUNNING"),
+                "lastStatus" to listOf("STOPPED"),
                 "stoppedReason" to mapOf(
                     "prefix" to listOf("Task failed ELB health checks")
                 ),

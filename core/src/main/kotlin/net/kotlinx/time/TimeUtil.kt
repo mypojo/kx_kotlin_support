@@ -73,6 +73,9 @@ object TimeUtil {
     /** 간단버전 */
     fun between(range: Pair<String, String>): List<String> = between(range.first.toLocalDate(), range.second.toLocalDate()).map { it.toYmd() }
 
+    /** 간단버전 */
+    fun betweenToLocalDate(range: Pair<String, String>): List<LocalDate> = between(range.first.toLocalDate(), range.second.toLocalDate())
+
     /** 향후 kotlin의 LocalDate 로 변경하기위해서 임시로만 작업함 */
     fun between(start: LocalDate, end: LocalDate): List<LocalDate> {
         check(start <= end) { "시작 날짜보다 종료 날짜가 더 커야합니다" }

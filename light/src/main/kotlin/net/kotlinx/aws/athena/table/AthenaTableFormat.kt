@@ -35,15 +35,26 @@ sealed interface AthenaTableFormat {
     }
 
     /**
-     * 최초 데이터 입력시 주로 사용 
+     * 최초 데이터 입력시 주로 사용
      * ex) 이벤트브릿지 or 커스텀한 구조의 작업 결과물 (csv 대체)
      * https://docs.aws.amazon.com/ko_kr/athena/latest/ug/openx-json-serde.html
      *  */
     data object Json : AthenaTableFormat {
         override fun toRowFormat(table: AthenaTable): List<String> {
+
+            /**
+             * 추가 옵션들
+             * 'ignore.malformed.json' = 'false',
+            'dots.in.keys' = 'false',
+             */
+            val options = mapOf(
+                /** 이걸 false 로 해야 대소문자 구분함 */
+                "case.insensitive" to "false",
+            )
+
             return listOf(
                 "ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'",
-                "WITH SERDEPROPERTIES (\"case.insensitive\" = \"FALSE\")", //이게 있어야 대소문자 구분함
+                "WITH SERDEPROPERTIES ( ${options.entries.joinToString(",") { "\"${it.key}\" = \"${it.value}\"" }}  )",
                 "STORED AS INPUTFORMAT 'org.apache.hadoop.mapred.TextInputFormat'",
                 "OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'",
             )
@@ -51,7 +62,7 @@ sealed interface AthenaTableFormat {
     }
 
 
-    /** 
+    /**
      * 최초 데이터 입력시 주로 사용 ex) 사용자 정의 데이터 파일 or RDB 데이터
      * "1" 이런식으로 " 로 감싸지는 데이터 형식임 (csv기본)
      * 이 CSV 안에 JSON을 문자열로 인식하면 " 인식에 문제가 생긴다.. 방법 못찾음. 일단 자체 이스케이핑

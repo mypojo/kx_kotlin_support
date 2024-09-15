@@ -2,7 +2,6 @@ package net.kotlinx.aws.lambda
 
 import aws.sdk.kotlin.services.lambda.*
 import aws.sdk.kotlin.services.lambda.model.*
-import aws.sdk.kotlin.services.lambda.waiters.waitUntilPublishedVersionActive
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.string.ResultText
 import net.kotlinx.time.toKr01
@@ -77,26 +76,26 @@ suspend fun LambdaClient.updateFunctionCode(functionName: String, s3Data: S3Data
 
 //==================================================== 람다 버전교체 ======================================================
 
-/**
- * alias 는  CDK에서 이미 만들어져있어야 하기 때문에 아마 없을리는 없지만 혹시나 해서 세트로 제작
- * 대부분 로컬에서 돌릴것임으로 로그를 println 로 남긴다.
- * */
-suspend fun LambdaClient.publishVersionAndUpdateAlias(functionName: String, alias: String): String {
-    val versionResponse = publishVersion(functionName)
-    val version = versionResponse.version!!
-
-    //기다려야 한다. 스냅스타트의 경우 2~5분 정도 걸리는듯
-    this.waitUntilPublishedVersionActive {
-        this.functionName = functionName
-        this.qualifier = version
-    }
-
-    return try {
-        updateAlias(functionName, version, alias).functionVersion!!
-    } catch (e: ResourceNotFoundException) {
-        createAlias(functionName, version, alias).functionVersion!!
-    }
-}
+///**
+// * alias 는  CDK에서 이미 만들어져있어야 하기 때문에 아마 없을리는 없지만 혹시나 해서 세트로 제작
+// * 대부분 로컬에서 돌릴것임으로 로그를 println 로 남긴다.
+// * */
+//suspend fun LambdaClient.publishVersionAndUpdateAlias(functionName: String, alias: String): String {
+//    val versionResponse = publishVersion(functionName)
+//    val version = versionResponse.version!!
+//
+//    //기다려야 한다. 스냅스타트의 경우 2~5분 정도 걸리는듯
+//    this.waitUntilPublishedVersionActive {
+//        this.functionName = functionName
+//        this.qualifier = version
+//    }
+//
+//    return try {
+//        updateAlias(functionName, version, alias).functionVersion!!
+//    } catch (e: ResourceNotFoundException) {
+//        createAlias(functionName, version, alias).functionVersion!!
+//    }
+//}
 
 
 /**

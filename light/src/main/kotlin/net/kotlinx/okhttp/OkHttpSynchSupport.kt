@@ -2,6 +2,7 @@ package net.kotlinx.okhttp
 
 import net.kotlinx.core.Kdsl
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import java.io.File
 import java.io.FileOutputStream
 
@@ -9,9 +10,15 @@ import java.io.FileOutputStream
 //==================================================== 경고!! 대량처리의 경우 asynch 하게 사용할것 ======================================================
 
 /** 동기화 호출 (RMI) */
-fun OkHttpClient.fetch(req: OkHttpReq): OkHttpResp{
+fun OkHttpClient.fetch(req: OkHttpReq): OkHttpResp = fetchInner(req).use { OkHttpResp(req, it).load() }
+
+/**
+ * 동기화 호출 후 body를 가져오지 않은 상태
+ * stream을 직접 사용하려면 이렇게 사용해야함
+ *  */
+fun OkHttpClient.fetchInner(req: OkHttpReq): Response {
     this.reqInterceptor.invoke(req)
-    return this.newCall(req.build()).execute().use { OkHttpResp(req, it).load() }
+    return this.newCall(req.build()).execute()
 }
 
 /** 동기화 호출 (DSL) */

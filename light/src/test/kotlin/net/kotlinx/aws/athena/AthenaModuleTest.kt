@@ -40,20 +40,6 @@ internal class AthenaModuleTest : BeSpecHeavy() {
                 )
             }
 
-//            Then("다운로드 & 파일 변환 & 프리사인") {
-////                val exe = athenaModule.execute("SELECT * FROM nv_site_data limit 3")
-////                val location = exe.outputLocation
-//                val location = "s3://adpriv-work-dev/athena/outputLocation/37299e75-ed53-4a88-84e4-d80ce7be2329.csv"
-//                val s3Data = S3Data.parse(location)
-//                val fileUtf8 = ResourceHolder.WORKSPACE.slash("AthenaModuleTest_sin_meta").slash("text_utf8.csv")
-//                fileUtf8.parentFile.mkdirs()
-//                if (!fileUtf8.exists()) {
-//                    aws.s3.getObjectDownload(s3Data.bucket, s3Data.key, fileUtf8)
-//                }
-//                fileUtf8.writeCsvToCharset(fileUtf8.nameAppend("_MS949"))
-//            }
-
-
         }
     }
 }

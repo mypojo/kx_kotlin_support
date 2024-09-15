@@ -12,4 +12,10 @@ object CharUtil {
      *  */
     fun isValid(text: String): Boolean = !text.contains('\uFFFD')
 
+    /**
+     * 아무데도 쓰이지 않는 캐릭터형.
+     * ex) tsv 캐릭터 이스케이프 강제 입력에 넣어줌
+     *  */
+    val USELESS = Char(1)
+
 }

@@ -15,13 +15,19 @@ import java.time.LocalDateTime
 
 class CloudWatchLogsSupportKtTest : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile99 }
-    private val aws by lazy { koin<AwsClient1>(profileName) }
+    private val profileName by lazy { findProfile28 }
+    private val aws by lazy { koin<AwsClient1>(findProfile28) }
 
     init {
         initTest(KotestUtil.PROJECT)
 
-        Given("CloudWatchLogsSupportKt") {
+        Given("자주 쓰는 기능") {
+            Then("해당 로그그룹을 모두 삭제") {
+                aws.logs.cleanLogStream("/aws/lambda/$profileName-fn-dev")
+            }
+        }
+
+        xGiven("CloudWatchLogsSupportKt") {
             xThen("로그 다운로드") {
                 var out = ResourceHolder.WORKSPACE.slash("로그다운로드").slash("log.txt")
                 aws.logs.download(
@@ -33,9 +39,6 @@ class CloudWatchLogsSupportKtTest : BeSpecHeavy() {
                 log.warn { "결과파일 ->  ${out.absolutePath}" }
             }
 
-            xThen("해당 로그그룹을 모두 삭제") {
-                aws.logs.cleanLogStream("/aws/lambda/xx-fn-dev")
-            }
 
             xThen("로그스트림 내부의 로그(이벤트) 조회") {
                 val logs = aws.logs.getLogEvents {

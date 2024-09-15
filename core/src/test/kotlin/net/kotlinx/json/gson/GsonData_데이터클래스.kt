@@ -179,6 +179,13 @@ internal class GsonData_데이터클래스 : BeSpecLog() {
                 poo1 shouldBe poo2
             }
 
+//            Then("null 변환체크") {
+//                val json = "{\"id\":13100740,\"creativeId\":13100740,\"format\":\"IMAGE_BANNER\",\"name\":\"소재01\",\"adGroupId\":1286777,\"serviceContent\":null,\"landingInfo\":{\"landingType\":\"URL\",\"url\":\"http://www.adpaas.co.kr/mobile/introMobile\"},\"pcLandingUrl\":null,\"mobileLandingUrl\":\"http://www.adpaas.co.kr/mobile/introMobile\",\"rspvLandingUrl\":null,\"frequencyCap\":null,\"frequencyCapType\":\"AUTO\",\"config\":\"ON\",\"systemConfig\":\"ON\",\"reviewStatus\":\"APPROVED\",\"creativeStatus\":\"ADGROUP_UNAVAILABLE\",\"image\":{\"url\":\"//t1.daumcdn.net/b2/creative/276624/94a6ef01b8ba394aee841f1d8ca0e201.png\",\"fileName\":\"2_이미지01.png\",\"width\":1029,\"height\":222,\"size\":18894},\"altText\":\"애드파스광고\",\"assetGroups\":null,\"videoSkippableType\":null,\"statusDescription\":\"운영중\",\"rejectedReason\":[],\"createdDate\":\"2021-03-04T14:16:26\",\"lastModifiedDate\":\"2021-03-04T14:16:26\",\"decodedProfileId\":null,\"hasExpandable\":false,\"opinionProof\":null}"
+//                val data = GsonData.parse(json)
+//                println(data["pcLandingUrl"])
+//                println(data["pcLandingUrl"].str)
+//            }
+
         }
     }
 }

@@ -7,7 +7,10 @@ import java.io.File
 import java.nio.charset.Charset
 
 
-/** 간단하게 인메모리로 CSV 읽기 */
+/**
+ * 간단하게 인메모리로 CSV 읽기
+ * @see readLines
+ *  */
 fun File.readCsvLines(charset: Charset = CharSets.UTF_8): List<List<String>> {
     return csvReader { this.charset = charset.toString() }.readAll(this)
 }
@@ -17,7 +20,10 @@ fun File.writeCsvLines(lines: List<List<Any?>>, charset: Charset = CharSets.UTF_
     csvWriter { this.charset = charset.toString() }.writeAll(lines, this)
 }
 
-/** 간단하게 스트림으로 읽음 */
+/**
+ * 간단하게 스트림으로 읽음
+ * @see forEachLine -> csv 아니고, 일반 라인 읽기
+ *  */
 fun File.readCsvLines(charset: Charset = CharSets.UTF_8, callback: (List<String>) -> Unit) {
     val reader = csvReader { this.charset = charset.toString() }
     reader.open(this) {

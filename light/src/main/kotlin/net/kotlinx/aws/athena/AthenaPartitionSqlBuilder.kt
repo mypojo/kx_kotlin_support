@@ -45,6 +45,12 @@ class AthenaPartitionSqlBuilder {
      *  */
     private val tablePrefix: String by lazy { database?.let { "${it}." } ?: "" }
 
+    /**
+     * 파티션이 A=B/C=D 이런식의 키밸류인지?
+     * cloudtrail 같은거는 키벨류가 아니라 false 로 해줘야함
+     * */
+    var keyValue: Boolean = true
+
 
     //==================================================== 쿼리 생성 ======================================================
 
@@ -57,9 +63,13 @@ class AthenaPartitionSqlBuilder {
                 check(dataMap is LinkedHashMap) { "순서가 있는 맵 이어야함" }
             }
             val pData = dataMap.entries.joinToString(",") { "${it.key}='${it.value}'" }
-            val pPath = dataMap.entries.joinToString("/") { "${it.key}=${it.value}" }
+            val pPath = when (keyValue) {
+                true -> dataMap.entries.joinToString("/") { "${it.key}=${it.value}" }
+                false -> dataMap.values.joinToString("/") { it }
+            }
             "PARTITION (${pData}) LOCATION '${s3Path}/${pPath}/'"
         }
+
         return "ALTER TABLE `${tablePrefix}${tableName}` ADD IF NOT EXISTS\n${append}"
     }
 

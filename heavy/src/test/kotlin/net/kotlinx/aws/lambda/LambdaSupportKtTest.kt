@@ -45,7 +45,7 @@ internal class LambdaSupportKtTest : BeSpecHeavy() {
                 aws.lambda.updateFunctionCode("sin-job_lambda-prod", "463327615611.dkr.ecr.ap-northeast-2.amazonaws.com/sin-job", "local-2023-03-22_12-04")
             }
             xThen("버전업&교체") {
-                aws.lambda.publishVersionAndUpdateAlias("sin-batchFunction-dev", LambdaUtil.SERVICE_ON)
+                //aws.lambda.publishVersionAndUpdateAlias("sin-batchFunction-dev", LambdaUtil.SERVICE_ON)
             }
         }
     }

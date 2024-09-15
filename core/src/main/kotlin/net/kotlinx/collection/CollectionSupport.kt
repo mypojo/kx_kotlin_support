@@ -26,6 +26,19 @@ fun <T> Collection<T>.mapNotEmpty(transform: (T) -> String?): Collection<String>
 
 
 /**
+ * 순서대로 로직을 실행해서 가장먼저 null 이 아닌것을 찾는다
+ * ex) http 에서 다수의 로직을 대입해서 인증 토큰 찾기
+ * */
+fun <T> List<() -> T?>.findFirstNotnull(): T? {
+    for (func in this) {
+        val value = func()
+        if (value != null)
+            return value
+    }
+    return null
+}
+
+/**
  * 첫 조건에따라 그룹바이한다.
  * ex) 라인 파싱
  *  */

@@ -13,7 +13,7 @@ import aws.sdk.kotlin.services.eventbridge.putEvents
  * 총 항목의 크기가 256 kb 이하만 가능 -> 더 크다면 S3를 권장함
  * *   */
 suspend fun EventBridgeClient.putEvents(config: EventBridgeConfig, datas: List<String>): PutEventsResponse {
-    return this.putEvents {
+    val response = this.putEvents {
         this.entries = datas.map { data ->
             PutEventsRequestEntry {
                 this.eventBusName = config.eventBusName
@@ -24,8 +24,11 @@ suspend fun EventBridgeClient.putEvents(config: EventBridgeConfig, datas: List<S
             }
         }
     }
+    check(response.failedEntryCount == 0) { "fail event! -> ${response.entries!!.joinToString(",")}" }
+    return response
 }
 
+/** 룰 리스팅 */
 suspend fun EventBridgeClient.listRules(eventBusName: String, nextToken: String? = null): ListRulesResponse = this.listRules {
     this.eventBusName = eventBusName
     this.nextToken = nextToken

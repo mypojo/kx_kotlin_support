@@ -58,7 +58,7 @@ suspend fun SqsClient.receiveMessage(queueUrl: String, maxNum: Int = MAX_NUMBER_
     return this.receiveMessage {
         this.queueUrl = queueUrl
         this.maxNumberOfMessages = maxNum
-    }.messages!!
+    }.messages ?: emptyList()
 }
 
 /**
