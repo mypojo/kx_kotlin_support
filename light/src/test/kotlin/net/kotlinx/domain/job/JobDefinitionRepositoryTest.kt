@@ -1,12 +1,12 @@
 package net.kotlinx.domain.job
 
 import net.kotlinx.domain.job.define.JobDefinitionRepository
+import net.kotlinx.domain.job.define.printSimple
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.kotest.modules.job.DemoJob
 import net.kotlinx.reflect.Bean
-import net.kotlinx.string.print
 
 class JobDefinitionRepositoryTest : BeSpecHeavy() {
 
@@ -16,7 +16,7 @@ class JobDefinitionRepositoryTest : BeSpecHeavy() {
         Given("Job") {
 
             Then("전체 잡 출력") {
-                JobDefinitionRepository.list().print()
+                JobDefinitionRepository.list().printSimple()
             }
 
             val jobDefinition = JobDefinitionRepository.find<DemoJob>()

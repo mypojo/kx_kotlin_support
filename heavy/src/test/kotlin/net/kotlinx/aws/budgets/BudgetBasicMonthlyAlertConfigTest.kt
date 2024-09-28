@@ -26,7 +26,7 @@ class BudgetBasicMonthlyAlertConfigTest : BeSpecHeavy() {
                 Then("profile $profile") {
                     val alertConfig = BudgetBasicMonthlyAlertTemplate {
                         //아래 채워서 실행할것!
-                        emails = listOf("seunghan.shin@nhnad.com")
+                        emails = listOf("")
                         awsId = aws.awsConfig.awsId
                         budgetName = "${budgetName}-${profile}" //프로파일이 이름에 있어야, 이메일만으로 확인이 쉬움
                     }

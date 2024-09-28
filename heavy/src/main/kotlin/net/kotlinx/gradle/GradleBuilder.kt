@@ -122,8 +122,8 @@ class GradleBuilder {
     /** RCR 람다 함수 업데이트 */
     fun ecrUpdateLambda() {
         runBlocking {
-            log.info { "[${functionName}] 람다 함수 $ecrTagName ECR 터치" }
             aws.lambda.updateFunctionCode(functionName, ecrRepositoryUri, ecrTagName) //터치만 해줌
+            log.info { "[${functionName}] lambda $ecrTagName ECR touch completed" }
         }
     }
 
@@ -137,7 +137,7 @@ class GradleBuilder {
     fun ecrDeployRolling() {
         runBlocking {
             aws.ecs.touch(ecsDeployData.clusterName, ecsDeployData.serviceName)
-            log.info { "[${ecsDeployData.serviceName}] 롤링 배포 완료" }
+            log.info { "[${ecsDeployData.serviceName}] rolling deploy completed" }
         }
     }
 
@@ -145,7 +145,7 @@ class GradleBuilder {
     fun ecrDeployBlueGreen() {
         runBlocking {
             val deployment = aws.codeDeploy.createDeployment(ecsDeployData)
-            log.info { "[${ecsDeployData.containerName}] 코드디플로이 배포 완료 ->  ${CodedeployUtil.toConsoleLink(deployment.deploymentId!!)}" }
+            log.info { "[${ecsDeployData.containerName}] codedeploy completed -> ${CodedeployUtil.toConsoleLink(deployment.deploymentId!!)}" }
         }
     }
 

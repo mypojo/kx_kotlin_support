@@ -16,7 +16,7 @@ enum class JobStatus(val desc: String) {
      * 상태머신의 wait = 고정시간(Timestamp) 사용됨
      * ex) 특정 작업이 다음주 월요일 오후 X시에 실행되길 원함
      */
-    SCHEDULED("예약됨"),
+    RESERVED("예약됨"),
 
     /**
      * 실행을 요청했고, 아직 실행중이지 않은 상태.
@@ -57,6 +57,6 @@ enum class JobStatus(val desc: String) {
     fun finished(): Boolean = this in arrayOf(SUCCEEDED, FAILED, CANCELED)
 
     /** 실행 가능한 상태인지?  */
-    fun readyToRun(): Boolean = this in arrayOf(STARTING, SCHEDULED)
+    fun readyToRun(): Boolean = this in arrayOf(STARTING, RESERVED)
 
 }

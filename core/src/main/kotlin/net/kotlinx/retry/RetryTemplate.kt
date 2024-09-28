@@ -16,6 +16,12 @@ class RetryTemplate(block: RetryTemplate.() -> Unit) : suspend (suspend () -> An
 
     private val log = KotlinLogging.logger {}
 
+    /**
+     * 구분 가능한 간단 이름.
+     * 디폴트 에러에 사용됨
+     * */
+    var name: String = ""
+
     /** 오류 시 기다릴 시간. multiplier 설정은 나중에 하자.   */
     var interval: Duration = 1.seconds
 
@@ -27,7 +33,8 @@ class RetryTemplate(block: RetryTemplate.() -> Unit) : suspend (suspend () -> An
 
     /** 오류시 로깅 */
     var onError: (tryCnt: Int, e: Throwable) -> Unit = { tryCnt: Int, e: Throwable ->
-        log.warn { " => ${e.toSimpleString()} -> 재시도 회차 $tryCnt/$retries " }
+        val title = if (name.isEmpty()) "" else "[$name]"
+        log.warn { " => $title ${e.toSimpleString()} -> retry $tryCnt/$retries " }
     }
 
     /** 리트라이 시도 */

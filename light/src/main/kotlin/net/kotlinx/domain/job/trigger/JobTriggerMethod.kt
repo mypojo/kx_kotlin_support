@@ -1,5 +1,6 @@
 package net.kotlinx.domain.job.trigger
 
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.batch.BatchUtil
@@ -11,6 +12,7 @@ import net.kotlinx.aws.lambda.invokeSynch
 import net.kotlinx.domain.job.Job
 import net.kotlinx.domain.job.JobExeDiv
 import net.kotlinx.domain.job.JobRepository
+import net.kotlinx.domain.job.JobStatus
 import net.kotlinx.id.IdGenerator
 import net.kotlinx.json.gson.toGsonData
 import org.koin.core.component.KoinComponent
@@ -35,6 +37,7 @@ interface JobTriggerMethod : KoinComponent {
      *  */
     suspend fun trigger(op: JobTriggerOption): String
 
+    /** 개발자 PC 로컬 환경을 의미한다 */
     object LOCAL : JobTriggerMethod {
         override val name: String = "local"
         override val jobExeDiv: JobExeDiv = JobExeDiv.LOCAL
@@ -45,7 +48,20 @@ interface JobTriggerMethod : KoinComponent {
         override suspend fun trigger(op: JobTriggerOption): String {
             val input = jobSerializer.toJson(op)
             val job = jobSerializer.toJob(input.toString().toGsonData())!!
-            return jobLocalExecutor.runJob(job)
+
+            if (job.jobStatus == JobStatus.RESERVED) return job.toKeyString()
+
+            return if (op.synch) {
+                jobLocalExecutor.runJob(job)
+            } else {
+                //비동기는 그냥 스래드 생성해서 실행 (스래드풀X)
+                Thread {
+                    runBlocking {
+                        jobLocalExecutor.runJob(job)
+                    }
+                }.start()
+                job.toKeyString()
+            }
         }
     }
 }

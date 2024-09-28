@@ -1,5 +1,7 @@
 package net.kotlinx.aws.lakeformation
 
+import aws.sdk.kotlin.services.lakeformation.model.LfTag
+import aws.sdk.kotlin.services.lakeformation.model.ResourceType
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
@@ -11,22 +13,32 @@ class LakeformationSupportKtTest : BeSpecHeavy() {
     private val aws by lazy { koin<AwsClient>(findProfile97) }
 
     init {
-        initTest(KotestUtil.FAST)
+        initTest(KotestUtil.IGNORE)
 
-        Given("레이크포메이션") {
+        Given("레이크포메이션 권한") {
 
             val profile = findProfile97
 
-            val tag = "lake_$profile" to listOf("common")
+            val tag = LfTag {
+                this.tagKey = "lake_$profile"
+                this.tagValues = listOf("common")
+            }
 
             Then("LF태그 생성") {
-                aws.lake.createLfTag(tag)
+                val resp = aws.lake.createLfTag(tag)
+                log.info { "태그결과 $resp" }
             }
 
             Then("데이터베이스에 태그 부착") {
-                aws.lake.addLfTagsToResource("d1", listOf(tag))
+                val resp = aws.lake.addLfTagsToResource("d1", listOf(tag))
+                log.info { "태그결과 $resp" }
+            }
+
+            Then("역할에 태그권한 부여") {
+                aws.lake.grantPermissions("app-admin", listOf(tag), ResourceType.Database)
             }
         }
+
     }
 
 }

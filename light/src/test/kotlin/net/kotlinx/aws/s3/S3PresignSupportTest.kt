@@ -37,7 +37,7 @@ internal class S3PresignSupportTest : BeSpecHeavy() {
 
             Then("프리사인_업로드") {
                 val file = ResourceHolder.WORKSPACE.slash("input.csv")
-                if(!file.exists()){
+                if (!file.exists()) {
                     file.writeText("test")
                 }
                 val metadata = mapOf(
@@ -58,7 +58,8 @@ internal class S3PresignSupportTest : BeSpecHeavy() {
 
                 resp.response.code shouldBe 200
 
-                val objMetadata = aws.s3.getObjectMetadata(s3Obj.bucket, s3Obj.key)
+                val objMetadata = aws.s3.getObjectMetadata(s3Obj.bucket, s3Obj.key)!!
+                log.debug { " -> 메타데이터 $objMetadata" }
                 objMetadata["div"] shouldBe "타입^^;"
 
             }

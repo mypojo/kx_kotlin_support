@@ -33,7 +33,18 @@ class Zip4jModuleTest : BeSpecLog() {
                         workspace.slash("제공데이터_202402.zip"),
                     )
                     targetZipFile = workspace.slash("result.zip")
-                    splitSizeMb =  5 * 1024
+                    splitSizeMb = 5 * 1024
+                    zip()
+                }
+            }
+
+            Then("디렉토리 압축") {
+                val workspace = java.io.File("D:\\data_sin\\work\\TF")
+                Zip4jModule {
+                    files = listOf(
+                        workspace
+                    )
+                    targetZipFile = workspace.slash("result.zip")
                     zip()
                 }
             }

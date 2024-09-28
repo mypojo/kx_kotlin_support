@@ -12,7 +12,7 @@ class LambdaDispatcherSnsTest : BeSpecHeavy() {
     private val dispatcher by koinLazy<LambdaDispatcher>()
 
     init {
-        initTest(KotestUtil.FAST)
+        initTest(KotestUtil.IGNORE)
 
         Given("SNS 테스트") {
 

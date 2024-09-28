@@ -272,14 +272,20 @@ suspend inline fun S3Client.getObjectText(bucket: String, key: String): String? 
  * 본문 안읽고 User defined 메타데이터만 읽음
  * User defined 메타데이터는 x-amz-meta-aa 이런식으로 입력되지만 , 실제 가져오면 정상 출력됨
  * 사용자 정의 메타데이터는 크기가 2KB로 제한
- *  */
-suspend inline fun S3Client.getObjectMetadata(bucket: String, key: String): Map<String, String> {
-    return this.getObject(
-        GetObjectRequest {
+ * @return 파일이 없으면(NotFound) null을 리턴  => 파일이 있는지 체크 여부에서 사용됨
+ *
+ * getObject 를 사용해서 body를 읽지 않는거하고 동일한 로직인듯
+ * */
+suspend inline fun S3Client.getObjectMetadata(bucket: String, key: String): Map<String, String>? {
+    return try {
+        val resp = this.headObject {
             this.bucket = bucket
             this.key = key
         }
-    ) { resp ->
         resp.metadata?.map { it.key to it.value.decodeBase64() }?.toMap() ?: emptyMap()
+    } catch (e: NoSuchKey) {
+        null
+    } catch (e: NotFound) {
+        null
     }
 }

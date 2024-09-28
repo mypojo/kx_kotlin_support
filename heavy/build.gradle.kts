@@ -38,9 +38,10 @@ dependencies {
     api("aws.sdk.kotlin:cloudfront:$awsVersion") //static hosting 배포후 캐시 정리용
     api("aws.sdk.kotlin:lakeformation:$awsVersion") //레이크 포메이션 테그생성 등
     api("aws.sdk.kotlin:glue:$awsVersion") //글루 데이터베이스 생성 등
+    api("aws.sdk.kotlin:quicksight:$awsVersion") //퀵사이트
+
 //    api("aws.sdk.kotlin:pricing:$awsVersion") //제품의 비용(고정) 확인용
 //    api("aws.sdk.kotlin:xray:$awsVersion")
-//    api("aws.sdk.kotlin:quicksight:$awsVersion")
 //    api("aws.sdk.kotlin:auth:$awsVersion")
 //    api("aws.sdk.kotlin:regions:$awsVersion")
 

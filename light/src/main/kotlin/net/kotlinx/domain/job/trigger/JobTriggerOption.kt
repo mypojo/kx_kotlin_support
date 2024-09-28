@@ -2,6 +2,7 @@ package net.kotlinx.domain.job.trigger
 
 import net.kotlinx.core.Kdsl
 import net.kotlinx.domain.job.JobExeFrom
+import net.kotlinx.domain.job.JobStatus
 import net.kotlinx.domain.job.define.JobDefinition
 
 /**
@@ -33,6 +34,9 @@ class JobTriggerOption {
 
     /** 잡이 호출된 경로 */
     var jobExeFrom: JobExeFrom = JobExeFrom.ADMIN
+
+    /** 최초 잡 상태. 보통 STARTING or RESERVED */
+    var jobStatus: JobStatus = JobStatus.STARTING
 
     /** 작업 요청자 (인덱스용) */
     var memberId: String? = null

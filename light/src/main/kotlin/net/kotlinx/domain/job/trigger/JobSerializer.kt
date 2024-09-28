@@ -14,7 +14,6 @@ import net.kotlinx.id.IdGenerator
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.koin.Koins.koinLazy
-import net.kotlinx.string.enumValueOf
 import java.time.LocalDateTime
 
 /**
@@ -39,12 +38,12 @@ class JobSerializer(val profile: String? = null) {
             val jobDefinition = JobDefinitionRepository.findById(pk)
             val jobTrigger = jobDefinition.jobTriggerMethod
             reqTime = LocalDateTime.now()
-            jobStatus = JobStatus.STARTING
             jobEnv = jobTrigger.name
             //파싱값 입력 4개
             jobOption = input[Job::jobOption.name].str!!.toGsonData()
             input[Job::memberId.name].str?.let { memberId = it }
-            jobExeFrom = enumValueOf(input[Job::jobExeFrom.name].str, JobExeFrom.UNKNOWN)
+            jobExeFrom = input.enum<JobExeFrom>(Job::jobExeFrom.name) ?: JobExeFrom.UNKNOWN
+            jobStatus = input.enum<JobStatus>(Job::jobStatus.name) ?: JobStatus.STARTING
             sfnId = input[Job::sfnId.name].str
 
             //특수한 경우 예외 처리해줌
@@ -69,6 +68,7 @@ class JobSerializer(val profile: String? = null) {
         Job::memberId.name to op.memberId
         Job::jobExeFrom.name to op.jobExeFrom.name
         Job::sfnId.name to op.sfnId
+        Job::jobStatus.name to op.jobStatus
     }
 
 }

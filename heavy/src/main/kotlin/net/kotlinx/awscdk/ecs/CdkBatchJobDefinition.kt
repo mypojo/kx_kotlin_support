@@ -12,7 +12,14 @@ import software.amazon.awscdk.services.ecs.EcrImage
 import software.amazon.awscdk.services.iam.IRole
 import kotlin.time.Duration.Companion.hours
 
-/** enum 정의 */
+/**
+ * enum 정의
+ *
+ * 1cpu 최대 8G
+ * 2cpu 최대 16G
+ * 4cpu 최대 30G ..
+ * 16cpu 최대 120G
+ *  */
 class CdkBatchJobDefinition(
     val name: String,
     val vcpu: String,

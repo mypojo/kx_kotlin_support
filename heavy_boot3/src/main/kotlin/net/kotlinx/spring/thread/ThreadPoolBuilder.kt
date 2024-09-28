@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit
  */
 class ThreadPoolBuilder(
     /** 풀 사이즈 (스래드 수) */
-    val poolSize: Int,
+    val threadCnt: Int,
     /** threadNamePrefix 를 추가해서 , 여기에서 생성된 스래드임을 짐작하게 할 수 있다.  */
     val name: String = ThreadPoolBuilder::class.simpleName!!,
     /**
@@ -67,7 +67,7 @@ class ThreadPoolBuilder(
     }
 
     fun build(block: ThreadPoolTaskScheduler.() -> Unit = {}): ThreadPoolTaskScheduler = ThreadPoolTaskScheduler().apply {
-        this.poolSize = poolSize
+        poolSize = threadCnt
         setWaitForTasksToCompleteOnShutdown(true) //
         setAwaitTerminationSeconds(awaitTerminationSeconds)
         setErrorHandler(errorHandler)
@@ -76,6 +76,7 @@ class ThreadPoolBuilder(
         isDaemon = true //혹시나 메모리 문제로 추가..
         block(this)
         afterPropertiesSet()
+        //프로퍼티 세팅 이후, poolSize 가 corePoolSize 로 변경된다
     }
 
 }

@@ -11,6 +11,7 @@ import aws.sdk.kotlin.services.eventbridge.EventBridgeClient
 import aws.sdk.kotlin.services.glue.GlueClient
 import aws.sdk.kotlin.services.iam.IamClient
 import aws.sdk.kotlin.services.lakeformation.LakeFormationClient
+import aws.sdk.kotlin.services.quicksight.QuickSightClient
 import aws.sdk.kotlin.services.rds.RdsClient
 import aws.sdk.kotlin.services.scheduler.SchedulerClient
 import aws.sdk.kotlin.services.secretsmanager.SecretsManagerClient
@@ -28,6 +29,7 @@ class AwsClient(awsConfig: AwsConfig) : AwsClient1(awsConfig) {
     val ses: SesClient by lazy { SesClient { awsConfig.build(this) }.regist(awsConfig) }
     val elb: ElasticLoadBalancingV2Client by lazy { ElasticLoadBalancingV2Client { awsConfig.build(this) }.regist(awsConfig) }
     val lake: LakeFormationClient by lazy { LakeFormationClient { awsConfig.build(this) }.regist(awsConfig) }
+    val quicksight: QuickSightClient by lazy { QuickSightClient { awsConfig.build(this) }.regist(awsConfig) }
     val glue: GlueClient by lazy { GlueClient { awsConfig.build(this) }.regist(awsConfig) }
 
     //==================================================== 저장소 ======================================================
