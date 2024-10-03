@@ -1,7 +1,33 @@
 package net.kotlinx.collection
 
+import kotlinx.coroutines.withTimeout
+import net.kotlinx.concurrent.CoroutineSleepTool
 import net.kotlinx.exception.KnownException
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
+
+//==================================================== 횟수 제한이 아니라 타임아웃 제한 ======================================================
+
+
+/**
+ * 횟수 제한이 아니라 시간으로 제한을 거는데 사용
+ * ex) 데이터 갱신 요청, athena 쿼리 등을 요청 후, 완료를 기다림
+ * */
+suspend fun <T> doUntilTimeout(checkInterval: Duration = 10.seconds, checkTimeout: Duration = 10.minutes, action: suspend () -> T?): T {
+    val sleeper = CoroutineSleepTool(checkInterval)
+    return withTimeout(checkTimeout) {
+        var theResult: T? = null
+        while (true) {
+            sleeper.checkAndSleep()
+            val result = action()
+            theResult = result ?: continue
+            break
+        }
+        theResult!!
+    }
+}
 
 //==================================================== repeat 시리즈가 별로임 & suspend 문제로 새로 제작함 ======================================================
 

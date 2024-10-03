@@ -1,6 +1,7 @@
 package net.kotlinx.collection
 
-
+//==================================================== doUntil 쓰세요! ======================================================
+//==================================================== doUntil 쓰세요! ======================================================
 //==================================================== doUntil 쓰세요! ======================================================
 
 /**
@@ -8,6 +9,7 @@ package net.kotlinx.collection
  * ex) 조회 데이터가 더 없을때까지 데이터 조회 ex) 페이징 API
  * @param block 리소스가 들어가는 작업
  * @return flatten() 해서 쓰세요~
+ * 사용 xx
  * */
 fun <T> repeatCollectUntilEmpty(maxTimes: Int = 100, block: (Int) -> List<T>): List<List<T>> {
     val results = mutableListOf<List<T>>()
@@ -27,6 +29,7 @@ fun <T> repeatCollectUntilEmpty(maxTimes: Int = 100, block: (Int) -> List<T>): L
  * keep : 결과 누적객체
  * nextToken : 입력할 다음토큰. 최초에는 null
  * return : 다음 토큰.  null이면 중지
+ * * 사용 xx
  *  */
 suspend fun <T> repeatCollectUntil(
     maxTimes: Int = 100, block: suspend (keep: MutableList<List<T>>, nextToken: String?) -> String?
@@ -48,6 +51,7 @@ suspend fun <T> repeatCollectUntil(
  * ex) job이 종료되었는지 1분 주기로 체크
  * @param maxTimes 무한루프 방지용
  * @param block true 성공으로 간주하고 이면 중단한다.
+ * * 사용 xx
  * */
 suspend fun repeatUntil(maxTimes: Int, block: suspend (Int) -> Boolean): Int {
     for (i in 0..maxTimes) {
