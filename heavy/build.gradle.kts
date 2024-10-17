@@ -20,7 +20,7 @@ dependencies {
 
     //==================================================== AWS ======================================================
     val awsVersion: String by project
-    api("aws.sdk.kotlin:iam:_") //용량 큼
+    api("aws.sdk.kotlin:iam:$awsVersion") //용량 큼
     api("aws.sdk.kotlin:rds:$awsVersion")
     api("aws.sdk.kotlin:ses:$awsVersion")
     api("aws.sdk.kotlin:eventbridge:$awsVersion")
@@ -79,6 +79,8 @@ dependencies {
 
 
     //==================================================== 기타 ======================================================
+    api("com.dropbox.core:dropbox-core-sdk:_") //드랍박스!
+
     api("org.passay:passay:_") //패스워드 간단 검증
 
     api("com.jcraft:jsch:_") //SFTP 모듈

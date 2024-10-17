@@ -31,15 +31,13 @@ class DynamoDbSupportRawKtTest : BeSpecHeavy() {
                     )
                 }
                 println(resp.item)
+            }
 
+            val exp = DynamoExpressionSet.PkPrefix {
+                pk = "NV#adv#"
             }
 
             Then("scan 필터링") {
-
-                val exp = DynamoExpressionSet.PkPrefix {
-                    pk = "NV#adv#"
-                }
-
                 val resp = aws.dynamo.scan {
                     this.tableName = "adv-dev"
                     this.consistentRead = false
@@ -49,8 +47,9 @@ class DynamoDbSupportRawKtTest : BeSpecHeavy() {
                 }
                 resp.items!!.forEach { println(it) }
 
-
             }
+
+
         }
     }
 

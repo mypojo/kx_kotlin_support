@@ -166,7 +166,12 @@ class GradleBuilder {
     /** 담다에 코드가 반영되기를 기다리는 시간. */
     var lambdaCodeApplyDelay = 3.seconds
 
-    /** 레이어배포의 경우 단계별로 진행해야 해서 여기 단축함수를 넣음 */
+    /**
+     * 레이어배포의 경우 단계별로 진행해야 해서 여기 단축함수를 넣음
+     * 주의!!
+     * Function code combined with layers exceeds the maximum allowed size of 262144000 bytes
+     * 레이어 전체 압축 푼 용량이 250mb 를 넘어가면 안됨!!
+     *  */
     fun lambdaUpdateLayer(layerName: String, zipFile: File) {
         val aws by koinLazy<AwsClient>()
         val s3Bucket = lambdaS3Bucket()

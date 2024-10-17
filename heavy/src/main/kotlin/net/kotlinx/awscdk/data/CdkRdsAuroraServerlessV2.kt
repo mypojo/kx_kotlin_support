@@ -48,9 +48,17 @@ class CdkRdsAuroraServerlessV2 : CdkInterface {
     /** 개발의 경우 삭제로 해도 됨 */
     var removalPolicy = RemovalPolicy.SNAPSHOT
 
-    fun create(stack: Stack, block: DatabaseClusterProps.Builder.() -> Unit = {}) {
+    /** 결과물 */
+    lateinit var databaseCluster: DatabaseCluster
 
-        val clusterEngine = DatabaseClusterEngine.auroraMysql(AuroraMysqlClusterEngineProps.builder().version(AuroraMysqlEngineVersion.VER_3_03_0).build())
+    /**
+     * 클러스터 엔진
+     * athena 등을 활용할 수 있어서 트랜잭션만 필요한경우 = mysql
+     * 트랜잭션 & 리포트 등 select 쿼리 최적화가 필요한경우 = postgresql
+     * */
+    val clusterEngine = DatabaseClusterEngine.auroraMysql(AuroraMysqlClusterEngineProps.builder().version(AuroraMysqlEngineVersion.VER_3_07_1).build())
+
+    fun create(stack: Stack, block: DatabaseClusterProps.Builder.() -> Unit = {}) {
 
         val parameterGroup = ParameterGroup(
             stack, "pg-$logicalName", ParameterGroupProps.builder()
@@ -79,7 +87,7 @@ class CdkRdsAuroraServerlessV2 : CdkInterface {
             .build()
 
         //ServerlessCluster 는 v1에 대한 설정이다
-        DatabaseCluster(
+        databaseCluster = DatabaseCluster(
             stack, logicalName,
             DatabaseClusterProps.builder()
                 .engine(clusterEngine)
@@ -97,6 +105,9 @@ class CdkRdsAuroraServerlessV2 : CdkInterface {
                     ClusterInstance.serverlessV2(
                         "${name}-serverlessV2Writer-${deploymentType.name.lowercase()}", ServerlessV2ClusterInstanceProps.builder()
                             .instanceIdentifier("${name}-writer-${deploymentType.name.lowercase()}") //개별 인스턴스 이름
+                            .allowMajorVersionUpgrade(true)
+                            .autoMinorVersionUpgrade(true)
+                            .enablePerformanceInsights(true) //안하면  Recommendations 에 경고뜸.  2 ACU 이상을 권장함..  비용은 기본설정시(x일) 공짜인듯
                             .build()
                     )
                 )
@@ -110,8 +121,11 @@ class CdkRdsAuroraServerlessV2 : CdkInterface {
                 .storageEncrypted(true)
                 .removalPolicy(removalPolicy)
                 .clusterIdentifier(logicalName) //클러스터 이름
+                .enableDataApi(true) //데이터 API 당연히 써야지
                 .apply(block)
                 .build(),
+
+            //주의 !! Enhanced Monitoring 설정이 아직 없는듯
         )
     }
 

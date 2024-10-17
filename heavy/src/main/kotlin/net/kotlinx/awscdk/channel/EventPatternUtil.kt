@@ -32,4 +32,19 @@ object EventPatternUtil {
         .build()!!
 
 
+    /**
+     * ECS 스팟 중단돤경우.
+     * 람다나 SFN 등을 걸어서, 재시도 하게 해야함
+     * https://docs.aws.amazon.com/ko_kr/AmazonECS/latest/developerguide/fargate-capacity-providers.html
+     *  */
+    val ECS_SPOT_FAIL = EventPattern.builder()
+        .source(listOf("aws.ecs"))
+        .detailType(listOf("ECS Task State Change"))
+        .detail(
+            mapOf(
+                "stopCode" to listOf("SpotInterruption"),
+            )
+        )
+        .build()!!
+
 }

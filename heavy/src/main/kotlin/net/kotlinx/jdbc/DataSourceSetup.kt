@@ -29,8 +29,10 @@ class DataSourceSetup : KoinComponent {
 
     //==================================================== 인증정보 ======================================================
 
-    /** 프로파일 (IAM 방식일경우 필수) */
-    lateinit var profile: String
+    /**
+     * 프로파일 (로컬 & IAM 방식일경우 필수)
+     *  */
+    var profile: String? = null
 
     /** 로그인 유저명 (어떤 인증이든 필수) */
     lateinit var username: String

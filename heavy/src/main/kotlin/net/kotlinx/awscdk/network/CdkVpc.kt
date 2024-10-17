@@ -38,10 +38,12 @@ class CdkVpc : CdkInterface {
      * */
     var subnetTypes: List<SubnetType> = listOf(SubnetType.PUBLIC, SubnetType.PRIVATE_WITH_EGRESS)
     var maxAzs: Int = 2
+
+    /** NAT 제거 가능하면 하지말것! 가끔 CDK 꼬이면 버그 있음 */
     var natGateways: Int = 1
 
     /** VPC 이름 */
-    override val logicalName: String = "${project.profileName}_vpc-${deploymentType.name.lowercase()}"
+    override val logicalName: String = "${project.profileName}_vpc-${suff}"
 
     val feer: IPeer
         get() = Peer.ipv4(iVpc.vpcCidrBlock)
@@ -55,6 +57,8 @@ class CdkVpc : CdkInterface {
      * 필요에따라 오버라이드. ex) VPC 하나에 다수의 프로젝트 설정
      *  -> 여기서 서브넷 추가시,  vpc에서 서브넷을 조회할때 최초 생성된 서브넷만 조회된다. 이거말고도 문제가 많음..
      *  따라서 프로젝트별로 VPC를 만들고 그냥 이들을 연결하자
+     *
+     *  주의!! 디폴트(main) ACL, SG , 라우팅테이블 등의 이름은 지정해주지 못한다
      *  */
     fun create(stack: Stack, block: VpcProps.Builder.() -> Unit = {}) {
         val vpcProps = VpcProps.builder()
@@ -111,7 +115,7 @@ class CdkVpc : CdkInterface {
             subnets.forEach { subnet ->
                 val zoneName = subnet.availabilityZone.substring(subnet.availabilityZone.length - 1)
                 val name = subnet.toString().substringAfterLast("/").substringBefore("_") //toString 해야 name 이 나온다
-                TagUtil.name(subnet, "${name}_subnet_${subnetSuffix}/${zoneName}_${this.deploymentType}")
+                TagUtil.name(subnet, "${name}_subnet_${subnetSuffix}/${zoneName}_${suff}")
             }
         }
     }
@@ -132,8 +136,13 @@ class CdkVpc : CdkInterface {
 
     /**
      * 공짜 2개 기본 세팅 하기
+     * 주의!!! 외부 S3 리소스가 NAT IP를 대상으로 화이트리스트 필터링을 사용한다면 이걸 사용하면 안된다!
+     *  => 그냥 끄거나, 라우팅 테이블을 편집하거나 해야할듯
      *  */
-    fun gatewayVpcEndpoint(services: List<GatewayVpcEndpointAwsService> = listOf(GatewayVpcEndpointAwsService.S3, GatewayVpcEndpointAwsService.DYNAMODB)) {
+    fun gatewayVpcEndpoint(
+        services: List<GatewayVpcEndpointAwsService> = listOf(GatewayVpcEndpointAwsService.S3, GatewayVpcEndpointAwsService.DYNAMODB),
+        block: PolicyStatement.Builder.() -> Unit = {}
+    ) {
         services.forEach { service ->
             val serviceName = service.name.substringAfterLast(".")
             val endpointName = "${this.project.profileName}_${this.deploymentType}_endpoint_${serviceName}"
@@ -143,6 +152,7 @@ class CdkVpc : CdkInterface {
                     .principals(listOf(AnyPrincipal()))
                     .actions(listOf("*"))
                     .resources(listOf("*"))
+                    .apply(block)
                     .build()
             )
             TagUtil.name(endpoint, endpointName) //지금 버그로 태그 입력 안됨 (2022.01)

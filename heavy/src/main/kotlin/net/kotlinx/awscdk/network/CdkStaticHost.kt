@@ -64,7 +64,7 @@ class CdkStaticHost {
 
         val cloudFront = CdkCloudFront {
             domain = hostDomain
-            iBucket = origonBucket.iBucket
+            origin = CdkCloudFront.forWebsite(origonBucket.iBucket)
             iCertificate = Certificate.fromCertificateArn(stack, "hosting-${hostDomain}", certArn)
             create(stack)
         }

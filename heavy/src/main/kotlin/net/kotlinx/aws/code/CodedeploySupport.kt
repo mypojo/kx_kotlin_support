@@ -38,8 +38,8 @@ suspend fun CodeDeployClient.createDeployment(
 suspend fun CodeDeployClient.createDeployment(deployData: EcsDeployData): CreateDeploymentResponse {
     val appSepc = CodedeployAppSpecBuilder(deployData).build()
     return createDeployment(
-        deployData.applicationName,
-        deployData.deploymentGroupName,
+        deployData.codedeployApplicationName,
+        deployData.codedeployDeploymentGroupName,
         appSepc,
         deployData.codedeployConfig
     )

@@ -3,6 +3,7 @@ package net.kotlinx.json.gson
 import com.lectra.koson.obj
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import kotlinx.serialization.Serializable
 import net.kotlinx.json.koson.KosonTest.Companion.DEMO_KOSON
 import net.kotlinx.json.koson.toGsonData
@@ -39,25 +40,44 @@ internal class GsonData_데이터클래스 : BeSpecLog() {
     init {
         initTest(KotestUtil.FAST)
 
+        Given("파싱 테스트") {
+
+            data class Q1(
+                val nameClass: String? = null
+            )
+
+            val gsonData = obj {
+                "name_class" to "영감님"
+            }.toGsonData()
+
+            Then("이름이 틀리기 때문에 null이 나와야함") {
+                val q1 = gsonData.fromJson<Q1>()
+                q1.nameClass shouldBe null
+            }
+
+            Then("카멜 케이스로 변경되어서 매핑됨") {
+                val q1 = gsonData.fromJson<Q1>(GsonSet.GSON_UNDERSCORES)
+                q1.nameClass shouldBe "영감님"
+            }
+        }
+
         Given("테이터타입 테스트") {
+
             Then("객체를 파싱할때만 GsonSet이 작동한다") {
                 val poo = TestPoo01(time = LocalDateTime.now())
                 val data = GsonData.fromObj(poo)
-                println(data["time"].str)
-
-                println(data)
-                println(data.remove("time")!!.str)
-                println(data)
-
+                data.remove("time")!!.str shouldNotBe null
             }
 
-            Then("enum 테스트") {
+            When("enum 테스트") {
                 val data = GsonData.obj {
                     put("aaa", DeploymentType.PROD.name)
                     put("bbb", "")
                 }
-                println(data.enum<DeploymentType>("aaa"))
-                println(data.enum<DeploymentType>("bbb"))
+                data.enum<DeploymentType>("aaa") shouldBe DeploymentType.PROD
+                Then("공백문자라면 null 리턴") {
+                    data.enum<DeploymentType>("bbb") shouldBe null
+                }
             }
         }
 

@@ -30,6 +30,7 @@ object FargateUtil {
     /**
      * 컨테이너 종료 처리
      * https://aws.amazon.com/ko/blogs/containers/graceful-shutdowns-with-ecs/
+     * 기본 stopTimeout 값은 30초
      */
     fun gracefulShutdowns() {
         //SIGTERM신호  를 보내기 전에 로드 밸런서의 대상 그룹에서 작업을 자동으로 등록 취소함

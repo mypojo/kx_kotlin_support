@@ -70,3 +70,27 @@ suspend fun QuickSightClient.refreshDataSet(dataSetId: String, checkInterval: Du
         if (status in setOf(IngestionStatus.Completed, IngestionStatus.Failed, IngestionStatus.Cancelled)) status else null
     }
 }
+
+
+//suspend fun QuickSightClient.asd(dataSetId: String, ingestionId: String) {
+//
+//
+//    this.startAssetBundleExportJob {
+//        this.awsAccountId = awsConfig.awsId
+//        this.dataSetId = dataSetId
+//        this.exportJobId = UUID.randomUUID().toString()
+//        this.exportJobType = ExportJobType.AssetBundle
+//        this.exportJobName = "exportJobName"
+//        this.exportJobOutput = ExportJobOutput{
+//            this.assetBundleExportJobOutput = AssetBundleExportJobOutput{
+//                this.assetBundleExportJobOutputType = AssetBundleExportJobOutputType.AssetBundle
+//                this.assetBundleExportJobOutputLocation = AssetBundleExportJobOutputLocation{
+//                    this.s3ExportLocation = S3ExportLocation{
+//                        this.bucket = "XXXXXX"
+//                        this.prefix = "prefix"
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}

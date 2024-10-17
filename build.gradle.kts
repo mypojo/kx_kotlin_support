@@ -80,8 +80,9 @@ allprojects {
     }
 
     /**
-     * 모든 의존성만 (용향 확인 등)
+     * 모든 의존성 크기 출력 (람다 레이어 / docker 용량 확인 등)
      * https://docs.aws.amazon.com/ko_kr/lambda/latest/dg/packaging-layers.html
+     * buildSrc로 옮기면 gradle 확장이 없어서 에러남
      * */
     tasks.create("allDependencies", Zip::class) {
         group = "build"
@@ -127,11 +128,16 @@ publishing {
         }
     }
     repositories {
+
         maven {
-            url = uri("https://repo.repsy.io/mvn/mypojo/kotlin_support")
+            //repsy 서버가 불안정해서 서브로 github을 추가했다.
+            // -> github의 패키지 서비스는 퍼블릭 리파지토리도 토큰을 넣어야 하고, 매우 느려서 서브로만 사용
+            val host = "repsy" to "https://repo.repsy.io/mvn/mypojo/kotlin_support"
+            //val host = "github" to "https://maven.pkg.github.com/mypojo/kx_kotlin_support"
+            url = uri(host.second)
             credentials {
-                username = providers["repsy.maven.username"]
-                password = providers["repsy.maven.password"]
+                username = providers["${host.first}.maven.username"]
+                password = providers["${host.first}.maven.password"]
             }
         }
     }

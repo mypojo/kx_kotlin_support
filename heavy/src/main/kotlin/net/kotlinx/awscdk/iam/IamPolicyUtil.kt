@@ -38,8 +38,12 @@ object IamPolicyUtil {
         "firehose:*",
         "states:*", //sfn.. 애네 이름에 일관성이 없음.
         "events:*", //이벤트브릿지
+        "scheduler:*", //스케쥴러
         "lakeformation:*", //레이크 포메이션
+
         "codepipeline:StartPipelineExecution", //코드파이프라인 트리거용 (파이프라인 시작 트리거에 부여해야함). 향후 별도 권한으로 뺄것
+        "elasticloadbalancing:*", //코드디플로이가 로드밸런서 교체할때 필요함
+        "iam:*", //코드디플로이가  ECS 서비스를 업데이트하려면 IAM 역할을 ECS 태스크에 전달할 수 있는 권한이 필요. 향후 세부조정 필요
     )
 
     val ALL = listOf("*")

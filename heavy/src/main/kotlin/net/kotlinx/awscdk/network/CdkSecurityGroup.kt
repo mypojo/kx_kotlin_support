@@ -33,7 +33,8 @@ class CdkSecurityGroup(
     lateinit var iSecurityGroup: ISecurityGroup
 
     /** 결과 피어 */
-    val feer: IPeer by lazy { Peer.securityGroupId(iSecurityGroup.securityGroupId) }
+    val feer: IPeer
+        get() = Peer.securityGroupId(iSecurityGroup.securityGroupId)
 
     fun create(stack: Stack, block: SecurityGroupProps.Builder.() -> Unit = {}): CdkSecurityGroup {
         val props = SecurityGroupProps.builder().vpc(iVpc).allowAllOutbound(allowAllOutbound).apply(block).build()

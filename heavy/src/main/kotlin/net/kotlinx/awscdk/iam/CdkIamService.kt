@@ -22,6 +22,9 @@ enum class CdkIamService(
     /** 코드파이프라인 구동용 */
     CODE_PIPELINE("codepipeline"),
 
+    /** 코드파이프라인 구동용. 이게 없으면 CDK에서 권한 부족 오류남 */
+    CODE_DEPLOY("codedeploy"),
+
     /** 코드 빌드 */
     CODE_BUILD("codebuild"),
 

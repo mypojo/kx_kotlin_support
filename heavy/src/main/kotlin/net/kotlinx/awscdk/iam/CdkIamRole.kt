@@ -100,7 +100,14 @@ class CdkIamRole {
 object CdkManagedPolicySet {
 
     const val SCHEDULER = "AmazonEventBridgeSchedulerFullAccess"
+
+    /**
+     * SSM을 사용할 수 있는 역할
+     * ex) 백스천 호스트 서버
+     *  */
     const val SSM = "AmazonSSMManagedInstanceCore"
+
+    /** ECS 단순 실행 역할 */
     const val ECS = "service-role/AmazonECSTaskExecutionRolePolicy"
 
 }

@@ -18,7 +18,7 @@ class CdkDashboard : CdkInterface {
     }
 
     override val logicalName: String
-        get() = "${project.profileName}-${name}-${deploymentType}"
+        get() = "${project.profileName}-${name}-${suff}"
 
     var name: String = "dashboard"
 
@@ -36,40 +36,41 @@ class CdkDashboard : CdkInterface {
     /**
      * 기본적인 대시보드를 구성해준다. 샘플코드 참고용!
      * */
-    fun createDefault(stack: Stack, rds: String?, ecs: String?, lambda: String?) {
+    fun createDefault(stack: Stack, rdsName: String?, ecsClusterNames: List<String>, lambdaNames: List<String>) {
         create(stack)
 
         val dashboardWidget = CdkDashboardWidget {
             dashboard = this@CdkDashboard.dashboard
         }
 
-        rds?.let {
+        rdsName?.let {
             dashboardWidget.namespace = "AWS/RDS"
             dashboardWidget.dimensionsMap = mapOf(
                 "DBClusterIdentifier" to it
             )
-            dashboardWidget.create("RDB CPU", "CPUUtilization", "average")
-            dashboardWidget.create("RDB max-connection", "DatabaseConnections", "max")
+            dashboardWidget.create("$it CPU", "CPUUtilization", "average")
+            dashboardWidget.create("$it max-connection", "DatabaseConnections", "max")
+            //서버리스v2 전용. 실제 과금된 ACU를 보여줌
+            dashboardWidget.create("$it ACU (serverless v2)", "ServerlessDatabaseCapacity", "average")
         }
 
-        ecs?.let {
+        ecsClusterNames.forEach {
             dashboardWidget.namespace = "ECS/ContainerInsights"
             dashboardWidget.dimensionsMap = mapOf(
                 "ClusterName" to it
             )
-            dashboardWidget.create("ECS CPU", "CpuUtilized", "average")
-            dashboardWidget.create("ECS MEMORY", "MemoryUtilized", "average")
+            dashboardWidget.create("$it CPU", "CpuUtilized", "average")
+            dashboardWidget.create("$it MEMORY", "MemoryUtilized", "average")
         }
 
-        lambda?.let {
+        lambdaNames.forEach {
             dashboardWidget.namespace = "AWS/Lambda"
             dashboardWidget.dimensionsMap = mapOf(
                 "FunctionName" to it
             )
-            dashboardWidget.create("Lambda invocations sum", "Invocations", "sum")
-            dashboardWidget.create("Lambda concurrent max", "ConcurrentExecutions", "max")
+            dashboardWidget.create("$it invocations sum", "Invocations", "sum")
+            dashboardWidget.create("$it concurrent max", "ConcurrentExecutions", "max")
         }
-
 
     }
 

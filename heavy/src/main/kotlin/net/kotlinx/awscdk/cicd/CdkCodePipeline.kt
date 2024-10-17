@@ -20,6 +20,7 @@ import software.amazon.awscdk.services.sns.ITopic
 
 /**
  * AWS 코드빌드
+ * CICD 블루그린 배포(코드디플로이)는 인프라로 설정하는게 아니라 gradle 에서 AWS SDK 로 실행됨!
  *
  * 깃헙 연결
  * https://docs.aws.amazon.com/ko_kr/codepipeline/latest/userguide/connections-github.html

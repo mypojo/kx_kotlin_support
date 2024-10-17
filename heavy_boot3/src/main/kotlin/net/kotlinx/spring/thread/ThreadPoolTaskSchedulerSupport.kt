@@ -1,8 +1,14 @@
 package net.kotlinx.spring.thread
 
+import net.kotlinx.time.toInstant
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.concurrent.Callable
 import java.util.concurrent.Future
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.toJavaDuration
 
 
 /** 셧다운 하고 초기화 한다.  */
@@ -33,3 +39,14 @@ val ThreadPoolTaskScheduler.corePoolSize: Int
 val ThreadPoolTaskScheduler.remainPoolSize: Int
     get() = corePoolSize - activeCount
 
+//==================================================== 스케쥴 실행 ======================================================
+
+/**
+ * 특정 시간 기준으로 하루 한번 작동 샘플
+ * ex) 하루에 한번 작동하는 배치
+ *  */
+fun ThreadPoolTaskScheduler.scheduleAtFixedDate(hh: Int, mm: Int, durations: Duration = 1.days, runnable: Runnable) {
+    val localTime = LocalTime.of(hh, mm)!!
+    val localDateTime = LocalDateTime.now().with(localTime)
+    this.scheduleAtFixedRate(runnable, localDateTime.toInstant(), durations.toJavaDuration())
+}

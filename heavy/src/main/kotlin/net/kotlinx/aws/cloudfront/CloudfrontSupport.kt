@@ -8,6 +8,7 @@ import aws.sdk.kotlin.services.cloudfront.model.Paths
 /**
  * 클라우드 프론트 캐시 제거
  * ex) static hosting 배포 후 캐시 제거
+ * "/images/\*"
  * */
 suspend fun CloudFrontClient.clear(distributionId: String, paths: List<String>) {
     this.createInvalidation {

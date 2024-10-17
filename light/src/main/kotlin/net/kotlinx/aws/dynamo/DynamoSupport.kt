@@ -61,7 +61,7 @@ suspend fun <T : DynamoData> DynamoDbClient.scan(data: T, exp: DynamoExpression?
         this.exclusiveStartKey = last
         this.limit = 1000 //설정은 무제한임
         exp?.let {
-            this.filterExpression = it.keyConditionExpression()
+            this.filterExpression = it.filterExpression()
             this.expressionAttributeValues = it.expressionAttributeValues()
         }
     }

@@ -31,7 +31,7 @@ class CdkSchedulerGroup : CdkInterface {
 
     /** 너무 길지않게 조정했음 */
     override val logicalName: String
-        get() = "${project.profileName}-${groupName}-${deploymentType.name.lowercase()}"
+        get() = "${project.profileName}-${groupName}-${suff}"
 
     /** 결과 */
     lateinit var scheduleGroup: CfnScheduleGroup
@@ -102,8 +102,8 @@ class CdkSchedulerGroup : CdkInterface {
     fun schedule(block: ScheduleData.() -> Unit) {
         val data = ScheduleData(block)
         CfnSchedule(
-            stack, "CfnSchedule-${data.name}", CfnScheduleProps.builder()
-                .name(data.name) //그룹화 되었음으로 프로젝트 접두어를 더이상 쓸 필요가 없다
+            stack, "CfnSchedule-${data.name}-${suff}", CfnScheduleProps.builder()
+                .name("${data.name}-${suff}") //그룹화 되었음으로 프로젝트 접두어를 더이상 쓸 필요가 없다 -> 콘솔로는 만들어지는데 CDK로는 안됨. 그냥 접미어 붙여줌
                 .description(data.description)
                 .flexibleTimeWindow(CfnSchedule.FlexibleTimeWindowProperty.builder().mode("OFF").build()) //왜있는지 모를 기능.
                 .groupName(scheduleGroup.name)

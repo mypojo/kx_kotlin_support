@@ -25,15 +25,30 @@ object GsonSet {
         registerTypeAdapter(BigDecimal::class.java, GsonAdapterUtil.BigDecimalAdapter())
     }
 
+    private fun GsonBuilder.applyDefaut2() {
+        applyDefaut()
+        registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeAdapter(TimeFormat.YMDHMS)) //날짜만 변경해줌
+        registerTypeAdapter(Map::class.java, GsonAdapterUtil.MapAdapter()) //Lambda 기본 변환에 사용 (다른데는 쓸일 없음)
+    }
+
     /**
      * 디폴트 변환용
      * date 기반의 기본조건(setDateFormat) 안씀
      *  */
     val GSON: Gson by lazy {
         GsonBuilder().apply {
-            applyDefaut()
-            registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeAdapter(TimeFormat.YMDHMS)) //날짜만 변경해줌
-            registerTypeAdapter(Map::class.java, GsonAdapterUtil.MapAdapter()) //Lambda 기본 변환에 사용 (다른데는 쓸일 없음)
+            applyDefaut2()
+        }.create()!!
+    }
+
+    /**
+     * GSON 하고 동일한데 UNDERSCORES 버전
+     * ex) athenm 결과 vo로 매핑
+     *  */
+    val GSON_UNDERSCORES: Gson by lazy {
+        GsonBuilder().apply {
+            applyDefaut2()
+            setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
         }.create()!!
     }
 

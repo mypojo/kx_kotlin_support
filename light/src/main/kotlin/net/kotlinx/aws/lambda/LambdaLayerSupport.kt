@@ -30,10 +30,12 @@ suspend fun LambdaClient.publishLayerVersion(
  *  */
 suspend fun LambdaClient.listLayerVersions(layerNames: List<String>): List<LayerVersionsListItem> {
     return layerNames.map { layerName ->
-        this.listLayerVersions {
+        val layerVersions = this.listLayerVersions {
             this.layerName = layerName
             this.maxItems = 1
-        }.layerVersions!!.first()
+        }.layerVersions!!
+        check(layerVersions.isNotEmpty()) { "레이어 $layerName 가 존재하지 않습니다" }
+        layerVersions.first()
     }
 }
 

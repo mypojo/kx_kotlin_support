@@ -21,13 +21,13 @@ class CloudWatchLogsSupportKtTest : BeSpecHeavy() {
     init {
         initTest(KotestUtil.PROJECT)
 
-        Given("자주 쓰는 기능") {
+        xGiven("자주 쓰는 기능") {
             Then("해당 로그그룹을 모두 삭제") {
                 aws.logs.cleanLogStream("/aws/lambda/$profileName-fn-dev")
             }
         }
 
-        xGiven("CloudWatchLogsSupportKt") {
+        Given("CloudWatchLogsSupportKt") {
             xThen("로그 다운로드") {
                 var out = ResourceHolder.WORKSPACE.slash("로그다운로드").slash("log.txt")
                 aws.logs.download(
@@ -51,7 +51,7 @@ class CloudWatchLogsSupportKtTest : BeSpecHeavy() {
                 logs.print()
             }
 
-            xThen("전체 로그 대상으로 쿼리") {
+            Then("전체 로그 대상으로 쿼리") {
                 val doQuery = aws.logs.queryAndWait {
                     this.logGroupNames = listOf("/aws/lambda/aa/-fn-dev")
                     this.query = "WAS lambda 과금"
