@@ -15,6 +15,7 @@ import net.kotlinx.aws.code.createDeployment
 import net.kotlinx.aws.ecs.touch
 import net.kotlinx.aws.lambda.*
 import net.kotlinx.aws.s3.putObject
+import net.kotlinx.aws.s3.s3
 import net.kotlinx.concurrent.delay
 import net.kotlinx.core.Kdsl
 import net.kotlinx.exception.toSimpleString

@@ -9,6 +9,8 @@ import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
+import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.regist
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.number.toSiText
 import java.io.File
@@ -17,6 +19,9 @@ import java.nio.charset.Charset
 
 /** 삭제, 리스트 조회 등 이게 디폴트인듯  */
 const val LIMIT_PER_REQ = 1000
+
+val AwsClient1.s3: S3Client
+    get() = getOrCreateClient { S3Client { awsConfig.build(this) }.regist(awsConfig) }
 
 //==================================================== 기본 읽기/쓰기 ======================================================
 

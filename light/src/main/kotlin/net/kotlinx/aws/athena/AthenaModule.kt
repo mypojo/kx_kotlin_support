@@ -17,6 +17,7 @@ import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.s3.getObjectDownload
 import net.kotlinx.aws.s3.getObjectLines
+import net.kotlinx.aws.s3.s3
 import net.kotlinx.concurrent.CoroutineSleepTool
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.core.Kdsl

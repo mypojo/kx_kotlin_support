@@ -2,6 +2,7 @@ package net.kotlinx.aws.athena
 
 import mu.KotlinLogging
 import net.kotlinx.aws.s3.listDirs
+import net.kotlinx.aws.s3.s3
 import net.kotlinx.core.Kdsl
 
 /**

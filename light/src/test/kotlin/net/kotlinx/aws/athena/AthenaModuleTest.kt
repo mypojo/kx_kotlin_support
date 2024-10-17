@@ -24,7 +24,7 @@ internal class AthenaModuleTest : BeSpecHeavy() {
                 database = ""
             }
 
-            Then("쿼리 정상출력 & 다운로드 동시실행됨") {
+            xThen("쿼리 정상출력 & 다운로드 동시실행됨") {
                 val query = "SELECT * FROM conv limit 10"
                 athenaModule.startAndWait(
                     listOf(

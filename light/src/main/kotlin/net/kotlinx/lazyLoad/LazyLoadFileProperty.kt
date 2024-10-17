@@ -6,6 +6,7 @@ import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.s3.getObjectDownload
 import net.kotlinx.aws.s3.listFiles
+import net.kotlinx.aws.s3.s3
 import net.kotlinx.aws.ssm.find
 import net.kotlinx.core.ProtocolPrefix
 import net.kotlinx.file.slash

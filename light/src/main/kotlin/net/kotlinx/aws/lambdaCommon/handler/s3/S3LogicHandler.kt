@@ -10,6 +10,7 @@ import net.kotlinx.aws.lambda.LambdaUtil
 import net.kotlinx.aws.lambdaCommon.LambdaLogicHandler
 import net.kotlinx.aws.s3.getObjectText
 import net.kotlinx.aws.s3.putObject
+import net.kotlinx.aws.s3.s3
 import net.kotlinx.aws.with
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.json.gson.GsonData

@@ -5,13 +5,13 @@ import aws.sdk.kotlin.services.batch.BatchClient
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import aws.sdk.kotlin.services.ecs.EcsClient
 import aws.sdk.kotlin.services.firehose.FirehoseClient
-import aws.sdk.kotlin.services.kinesis.KinesisClient
 import aws.sdk.kotlin.services.lambda.LambdaClient
-import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.sfn.SfnClient
 import aws.sdk.kotlin.services.ssm.SsmClient
 import aws.sdk.kotlin.services.sts.StsClient
+import aws.smithy.kotlin.runtime.client.SdkClient
 import net.kotlinx.aws.ssm.SsmStore
+import net.kotlinx.reflect.name
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -21,14 +21,22 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * 성능 최적화 관련
  * 토큰 발급을 백그라운드에서 하면 최적화 가능할듯..
+ *
+ * 각 모듈들은 별도 로드한다. (jar 제거해도 AwsClient 생성시 오류 안나게)
  *  */
 open class AwsClient1(val awsConfig: AwsConfig) {
 
-    val cache = ConcurrentHashMap<String, String>()
+    /** 클라이언트 보관소 */
+    val _cache = ConcurrentHashMap<String, SdkClient>()
+
+    /** 클라이언트 캐시 리턴 */
+    inline fun <reified T : SdkClient> getOrCreateClient(crossinline block: () -> T): T {
+        return _cache.computeIfAbsent(T::class.name()) {
+            block()
+        } as T
+    }
 
     //==================================================== 클라이언트 설정 ======================================================
-    val s3: S3Client by lazy { S3Client { awsConfig.build(this) }.regist(awsConfig) }
-    val kinesis: KinesisClient by lazy { KinesisClient { awsConfig.build(this) }.regist(awsConfig) }
     val firehose: FirehoseClient by lazy { FirehoseClient { awsConfig.build(this) }.regist(awsConfig) }
     val dynamo: DynamoDbClient by lazy { DynamoDbClient { awsConfig.build(this) }.regist(awsConfig) }
     val lambda: LambdaClient by lazy { LambdaClient { awsConfig.build(this) }.regist(awsConfig) }
@@ -46,7 +54,5 @@ open class AwsClient1(val awsConfig: AwsConfig) {
     //==================================================== 기타 ======================================================
     /** SSM(Systems Manager) 스토어. = 파라메터 스토어 */
     val ssmStore: SsmStore by lazy { SsmStore(ssm) }
-
-    //val logs: CloudWatchLogsClient by lazy { CloudWatchLogsClient { awsConfig.build(this) }.regist(awsConfig) }
 
 }

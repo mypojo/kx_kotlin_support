@@ -8,6 +8,7 @@ import com.amazonaws.services.lambda.runtime.events.S3Event
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsConfig
+import net.kotlinx.aws.s3.s3
 import net.kotlinx.aws.toAwsClient1
 import net.kotlinx.string.toLocalDateTime
 import net.kotlinx.time.toH

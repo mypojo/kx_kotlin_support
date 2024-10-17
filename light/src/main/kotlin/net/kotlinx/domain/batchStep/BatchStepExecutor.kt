@@ -5,6 +5,7 @@ import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.lambdaCommon.handler.s3.S3LogicInput
 import net.kotlinx.aws.s3.putObject
+import net.kotlinx.aws.s3.s3
 import net.kotlinx.aws.sfn.startExecution
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.core.Kdsl

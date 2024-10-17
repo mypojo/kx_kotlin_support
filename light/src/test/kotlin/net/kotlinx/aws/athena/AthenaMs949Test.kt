@@ -3,6 +3,7 @@ package net.kotlinx.aws.athena
 import download
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.s3.presignGetObject
+import net.kotlinx.aws.s3.s3
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight

@@ -5,6 +5,7 @@ import net.kotlinx.aws.athena.AthenaModule
 import net.kotlinx.aws.athena.AthenaMs949
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.s3.putObject
+import net.kotlinx.aws.s3.s3
 import net.kotlinx.csv.CsvReadWriteTool
 import net.kotlinx.string.CharSets
 

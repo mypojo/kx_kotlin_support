@@ -7,6 +7,7 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatchLogic
 import net.kotlinx.aws.s3.deleteDir
+import net.kotlinx.aws.s3.s3
 import net.kotlinx.aws.s3.toList
 import net.kotlinx.core.Kdsl
 import net.kotlinx.domain.batchStep.stepDefault.StepEnd

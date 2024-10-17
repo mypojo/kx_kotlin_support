@@ -15,10 +15,7 @@ import net.kotlinx.time.toKr01
 import java.io.File
 
 val AwsClient1.logs: CloudWatchLogsClient
-    get() {
-        map.getOrPut()
-        return CloudWatchLogsClient { awsConfig.build(this) }.regist(awsConfig)
-    }
+    get() = getOrCreateClient { CloudWatchLogsClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /**
  * 로그 스트림을 다 삭제한다.

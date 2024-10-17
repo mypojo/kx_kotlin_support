@@ -7,8 +7,14 @@ import aws.sdk.kotlin.services.kinesis.model.PutRecordsResponse
 import aws.sdk.kotlin.services.kinesis.putRecord
 import aws.sdk.kotlin.services.kinesis.putRecords
 import com.google.gson.Gson
+import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.regist
 import net.kotlinx.id.Identity
 import net.kotlinx.json.gson.GsonSet
+
+val AwsClient1.kinesis: KinesisClient
+    get() = getOrCreateClient { KinesisClient { awsConfig.build(this) }.regist(awsConfig) }
+
 
 /** 객체(data class) 입력 샘플 */
 suspend fun <T : Identity<out Any>> KinesisClient.putRecord(streamName: String, data: T, gson: Gson = GsonSet.TABLE_UTC): PutRecordResponse = this.putRecord {

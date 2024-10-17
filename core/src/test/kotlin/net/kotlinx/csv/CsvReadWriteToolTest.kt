@@ -6,6 +6,7 @@ import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.s3.S3Data
+import net.kotlinx.aws.s3.s3
 import net.kotlinx.counter.Latch
 import net.kotlinx.file.slash
 import net.kotlinx.koin.Koins.koin

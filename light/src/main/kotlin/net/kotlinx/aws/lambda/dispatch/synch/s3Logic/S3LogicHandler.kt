@@ -6,6 +6,7 @@ import net.kotlinx.aws.AwsClient1
 import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.s3.getObjectText
 import net.kotlinx.aws.s3.putObject
+import net.kotlinx.aws.s3.s3
 import net.kotlinx.aws.with
 import net.kotlinx.core.Kdsl
 import net.kotlinx.exception.toSimpleString

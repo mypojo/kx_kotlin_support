@@ -11,6 +11,7 @@ import net.kotlinx.aws.lambda.LambdaUtil
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatchLogic
 import net.kotlinx.aws.lambda.invokeAsynch
 import net.kotlinx.aws.lambdaCommon.handler.s3.S3LogicHandler
+import net.kotlinx.aws.s3.s3
 import net.kotlinx.aws.with
 import net.kotlinx.calculator.ProgressData
 import net.kotlinx.concurrent.coroutineExecute
