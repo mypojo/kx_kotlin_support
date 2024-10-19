@@ -5,8 +5,13 @@ import aws.sdk.kotlin.services.costexplorer.createCostCategoryDefinition
 import aws.sdk.kotlin.services.costexplorer.getCostAndUsage
 import aws.sdk.kotlin.services.costexplorer.model.*
 import aws.sdk.kotlin.services.costexplorer.startCostAllocationTagBackfill
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.regist
 import net.kotlinx.time.toYmdF01
 import java.time.LocalDate
+
+val AwsClient.cost: CostExplorerClient
+    get() = getOrCreateClient { CostExplorerClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /**
  * 간단 조회 샘플

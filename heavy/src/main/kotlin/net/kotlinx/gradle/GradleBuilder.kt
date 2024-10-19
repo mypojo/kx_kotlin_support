@@ -11,7 +11,9 @@ import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.code.CodedeployUtil
 import net.kotlinx.aws.code.EcsDeployData
+import net.kotlinx.aws.code.codeDeploy
 import net.kotlinx.aws.code.createDeployment
+import net.kotlinx.aws.ecs.ecs
 import net.kotlinx.aws.ecs.touch
 import net.kotlinx.aws.lambda.*
 import net.kotlinx.aws.s3.putObject

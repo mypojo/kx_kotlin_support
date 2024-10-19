@@ -6,6 +6,11 @@ import aws.sdk.kotlin.services.firehose.model.PutRecordResponse
 import aws.sdk.kotlin.services.firehose.model.Record
 import aws.sdk.kotlin.services.firehose.putRecord
 import aws.sdk.kotlin.services.firehose.putRecordBatch
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.regist
+
+val AwsClient.firehose: FirehoseClient
+    get() = getOrCreateClient { FirehoseClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /** 단축 입력 인라인 */
 suspend inline fun FirehoseClient.putRecord(streamName: String, json: String): PutRecordResponse = this.putRecord {

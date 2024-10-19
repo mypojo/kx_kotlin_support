@@ -3,7 +3,11 @@ package net.kotlinx.aws.budgets
 import aws.sdk.kotlin.services.budgets.BudgetsClient
 import aws.sdk.kotlin.services.budgets.deleteBudget
 import aws.sdk.kotlin.services.budgets.model.NotFoundException
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.regist
 
+val AwsClient.budget: BudgetsClient
+    get() = getOrCreateClient { BudgetsClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /**
  * 예산 삭제후 새로만듬

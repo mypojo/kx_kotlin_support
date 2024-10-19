@@ -1,7 +1,7 @@
 package net.kotlinx.aws.dynamo
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.dynamo.query.DynamoExpression
 import net.kotlinx.aws.dynamo.query.DynamoResult
 import net.kotlinx.aws.dynamo.query.batchGetItem
@@ -11,7 +11,7 @@ import net.kotlinx.aws.dynamo.query.batchGetItem
  */
 interface DynamoRepository<T : DynamoData> {
 
-    val aws: AwsClient1
+    val aws: AwsClient
 
     /** 네이블 네임 & 컨버터용 */
     val emptyData: T

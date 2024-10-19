@@ -3,7 +3,7 @@ package net.kotlinx.aws.lambda
 import com.lectra.koson.obj
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.contain
-import net.kotlinx.aws.lambdaCommon.handler.s3.S3LogicHandler
+import net.kotlinx.aws.lambda.dispatch.synch.S3LogicDispatcher
 import net.kotlinx.domain.batchStep.stepDefault.StepStartContext
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
@@ -23,7 +23,7 @@ class LambdaHandlerUtilTest : BeSpecLog() {
                     33,
                     1,
                     listOf(obj {
-                        S3LogicHandler.KEY to "/aa/bb"
+                        S3LogicDispatcher.KEY to "/aa/bb"
                     }.toString())
                 )
 

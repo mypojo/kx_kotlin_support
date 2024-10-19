@@ -4,7 +4,7 @@ import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.athena.AthenaModule
 import net.kotlinx.koin.Koins
 import net.kotlinx.koin.Koins.koinLazy
-import net.kotlinx.kotest.modules.Aws1Module
+import net.kotlinx.kotest.modules.AwsModule
 import org.koin.core.module.Module
 
 /**
@@ -62,7 +62,7 @@ abstract class BeSpecKoin(modules: List<Module>) : BeSpecLog() {
      * private val profileName by lazy { findProfile99 }
      * private val aws by lazy { koin<AwsClient1>(profileName) }
      * */
-    private fun findProfile(id: String, suff: String? = null): String = Aws1Module.IAM_PROFILES.findProfileByAwsId(id, suff)
+    private fun findProfile(id: String, suff: String? = null): String = AwsModule.IAM_PROFILES.findProfileByAwsId(id, suff)
 
 //    override fun extensions() = listOf(
 //        io.kotest.koin.KoinExtension(

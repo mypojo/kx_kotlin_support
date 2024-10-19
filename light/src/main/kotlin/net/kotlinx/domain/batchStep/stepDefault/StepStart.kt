@@ -4,12 +4,12 @@ import com.lectra.koson.obj
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceMetadata
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.dynamo.DynamoUtil
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatchLogic
-import net.kotlinx.aws.lambdaCommon.handler.s3.S3LogicHandler
+import net.kotlinx.aws.lambda.dispatch.synch.S3LogicDispatcher
 import net.kotlinx.domain.batchStep.BatchStepConfig
 import net.kotlinx.domain.batchStep.BatchStepInput
 import net.kotlinx.domain.batchStep.BatchStepMode
@@ -35,7 +35,7 @@ class StepStart : LambdaDispatchLogic {
 
     private val log = KotlinLogging.logger {}
 
-    private val aws: AwsClient1 by koinLazy()
+    private val aws: AwsClient by koinLazy()
     private val config: BatchStepConfig by koinLazy()
     private val jobRepository: JobRepository by koinLazy()
     private val instanceMetadata by koinLazy<AwsInstanceMetadata>()
@@ -75,7 +75,7 @@ class StepStart : LambdaDispatchLogic {
                     //전체 데이터 리스트를 넣어준다. -> sfn에서 읽어서 event로 전달해줌
                     inputDatas.map {
                         obj {
-                            S3LogicHandler.KEY to it
+                            S3LogicDispatcher.KEY to it
                         }.toString()
                     }
                 }

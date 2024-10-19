@@ -5,7 +5,7 @@ import aws.sdk.kotlin.services.s3.listBuckets
 import ch.qos.logback.classic.Level
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.file.slash
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
@@ -17,7 +17,7 @@ import net.kotlinx.system.ResourceHolder
 
 internal class S3SupportKtTest : BeSpecHeavy() {
 
-    private val aws by lazy { koin<AwsClient1>(findProfile97) }
+    private val aws by lazy { koin<AwsClient>(findProfile97) }
 
     init {
         initTest(KotestUtil.PROJECT)

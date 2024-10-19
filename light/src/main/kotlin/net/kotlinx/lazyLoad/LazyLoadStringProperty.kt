@@ -1,7 +1,8 @@
 package net.kotlinx.lazyLoad
 
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.ssm.ssmStore
 import net.kotlinx.core.ProtocolPrefix
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.koin.Koins
@@ -31,7 +32,7 @@ class LazyLoadStringProperty(
         checkNotNull(initValue)
         synchronized(this) {
             if (resultValue == null) {
-                val aws = Koins.koin<AwsClient1>(profile)
+                val aws = Koins.koin<AwsClient>(profile)
                 resultValue = when {
 
                     /** 요건 표준 AWS 접미어 */

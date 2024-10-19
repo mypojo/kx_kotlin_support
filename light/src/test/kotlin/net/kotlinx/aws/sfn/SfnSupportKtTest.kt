@@ -2,7 +2,7 @@ package net.kotlinx.aws.sfn
 
 import aws.sdk.kotlin.services.sfn.model.ExecutionStatus
 import io.kotest.matchers.ints.shouldBeGreaterThan
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -11,7 +11,7 @@ import net.kotlinx.string.print
 
 class SfnSupportKtTest : BeSpecHeavy() {
 
-    private val aws by lazy { koin<AwsClient1>(findProfile28) }
+    private val aws by lazy { koin<AwsClient>(findProfile28) }
 
     init {
         initTest(KotestUtil.PROJECT)

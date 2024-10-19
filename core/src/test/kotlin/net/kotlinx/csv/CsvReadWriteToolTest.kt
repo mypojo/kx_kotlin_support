@@ -4,7 +4,7 @@ import aws.sdk.kotlin.services.s3.model.GetObjectRequest
 import aws.smithy.kotlin.runtime.content.toInputStream
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.s3.s3
 import net.kotlinx.counter.Latch
@@ -27,7 +27,7 @@ import okhttp3.OkHttpClient
 
 class CsvReadWriteToolTest : BeSpecLight() {
 
-    private val aws by lazy { koin<AwsClient1>(findProfile97) }
+    private val aws by lazy { koin<AwsClient>(findProfile97) }
 
     private val httpClient by koinLazy<OkHttpClient>()
 

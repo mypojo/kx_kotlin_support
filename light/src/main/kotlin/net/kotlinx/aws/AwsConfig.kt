@@ -11,6 +11,7 @@ import aws.smithy.kotlin.runtime.http.engine.okhttp.OkHttpEngine
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.aws.sfn.SfnConfig
+import net.kotlinx.aws.sts.sts
 import net.kotlinx.koin.Koins.koin
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -70,7 +71,7 @@ data class AwsConfig(
      *  */
     val awsId: String by lazy {
         inputAwsId ?: run {
-            val aws = koin<AwsClient1>(profileName)
+            val aws = koin<AwsClient>(profileName)
             val identity = runBlocking { aws.sts.getCallerIdentity() }
             log.debug { "[$profileName] AWS ID가 입력되지 않아서 STS를 통해서 로드됨 -> ${identity.account}" }
             identity.account!!

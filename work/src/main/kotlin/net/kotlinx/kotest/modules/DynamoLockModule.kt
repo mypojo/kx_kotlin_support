@@ -16,7 +16,7 @@ object DynamoLockModule : KoinModule {
 
     override fun moduleConfig(): Module = module {
 
-        Aws1Module.IAM_PROFILES.profiles.forEach { pair ->
+        AwsModule.IAM_PROFILES.profiles.forEach { pair ->
             val profile = pair.first
             single(named(profile)) {
                 DynamoLockManager {

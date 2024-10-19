@@ -6,7 +6,7 @@ import aws.sdk.kotlin.services.cloudwatchlogs.describeLogStreams
 import aws.sdk.kotlin.services.cloudwatchlogs.getLogEvents
 import kotlinx.coroutines.delay
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.regist
 import net.kotlinx.collection.repeatUntil
 import net.kotlinx.number.padStart
@@ -14,7 +14,7 @@ import net.kotlinx.number.toLocalDateTime
 import net.kotlinx.time.toKr01
 import java.io.File
 
-val AwsClient1.logs: CloudWatchLogsClient
+val AwsClient.logs: CloudWatchLogsClient
     get() = getOrCreateClient { CloudWatchLogsClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /**

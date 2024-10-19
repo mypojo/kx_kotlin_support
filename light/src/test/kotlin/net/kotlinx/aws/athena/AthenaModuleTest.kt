@@ -1,7 +1,7 @@
 package net.kotlinx.aws.athena
 
 import io.kotest.matchers.shouldBe
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -11,7 +11,7 @@ import net.kotlinx.string.print
 
 internal class AthenaModuleTest : BeSpecHeavy() {
 
-    private val aws by lazy { koin<AwsClient1>(findProfile97) }
+    private val aws by lazy { koin<AwsClient>(findProfile97) }
 
     init {
         initTest(KotestUtil.PROJECT)
@@ -19,7 +19,7 @@ internal class AthenaModuleTest : BeSpecHeavy() {
         Given("AthenaModule") {
 
             val athenaModule = AthenaModule {
-                aws = koin<AwsClient1>(findProfile97)
+                aws = koin<AwsClient>(findProfile97)
                 workGroup = "workgroup-dev"
                 database = ""
             }

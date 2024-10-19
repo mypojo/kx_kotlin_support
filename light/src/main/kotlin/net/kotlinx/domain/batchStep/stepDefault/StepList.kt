@@ -5,12 +5,13 @@ import com.lectra.koson.obj
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.lambda.LambdaUtil
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatchLogic
+import net.kotlinx.aws.lambda.dispatch.synch.S3LogicDispatcher
 import net.kotlinx.aws.lambda.invokeAsynch
-import net.kotlinx.aws.lambdaCommon.handler.s3.S3LogicHandler
+import net.kotlinx.aws.lambda.lambda
 import net.kotlinx.aws.s3.s3
 import net.kotlinx.aws.with
 import net.kotlinx.calculator.ProgressData
@@ -37,7 +38,7 @@ class StepList : LambdaDispatchLogic {
 
     private val log = KotlinLogging.logger {}
 
-    private val aws: AwsClient1 by koinLazy()
+    private val aws: AwsClient by koinLazy()
     private val config: BatchStepConfig by koinLazy()
 
     override suspend fun execute(input: GsonData): Any {
@@ -64,7 +65,7 @@ class StepList : LambdaDispatchLogic {
             suspend {
                 //AWS의 S3 입력과 동일하게 맞춰준다.
                 val lambdaInput = obj {
-                    S3LogicHandler.KEY to it
+                    S3LogicDispatcher.KEY to it
                 }
                 log.trace { " -> lambdaInput $lambdaInput" }
                 aws.lambda.with { invokeAsynch(this@StepList.config.lambdaFunctionName, lambdaInput) }

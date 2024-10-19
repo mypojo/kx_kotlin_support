@@ -5,7 +5,12 @@ import aws.sdk.kotlin.services.sfn.model.DescribeExecutionResponse
 import aws.sdk.kotlin.services.sfn.model.ExecutionStatus
 import aws.sdk.kotlin.services.sfn.model.ListActivitiesResponse
 import aws.sdk.kotlin.services.sfn.model.ListExecutionsResponse
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.awsConfig
+import net.kotlinx.aws.regist
+
+val AwsClient.sfn: SfnClient
+    get() = getOrCreateClient { SfnClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /** 결과 리턴 최대치 */
 private const val MAX_RESULTS = 1000

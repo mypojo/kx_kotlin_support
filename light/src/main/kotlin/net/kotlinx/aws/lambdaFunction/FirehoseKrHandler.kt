@@ -7,9 +7,9 @@ import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.S3Event
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsConfig
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.s3.s3
-import net.kotlinx.aws.toAwsClient1
+import net.kotlinx.koin.Koins
 import net.kotlinx.string.toLocalDateTime
 import net.kotlinx.time.toH
 import net.kotlinx.time.toYmd
@@ -39,7 +39,7 @@ class FirehoseKrHandler : RequestHandler<S3Event, String> {
     private val matcherHh = "(?<=/hh=).*?(?=/)".toRegex()
     private val matcherPrefix = "^.*?(?=/)".toRegex()
 
-    private val aws = AwsConfig().toAwsClient1()
+    private val aws by Koins.koinLazy<AwsClient>()
 
     override fun handleRequest(event: S3Event, context: Context?): String {
 

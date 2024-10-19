@@ -4,10 +4,16 @@ import aws.sdk.kotlin.services.sqs.SqsClient
 import aws.sdk.kotlin.services.sqs.deleteMessageBatch
 import aws.sdk.kotlin.services.sqs.model.DeleteMessageBatchRequestEntry
 import aws.sdk.kotlin.services.sqs.model.Message
+import aws.sdk.kotlin.services.sqs.model.MessageSystemAttributeName
 import aws.sdk.kotlin.services.sqs.model.SendMessageBatchRequestEntry
 import aws.sdk.kotlin.services.sqs.receiveMessage
 import aws.sdk.kotlin.services.sqs.sendMessageBatch
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.regist
+import net.kotlinx.collection.doUntilNotEmpty
 
+val AwsClient.sqs: SqsClient
+    get() = getOrCreateClient { SqsClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /** 디폴트 최대 수. 기본설정이 1임..  */
 private const val MAX_NUMBER_OF_MESSAGES = 10
@@ -52,12 +58,22 @@ suspend fun SqsClient.deleteMessageBatch(queueUrl: String, messages: Collection<
 
 //==================================================== 가져오기 ======================================================
 
-/** 메세지 간단 가져오기 */
-suspend fun SqsClient.receiveMessage(queueUrl: String, maxNum: Int = MAX_NUMBER_OF_MESSAGES): List<Message> {
+/**
+ * 메세지 간단 가져오기
+ * @param visibilityTimeout 기본값 오버라이딩 가능. 읽기 전용으로 쓸경우 0으로 하면 같은게 어려게 읽어짐..  1 정도로 할것
+ * */
+suspend fun SqsClient.receiveMessage(queueUrl: String, visibilityTimeout: Int? = null, maxNum: Int = MAX_NUMBER_OF_MESSAGES): List<Message> {
     check(maxNum <= MAX_NUMBER_OF_MESSAGES)
+    visibilityTimeout?.let {
+        check(it > 0) { "가시성은 0보다 커야함! 무한루프가 되는 수 있음" }
+    }
     return this.receiveMessage {
         this.queueUrl = queueUrl
         this.maxNumberOfMessages = maxNum
+        this.visibilityTimeout = visibilityTimeout
+        this.messageSystemAttributeNames = listOf(
+            MessageSystemAttributeName.SentTimestamp, //시간 정도는 기본적으로 가져옴
+        )
     }.messages ?: emptyList()
 }
 
@@ -66,21 +82,7 @@ suspend fun SqsClient.receiveMessage(queueUrl: String, maxNum: Int = MAX_NUMBER_
  * 주의!  표시 제한 시간이 0이면 무한 로드 될거임. 무한로드 방지 로직이 포함됨
  * 반드시 전체 내용이 필요한 로직 등, 제한적으로 사용해야함!!
  */
-suspend fun SqsClient.receiveMessageAll(queueUrl: String, maxRepeatCnt: Int = 20): List<Message> {
-    return ArrayList<Message>().also { list ->
-        val unique: MutableSet<String> = mutableSetOf()
-        repeat(maxRepeatCnt) {
-            val receiveMsgs: List<Message> = receiveMessage(queueUrl)
-            if (receiveMsgs.isEmpty()) return list
-
-            val duplicated = receiveMsgs.filter { unique.add(it.messageId!!) }
-            if (duplicated.isNotEmpty()) {
-                //log.warn { "중복 데이터가 발견되었습니다. 큐 옵션의 '표시 제한 시간' 을 늘려주세요 : $duplicated " }
-                return list
-            }
-            //log.debug { "  --> 데이터 로드 ${receiveMsgs.size}건" }
-            list.addAll(receiveMsgs)
-        }
-    }
-
-}
+suspend fun SqsClient.receiveMessageAll(queueUrl: String, visibilityTimeout: Int? = null, limitCnt: Int = 10): List<Message> = doUntilNotEmpty {
+    if (it >= limitCnt) emptyList()
+    else receiveMessage(queueUrl, visibilityTimeout)
+}.flatten().distinctBy { it.messageId!! }

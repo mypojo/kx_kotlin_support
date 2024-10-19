@@ -10,6 +10,8 @@ interface SlackMessage {
     /**
      * 채널 or 웹훅이 들어온다.
      * http로 시작되면 웹훅으로 간주
+     * @으로 시작하면 특정 ID 개인채널
+     * #으로 시작하면 일반 채널
      * */
     var channel: String
 

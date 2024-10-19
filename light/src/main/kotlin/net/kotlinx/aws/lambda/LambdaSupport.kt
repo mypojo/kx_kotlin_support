@@ -2,6 +2,8 @@ package net.kotlinx.aws.lambda
 
 import aws.sdk.kotlin.services.lambda.*
 import aws.sdk.kotlin.services.lambda.model.*
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.regist
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.string.ResultText
 import net.kotlinx.time.toKr01
@@ -9,6 +11,8 @@ import org.apache.commons.text.StringEscapeUtils
 import java.io.File
 import java.time.LocalDateTime
 
+val AwsClient.lambda: LambdaClient
+    get() = getOrCreateClient { LambdaClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /**  응답을 받을때  */
 suspend fun LambdaClient.invokeSynch(functionName: String, param: Any): ResultText {

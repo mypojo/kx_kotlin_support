@@ -6,7 +6,12 @@ import aws.sdk.kotlin.services.ses.sendRawEmail
 import jakarta.mail.internet.MimeMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.regist
 import java.io.ByteArrayOutputStream
+
+val AwsClient.ses: SesClient
+    get() = getOrCreateClient { SesClient { awsConfig.build(this) }.regist(awsConfig) }
 
 
 /**

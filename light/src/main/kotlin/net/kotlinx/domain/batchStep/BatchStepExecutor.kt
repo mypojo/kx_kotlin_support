@@ -1,11 +1,12 @@
 package net.kotlinx.domain.batchStep
 
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceTypeUtil
-import net.kotlinx.aws.lambdaCommon.handler.s3.S3LogicInput
+import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.S3LogicInput
 import net.kotlinx.aws.s3.putObject
 import net.kotlinx.aws.s3.s3
+import net.kotlinx.aws.sfn.sfn
 import net.kotlinx.aws.sfn.startExecution
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.core.Kdsl
@@ -22,7 +23,7 @@ class BatchStepExecutor : KoinComponent {
 
     private val log = KotlinLogging.logger {}
 
-    private val aws: AwsClient1 by inject()
+    private val aws: AwsClient by inject()
     private val config: BatchStepConfig by inject()
 
     /** 로컬에서 S3업로드할 파일을 만들 작업공간. 사실 로컬 설정이라..  */

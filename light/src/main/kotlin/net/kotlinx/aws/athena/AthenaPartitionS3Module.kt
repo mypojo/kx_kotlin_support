@@ -63,7 +63,6 @@ class AthenaPartitionS3Module {
                 listDir(prefixs + v, upkeep)
             }
         }
-
     }
 
     /**

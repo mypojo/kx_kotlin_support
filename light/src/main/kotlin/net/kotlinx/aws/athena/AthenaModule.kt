@@ -1,5 +1,6 @@
 package net.kotlinx.aws.athena
 
+import athena
 import aws.sdk.kotlin.services.athena.getQueryExecution
 import aws.sdk.kotlin.services.athena.model.QueryExecution
 import aws.sdk.kotlin.services.athena.model.QueryExecutionContext
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.s3.getObjectDownload
@@ -46,7 +47,7 @@ class AthenaModule {
     private val log = KotlinLogging.logger {}
 
     /** 기본 클라이언트 */
-    lateinit var aws: AwsClient1
+    lateinit var aws: AwsClient
 
     /** 데이터베이스 명 (기본스키마) */
     lateinit var database: String

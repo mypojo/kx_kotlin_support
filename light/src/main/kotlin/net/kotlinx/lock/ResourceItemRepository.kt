@@ -1,7 +1,8 @@
 package net.kotlinx.lock
 
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.dynamo.DynamoRepository
+import net.kotlinx.aws.dynamo.dynamo
 import net.kotlinx.aws.dynamo.query.DynamoExpressionSet
 import net.kotlinx.aws.dynamo.query.DynamoQuery
 import net.kotlinx.aws.dynamo.query.queryAll
@@ -13,7 +14,7 @@ import net.kotlinx.concurrent.coroutineExecute
  *
  * 기존코드 실사용은 일단 안함
  */
-class ResourceItemRepository(override val aws: AwsClient1) : DynamoRepository<ResourceItem> {
+class ResourceItemRepository(override val aws: AwsClient) : DynamoRepository<ResourceItem> {
 
     override val emptyData: ResourceItem = ResourceItem("", "")
 

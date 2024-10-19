@@ -3,7 +3,11 @@ package net.kotlinx.aws.ecs
 import aws.sdk.kotlin.services.ecs.EcsClient
 import aws.sdk.kotlin.services.ecs.model.UpdateServiceResponse
 import aws.sdk.kotlin.services.ecs.updateService
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.regist
 
+val AwsClient.ecs: EcsClient
+    get() = getOrCreateClient { EcsClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /** 코드 빌드 후 터치 */
 suspend fun EcsClient.touch(clusterName: String, serviceName: String): UpdateServiceResponse = this.updateService {

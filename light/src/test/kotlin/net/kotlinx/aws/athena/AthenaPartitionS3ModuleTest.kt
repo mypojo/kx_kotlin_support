@@ -1,7 +1,7 @@
 package net.kotlinx.aws.athena
 
 import ch.qos.logback.classic.Level
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.koin.Koins
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -20,7 +20,7 @@ internal class AthenaPartitionS3ModuleTest : BeSpecHeavy() {
 
         Given("AthenaS3PartitionModule") {
 
-            val awsClient = Koins.koin<AwsClient1>(profileName)
+            val awsClient = Koins.koin<AwsClient>(profileName)
             val deploymentType = DeploymentType.DEV
 
             val athena = AthenaModule {

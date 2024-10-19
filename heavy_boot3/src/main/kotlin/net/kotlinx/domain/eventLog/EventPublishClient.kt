@@ -5,6 +5,7 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.eventBridge.EventBridgeConfig
+import net.kotlinx.aws.eventBridge.event
 import net.kotlinx.aws.eventBridge.putEvents
 import net.kotlinx.core.Kdsl
 import net.kotlinx.domain.eventLog.data.EventDataHolder

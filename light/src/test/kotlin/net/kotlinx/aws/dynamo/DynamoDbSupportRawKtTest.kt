@@ -3,7 +3,7 @@ package net.kotlinx.aws.dynamo
 import aws.sdk.kotlin.services.dynamodb.getItem
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.scan
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.dynamo.query.DynamoExpressionSet
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
@@ -18,7 +18,7 @@ class DynamoDbSupportRawKtTest : BeSpecHeavy() {
 
         Given("DDB 로우 API 조회") {
 
-            val aws = koin<AwsClient1>(findProfile97)
+            val aws = koin<AwsClient>(findProfile97)
 
             Then("getItem") {
 

@@ -4,11 +4,12 @@ import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
 import aws.sdk.kotlin.services.sfn.describeExecution
 import aws.sdk.kotlin.services.sfn.model.DescribeExecutionResponse
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatchLogic
 import net.kotlinx.aws.s3.deleteDir
 import net.kotlinx.aws.s3.s3
 import net.kotlinx.aws.s3.toList
+import net.kotlinx.aws.sfn.sfn
 import net.kotlinx.core.Kdsl
 import net.kotlinx.domain.batchStep.stepDefault.StepEnd
 import net.kotlinx.domain.batchStep.stepDefault.StepList
@@ -26,7 +27,7 @@ class BatchStepConfig : KoinComponent {
         apply(block)
     }
 
-    private val aws1: AwsClient1 by inject()
+    private val aws1: AwsClient by inject()
 
     /** 업로드 버킷 명 */
     lateinit var workUploadBuket: String

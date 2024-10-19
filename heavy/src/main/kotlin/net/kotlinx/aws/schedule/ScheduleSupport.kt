@@ -4,10 +4,14 @@ import aws.sdk.kotlin.services.scheduler.SchedulerClient
 import aws.sdk.kotlin.services.scheduler.getSchedule
 import aws.sdk.kotlin.services.scheduler.listSchedules
 import aws.sdk.kotlin.services.scheduler.model.GetScheduleResponse
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.regist
 import net.kotlinx.collection.doUntilTokenNull
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.string.toTextGridPrint
 
+val AwsClient.schedule: SchedulerClient
+    get() = getOrCreateClient { SchedulerClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /**
  * 전체 스케쥴 리턴

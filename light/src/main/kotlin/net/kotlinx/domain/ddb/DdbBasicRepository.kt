@@ -1,8 +1,9 @@
 package net.kotlinx.domain.ddb
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.dynamo.deleteItem
+import net.kotlinx.aws.dynamo.dynamo
 import net.kotlinx.aws.dynamo.getItem
 import net.kotlinx.aws.dynamo.putItem
 import net.kotlinx.aws.dynamo.query.DynamoExpression
@@ -19,7 +20,7 @@ class DdbBasicRepository<T>(
     private val converter: DdbBasicConverter<DdbBasic, T>,
 ) {
 
-    private val aws by koinLazy<AwsClient1>(profile)
+    private val aws by koinLazy<AwsClient>(profile)
 
     //==================================================== 기본 메소드 ======================================================
     suspend fun getItem(item: T): T? {

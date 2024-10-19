@@ -7,12 +7,12 @@ import aws.sdk.kotlin.services.kinesis.model.PutRecordsResponse
 import aws.sdk.kotlin.services.kinesis.putRecord
 import aws.sdk.kotlin.services.kinesis.putRecords
 import com.google.gson.Gson
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.regist
 import net.kotlinx.id.Identity
 import net.kotlinx.json.gson.GsonSet
 
-val AwsClient1.kinesis: KinesisClient
+val AwsClient.kinesis: KinesisClient
     get() = getOrCreateClient { KinesisClient { awsConfig.build(this) }.regist(awsConfig) }
 
 

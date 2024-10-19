@@ -9,7 +9,7 @@ import net.kotlinx.domain.job.trigger.JobLocalExecutor
 import net.kotlinx.domain.job.trigger.JobSerializer
 import net.kotlinx.koin.KoinModule
 import net.kotlinx.kotest.MyEnv
-import net.kotlinx.kotest.modules.Aws1Module.IAM_PROFILES
+import net.kotlinx.kotest.modules.AwsModule.IAM_PROFILES
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module

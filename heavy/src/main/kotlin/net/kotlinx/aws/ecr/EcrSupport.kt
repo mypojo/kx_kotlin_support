@@ -6,9 +6,12 @@ import aws.sdk.kotlin.services.ecr.model.Image
 import aws.sdk.kotlin.services.ecr.model.ImageIdentifier
 import aws.sdk.kotlin.services.ecr.model.PutImageResponse
 import aws.sdk.kotlin.services.ecr.putImage
-import mu.KotlinLogging
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.regist
 
-private val log = KotlinLogging.logger {}
+
+val AwsClient.ecr: EcrClient
+    get() = getOrCreateClient { EcrClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /** 태그로 조회 (ECR에서 태그는 유니크함) */
 suspend fun EcrClient.findByTag(repositoryName: String, imageTag: String): Image = this.batchGetImage {

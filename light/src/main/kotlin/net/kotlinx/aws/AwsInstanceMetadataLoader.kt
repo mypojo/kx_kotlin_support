@@ -3,6 +3,7 @@ package net.kotlinx.aws
 import aws.sdk.kotlin.services.batch.describeJobs
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import net.kotlinx.aws.batch.batch
 import net.kotlinx.core.Kdsl
 
 /**
@@ -27,7 +28,7 @@ class AwsInstanceMetadataLoader {
     lateinit var ecsLogConfig: Pair<String, String>
 
     /** AWS 클라이언트 */
-    lateinit var aws: AwsClient1
+    lateinit var aws: AwsClient
 
     private val log = KotlinLogging.logger {}
 

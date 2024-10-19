@@ -1,7 +1,7 @@
 package net.kotlinx.aws.athena
 
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.s3.deleteDir
 import net.kotlinx.aws.s3.putObject
 import net.kotlinx.aws.s3.s3
@@ -144,7 +144,7 @@ class AthenaTable {
     /** 해당 파티션 경로의 디렉토리를 삭제한다. */
     suspend fun deleteaData(vararg partitionValue: String) {
         val dataPath = getDataPath(partitionValue)
-        val aws = Koins.koin<AwsClient1>()
+        val aws = Koins.koin<AwsClient>()
         log.debug { " -> 테이블 $tableName 데이터 삭제 : $bucket $dataPath" }
         aws.s3.deleteDir(bucket, dataPath)
     }
@@ -176,7 +176,7 @@ class AthenaTable {
     suspend fun insertData(file: File, vararg partitionValue: String) {
         val dataPath = getDataPath(partitionValue)
 
-        val aws = Koins.koin<AwsClient1>()
+        val aws = Koins.koin<AwsClient>()
         log.debug { " -> 테이블 $tableName 데이터 업로드 : $bucket $dataPath" }
         aws.s3.putObject(bucket, "${dataPath}${file.name}", file)
     }

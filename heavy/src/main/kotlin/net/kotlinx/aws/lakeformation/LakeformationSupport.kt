@@ -5,8 +5,12 @@ import aws.sdk.kotlin.services.lakeformation.addLfTagsToResource
 import aws.sdk.kotlin.services.lakeformation.createLfTag
 import aws.sdk.kotlin.services.lakeformation.grantPermissions
 import aws.sdk.kotlin.services.lakeformation.model.*
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.awsConfig
+import net.kotlinx.aws.regist
 
+val AwsClient.lake: LakeFormationClient
+    get() = getOrCreateClient { LakeFormationClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /**
  * CDK로도 있는데 그거하면 권한 에러남.. 버그인가?

@@ -6,6 +6,11 @@ import aws.sdk.kotlin.services.eventbridge.model.ListRulesResponse
 import aws.sdk.kotlin.services.eventbridge.model.PutEventsRequestEntry
 import aws.sdk.kotlin.services.eventbridge.model.PutEventsResponse
 import aws.sdk.kotlin.services.eventbridge.putEvents
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.regist
+
+val AwsClient.event: EventBridgeClient
+    get() = getOrCreateClient { EventBridgeClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /**
  * 시간입력은 따로 하지 않고 자체 채번 시간사용 (비교용)

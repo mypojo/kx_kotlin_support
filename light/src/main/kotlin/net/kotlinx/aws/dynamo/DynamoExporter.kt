@@ -7,7 +7,7 @@ import aws.sdk.kotlin.services.dynamodb.model.ExportStatus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.time.measureTimeString
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.minutes
@@ -17,7 +17,7 @@ import kotlin.time.Duration.Companion.seconds
  * https://aws.amazon.com/ko/blogs/korea/new-export-amazon-dynamodb-table-data-to-data-lake-amazon-s3/
  * 2023 서울기준 GB당 0.1083 USD -> 매우 저렴함
  * */
-class DynamoExporter(private val aws: AwsClient1, block: DynamoExporter.() -> Unit = {}) {
+class DynamoExporter(private val aws: AwsClient, block: DynamoExporter.() -> Unit = {}) {
 
     private val log = KotlinLogging.logger {}
 

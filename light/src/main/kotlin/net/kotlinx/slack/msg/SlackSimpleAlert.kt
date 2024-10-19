@@ -100,6 +100,12 @@ class SlackSimpleAlert : SlackMessage {
     var exception: Throwable? = null
 
     /**
+     * 이 값이 있으면 특정 채널이 아니라 개인 채널로 보낸다. ID를 입력하면됨
+     * ex) U0641U84xxx
+     *  */
+    var toUser: String? = null
+
+    /**
      * 설명문구 -  Block quotes
      * 링크 삽입 가능!!
      *  */

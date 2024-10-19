@@ -6,7 +6,11 @@ import aws.sdk.kotlin.services.lambda.model.LayerVersionsListItem
 import aws.sdk.kotlin.services.lambda.publishLayerVersion
 import aws.sdk.kotlin.services.lambda.updateFunctionConfiguration
 
-/** 레이어 업데이트 될때마다 버전이 올라가니 주의할것!  */
+/**
+ * 레이어 업데이트 될때마다 버전이 올라가니 주의할것!
+ * 람다 5개 까지 달수있고,  전체 합쳐서 언집후 250mb를 넘으면 안됨!
+ *  => 보통 업무용으로 제작시 100mb 정도 됨
+ *  */
 suspend fun LambdaClient.publishLayerVersion(
     bucket: String,
     key: String,

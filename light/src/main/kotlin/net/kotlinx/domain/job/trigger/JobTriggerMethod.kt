@@ -2,13 +2,15 @@ package net.kotlinx.domain.job.trigger
 
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.batch.BatchUtil
+import net.kotlinx.aws.batch.batch
 import net.kotlinx.aws.batch.submitJob
 import net.kotlinx.aws.batch.submitJobAndWaitStarting
 import net.kotlinx.aws.dynamo.DynamoUtil
 import net.kotlinx.aws.lambda.invokeAsynch
 import net.kotlinx.aws.lambda.invokeSynch
+import net.kotlinx.aws.lambda.lambda
 import net.kotlinx.domain.job.Job
 import net.kotlinx.domain.job.JobExeDiv
 import net.kotlinx.domain.job.JobRepository
@@ -80,7 +82,7 @@ class JobTriggerLambda(
 
     private val jobSerializer: JobSerializer by inject()
     private val idGenerator: IdGenerator by inject()
-    private val aws1: AwsClient1 by inject()
+    private val aws1: AwsClient by inject()
     private val jobRepository: JobRepository by inject()
 
     override suspend fun trigger(op: JobTriggerOption): String {
@@ -121,7 +123,7 @@ class JobTriggerBatch(
 
     private val jobSerializer: JobSerializer by inject()
     private val idGenerator: IdGenerator by inject()
-    private val aws1: AwsClient1 by inject()
+    private val aws1: AwsClient by inject()
 
     override suspend fun trigger(op: JobTriggerOption): String {
         val jobSk = op.jobSk ?: idGenerator.nextvalAsString()

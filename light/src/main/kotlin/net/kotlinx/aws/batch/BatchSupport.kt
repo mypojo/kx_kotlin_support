@@ -9,9 +9,14 @@ import aws.sdk.kotlin.services.batch.model.JobStatus
 import aws.sdk.kotlin.services.batch.model.SubmitJobResponse
 import aws.sdk.kotlin.services.batch.submitJob
 import mu.KotlinLogging
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.regist
 import net.kotlinx.concurrent.CoroutineSleepTool
 import net.kotlinx.time.TimeFormat
 import kotlin.time.Duration.Companion.seconds
+
+val AwsClient.batch: BatchClient
+    get() = getOrCreateClient { BatchClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /** 준비중인 상태인지 (로그스트림 아직 없음) */
 fun JobStatus.isReady(): Boolean = this in setOf(JobStatus.Submitted, JobStatus.Pending, JobStatus.Runnable)

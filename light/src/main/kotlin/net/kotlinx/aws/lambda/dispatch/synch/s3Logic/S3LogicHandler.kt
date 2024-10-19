@@ -2,7 +2,7 @@ package net.kotlinx.aws.lambda.dispatch.synch.s3Logic
 
 import aws.sdk.kotlin.services.s3.deleteObject
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.s3.getObjectText
 import net.kotlinx.aws.s3.putObject
@@ -29,7 +29,7 @@ class S3LogicHandler {
 
     private val log = KotlinLogging.logger {}
 
-    private val aws: AwsClient1 by koinLazy()
+    private val aws: AwsClient by koinLazy()
 
     @Kdsl
     constructor(block: S3LogicHandler.() -> Unit = {}) {

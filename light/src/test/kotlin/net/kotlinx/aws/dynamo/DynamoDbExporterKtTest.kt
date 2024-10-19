@@ -1,7 +1,7 @@
 package net.kotlinx.aws.dynamo
 
 import aws.sdk.kotlin.services.dynamodb.model.ExportFormat
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.athena.AthenaModule
 import net.kotlinx.aws.athena.AthenaTable
 import net.kotlinx.aws.athena.AthenaTableFormat
@@ -18,7 +18,7 @@ class DynamoDbExporterKtTest : BeSpecLog() {
 
         Given("DynamoDbExporter") {
 
-            val aws by koinLazy<AwsClient1>()
+            val aws by koinLazy<AwsClient>()
 
             Then("step1 - S3로 익스포트") {
                 val exporter = DynamoExporter(aws) {

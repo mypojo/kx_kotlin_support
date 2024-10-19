@@ -21,7 +21,7 @@ class SlackApp_메세지템플릿 : BeSpecHeavy() {
 
             val hookEvent = CodeDeployHookEvent("aaa", "bbb")
 
-            Then("코드디플로이 훅 승인메세지 데모") {
+            xThen("코드디플로이 훅 승인메세지 데모") {
                 val host = "https://naver.com"
                 val hostTest = "http://naver.com:8080"
                 val testLink = "테스트하러가기".slackLink(hostTest)
@@ -45,8 +45,12 @@ class SlackApp_메세지템플릿 : BeSpecHeavy() {
                 }
             }
 
-            xThen("에러메세지 데모") {
+            Then("에러메세지 데모 - 개인메세지") {
                 SlackMessageSenders.Alert.send {
+                    descriptions += listOf("추가메세지")
+                }
+                SlackMessageSenders.Alert.send {
+                    toUser = "@U0641U84CUE"
                     descriptions += listOf("추가메세지")
                 }
             }

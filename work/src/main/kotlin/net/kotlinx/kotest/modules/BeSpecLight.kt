@@ -13,12 +13,13 @@ abstract class BeSpecLight : BeSpecKoin(MODULES) {
     companion object {
         val MODULES = listOf(
             BasicModule.moduleConfig(),
-            Aws1Module.moduleConfig(),
+            AwsModule.moduleConfig(),
             JobModule.moduleConfig(),
             BatchStepModule.moduleConfig(),
             KoinTestModule.moduleConfig(),
             LambdaDispatcherModule.moduleConfig(),
             KtorModule.moduleConfig(),
+            BatchTaskModule.moduleConfig(),
         )
     }
 

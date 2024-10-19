@@ -1,7 +1,7 @@
 package net.kotlinx.aws.s3
 
 import io.kotest.matchers.shouldBe
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.file.slash
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
@@ -14,7 +14,7 @@ import okhttp3.OkHttpClient
 internal class S3PresignSupportTest : BeSpecHeavy() {
 
     private val profileName by lazy { findProfile28 }
-    private val aws by lazy { koin<AwsClient1>(profileName) }
+    private val aws by lazy { koin<AwsClient>(profileName) }
 
     init {
         initTest(KotestUtil.PROJECT)

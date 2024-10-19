@@ -1,6 +1,6 @@
 package net.kotlinx.aws.dynamo
 
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -8,7 +8,7 @@ import net.kotlinx.kotest.modules.BeSpecHeavy
 
 internal class DynamoIdSourceTest : BeSpecHeavy() {
 
-    private val aws by lazy { koin<AwsClient1>(findProfile99) }
+    private val aws by lazy { koin<AwsClient>(findProfile99) }
 
     init {
         initTest(KotestUtil.PROJECT)

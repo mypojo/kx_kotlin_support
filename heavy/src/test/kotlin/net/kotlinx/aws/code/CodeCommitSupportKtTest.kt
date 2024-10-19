@@ -7,6 +7,7 @@ import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
+import net.kotlinx.string.print
 
 
 class CodeCommitSupportKtTest : BeSpecHeavy() {
@@ -18,9 +19,7 @@ class CodeCommitSupportKtTest : BeSpecHeavy() {
 
         Given("codeCommit") {
 
-            Then("커밋 히스토리 가져오기") {
-
-                //히스토리 가져오는게 없다.. 왜지??
+            Then("특정 파일의 커밋 히스토리 가져오기") {
                 val history = aws.codeCommit.listFileCommitHistory {
                     this.repositoryName = findProfile97
                     this.maxResults = 2
@@ -29,6 +28,12 @@ class CodeCommitSupportKtTest : BeSpecHeavy() {
                 }.revisionDag
 
                 history.size shouldBeGreaterThan 1
+                history.print()
+            }
+
+            Then("특정 브랜치의 최근 히스토리 가져오기") {
+                val commit = aws.codeCommit.getBranchCommit(findProfile97, "dev")
+                listOf(commit).print()
             }
 
         }

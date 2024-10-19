@@ -2,12 +2,13 @@ package net.kotlinx.lazyLoad
 
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.s3.getObjectDownload
 import net.kotlinx.aws.s3.listFiles
 import net.kotlinx.aws.s3.s3
 import net.kotlinx.aws.ssm.find
+import net.kotlinx.aws.ssm.ssm
 import net.kotlinx.core.ProtocolPrefix
 import net.kotlinx.file.slash
 import net.kotlinx.koin.Koins.koin
@@ -62,7 +63,7 @@ class LazyLoadFileProperty(val inputFile: File) {
 
             info.startsWith(ProtocolPrefix.S3) -> {
                 log.debug { " -> File을 S3에서 로드합니다 $info -> $delegateFile" }
-                val aws: AwsClient1 = koin(profile)
+                val aws: AwsClient = koin(profile)
                 val input = S3Data.parse(info)
                 runBlocking {
                     if (input.isDirectory) {
@@ -84,7 +85,7 @@ class LazyLoadFileProperty(val inputFile: File) {
             info.startsWith(ProtocolPrefix.SSM) -> {
                 val ssmPath = info.removePrefix(ProtocolPrefix.SSM)
                 log.debug { " -> File을 AWS Parameter Store 에서 로드합니다 $ssmPath -> $delegateFile" }
-                val aws: AwsClient1 = koin(profile)
+                val aws: AwsClient = koin(profile)
                 val value = runBlocking {
                     aws.ssm.find(ssmPath) ?: throw java.lang.IllegalArgumentException("SSM 값이 없습니다. $ssmPath")
                 }

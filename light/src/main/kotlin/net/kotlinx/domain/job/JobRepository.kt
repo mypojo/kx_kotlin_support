@@ -2,7 +2,7 @@ package net.kotlinx.domain.job
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.Select
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceType
 import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.dynamo.*
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit
  */
 class JobRepository(val profile: String? = null) : DynamoRepository<Job> {
 
-    override val aws by koinLazy<AwsClient1>(profile)
+    override val aws by koinLazy<AwsClient>(profile)
     override val emptyData: Job = EMPTY
 
     companion object {

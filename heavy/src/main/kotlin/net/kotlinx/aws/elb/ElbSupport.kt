@@ -5,6 +5,12 @@ import aws.sdk.kotlin.services.elasticloadbalancingv2.deregisterTargets
 import aws.sdk.kotlin.services.elasticloadbalancingv2.model.LoadBalancer
 import aws.sdk.kotlin.services.elasticloadbalancingv2.model.TargetDescription
 import aws.sdk.kotlin.services.elasticloadbalancingv2.registerTargets
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.regist
+
+
+val AwsClient.elb: ElasticLoadBalancingV2Client
+    get() = getOrCreateClient { ElasticLoadBalancingV2Client { awsConfig.build(this) }.regist(awsConfig) }
 
 
 //==================================================== 지원 메소드 ======================================================

@@ -5,7 +5,7 @@ import net.kotlinx.retry.RetryTemplate
 
 
 /** 간단 변환 */
-fun AwsConfig.toAwsClient1(): AwsClient1 = AwsClient1(this)
+fun AwsConfig.toAwsClient(): AwsClient = AwsClient(this)
 
 /** AWS 기본 리트라이. IO 예외를 간단 처리하기위함 */
 var defaultAwsSdkRetry: RetryTemplate = RetryTemplate {}

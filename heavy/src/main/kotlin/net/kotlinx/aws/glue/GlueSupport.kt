@@ -2,6 +2,11 @@ package net.kotlinx.aws.glue
 
 import aws.sdk.kotlin.services.glue.GlueClient
 import aws.sdk.kotlin.services.glue.createDatabase
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.regist
+
+val AwsClient.glue: GlueClient
+    get() = getOrCreateClient { GlueClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /** 일반 데이터베이스 생성 */
 suspend fun GlueClient.createDatabase(databaseName: String, desc: String? = null) {

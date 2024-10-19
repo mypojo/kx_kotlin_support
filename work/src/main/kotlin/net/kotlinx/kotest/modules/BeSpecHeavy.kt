@@ -6,7 +6,7 @@ abstract class BeSpecHeavy : BeSpecKoin(MODULES) {
 
     companion object {
         val MODULES = BeSpecLight.MODULES + listOf(
-            AwsModule.moduleConfig(),
+            AwsHeavyModule.moduleConfig(),
             DynamoLockModule.moduleConfig(),
             ResourceLockModule.moduleConfig(),
         )

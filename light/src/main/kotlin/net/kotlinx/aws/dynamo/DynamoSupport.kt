@@ -3,9 +3,14 @@ package net.kotlinx.aws.dynamo
 import aws.sdk.kotlin.services.dynamodb.*
 import aws.sdk.kotlin.services.dynamodb.getItem
 import aws.sdk.kotlin.services.dynamodb.model.*
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.dynamo.query.DynamoExpression
 import net.kotlinx.aws.dynamo.query.DynamoResult
+import net.kotlinx.aws.regist
 import net.kotlinx.collection.doUntil
+
+val AwsClient.dynamo: DynamoDbClient
+    get() = getOrCreateClient { DynamoDbClient { awsConfig.build(this) }.regist(awsConfig) }
 
 //==================================================== 기본 4종 ======================================================
 

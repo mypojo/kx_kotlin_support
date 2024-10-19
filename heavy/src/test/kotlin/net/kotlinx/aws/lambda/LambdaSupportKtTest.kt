@@ -1,7 +1,7 @@
 package net.kotlinx.aws.lambda
 
 import aws.sdk.kotlin.services.lambda.listFunctions
-import net.kotlinx.aws.AwsClient1
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -13,7 +13,7 @@ import net.kotlinx.time.toKr01
 
 internal class LambdaSupportKtTest : BeSpecHeavy() {
 
-    private val aws by lazy { koin<AwsClient1>(findProfile28) }
+    private val aws by lazy { koin<AwsClient>(findProfile28) }
 
     init {
         initTest(KotestUtil.PROJECT)

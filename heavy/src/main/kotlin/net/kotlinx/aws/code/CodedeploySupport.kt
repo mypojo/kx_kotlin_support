@@ -7,8 +7,12 @@ import aws.sdk.kotlin.services.codedeploy.model.LifecycleEventStatus
 import aws.sdk.kotlin.services.codedeploy.model.PutLifecycleEventHookExecutionStatusResponse
 import aws.sdk.kotlin.services.codedeploy.model.RevisionLocationType
 import aws.sdk.kotlin.services.codedeploy.putLifecycleEventHookExecutionStatus
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.regist
 import net.kotlinx.json.gson.GsonData
 
+val AwsClient.codeDeploy: CodeDeployClient
+    get() = getOrCreateClient { CodeDeployClient { awsConfig.build(this) }.regist(awsConfig) }
 
 //==================================================== 로직 ======================================================
 /**

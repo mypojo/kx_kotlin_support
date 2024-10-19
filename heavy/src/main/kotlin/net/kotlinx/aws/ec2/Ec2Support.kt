@@ -3,9 +3,11 @@ package net.kotlinx.aws.ec2
 import aws.sdk.kotlin.services.ec2.*
 import aws.sdk.kotlin.services.ec2.model.Filter
 import aws.sdk.kotlin.services.ec2.model.NetworkInterface
-import mu.KotlinLogging
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.regist
 
-private val log = KotlinLogging.logger {}
+val AwsClient.ec2: Ec2Client
+    get() = getOrCreateClient { Ec2Client { awsConfig.build(this) }.regist(awsConfig) }
 
 /** 네트워크 정보 (IP) 가져오기 (확인필요) */
 suspend fun Ec2Client.describeNetworkInterfaces(hostName: String): List<NetworkInterface> = this.describeNetworkInterfaces {
