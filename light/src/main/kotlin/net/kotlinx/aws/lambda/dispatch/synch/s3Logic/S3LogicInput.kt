@@ -11,14 +11,19 @@ import net.kotlinx.json.serial.SerialToJson
  * */
 @Serializable
 data class S3LogicInput(
-    /** 커스텀 로직 이름 */
-    val logicName: String,
+    /**
+     * 커스텀 로직 이름
+     * 보통 런타임 클래스의 name()
+     * ex) BatchTaskExecutor::class.name()
+     *  */
+    val logicId: String,
     /** 데이터들 */
     val datas: List<String>,
     /** 로직 옵션 */
     val logicOption: String = "{}",
 ) : SerialToJson {
 
+    /** 이거 자체를 그대로 json화 한다 */
     override fun toJson(): String = SerialJsonSet.JSON_OTHER.encodeToString(this)
 
     companion object Parse : SerialParseJson {

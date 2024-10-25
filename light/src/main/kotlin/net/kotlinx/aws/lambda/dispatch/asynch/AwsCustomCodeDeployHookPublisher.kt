@@ -15,8 +15,9 @@ data class CodeDeployHookEvent(val lifecycleEventHookExecutionId: String, val de
 
 /**
  * 코드 드플로이 훅
+ * 이벤트브릿지 형식이 아님
  */
-class CodeDeployHookEventPublisher : LambdaDispatch {
+class AwsCustomCodeDeployHookPublisher : LambdaDispatch {
 
     private val log = KotlinLogging.logger {}
 

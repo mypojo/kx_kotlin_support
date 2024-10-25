@@ -17,7 +17,7 @@ import net.kotlinx.aws.with
 import net.kotlinx.calculator.ProgressData
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.domain.batchStep.BatchStepConfig
-import net.kotlinx.domain.batchStep.BatchStepInput
+import net.kotlinx.domain.batchStep.BatchStepParameter
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.serial.SerialJsonSet
 import net.kotlinx.json.serial.SerialToJson
@@ -45,22 +45,22 @@ class StepList : LambdaDispatchLogic {
 
         log.trace { "start.." }
         val start = TimeStart()
-        val stepInput = BatchStepInput.parseJson(input.toString())
+        val stepInput = BatchStepParameter.parseJson(input.toString())
         val option = stepInput.option
         val listOption = option.listOption!!
 
         val prefix = "${config.workUploadInputDir}${option.targetSfnId}/"
 
-        log.trace { "리스팅.." }
-        val contents = aws.s3.with {
+        log.trace { "S3 객체를 한번 호출로 최대한 많이 로드 (최대 천개 이내)" }
+        val maxS3List = aws.s3.with {
             listObjectsV2 {
                 this.bucket = this@StepList.config.workUploadBuket
                 this.prefix = prefix
-                this.maxKeys = listOption.maxConcurrency //최대치 까지만 읽어서 실행
             }.contents?.map { it.key!! } ?: emptyList()
         }
-        log.trace { " -> ${config.workUploadBuket}/$prefix -> S3 list ${contents.size}건" }
+        log.trace { " -> ${config.workUploadBuket}/$prefix -> S3 list ${maxS3List.size}건 로드.. (1회 API 호출)" }
 
+        val contents = maxS3List.shuffled().take(listOption.maxConcurrency)
         contents.map {
             suspend {
                 //AWS의 S3 입력과 동일하게 맞춰준다.
@@ -71,8 +71,7 @@ class StepList : LambdaDispatchLogic {
                 aws.lambda.with { invokeAsynch(this@StepList.config.lambdaFunctionName, lambdaInput) }
             }
         }.coroutineExecute(100) // 100개 정도는 문제 없음.
-
-        log.info { "리스팅 종료. ${contents.size}건 -> $start" }
+        log.info { "리스팅 종료. 전체로드 ${maxS3List.size} -> 랜덤 ${contents.size}건 -> $start" }
 
         val stepStart = StepStartContext.parseJson(input["option"]["stepStart"]["body"].toString())
         val currentNum = contents.firstOrNull()?.substringAfterLast("/")?.retainFrom(RegexSet.NUMERIC)?.toInt() ?: stepStart.first

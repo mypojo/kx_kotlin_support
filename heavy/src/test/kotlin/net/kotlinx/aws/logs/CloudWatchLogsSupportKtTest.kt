@@ -23,6 +23,9 @@ class CloudWatchLogsSupportKtTest : BeSpecHeavy() {
 
         xGiven("자주 쓰는 기능") {
             Then("해당 로그그룹을 모두 삭제") {
+                val profileName  = findProfile97
+                val aws  = koin<AwsClient>(profileName)
+                log.warn { "[/aws/lambda/$profileName-fn-dev] 로그 삭제.." }
                 aws.logs.cleanLogStream("/aws/lambda/$profileName-fn-dev")
             }
         }

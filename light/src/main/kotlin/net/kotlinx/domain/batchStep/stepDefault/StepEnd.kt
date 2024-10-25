@@ -7,13 +7,16 @@ import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.athena.AthenaModule
 import net.kotlinx.aws.lambda.LambdaUtil
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatchLogic
+import net.kotlinx.domain.batchStep.BatchStepCallback
 import net.kotlinx.domain.batchStep.BatchStepConfig
-import net.kotlinx.domain.batchStep.BatchStepInput
+import net.kotlinx.domain.batchStep.BatchStepParameter
+import net.kotlinx.domain.job.Job
 import net.kotlinx.domain.job.JobRepository
 import net.kotlinx.domain.job.JobStatus
 import net.kotlinx.domain.job.JobUpdateSet
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.koson.toGsonData
+import net.kotlinx.koin.Koins
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.retry.RetryTemplate
 import net.kotlinx.time.toTimeString
@@ -21,11 +24,12 @@ import java.time.LocalDateTime
 import kotlin.time.Duration.Companion.seconds
 
 
+/** 공통 처리 */
 class StepEnd : LambdaDispatchLogic {
 
     private val log = KotlinLogging.logger {}
 
-    private val aws1: AwsClient by koinLazy()
+    private val aws: AwsClient by koinLazy()
     private val config: BatchStepConfig by koinLazy()
     private val athenaModule: AthenaModule by koinLazy()
     private val jobRepository: JobRepository by koinLazy()
@@ -37,11 +41,18 @@ class StepEnd : LambdaDispatchLogic {
 
     override suspend fun execute(input: GsonData): Any {
 
-        val option = BatchStepInput.parseJson(input.toString()).option
+        val option = BatchStepParameter.parseJson(input.toString()).option
 
         val inputDatas = config.listInputs(option.targetSfnId)
         if (inputDatas.isNotEmpty()) {
             throw IllegalStateException("StepEnd 감지 : 처리되지 못한 데이터파일 ${inputDatas.size}건")
+        }
+
+        val job = jobRepository.getItem(Job(option.jobPk, option.jobSk))!!
+
+        log.trace { "BatchStepCallback 이 등록되어있다면 실행" }
+        Koins.koinOrNull<BatchStepCallback>(job.pk)?.let {
+            it.execute(option, job)
         }
 
         val datas = retry.withRetry {
@@ -82,7 +93,7 @@ class StepEnd : LambdaDispatchLogic {
             }
         }
 
-        jobRepository.getItem(net.kotlinx.domain.job.Job(option.jobPk, option.jobSk))!!.apply {
+        job.apply {
             jobStatus = JobStatus.SUCCEEDED
             endTime = LocalDateTime.now()
             jobContext = resultJson.toGsonData()

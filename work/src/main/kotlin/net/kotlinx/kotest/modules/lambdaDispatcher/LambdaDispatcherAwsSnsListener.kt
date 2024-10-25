@@ -2,13 +2,15 @@ package net.kotlinx.kotest.modules.lambdaDispatcher
 
 import com.google.common.eventbus.Subscribe
 import mu.KotlinLogging
-import net.kotlinx.aws.lambda.dispatch.asynch.*
+import net.kotlinx.aws.lambda.dispatch.asynch.SnsAlarm
+import net.kotlinx.aws.lambda.dispatch.asynch.SnsNotification
+import net.kotlinx.aws.lambda.dispatch.asynch.SnsUnknown
 import net.kotlinx.reflect.name
 import net.kotlinx.slack.SlackMessageSenders
 import net.kotlinx.string.abbr
 
 /** SNS 이벤트 */
-class LambdaDispatcherSnsListener {
+class LambdaDispatcherAwsSnsListener {
 
     private val log = KotlinLogging.logger {}
 
@@ -29,36 +31,9 @@ class LambdaDispatcherSnsListener {
     }
 
     @Subscribe
-    fun onEvent(event: SnsEcsTaskStateChange) {
+    fun onEvent(event: SnsAlarm) {
         SlackMessageSenders.Alert.send {
-            workDiv = SnsEcsTaskStateChange::class.name()
-            descriptions = listOf("ECS 상태변경 ${event.group}")
-            body = listOf(event.stoppedReason)
-        }
-    }
-
-    @Subscribe
-    fun onEvent(event: SnsSfnFail) {
-        SlackMessageSenders.Alert.send {
-            workDiv = SnsSfnFail::class.name()
-            descriptions = listOf(event.jobName)
-            body = listOf(event.cause.abbr(BODY_LIMIT))
-        }
-    }
-
-    @Subscribe
-    fun onEvent(event: SnsPipeline) {
-        SlackMessageSenders.Alert.send {
-            workDiv = SnsPipeline::class.name()
-            descriptions = listOf("빌드 ${event.state}")
-            body = listOf(event.pipeline)
-        }
-    }
-
-    @Subscribe
-    fun onEvent(event: SnsTrigger) {
-        SlackMessageSenders.Alert.send {
-            workDiv = SnsTrigger::class.name()
+            workDiv = SnsAlarm::class.name()
             descriptions = listOf("SNS 알림! ${event.alarmName}")
             body = listOf(event.data.toPreety().abbr(BODY_LIMIT))
         }

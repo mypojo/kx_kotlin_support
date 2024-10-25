@@ -19,6 +19,11 @@ allprojects {
 
     println("[$name] buildDir = ${layout.buildDirectory.get()}")
 
+    //모든 구성에서 특정 의존성을 제거함
+    configurations.all {
+        exclude(group = "commons-logging", module = "commons-logging") //로그백하고 충돌남
+    }
+
     apply {
         plugin("org.jetbrains.kotlin.jvm")
     }

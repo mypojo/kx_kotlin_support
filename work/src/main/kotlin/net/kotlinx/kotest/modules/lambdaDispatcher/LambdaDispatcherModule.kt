@@ -18,8 +18,9 @@ object LambdaDispatcherModule : KoinModule {
             log.debug { "LambdaDispatcher 이벤트 등록.." }
             val eventBus = koin<EventBus>()
             eventBus.register(LambdaDispatcherDefaultListener())
+            eventBus.register(LambdaDispatcherAwsEventBridgeListener())
             eventBus.register(LambdaDispatcherAwsEventListener())
-            eventBus.register(LambdaDispatcherSnsListener())
+            eventBus.register(LambdaDispatcherAwsSnsListener())
             LambdaDispatcher()
         }
 

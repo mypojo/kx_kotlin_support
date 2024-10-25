@@ -13,6 +13,7 @@ import net.kotlinx.exception.toSimpleString
 import net.kotlinx.file.slashDir
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.koin.Koins.koinLazy
+import net.kotlinx.koin.Koins.koinOrCheck
 import net.kotlinx.time.TimeStart
 import java.io.File
 
@@ -43,23 +44,14 @@ class S3LogicHandler {
      *  */
     lateinit var workBucket: String
 
-    /** 커스텀 로직들 */
-    private val logicMap: MutableMap<String, S3Logic> = mutableMapOf()
-
-    /** 설정 등록 */
-    fun register(block: S3Logic.() -> Unit = {}) {
-        val s3Logic = S3Logic().apply(block)
-        logicMap[s3Logic.id] = s3Logic
-    }
-
     /** 로컬 작업공간 */
     private val workDir = AwsInstanceTypeUtil.INSTANCE_TYPE.root.slashDir(S3LogicHandler::class.simpleName!!)
 
     /** 직접 호출 */
     suspend fun execute(input: S3LogicInput): S3LogicOutput {
-        val stepLogic = logicMap[input.logicName] ?: throw IllegalArgumentException("${input.logicName} not found")
-        log.debug { " -> ${stepLogic.id} 실행" }
-        return stepLogic.runtime.executeLogic(input)
+        val s3Logic = koinOrCheck<S3Logic>(input.logicId)
+        log.debug { " -> ${s3Logic.id} 실행" }
+        return s3Logic.runtime.executeLogic(input)
     }
 
     /** 람다 핸들러 호출 */

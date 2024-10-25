@@ -47,7 +47,7 @@ class JobSerializer(val profile: String? = null) {
             sfnId = input[Job::sfnId.name].str
 
             //특수한 경우 예외 처리해줌
-            if (jobDefinition.jobExecuteType == JobExecuteType.LAMBDA_SYNCH_NOLOG) {
+            if (jobDefinition.jobExecuteType == JobExecuteType.NOLOG) {
                 persist = false
             }
 

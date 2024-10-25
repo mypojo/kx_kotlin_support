@@ -11,8 +11,12 @@ fun String.slackQuote(): String = "```${this}```"
 /** Block quotes  */
 fun String.slackBlockQuote(): String = ">${this}"
 
-/** 멘션 (@붙여서 알람 주는거)  */
-fun String.slackMention(): String = "<@${this}>"
+/**
+ * 멘션 (@붙여서 알람 주는거)
+ * 단일멘션 -> @id
+ * 전체 -> !here
+ *  */
+fun String.slackMention(prefix: String = "@"): String = "<${prefix}${this}>"
 
 /**
  * 링크달기

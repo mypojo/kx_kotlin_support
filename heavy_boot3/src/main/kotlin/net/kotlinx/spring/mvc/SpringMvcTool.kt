@@ -31,11 +31,15 @@ class SpringMvcTool(val handlerMapping: RequestMappingHandlerMapping) {
                 log.debug { " -> req.patternsCondition : ${req.patternsCondition}" }
                 log.debug { " -> req.patternValues : ${req.patternValues}" }
             }
-            //일단 directPaths 만 가져옴
-            if (req.directPaths.isEmpty()) {
-                log.warn { "경고!!  directPaths is required : $req" }
+            val controllerPaths = if (req.directPaths.isEmpty()) {
+                log.trace { "패턴매칭!! -> 패턴 분리후 리턴.  ex) /api/system/job/list/{jobPk}" }
+                val condition = req.pathPatternsCondition!!
+                condition.patterns.map { it.patternString.substringBeforeLast("/{") }
+            } else {
+                req.directPaths
             }
-            req.directPaths.map {
+
+            controllerPaths.map {
                 MenuMethod(
                     it,
                     value.beanType,

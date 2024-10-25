@@ -3,6 +3,8 @@ package net.kotlinx.domain.job.trigger
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.AwsInstanceType
+import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.batch.BatchUtil
 import net.kotlinx.aws.batch.batch
 import net.kotlinx.aws.batch.submitJob
@@ -17,6 +19,7 @@ import net.kotlinx.domain.job.JobRepository
 import net.kotlinx.domain.job.JobStatus
 import net.kotlinx.id.IdGenerator
 import net.kotlinx.json.gson.toGsonData
+import net.kotlinx.koin.Koins.koinLazy
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -39,13 +42,20 @@ interface JobTriggerMethod : KoinComponent {
      *  */
     suspend fun trigger(op: JobTriggerOption): String
 
-    /** 개발자 PC 로컬 환경을 의미한다 */
+    /**
+     * 아래의 환경일 수 있음
+     * 개발자 PC 로컬
+     * 웹서버
+     * 람다 호출
+     *  */
     object LOCAL : JobTriggerMethod {
         override val name: String = "local"
         override val jobExeDiv: JobExeDiv = JobExeDiv.LOCAL
 
-        val jobSerializer: JobSerializer by inject()
-        val jobLocalExecutor: JobLocalExecutor by inject()
+        val jobSerializer: JobSerializer by koinLazy()
+        val jobLocalExecutor: JobLocalExecutor by koinLazy()
+
+        private val log = KotlinLogging.logger {}
 
         override suspend fun trigger(op: JobTriggerOption): String {
             val input = jobSerializer.toJson(op)
@@ -53,16 +63,33 @@ interface JobTriggerMethod : KoinComponent {
 
             if (job.jobStatus == JobStatus.RESERVED) return job.toKeyString()
 
-            return if (op.synch) {
-                jobLocalExecutor.runJob(job)
-            } else {
-                //비동기는 그냥 스래드 생성해서 실행 (스래드풀X)
-                Thread {
-                    runBlocking {
+            return when (AwsInstanceTypeUtil.INSTANCE_TYPE) {
+
+                /**
+                 * 람다는 메인스래드를 중지하지 않은 상태에서 백그라운드 스래드 작동이 불가능하다
+                 * ex) 이벤트 스케쥴러에서 트리거된 작업을 그대로 실행하는 경우
+                 * */
+                AwsInstanceType.LAMBDA -> {
+                    log.debug { "JobTriggerMethod LOCAL (${job.toKeyString()}) -> 동기화(${AwsInstanceTypeUtil.INSTANCE_TYPE}) 실행" }
+                    jobLocalExecutor.runJob(job)
+                }
+
+                else -> {
+                    if (op.synch) {
+                        log.debug { "JobTriggerMethod LOCAL (${job.toKeyString()}) -> 동기화 실행" }
                         jobLocalExecutor.runJob(job)
+                    } else {
+                        //비동기는 그냥 스래드 생성해서 실행 (스래드풀X)
+                        //주의!! 람다의 경우 이렇게 하면 호출이 시작만 스킵될 수 있음
+                        log.debug { "JobTriggerMethod LOCAL (${job.toKeyString()}) -> 비동기화 실행" }
+                        Thread {
+                            runBlocking {
+                                jobLocalExecutor.runJob(job)
+                            }
+                        }.start()
+                        job.toKeyString()
                     }
-                }.start()
-                job.toKeyString()
+                }
             }
         }
     }
@@ -82,17 +109,24 @@ class JobTriggerLambda(
 
     private val jobSerializer: JobSerializer by inject()
     private val idGenerator: IdGenerator by inject()
-    private val aws1: AwsClient by inject()
+    private val aws: AwsClient by inject()
     private val jobRepository: JobRepository by inject()
 
     override suspend fun trigger(op: JobTriggerOption): String {
         val jobSk = op.jobSk ?: idGenerator.nextvalAsString()
         val jobParam = jobSerializer.toJson(op, jobSk)
+
+        log.trace { "기본적으로 현재 위치가 람다인경우, 로컬로 실행되게 해준다" }
+        if (AwsInstanceTypeUtil.INSTANCE_TYPE == AwsInstanceType.LAMBDA) {
+            log.info { "현재 인스턴스 타입 = ${AwsInstanceTypeUtil.INSTANCE_TYPE} -> 람다를 다시 트리거하지 않고 로컬(람다)에서 실행됩니다" }
+            return JobTriggerMethod.LOCAL.trigger(op)
+        }
+
         if (op.synch) {
-            val resultText = aws1.lambda.invokeSynch(lambdaFunctionName, jobParam)
+            val resultText = aws.lambda.invokeSynch(lambdaFunctionName, jobParam)
             log.info { "람다 실행 [$jobParam] - 동기화(${op.synch}) -> 결과 (${resultText.ok}) ->  결과문자열 ${resultText.result}" }
         } else {
-            aws1.lambda.invokeAsynch(lambdaFunctionName, jobParam)
+            aws.lambda.invokeAsynch(lambdaFunctionName, jobParam)
             log.info { "람다 실행 [$jobParam] - 동기화(${op.synch})" }
         }
         if (log.isDebugEnabled) {

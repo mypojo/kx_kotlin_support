@@ -1,13 +1,10 @@
 package net.kotlinx.kotest.modules.lambdaDispatcher
 
 import com.google.common.eventbus.Subscribe
-import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatcherDeadEvent
 import net.kotlinx.aws.lambda.dispatch.asynch.CodeDeployHookEvent
-import net.kotlinx.aws.lambda.dispatch.asynch.SchedulerEvent
 import net.kotlinx.aws.lambda.dispatch.asynch.SqsEvent
-import net.kotlinx.domain.job.define.JobDefinitionRepository
 import net.kotlinx.reflect.name
 import net.kotlinx.slack.SlackMessageSenders
 
@@ -35,14 +32,6 @@ class LambdaDispatcherAwsEventListener {
         SlackMessageSenders.Alert.send {
             workDiv = LambdaDispatcherDeadEvent::class.name()
             descriptions = listOf("SqsEvent 해주세요!!!")
-        }
-    }
-
-    @Subscribe
-    fun onEvent(event: SchedulerEvent) {
-        runBlocking {
-            val jobParam = JobDefinitionRepository.findById(event.scheduleName).toJobOption().exe()
-            log.info { "잡(${jobParam}) 실행완료" }
         }
     }
 

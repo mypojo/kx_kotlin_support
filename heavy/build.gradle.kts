@@ -60,10 +60,7 @@ dependencies {
 
     //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
     api("org.jetbrains.exposed:exposed:_") //라이트 ORM
-    api("org.jetbrains.kotlinx:dataframe:_") {
-        //주피터 노트북 코틀린버전.  리프레시 버전 적용
-        exclude("commons-logging")
-    }
+    api("org.jetbrains.kotlinx:dataframe:_") //주피터 노트북 코틀린버전.  리프레시 버전 적용
 
     //==================================================== RDB ======================================================
     //implementation("software.aws.rds:aws-mysql-jdbc:1.1.8") //aws 장애조치기능이 담긴 mysql 드라이버 & 모든 mysql과 호환가능. https://github.com/awslabs/aws-mysql-jdbc <-- 클러스터 설정등이 필요

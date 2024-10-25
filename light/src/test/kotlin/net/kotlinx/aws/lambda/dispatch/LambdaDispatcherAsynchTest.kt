@@ -2,7 +2,6 @@ package net.kotlinx.aws.lambda.dispatch
 
 import com.lectra.koson.arr
 import com.lectra.koson.obj
-import net.kotlinx.aws.lambda.dispatch.asynch.SchedulerEventPublisher
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -17,7 +16,7 @@ class LambdaDispatcherAsynchTest : BeSpecHeavy() {
 
         Given("SchedulerEventPublisher 스케줄링") {
             val input = obj {
-                SchedulerEventPublisher.DETAIL_TYPE to SchedulerEventPublisher.SCHEDULED_EVENT
+                //SchedulerEventPublisher.DETAIL_TYPE to SchedulerEventPublisher.SCHEDULED_EVENT
                 "resources" to arr[
                     "arn:aws:scheduler:ap-northeast-2:99999999:schedule/newGroup/demoJob"
                 ]

@@ -6,6 +6,9 @@ class S3Logic {
     /** 유니크한 ID */
     lateinit var id: String
 
+    /** 이름 */
+    lateinit var name: String
+
     /** 설명 */
     var desc: List<String> = emptyList()
 
@@ -13,3 +16,4 @@ class S3Logic {
     lateinit var runtime: S3LogicRuntime
 
 }
+

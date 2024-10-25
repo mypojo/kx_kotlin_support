@@ -1,5 +1,6 @@
 package net.kotlinx.domain.menu
 
+import mu.KotlinLogging
 import net.kotlinx.collection.Trie
 import net.kotlinx.core.Kdsl
 import java.lang.reflect.Method
@@ -37,14 +38,15 @@ class MenuList {
     fun allChildren(): List<Menu> = _roots.fold<Menu, List<Menu>>(listOf()) { t, v -> t + v.allChildren() }.filter { it.isLeaf }
 
     /**
-     * 스프링 컨트롤러 정보 매핑 -> 스프링에서 제공하지 않는 편의 유틸
+     * 스프링 컨트롤러 정보를 가져와서 매핑 -> 스프링에서 제공하지 않는 편의 유틸
      * 메뉴의 path (짧은 URL) 를 사용해서 실제 매핑 URL(긴 URL)을 매핑해준다.
      *  */
     fun regisg(methods: Collection<MenuMethod>) {
         allChildren().forEach { eachMenu ->
-            eachMenu.menuMethods = methods.filter {
-                it.url.startsWith(eachMenu.path)
-            }.onEach { it.menu = eachMenu }
+            val methods = methods.filter { it.url.startsWith(eachMenu.path) }
+            methods.onEach { it.menu = eachMenu }
+            eachMenu.menuMethods = methods
+            log.trace { "메뉴 [${eachMenu.path}] -> 메뉴 메소드 ${methods.size}건 매핑 (${methods.joinToString(",") { it.method.name }})" }
         }
     }
 
@@ -92,6 +94,10 @@ class MenuList {
         if (prefixes.isEmpty()) return null
 
         return menuMethodMap[prefixes.first()]
+    }
+
+    companion object {
+        private val log = KotlinLogging.logger {}
     }
 
 

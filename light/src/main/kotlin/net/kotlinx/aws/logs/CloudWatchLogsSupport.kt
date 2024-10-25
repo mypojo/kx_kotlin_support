@@ -41,7 +41,7 @@ suspend fun CloudWatchLogsClient.cleanLogStream(logGroupName: String, interval: 
             }
             delay(interval)
         }
-        if (logStreams.size < 50) return
+        //if (logStreams.size < 50) return  // 50건 이하가 리턴될 수 있다
     }
     log.info { "deleteLogStream completed" }
 }

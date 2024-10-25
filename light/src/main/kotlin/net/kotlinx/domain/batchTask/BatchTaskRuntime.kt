@@ -9,7 +9,7 @@ interface BatchTaskRuntime {
     /**
      * @return 한번의 실행에 다수의 로직이 리턴될 수 있음
      * */
-    suspend fun executeLogic(input: List<String>, option: GsonData): Map<String, List<GsonData>>
+    suspend fun executeLogic(option: GsonData, input: List<String>): Map<String, List<GsonData>>
 
 
 }

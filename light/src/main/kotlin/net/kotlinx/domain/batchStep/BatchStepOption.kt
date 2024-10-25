@@ -16,13 +16,23 @@ class BatchStepOption {
     /** 모드 */
     var mode: BatchStepMode = BatchStepMode.MAP_INLINE
 
-    /** 잡 이름 (필수) */
+    /**
+     * 잡 이름 (필수)
+     * 실제 S3Logic 에 등록된 작업 클래스의 name()
+     * ex) kwdBaseLogic
+     *  */
     lateinit var jobPk: String
 
-    /** 잡 SK (이것도 그냥 필수) */
+    /**
+     * 잡 SK (이것도 그냥 필수)
+     * ex) SEED_09
+     *  */
     lateinit var jobSk: String
 
-    /** 초기화로 새로 채번. 리트라이시 오버라이드. */
+    /**
+     * 초기화로 새로 채번. 리트라이시 오버라이드.
+     * UUID 넣어도 되고, 커스텀 채번해서 넣어도 됨
+     * */
     lateinit var sfnId: String
 
     /** 이게 있으면 재시도로 간주. 재시도이면 업로드 안함.  */

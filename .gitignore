@@ -39,6 +39,7 @@ buildSrc/build
 
 #### 개인 관리 ####
 **/*_sin*
+*.ahk
 
 
 

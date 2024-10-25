@@ -47,12 +47,12 @@ class SlackApp_메세지템플릿 : BeSpecHeavy() {
 
             Then("에러메세지 데모 - 개인메세지") {
                 SlackMessageSenders.Alert.send {
-                    descriptions += listOf("추가메세지")
+                    descriptions += listOf("추가메세지 2 ${"here".slackMention("!")}")
                 }
-                SlackMessageSenders.Alert.send {
-                    toUser = "@U0641U84CUE"
-                    descriptions += listOf("추가메세지")
-                }
+//                SlackMessageSenders.Alert.send {
+//                    toUser = "@U0641U84CUE"
+//                    descriptions += listOf("추가메세지")
+//                }
             }
 
             xThen("성공메세지 데모") {

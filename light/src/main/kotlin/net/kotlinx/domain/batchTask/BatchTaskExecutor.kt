@@ -8,7 +8,7 @@ import net.kotlinx.collection.flatten
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.gson.toGsonArray
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinOrCheck
 import net.kotlinx.time.TimeStart
 
 
@@ -19,9 +19,9 @@ import net.kotlinx.time.TimeStart
 class BatchTaskExecutor : S3LogicRuntime {
 
     /** S3LogicRuntime 구현체 */
-    override suspend fun executeLogic(input: S3LogicInput): S3LogicOutput {
-        val logicOption = GsonData.parse(input.logicOption)
-        val datas = input.datas
+    override suspend fun executeLogic(inputs: S3LogicInput): S3LogicOutput {
+        val logicOption = GsonData.parse(inputs.logicOption)
+        val datas = inputs.datas
         val resultMap = executeLogic(logicOption, datas)
         return S3LogicOutput(
             GsonData.fromObj(datas),
@@ -29,6 +29,7 @@ class BatchTaskExecutor : S3LogicRuntime {
         )
     }
 
+    /** 일반적인 실행 */
     fun executeLogic(logicOption: GsonData, datas: List<String>): Map<String, GsonData> {
         val batchTaskIds = logicOption[BatchTaskOptionUtil.BATCH_TASK_IDS].map { it.str!! }
         log.info { "로직 ${batchTaskIds.size}건 실행 -> 데이터 ${datas.size}건 -> ${datas.take(2).joinToString(",")}.. " }
@@ -36,14 +37,17 @@ class BatchTaskExecutor : S3LogicRuntime {
         val start = TimeStart()
         val taskResults = batchTaskIds.map { batchTaskId ->
             suspend {
-                val batchTask = koin<BatchTask>(batchTaskId)
-                log.debug { " -> 로직 ${batchTask.id} 병렬 실행.." }
-                batchTask.runtime.executeLogic(datas, logicOption)
+                val each = TimeStart()
+                val batchTask = koinOrCheck<BatchTask>(batchTaskId)
+                log.debug { " -> 로직 [${batchTask.name}] 실행 시작.." }
+                batchTask.runtime.executeLogic(logicOption, datas).apply {
+                    log.info { " -> 로직 [${batchTask.name}] 종료 -> $each" }
+                }
             }
         }.coroutineExecute()
 
         val jobResults = taskResults.flatten().map { it.key to it.value.toGsonArray() }.toMap()
-        log.info { "로직 ${batchTaskIds.size}건 완료 -> $start" }
+        log.info { "전체로직 ${batchTaskIds.size}건 완료 -> 전체 걸린시간 : $start" }
         return jobResults
     }
 

@@ -4,7 +4,7 @@ import net.kotlinx.domain.job.Job
 import net.kotlinx.domain.job.JobRepository
 import net.kotlinx.domain.job.define.JobExecuteType
 import net.kotlinx.domain.job.define.JobScheduleType
-import net.kotlinx.domain.job.define.jobReg
+import net.kotlinx.domain.job.define.registJob
 import net.kotlinx.domain.job.trigger.JobLocalExecutor
 import net.kotlinx.domain.job.trigger.JobSerializer
 import net.kotlinx.koin.KoinModule
@@ -32,14 +32,14 @@ object JobModule : KoinModule {
             single(named(profileName)) { JobLocalExecutor(profileName) }
         }
 
-        jobReg {
+        registJob {
             jobClass = DemoJob::class
             name = "데모 작업 실행"
             descs = listOf(
                 "x분 주기로 동기화",
                 "월비용 =  80원",
             )
-            jobExecuteType = JobExecuteType.LAMBDA_SYNCH_NOLOG
+            jobExecuteType = JobExecuteType.NOLOG
             jobScheduleType = JobScheduleType.MINUTES
         }
 

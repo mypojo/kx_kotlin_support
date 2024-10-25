@@ -1,9 +1,9 @@
 package net.kotlinx.domain.batchStep.stepDefault
 
 import net.kotlinx.aws.lambda.dispatch.synch.BatchStepDispatcher
-import net.kotlinx.domain.batchStep.BatchStepInput
 import net.kotlinx.domain.batchStep.BatchStepListOption
 import net.kotlinx.domain.batchStep.BatchStepMode
+import net.kotlinx.domain.batchStep.BatchStepParameter
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.koin.Koins.koinLazy
@@ -22,7 +22,7 @@ class BatchStepDefaultRunnerTest : BeSpecHeavy() {
             val runner by koinLazy<BatchStepDispatcher>()
             Then("StepStart 테스트") {
 
-                val input = BatchStepInput(StepStart::class.name()) {
+                val input = BatchStepParameter(StepStart::class.name()) {
                     jobPk = "batchStepTest"
                     jobSk = "aaa"
                     sfnId = "7dde7369-4d9f-4dd9-a8f2-756d3cfd28ee"
@@ -38,7 +38,7 @@ class BatchStepDefaultRunnerTest : BeSpecHeavy() {
             }
             Then("StepEnd 테스트") {
 
-                val input = BatchStepInput(StepEnd::class.name()) {
+                val input = BatchStepParameter(StepEnd::class.name()) {
                     jobPk = "batchStepTest"
                     jobSk = "aaa"
                     sfnId = "7dde7369-4d9f-4dd9-a8f2-756d3cfd28ee"

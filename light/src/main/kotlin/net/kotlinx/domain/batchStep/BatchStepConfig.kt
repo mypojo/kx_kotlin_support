@@ -14,20 +14,19 @@ import net.kotlinx.core.Kdsl
 import net.kotlinx.domain.batchStep.stepDefault.StepEnd
 import net.kotlinx.domain.batchStep.stepDefault.StepList
 import net.kotlinx.domain.batchStep.stepDefault.StepStart
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import net.kotlinx.koin.Koins.koinLazy
 
 /**
  * BatchStep 설정파일
  * */
-class BatchStepConfig : KoinComponent {
+class BatchStepConfig {
 
     @Kdsl
     constructor(block: BatchStepConfig.() -> Unit = {}) {
         apply(block)
     }
 
-    private val aws1: AwsClient by inject()
+    private val aws: AwsClient by koinLazy()
 
     /** 업로드 버킷 명 */
     lateinit var workUploadBuket: String
@@ -45,7 +44,7 @@ class BatchStepConfig : KoinComponent {
     var workUploadOutputDir: String = "upload/sfnBatchModuleOutput/"
 
     /** 콘솔링크 출력 */
-    fun consoleLink(sfnId: String): String = aws1.awsConfig.sfnConfig.consoleLink(stateMachineName, sfnId)
+    fun consoleLink(sfnId: String): String = aws.awsConfig.sfnConfig.consoleLink(stateMachineName, sfnId)
 
     /** 미리 준비된 로직들 */
     var logics: List<LambdaDispatchLogic> = listOf(
@@ -58,7 +57,7 @@ class BatchStepConfig : KoinComponent {
 
     /** 인풋 데이터들을 리스팅한다 */
     suspend fun listInputs(targetSfnId: String): List<String> {
-        return aws1.s3.listObjectsV2Paginated {
+        return aws.s3.listObjectsV2Paginated {
             this.bucket = workUploadBuket
             this.prefix = "${workUploadInputDir}${targetSfnId}/"
         }.toList()
@@ -66,8 +65,8 @@ class BatchStepConfig : KoinComponent {
 
     /** 간단 결과 리턴 */
     suspend fun describeExecution(sfnId: String): DescribeExecutionResponse {
-        return aws1.sfn.describeExecution {
-            this.executionArn = aws1.awsConfig.sfnConfig.executionArn(stateMachineName, sfnId)
+        return aws.sfn.describeExecution {
+            this.executionArn = aws.awsConfig.sfnConfig.executionArn(stateMachineName, sfnId)
         }
     }
 
@@ -78,12 +77,12 @@ class BatchStepConfig : KoinComponent {
     suspend fun clear() {
 
         for (i in 0..100) {
-            val d1 = aws1.s3.deleteDir(workUploadBuket, workUploadInputDir)
+            val d1 = aws.s3.deleteDir(workUploadBuket, workUploadInputDir)
             log.warn { "sfnBatchModuleInput 파일 ${d1}건 삭제" }
             if (d1 <= 0) break
         }
         for (i in 0..100) {
-            val d2 = aws1.s3.deleteDir(workUploadBuket, workUploadOutputDir)
+            val d2 = aws.s3.deleteDir(workUploadBuket, workUploadOutputDir)
             log.warn { "sfnBatchModuleOutput 파일 ${d2}건 삭제" }
             if (d2 <= 0) break
         }

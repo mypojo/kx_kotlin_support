@@ -5,10 +5,10 @@ import com.google.common.eventbus.EventBus
 import com.lectra.koson.ObjectType
 import mu.KotlinLogging
 import net.kotlinx.aws.lambda.LambdaHandlerUtil
-import net.kotlinx.aws.lambda.dispatch.asynch.CodeDeployHookEventPublisher
-import net.kotlinx.aws.lambda.dispatch.asynch.SchedulerEventPublisher
-import net.kotlinx.aws.lambda.dispatch.asynch.SnsEventPublisher
-import net.kotlinx.aws.lambda.dispatch.asynch.SqsEventPublisher
+import net.kotlinx.aws.lambda.dispatch.asynch.AwsCustomCodeDeployHookPublisher
+import net.kotlinx.aws.lambda.dispatch.asynch.AwsEventBridgePublisher
+import net.kotlinx.aws.lambda.dispatch.asynch.AwsSnsPublisher
+import net.kotlinx.aws.lambda.dispatch.asynch.AwsSqsPublisher
 import net.kotlinx.aws.lambda.dispatch.synch.*
 import net.kotlinx.core.Kdsl
 import net.kotlinx.exception.toSimpleString
@@ -59,18 +59,19 @@ class LambdaDispatcher {
         apply(block)
     }
 
+    /** 메인 이벤트버스 */
     private val bus by koinLazy<EventBus>()
 
     /**
      * 디폴트 내장로직이 이미 추가되어있음.
      * */
     var logics: List<LambdaDispatch> = listOf(
-        //==================================================== asynch ======================================================
-        CodeDeployHookEventPublisher(),
-        SchedulerEventPublisher(),
-        SnsEventPublisher(),
-        SqsEventPublisher(),
-        //==================================================== synch ======================================================
+        //==================================================== asynch (guava eventbus 호출) ======================================================
+        AwsCustomCodeDeployHookPublisher(),
+        AwsEventBridgePublisher(),
+        AwsSnsPublisher(),
+        AwsSqsPublisher(),
+        //==================================================== synch (런타임 직접 실행) ======================================================
         CommandDispatcher(),
         BatchStepDispatcher(),
         JobDispatcher(),

@@ -51,10 +51,7 @@ dependencies {
     //==================================================== AWS JAVA V2 client (레거시 호환) ======================================================
     implementation("software.amazon.awssdk:apache-client:_") //기본 HTTP 클라이언트. okhttp 없음.. ㅠ https://docs.aws.amazon.com/ko_kr/sdk-for-java/latest/developer-guide/http-configuration-url.html
     implementation("software.amazon.awssdk:dynamodb:_") //DDB 분산락 작용용
-    api("com.amazonaws:dynamodb-lock-client:_") {
-        //DDB 분산락 클라이언트 정발버전 (spring tx에서 같이 사용)
-        exclude("commons-logging")
-    }
+    api("com.amazonaws:dynamodb-lock-client:_") //DDB 분산락 클라이언트 정발버전 (spring tx에서 같이 사용)
 
 
     //====================================================커먼즈 ======================================================
@@ -72,10 +69,7 @@ dependencies {
     //==================================================== 구글 API ======================================================
     //사용하기 키 발급받아서 사용하기 너무 불편함!! 일단 사용처는 없음
     //implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0") //https://github.com/googleapis/google-auth-library-java  구글인증은 이걸로 다 바뀐듯함 -> 나는 안씀
-    implementation("com.google.gdata:core:_"){
-        //구글 기본세트
-        exclude("commons-logging")
-    }
+    implementation("com.google.gdata:core:_") //구글 기본세트
 
     //구글 시리즈는 순서가 이상해서, 리프레시 버전 사용하지 않는다!! 어차피 2020년 이후로 업데이트 거의 안해줌
     //client 사용 버전이 과도하게 낮다..  이때문에 jib 쓸때 오류남. 별도로 추가해줄것.
@@ -98,7 +92,6 @@ dependencies {
     api("io.ktor:ktor-server-tests-jvm:_") {
         // 람다용 호출 때문에 testImplementation -> implementation 로 변경
         exclude("io.ktor","ktor-client-apache")
-        exclude("commons-logging")
     }
     api("io.ktor:ktor-server-html-builder-jvm:_") //kotlin html 간단 확장
     // 인증 3종세트

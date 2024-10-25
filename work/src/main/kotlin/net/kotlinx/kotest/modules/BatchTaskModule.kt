@@ -3,6 +3,7 @@ package net.kotlinx.kotest.modules
 import com.lectra.koson.obj
 import mu.KotlinLogging
 import net.kotlinx.concurrent.delay
+import net.kotlinx.domain.batchTask.BatchTaskExecutor
 import net.kotlinx.domain.batchTask.BatchTaskRuntime
 import net.kotlinx.domain.batchTask.registBatchTask
 import net.kotlinx.json.gson.GsonData
@@ -13,7 +14,7 @@ import org.koin.dsl.module
 import kotlin.time.Duration.Companion.seconds
 
 class BatchTaskDemo2 : BatchTaskRuntime {
-    override suspend fun executeLogic(input: List<String>, option: GsonData): Map<String, List<GsonData>> {
+    override suspend fun executeLogic(option: GsonData, input: List<String>): Map<String, List<GsonData>> {
         1.seconds.delay()
         return mapOf(
             "kwdData2" to listOf(
@@ -36,11 +37,13 @@ object BatchTaskModule : KoinModule {
 
     override fun moduleConfig(): Module = module {
 
+        single { BatchTaskExecutor() }
+
         registBatchTask("taskDemo1") {
             name = "taskDemo1"
             desc = listOf("demo1 task")
             runtime = object : BatchTaskRuntime {
-                override suspend fun executeLogic(input: List<String>, option: GsonData): Map<String, List<GsonData>> {
+                override suspend fun executeLogic(option: GsonData, input: List<String>): Map<String, List<GsonData>> {
                     2.seconds.delay()
                     return mapOf(
                         "kwdData1" to listOf(

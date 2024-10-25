@@ -1,11 +1,14 @@
 package net.kotlinx.koin
 
 import mu.KotlinLogging
+import net.kotlinx.reflect.name
+import net.kotlinx.string.print
 import net.kotlinx.string.toTextGridPrint
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.module.Module
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.named
@@ -28,8 +31,6 @@ import org.koin.mp.KoinPlatformTools
  * */
 object Koins {
 
-    private val log = KotlinLogging.logger {}
-
     /**
      * 자동 import 되도록 단순한 단어 사용
      *  */
@@ -44,20 +45,39 @@ object Koins {
     inline fun <reified T : Any> koin(qualifier: String? = null, noinline parameters: ParametersDefinition? = null): T =
         KoinPlatformTools.defaultContext().get().get<T>(qualifier?.let { named(qualifier) }, parameters)
 
+
+    /**
+     * kotin 이 없을경우 경고를 같이 해줌
+     * 인라인이라 코드 크기 주의해야함!
+     * */
+    inline fun <reified T : Any> koinOrCheck(qualifier: String? = null, noinline parameters: ParametersDefinition? = null): T {
+        return try {
+            KoinPlatformTools.defaultContext().get().get<T>(qualifier?.let { named(qualifier) }, parameters)
+        } catch (e: NoDefinitionFoundException) {
+            qualifier?.let {
+                val log = KotlinLogging.logger {}
+                log.warn { "[${qualifier}] ${T::class.name()} 로직을 찾을 수 없습니다" }
+                koins<T>().print()
+            }
+            throw e
+        }
+    }
+
     /**
      * 자동 import 되도록 단순한 단어 사용
      * */
     inline fun <reified T : Any> koins(): List<T> = KoinPlatformTools.defaultContext().get().getAll<T>()
 
-//    /**
-//     * koin 시작
-//     * ex) Koins.startup(BeSpecLight.MODULES)
-//     * */
-//    fun startup(modules: List<Module>) {
-//        startKoin {
-//            modules(modules)
-//        }
-//    }
+
+    /** 없으면 null 리턴 */
+    inline fun <reified T : Any> koinOrNull(qualifier: String? = null, noinline parameters: ParametersDefinition? = null): T? {
+        return try {
+            return koin(qualifier, parameters)
+        } catch (e: NoDefinitionFoundException) {
+            null
+        }
+    }
+
 
     /**
      * 한번만 시작함 & 재시작 없음

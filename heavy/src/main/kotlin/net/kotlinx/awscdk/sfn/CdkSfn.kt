@@ -8,11 +8,10 @@ import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.events.EventPattern
 import software.amazon.awscdk.services.events.Rule
 import software.amazon.awscdk.services.events.RuleProps
-import software.amazon.awscdk.services.events.targets.SnsTopic
-import software.amazon.awscdk.services.events.targets.SnsTopicProps
+import software.amazon.awscdk.services.events.targets.LambdaFunction
+import software.amazon.awscdk.services.events.targets.LambdaFunctionProps
 import software.amazon.awscdk.services.iam.IRole
 import software.amazon.awscdk.services.lambda.IFunction
-import software.amazon.awscdk.services.sns.ITopic
 import software.amazon.awscdk.services.sqs.IQueue
 import software.amazon.awscdk.services.stepfunctions.DefinitionBody
 import software.amazon.awscdk.services.stepfunctions.IChainable
@@ -62,11 +61,6 @@ class CdkSfn : CdkInterface {
 
     /** 처음(시작) 객체가 입력되어야 한다 */
     fun create(vararg definitions: IChainable) {
-
-        choice("asd"){
-
-        }
-
         stateMachine = StateMachine(
             stack, "sfn-$logicalName", StateMachineProps.builder()
                 .stateMachineName(logicalName)
@@ -78,14 +72,16 @@ class CdkSfn : CdkInterface {
         TagUtil.tag(stateMachine, deploymentType)
     }
 
-    /**  예외 처리 -> SNS */
-    fun onErrorHandle(topic: ITopic, dlq: IQueue) {
-        val ruleName = "${logicalName}-faileAlert"
+    /**
+     * 이벤트 변경시 SNS 호출
+     *  */
+    fun onEventHandle(dlq: IQueue) {
+        val ruleName = "${logicalName}-statusChange"
         val rule = Rule(
             stack, ruleName, RuleProps.builder()
                 .ruleName(ruleName)
-                .description("$logicalName fail alert")
-                .targets(listOf(SnsTopic(topic, SnsTopicProps.builder().deadLetterQueue(dlq).build())))
+                .description("$logicalName statusChange to lambda")
+                .targets(listOf(LambdaFunction(lambda, LambdaFunctionProps.builder().deadLetterQueue(dlq).build())))
                 .eventPattern(
                     EventPattern.builder()
                         .source(listOf("aws.states"))
@@ -93,7 +89,9 @@ class CdkSfn : CdkInterface {
                         .detail(
                             mapOf(
                                 "stateMachineArn" to listOf(stateMachine.stateMachineArn),
-                                "status" to listOf("FAILED")
+                                //https://docs.aws.amazon.com/ko_kr/step-functions/latest/dg/eventbridge-integration.html
+                                //"RUNNING | SUCCEEDED | FAILED | TIMED_OUT | ABORTED | PENDING_REDRIVE"
+                                "status" to listOf("SUCCEEDED", "FAILED", "TIMED_OUT", "ABORTED", "PENDING_REDRIVE")
                             )
                         )
                         .build()

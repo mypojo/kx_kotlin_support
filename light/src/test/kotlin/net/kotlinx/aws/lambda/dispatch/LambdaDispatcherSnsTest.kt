@@ -1,7 +1,8 @@
 package net.kotlinx.aws.lambda.dispatch
 
 import com.lectra.koson.obj
-import net.kotlinx.aws.lambda.dispatch.asynch.SnsEventPublisher
+import net.kotlinx.aws.AwsNaming
+import net.kotlinx.aws.lambda.dispatch.asynch.AwsSnsPublisher
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -18,7 +19,7 @@ class LambdaDispatcherSnsTest : BeSpecHeavy() {
 
             Then("CodePipeline") {
                 val input = obj {
-                    SnsEventPublisher.EVENT_SOURCE to SnsEventPublisher.SOURCE_SNS
+                    AwsNaming.Event.EVENT_SOURCE2 to AwsSnsPublisher.SOURCE_SNS
                     "Sns" to obj {
                         "Type" to "Notification"
                         "Message" to obj {
@@ -36,7 +37,7 @@ class LambdaDispatcherSnsTest : BeSpecHeavy() {
 
             Then("클라우드와치 알람") {
                 val input = obj {
-                    SnsEventPublisher.EVENT_SOURCE to SnsEventPublisher.SOURCE_SNS
+                    AwsNaming.Event.EVENT_SOURCE2 to AwsSnsPublisher.SOURCE_SNS
                     "Sns" to obj {
                         "Message" to obj {
                             "AlarmName" to "테스트알람"

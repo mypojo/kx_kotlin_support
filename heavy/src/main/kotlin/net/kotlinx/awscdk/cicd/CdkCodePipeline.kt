@@ -51,7 +51,10 @@ class CdkCodePipeline : CdkInterface {
     /** 내부에서 테스트 등을 수행할 수 있음으로 프로그램 가동용 역할 넣으면됨 */
     lateinit var role: IRole
 
-    /** 노티 받을 토픽 */
+    /**
+     * 노티 받을 토픽
+     * 람다는 안되고 챗봇이나 SNS만 됨
+     *  */
     lateinit var topics: List<ITopic>
 
     /** 결과 */
