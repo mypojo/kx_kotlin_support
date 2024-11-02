@@ -1,4 +1,4 @@
-package net.kotlinx.aws.code
+package net.kotlinx.aws.codeDeploy
 
 import aws.sdk.kotlin.services.codedeploy.CodeDeployClient
 import aws.sdk.kotlin.services.codedeploy.createDeployment

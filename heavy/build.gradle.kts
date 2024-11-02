@@ -22,10 +22,7 @@ dependencies {
     val awsVersion: String by project
     api("aws.sdk.kotlin:iam:$awsVersion") //용량 큼
     api("aws.sdk.kotlin:rds:$awsVersion")
-    api("aws.sdk.kotlin:ses:$awsVersion")
-    api("aws.sdk.kotlin:eventbridge:$awsVersion")
     api("aws.sdk.kotlin:codedeploy:$awsVersion")
-    api("aws.sdk.kotlin:codecommit:$awsVersion")
     api("aws.sdk.kotlin:secretsmanager:$awsVersion")
     api("aws.sdk.kotlin:ec2:$awsVersion") //용량 큼. 27 mbyte
     api("aws.sdk.kotlin:ecr:$awsVersion")

@@ -9,7 +9,7 @@ import net.kotlinx.reflect.name
 import net.kotlinx.slack.SlackMessageSenders
 
 /** AWS 이벤트들 */
-class LambdaDispatcherAwsEventListener {
+class AwsEventListener {
 
     private val log = KotlinLogging.logger {}
 

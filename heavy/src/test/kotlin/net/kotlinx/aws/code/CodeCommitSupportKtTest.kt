@@ -3,6 +3,8 @@ package net.kotlinx.aws.code
 import aws.sdk.kotlin.services.codecommit.listFileCommitHistory
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.codeCommit.codeCommit
+import net.kotlinx.aws.codeCommit.getBranchCommit
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest

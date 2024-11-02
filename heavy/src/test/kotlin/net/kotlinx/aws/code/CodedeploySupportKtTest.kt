@@ -2,6 +2,7 @@ package net.kotlinx.aws.code
 
 import aws.sdk.kotlin.services.codedeploy.model.LifecycleEventStatus
 import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.codeDeploy.*
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest

@@ -1,5 +1,6 @@
 package net.kotlinx.aws.lambda
 
+import net.kotlinx.aws.AwsConfig
 import net.kotlinx.json.gson.GsonSet
 import net.kotlinx.string.ResultText
 import java.io.File
@@ -20,6 +21,9 @@ object LambdaUtil {
 
     /** 1G 기준 초당 비용 (가장 비싸게 구매시) -> 256mb 으로 변환 */
     const val COST_GI_PER_SEC = 0.0000166667
+
+    /** 사용량(밀리초)를 원화로 변경 */
+    fun cost(mills: Long): Double = 1.0 * mills / 1000 * LambdaUtil.COST_GI_PER_SEC / 4 * AwsConfig.EXCHANGE_RATE  //256mb 기준
 
     //==================================================== 간단 예약어들  ======================================================
 

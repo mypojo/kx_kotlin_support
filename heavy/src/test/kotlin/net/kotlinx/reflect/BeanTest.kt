@@ -3,7 +3,9 @@ package net.kotlinx.reflect
 import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import net.kotlinx.csv.readCsvLines
+import net.kotlinx.csv.readCsvLinesCnt
 import net.kotlinx.csv.writeCsvLines
+import net.kotlinx.file.FileGzipUtil
 import net.kotlinx.file.slash
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
@@ -104,6 +106,15 @@ class BeanTest : BeSpecLog() {
                 }
                 val lines = file.readCsvLines().fromLines<Common01>()
                 lines.print()
+                println(file.readCsvLinesCnt())
+            }
+
+            Then("테스트 데이터 읽기") {
+                val file = ResourceHolder.WORKSPACE.slash("f3d3d604-353f-4eb4-9fc1-4db8d9e4a514.csv")
+                val renamed = ResourceHolder.WORKSPACE.slash("f3d3d604-353f-4eb4-9fc1-4db8d9e4a514.csv.gz")
+                file.renameTo(renamed)
+                FileGzipUtil.unGzip(renamed)
+                println(file.readCsvLinesCnt())
             }
         }
 

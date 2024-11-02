@@ -1,6 +1,7 @@
 package net.kotlinx.aws.lambda.dispatch.synch.s3Logic
 
 import aws.sdk.kotlin.services.s3.deleteObject
+import com.google.common.eventbus.EventBus
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceTypeUtil
@@ -9,7 +10,6 @@ import net.kotlinx.aws.s3.putObject
 import net.kotlinx.aws.s3.s3
 import net.kotlinx.aws.with
 import net.kotlinx.core.Kdsl
-import net.kotlinx.exception.toSimpleString
 import net.kotlinx.file.slashDir
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.koin.Koins.koinLazy
@@ -31,6 +31,7 @@ class S3LogicHandler {
     private val log = KotlinLogging.logger {}
 
     private val aws: AwsClient by koinLazy()
+    private val eventBus: EventBus by koinLazy()
 
     @Kdsl
     constructor(block: S3LogicHandler.() -> Unit = {}) {
@@ -75,11 +76,7 @@ class S3LogicHandler {
         val s3LogicOutput = try {
             execute(inputData)
         } catch (e: Exception) {
-            //리트라이 하지 않음으로 예외를 던지지 않고 실패 리턴함 (로그 지저분해짐)
-            if (log.isDebugEnabled) {
-                e.printStackTrace()
-            }
-            log.warn { "###### 데이터 처리 실패!! 알람 보내지 않고 넘어감 -> $start / ${path.fileName} / ${e.toSimpleString()}" }
+            eventBus.post(S3LogicFailEvent(path, inputData, e))
             return
         }
 

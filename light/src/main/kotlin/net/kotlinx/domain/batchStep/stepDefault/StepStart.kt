@@ -1,8 +1,6 @@
 package net.kotlinx.domain.batchStep.stepDefault
 
 import com.lectra.koson.obj
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceMetadata
@@ -19,10 +17,6 @@ import net.kotlinx.domain.job.JobExeFrom
 import net.kotlinx.domain.job.JobRepository
 import net.kotlinx.domain.job.JobStatus
 import net.kotlinx.json.gson.GsonData
-import net.kotlinx.json.serial.LocalDateTimeSerializer
-import net.kotlinx.json.serial.SerialJsonSet
-import net.kotlinx.json.serial.SerialParseJson
-import net.kotlinx.json.serial.SerialToJson
 import net.kotlinx.koin.Koins
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.regex.RegexSet
@@ -99,10 +93,8 @@ class StepStart : LambdaDispatchLogic {
 }
 
 /** 로그로 남길 기록 */
-@Serializable
 data class StepStartContext(
     /** 시작시간 */
-    @Serializable(LocalDateTimeSerializer::class)
     val startTime: LocalDateTime,
     /** 이번로드 전체수 */
     val total: Int,
@@ -113,12 +105,4 @@ data class StepStartContext(
      * array<String> 이며 문자는 json 형식이어야함  {Key:...}
      *  */
     val datas: List<String>,
-) : SerialToJson {
-
-    override fun toJson(): String = SerialJsonSet.JSON_OTHER.encodeToString(this)
-
-    companion object Parse : SerialParseJson {
-        override fun parseJson(json: String): StepStartContext = SerialJsonSet.JSON_OTHER.decodeFromString(json)
-    }
-
-}
+)

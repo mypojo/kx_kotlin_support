@@ -143,5 +143,12 @@ data class AwsConfig(
 
         /** 북미서버 메인 (인증서 등록 등) */
         const val REGION_US: String = "us-east-1"
+
+        /**
+         * 간단 계산용 환율
+         * 뉴 노멀 적용
+         *  */
+        const val EXCHANGE_RATE: Int = 1380
+
     }
 }

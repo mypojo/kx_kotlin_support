@@ -27,7 +27,7 @@ class CdkS3 : CdkEnum {
     var domain: Boolean = false
 
     override val logicalName: String
-        get() = if (domain) name else "${project.profileName}-${name}-${deploymentType.name.lowercase()}"
+        get() = if (domain) name else "${project.profileName}-${name}-${suff}"
 
     lateinit var iBucket: IBucket
 
@@ -112,7 +112,7 @@ class CdkS3 : CdkEnum {
      * ex) "athena", "athena/", Duration.days(3)
      * */
     fun addLifeCycleDelete(name: String, prefix: String, delete: kotlin.time.Duration) {
-        lifecycleRules += LifecycleRule.builder().id("${project.profileName}-lifecycle-$name-${deploymentType.name.lowercase()}")
+        lifecycleRules += LifecycleRule.builder().id("${project.profileName}-lifecycle-$name-${suff}")
             .prefix(prefix)
             .abortIncompleteMultipartUploadAfter(Duration.days(7))// 기본설정
             .expiration(delete.toCdk())
@@ -124,7 +124,7 @@ class CdkS3 : CdkEnum {
      * ex) download/ -> 90일 후에 삭제 마킹 -> 삭제마킹 이후 30일 이후 실제 삭제
      * */
     fun addLifeCycleMarkAndDelete(name: String, prefix: String, deleteMark: kotlin.time.Duration, delete: kotlin.time.Duration) {
-        lifecycleRules += LifecycleRule.builder().id("${project.profileName}-lifecycle-$name-${deploymentType.name.lowercase()}")
+        lifecycleRules += LifecycleRule.builder().id("${project.profileName}-lifecycle-$name-${suff}")
             .prefix(prefix)
             .abortIncompleteMultipartUploadAfter(Duration.days(7))// 기본설정
             .expiration(deleteMark.toCdk()) //xx 후에 삭제 마킹

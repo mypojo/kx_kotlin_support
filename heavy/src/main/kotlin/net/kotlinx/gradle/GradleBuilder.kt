@@ -9,10 +9,10 @@ import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.AwsNaming
-import net.kotlinx.aws.code.CodedeployUtil
-import net.kotlinx.aws.code.EcsDeployData
-import net.kotlinx.aws.code.codeDeploy
-import net.kotlinx.aws.code.createDeployment
+import net.kotlinx.aws.codeDeploy.CodedeployUtil
+import net.kotlinx.aws.codeDeploy.EcsDeployData
+import net.kotlinx.aws.codeDeploy.codeDeploy
+import net.kotlinx.aws.codeDeploy.createDeployment
 import net.kotlinx.aws.ecs.ecs
 import net.kotlinx.aws.ecs.touch
 import net.kotlinx.aws.lambda.*
@@ -155,7 +155,7 @@ class GradleBuilder {
     //==================================================== 람다(jar) 간단 배포 ======================================================
 
     /** 람다 업로드 버킷 생성기 */
-    var lambdaS3Bucket: () -> String = { "${profileName}-work-${deploymentType.name.lowercase()}" }
+    var lambdaS3Bucket: () -> String = { "${profileName}-work-${suff}" }
 
     /** 람다 업로드 키 접미어 */
     var lambdaS3Prefix = "code"

@@ -73,7 +73,7 @@ class StepList : LambdaDispatchLogic {
         }.coroutineExecute(100) // 100개 정도는 문제 없음.
         log.info { "리스팅 종료. 전체로드 ${maxS3List.size} -> 랜덤 ${contents.size}건 -> $start" }
 
-        val stepStart = StepStartContext.parseJson(input["option"]["stepStart"]["body"].toString())
+        val stepStart = input["option"]["stepStart"]["body"].fromJson<StepStartContext>()
         val currentNum = contents.firstOrNull()?.substringAfterLast("/")?.retainFrom(RegexSet.NUMERIC)?.toInt() ?: stepStart.first
         return ListFireAndForgetContext(
             when {

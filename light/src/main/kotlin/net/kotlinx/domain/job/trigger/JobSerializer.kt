@@ -54,7 +54,7 @@ class JobSerializer(val profile: String? = null) {
             log.debug { " -> job 신규생성 $pk / $sk" }
         }
         block(job)
-        jobRepository.putItem(job)
+        jobRepository.putItem(job) //UI때문에 미리 가입력을 해도 됨 -> 이경우 여기서 오버라이드
         return job
     }
 

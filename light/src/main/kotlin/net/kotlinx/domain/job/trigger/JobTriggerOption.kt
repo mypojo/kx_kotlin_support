@@ -27,13 +27,19 @@ class JobTriggerOption {
     /** 동기실행. (배치의 경우 컨테이너 올라갈때까지만 잠시 기다린다)  */
     var synch: Boolean = false
 
+    /**
+     * Job DDB 선입력
+     * 람다나 배치 등을 트리거 하기 전에 DDB를 먼저 입력해서, 사용자 UI에 대한 반응을 좋게함
+     *  */
+    var preJobPersist: Boolean = false
+
     //==================================================== 이하 job 입력 전달값 ======================================================
 
     /** 여기 입력되면 이거 사용. 없으면 새로 채번함 */
     var jobSk: String? = null
 
     /** 잡이 호출된 경로 */
-    var jobExeFrom: JobExeFrom = JobExeFrom.ADMIN
+    var jobExeFrom: JobExeFrom = JobExeFrom.UNKNOWN
 
     /** 최초 잡 상태. 보통 STARTING or RESERVED */
     var jobStatus: JobStatus = JobStatus.STARTING

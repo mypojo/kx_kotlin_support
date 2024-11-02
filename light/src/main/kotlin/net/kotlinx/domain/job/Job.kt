@@ -2,7 +2,10 @@ package net.kotlinx.domain.job
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.aws.AwsInstanceMetadata
+import net.kotlinx.aws.AwsInstanceType
 import net.kotlinx.aws.dynamo.*
+import net.kotlinx.aws.fargate.FargateUtil
+import net.kotlinx.aws.lambda.LambdaUtil
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.gson.GsonSet
 import net.kotlinx.lazyLoad.LazyLatchProperty
@@ -157,6 +160,19 @@ class Job(override val pk: String, override val sk: String) : DynamoData {
     fun toIntervalMills(): Long? = when {
         arrayOf(startTime, endTime).any { it == null } -> null
         else -> ChronoUnit.MILLIS.between(startTime!!, endTime!!)
+    }
+
+    /**
+     * 매우 러프하게 계산해준다
+     * 이 코드를 참조해서 실제 계산
+     *  */
+    fun toCost(): Double? {
+        val sumOfInterval = toIntervalMills() ?: return null
+        return when (instanceMetadata?.instanceType) {
+            AwsInstanceType.LAMBDA -> LambdaUtil.cost(sumOfInterval)
+            AwsInstanceType.BATCH -> FargateUtil.cost(0.5, 1.0, sumOfInterval)
+            else -> null
+        }
     }
 
     /**

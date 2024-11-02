@@ -23,7 +23,7 @@ class JobDispatcher : LambdaDispatch {
 
         if (job.jobStatus == JobStatus.RESERVED) return job.toKeyString()
 
-        return jobLocalExecutor.runJob(job)
+        return jobLocalExecutor.execute(job)
     }
 
 }

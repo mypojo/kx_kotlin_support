@@ -118,7 +118,7 @@ class CdkEcsWeb : CdkInterface {
 
     /** ECS - CLUSTER */
     fun createCluster(stack: Stack) {
-        val clusterName = "${projectName}-${name}_cluster-${deploymentType.name.lowercase()}"
+        val clusterName = "${projectName}-${name}_cluster-${suff}"
         cluster = Cluster(
             stack, clusterName, ClusterProps.builder()
                 .vpc(vpc)
@@ -136,7 +136,7 @@ class CdkEcsWeb : CdkInterface {
 
     /** ECS - TASK DEFINITION */
     private fun createTaskDefinition(stack: Stack) {
-        val taskDefName = "${projectName}-${name}_task_def-${deploymentType.name.lowercase()}"
+        val taskDefName = "${projectName}-${name}_task_def-${suff}"
         taskDef = TaskDefinition(
             stack, taskDefName, TaskDefinitionProps.builder()
                 .family(taskDefName)
@@ -184,7 +184,7 @@ class CdkEcsWeb : CdkInterface {
     lateinit var alb: ApplicationLoadBalancer
 
     private fun createAlb(stack: Stack) {
-        val albName = "${projectName}-${name}-alb-${deploymentType.name.lowercase()}"
+        val albName = "${projectName}-${name}-alb-${suff}"
 
         /** 내부 서버의 타임아웃은 이거보다 짧게 설정해야 한다. */
         val TIMEOUT_ALB = (60).seconds.toCdk()  // 2분에서 5분으로 늘림 (전체 리스트 조회시 2분 넘게걸림)
@@ -202,7 +202,7 @@ class CdkEcsWeb : CdkInterface {
 
         /** 기본 리다이렉트 설정 */
         alb.addListener(
-            "${projectName}-${name}_alb_listner_http-${deploymentType.name.lowercase()}", BaseApplicationListenerProps.builder()
+            "${projectName}-${name}_alb_listner_http-${suff}", BaseApplicationListenerProps.builder()
                 .port(PortUtil.WEB_80) //80은 디폴트라서 빼도 되긴 함
                 .protocol(ApplicationProtocol.HTTP)
                 .defaultAction(
@@ -230,7 +230,7 @@ class CdkEcsWeb : CdkInterface {
 
         val service = createFargateService(stack)
         val httpsListner = alb.addListener(
-            "${projectName}-${name}_alb_listner_https-${deploymentType.name.lowercase()}",
+            "${projectName}-${name}_alb_listner_https-${suff}",
             BaseApplicationListenerProps.builder()
                 .port(PortUtil.WEB_443)
                 .protocol(ApplicationProtocol.HTTPS) //443 하면 디폴트라서 빼도됨
@@ -240,7 +240,7 @@ class CdkEcsWeb : CdkInterface {
                 .build()
         )
 
-        val targetGroupName = "${projectName}-${name}-target-${deploymentType.name.lowercase()}" //언더바 사용 금지
+        val targetGroupName = "${projectName}-${name}-target-${suff}" //언더바 사용 금지
         service.registerLoadBalancerTargets(
             EcsTarget.builder()
                 .containerName(container.containerName)
@@ -264,7 +264,7 @@ class CdkEcsWeb : CdkInterface {
     }
 
     private fun createFargateService(stack: Stack, block: FargateServiceProps.Builder.() -> Unit = {}): FargateService {
-        val serviceName = "${projectName}-${name}_service-${deploymentType.name.lowercase()}"
+        val serviceName = "${projectName}-${name}_service-${suff}"
         val service = FargateService(
             stack, serviceName, FargateServiceProps.builder()
                 .cluster(cluster)
@@ -290,7 +290,7 @@ class CdkEcsWeb : CdkInterface {
 
         )
         autoScale.scaleOnCpuUtilization(
-            "${projectName}-${name}_autoScale-${deploymentType.name.lowercase()}", CpuUtilizationScalingProps.builder()
+            "${projectName}-${name}_autoScale-${suff}", CpuUtilizationScalingProps.builder()
                 .targetUtilizationPercent(config.targetUtilizationPercent)
                 .scaleInCooldown(300.seconds.toCdk()) //디폴트 그대로
                 .scaleOutCooldown(300.seconds.toCdk()) //디폴트 그대로

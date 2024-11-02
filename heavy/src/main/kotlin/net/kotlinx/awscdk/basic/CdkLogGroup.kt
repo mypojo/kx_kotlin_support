@@ -17,7 +17,7 @@ class CdkLogGroup : CdkInterface {
 
     /** VPC 이름 */
     override val logicalName: String
-        get() = "/aws/${serviceName}-${deploymentType.name.lowercase()}"
+        get() = "/aws/${serviceName}-${suff}"
 
     /**
      * 서비스명.  이걸로 로그 패스가 결정됨

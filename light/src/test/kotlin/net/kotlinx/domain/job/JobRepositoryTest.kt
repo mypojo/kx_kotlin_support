@@ -19,7 +19,7 @@ class JobRepositoryTest : BeSpecLight() {
     private val jobRepository by koinLazy<JobRepository>(findProfile97)
 
     class DemoUpdate01Job : JobTasklet {
-        override suspend fun doRun(job: Job) {}
+        override suspend fun execute(job: Job) {}
     }
 
     val jobDef = JobDefinition {

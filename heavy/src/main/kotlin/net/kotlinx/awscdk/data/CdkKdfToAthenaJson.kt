@@ -25,7 +25,7 @@ class CdkKdfToAthenaJson : CdkInterface {
     }
 
     override val logicalName: String
-        get() = "${tableName}-${deploymentType.name.lowercase()}"
+        get() = "${tableName}-${suff}"
 
     /** KDF 전송 역할 */
     lateinit var role: IRole

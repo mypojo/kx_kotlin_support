@@ -25,7 +25,7 @@ class CdkRdsAuroraServerlessV2 : CdkInterface {
 
     /** 언더바 포함금지 */
     override val logicalName: String
-        get() = "${name}-${deploymentType.name.lowercase()}"
+        get() = "${name}-${suff}"
 
     lateinit var vpc: IVpc
     lateinit var securityGroup: ISecurityGroup
@@ -103,8 +103,8 @@ class CdkRdsAuroraServerlessV2 : CdkInterface {
                 )
                 .writer(
                     ClusterInstance.serverlessV2(
-                        "${name}-serverlessV2Writer-${deploymentType.name.lowercase()}", ServerlessV2ClusterInstanceProps.builder()
-                            .instanceIdentifier("${name}-writer-${deploymentType.name.lowercase()}") //개별 인스턴스 이름
+                        "${name}-serverlessV2Writer-${suff}", ServerlessV2ClusterInstanceProps.builder()
+                            .instanceIdentifier("${name}-writer-${suff}") //개별 인스턴스 이름
                             .allowMajorVersionUpgrade(true)
                             .autoMinorVersionUpgrade(true)
                             .enablePerformanceInsights(true) //안하면  Recommendations 에 경고뜸.  2 ACU 이상을 권장함..  비용은 기본설정시(x일) 공짜인듯

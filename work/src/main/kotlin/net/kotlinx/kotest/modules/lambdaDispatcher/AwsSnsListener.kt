@@ -10,7 +10,7 @@ import net.kotlinx.slack.SlackMessageSenders
 import net.kotlinx.string.abbr
 
 /** SNS 이벤트 */
-class LambdaDispatcherAwsSnsListener {
+class AwsSnsListener {
 
     private val log = KotlinLogging.logger {}
 

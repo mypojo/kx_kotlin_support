@@ -36,7 +36,7 @@ class CdkLambda : CdkEnum {
     lateinit var lambdaName: String
 
     override val logicalName: String
-        get() = "${project.profileName}-${lambdaName}-${deploymentType.name.lowercase()}"
+        get() = "${project.profileName}-${lambdaName}-${suff}"
 
     /** 필수 권한 */
     lateinit var role: IRole
@@ -164,7 +164,7 @@ class CdkLambda : CdkEnum {
         }
 
         aliasName?.let {
-            aliasFun = Alias.Builder.create(stack, "lambda-alias-${aliasName}-${deploymentType.name.lowercase()}")
+            aliasFun = Alias.Builder.create(stack, "lambda-alias-${aliasName}-${suff}")
                 .aliasName(aliasName)
                 .version(defaultFun.latestVersion).build()
         }

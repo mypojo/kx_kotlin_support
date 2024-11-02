@@ -1,4 +1,4 @@
-package net.kotlinx.aws.code
+package net.kotlinx.aws.codeCommit
 
 import aws.sdk.kotlin.services.codecommit.CodeCommitClient
 import aws.sdk.kotlin.services.codecommit.getBranch
@@ -6,6 +6,7 @@ import aws.sdk.kotlin.services.codecommit.getCommit
 import aws.sdk.kotlin.services.codecommit.model.Commit
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.regist
+
 
 val AwsClient.codeCommit: CodeCommitClient
     get() = getOrCreateClient { CodeCommitClient { awsConfig.build(this) }.regist(awsConfig) }

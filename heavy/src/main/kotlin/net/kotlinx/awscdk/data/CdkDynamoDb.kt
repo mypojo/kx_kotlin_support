@@ -26,7 +26,7 @@ class CdkDynamoDb : CdkInterface {
      * 즉 배포환경 없이 공용으로 쓰는  DDB는 있으면 안된다. (보안정책 확인)
      *  */
     override val logicalName: String
-        get() = "$tableName-${deploymentType.name.lowercase()}"
+        get() = "$tableName-${suff}"
 
     /** 테이블명 */
     lateinit var tableName: String

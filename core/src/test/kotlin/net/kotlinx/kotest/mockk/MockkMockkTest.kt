@@ -42,7 +42,7 @@ class MockkMockkTest : BeSpecLog() {
             When("val getter 모킹") {
 
                 class DemoUpdate01Job : JobTasklet {
-                    override suspend fun doRun(job: Job) {}
+                    override suspend fun execute(job: Job) {}
                 }
 
                 Then("일반적인 사용"){

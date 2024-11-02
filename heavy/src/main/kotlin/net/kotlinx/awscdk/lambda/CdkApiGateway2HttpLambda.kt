@@ -27,7 +27,7 @@ class CdkApiGateway2HttpLambda : CdkInterface {
 
     /** 언더바 포함금지 */
     override val logicalName: String
-        get() = "${apiName}-${deploymentType.name.lowercase()}"
+        get() = "${apiName}-${suff}"
 
     lateinit var apiName: String
 

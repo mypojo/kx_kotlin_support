@@ -41,6 +41,9 @@ dependencies {
     api("aws.sdk.kotlin:ecs:$awsVersion") //ECS 서비스 업데이트 때문에 여기 추가
     api("aws.sdk.kotlin:cloudwatchlogs:$awsVersion") //로그 조회기능때문에 위로 이동
     api("aws.sdk.kotlin:sts:$awsVersion") //용량 얼마 안되서 옮김. AWS ID 조회 등
+    api("aws.sdk.kotlin:eventbridge:$awsVersion") //2m 밖에 안함
+    api("aws.sdk.kotlin:ses:$awsVersion") //2m 밖에 안함
+    api("aws.sdk.kotlin:codecommit:$awsVersion") //3m.. 그래도 넣자
 
     //==================================================== AWS 람다 ======================================================
     api("com.amazonaws:aws-lambda-java-core:_") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함

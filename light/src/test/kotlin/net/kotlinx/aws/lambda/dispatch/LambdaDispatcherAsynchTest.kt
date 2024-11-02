@@ -26,6 +26,28 @@ class LambdaDispatcherAsynchTest : BeSpecHeavy() {
                 dispatcher.handleRequest(input)
             }
         }
+
+        Given("JOB 이벤트 수신") {
+            val input = obj {
+                "detail-type" to "Job Status Change"
+                "source" to "kotlinx.job"
+                "detail" to obj {
+                    "pk" to "demoJob"
+                    "sk" to "12345"
+                    "memberId" to "system"
+                    "ttl" to 0
+                    "jobStatus" to "SUCCEEDED"
+                    "jobErrMsg" to "에러발생!! "
+                    "persist" to true
+                }
+            }
+
+            Then("설정된 스케쥴링으로 이벤트 수신") {
+                dispatcher.handleRequest(input)
+            }
+        }
+
+
     }
 
 }

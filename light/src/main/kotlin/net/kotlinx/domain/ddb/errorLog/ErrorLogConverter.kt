@@ -1,20 +1,26 @@
-package net.kotlinx.domain.ddb.repeatTask
+package net.kotlinx.domain.ddb.errorLog
 
 import net.kotlinx.aws.dynamo.ddbJoin
 import net.kotlinx.aws.dynamo.ddbSplit
 import net.kotlinx.domain.ddb.DdbBasic
 import net.kotlinx.domain.ddb.DdbBasicConverter
 import net.kotlinx.json.gson.GsonData
+import net.kotlinx.string.toLocalDateTime
+import net.kotlinx.time.TimeFormat
 
 
-class RepeatTaskConverter : DdbBasicConverter<DdbBasic, RepeatTask> {
+class ErrorLogConverter : DdbBasicConverter<DdbBasic, ErrorLog> {
 
-    override val pkPrefix: String = "repeat"
+    companion object {
+        const val PK_PREFIX: String = "errorLog"
+        const val SK_PREFIX: String = "id"
+    }
 
-    /** member */
-    override val skPrefix: String = "m"
+    override val pkPrefix: String = PK_PREFIX
 
-    override fun convertTo(ddb: DdbBasic): RepeatTask = RepeatTask().apply {
+    override val skPrefix: String = SK_PREFIX
+
+    override fun convertTo(ddb: DdbBasic): ErrorLog = ErrorLog().apply {
         //==================================================== PK ======================================================
         val pks = ddb.pk.ddbSplit()
         check(pks.size == 3)
@@ -23,32 +29,29 @@ class RepeatTaskConverter : DdbBasicConverter<DdbBasic, RepeatTask> {
 
         val sks = ddb.sk.ddbSplit()
         check(sks.size == 3)
-        memberId = sks[1]
+        divId = sks[1]
         id = sks[2]
 
         //==================================================== 기본값 ======================================================
         ttl = ddb.ttl
-        time = ddb.body.remove(this::time.name)!!.str!!
-        body = ddb.body
+        time = ddb.body.remove(this::time.name)!!.str!!.toLocalDateTime()
+        cause = ddb.body.remove(this::cause.name)!!.str
+        stackTrace = ddb.body.remove(this::stackTrace.name)!!.str
     }
 
-    override fun convertFrom(item: RepeatTask): DdbBasic {
+    override fun convertFrom(item: ErrorLog): DdbBasic {
         return DdbBasic(
             pk = arrayOf(pkPrefix, item.group, item.div).ddbJoin(),
-            sk = arrayOf(skPrefix, item.memberId, item.id).ddbJoin(3),
+            sk = arrayOf(skPrefix, item.divId, item.id).ddbJoin(3),
         ).apply {
 
             //==================================================== 기본값 ======================================================
             ttl = item.ttl
             body = GsonData.obj().apply {
-                putAll(item.body)
-                put(RepeatTask::time.name, item.time)
+                put(ErrorLog::time.name, item.time?.let { TimeFormat.YMDHMS[it] })
+                put(ErrorLog::cause.name, item.cause)
+                put(ErrorLog::stackTrace.name, item.stackTrace)
             }
-
-            //==================================================== 인덱스 구성 (ddb에 write 할때만 작업하면됨) ======================================================
-
-            /** 시간대별로 조회 */
-            gsi01 = arrayOf(pkPrefix, item.time).ddbJoin() to arrayOf(skPrefix, item.group, item.div, item.memberId, item.id).ddbJoin(5)
         }
 
     }

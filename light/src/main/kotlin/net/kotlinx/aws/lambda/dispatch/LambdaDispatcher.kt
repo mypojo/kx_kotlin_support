@@ -11,6 +11,7 @@ import net.kotlinx.aws.lambda.dispatch.asynch.AwsSnsPublisher
 import net.kotlinx.aws.lambda.dispatch.asynch.AwsSqsPublisher
 import net.kotlinx.aws.lambda.dispatch.synch.*
 import net.kotlinx.core.Kdsl
+import net.kotlinx.domain.job.JobEventBridgePublisher
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.guava.postEvent
 import net.kotlinx.json.gson.GsonData
@@ -71,6 +72,8 @@ class LambdaDispatcher {
         AwsEventBridgePublisher(),
         AwsSnsPublisher(),
         AwsSqsPublisher(),
+
+        JobEventBridgePublisher(),
         //==================================================== synch (런타임 직접 실행) ======================================================
         CommandDispatcher(),
         BatchStepDispatcher(),

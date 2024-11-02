@@ -46,10 +46,12 @@ class AwsEventBridgePublisher : LambdaDispatch {
     fun doEventBridge(input: GsonData): AwsLambdaEvent? {
         log.trace { "소스 필드 여부로 이벤트브릿지인지 판단한다" }
         val source = input[AwsNaming.EventBridge.SOURCE].str ?: return null
+        if (!source.startsWith("aws.")) return null
+
         val detailType = input[AwsNaming.EventBridge.DETAIL_TYPE].str ?: input[AwsNaming.EventBridge.DETAIL_TYPE_SNS].str!!
         val detail = input["detail"]
-
         return when (source) {
+
             "aws.scheduler" -> {
                 //ex) arn:aws:scheduler:ap-northeast-2:99999999:schedule/{groupName}/{scheduleName}
                 val resourceArn: String = input["resources"][0].str!!

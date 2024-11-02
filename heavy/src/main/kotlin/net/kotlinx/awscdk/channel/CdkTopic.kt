@@ -14,7 +14,7 @@ import software.amazon.awscdk.services.sns.TopicProps
 class CdkTopic(val topicName: String) : CdkEnum {
 
     override val logicalName: String
-        get() = "${project.profileName}-topic-${topicName}-${deploymentType.name.lowercase()}"
+        get() = "${project.profileName}-topic-${topicName}-${suff}"
 
     /** 전체 오픈할 기능 */
     var allOpenActions = listOf(

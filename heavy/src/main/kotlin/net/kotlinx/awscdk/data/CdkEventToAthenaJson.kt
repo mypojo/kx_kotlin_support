@@ -30,15 +30,15 @@ enum class EventLogType {
  * ex) AWS 특정 이벤트를 모아서 athena 쿼리로 조회하고싶음
  * ex) RDB 변경 내역을 athena 리로 조회하고싶음
  *  */
-class EventLogModule : CdkInterface {
+class CdkEventToAthenaJson : CdkInterface {
 
     @Kdsl
-    constructor(block: EventLogModule.() -> Unit = {}) {
+    constructor(block: CdkEventToAthenaJson.() -> Unit = {}) {
         apply(block)
     }
 
     override val logicalName: String
-        get() = "${project.profileName}-event_${eventName}-${deploymentType.name.lowercase()}"
+        get() = "${project.profileName}-event_${eventName}-${suff}"
 
     /**
      * 이벤트명.
@@ -75,7 +75,7 @@ class EventLogModule : CdkInterface {
     fun create(stack: Stack): String {
         val compressionFormat = if (deploymentType == DeploymentType.PROD) "GZIP" else "UNCOMPRESSED" // => 개발은 "UNCOMPRESSED"
         val intervalInSeconds = if (deploymentType == DeploymentType.PROD) 60 * 10 else 60 //실서버는 10분에 한번 로깅. 60이 최소. 최초 개발시 빠른 반응을 위해서 60으로 하자.
-        val deliveryStreamName = "${tableName}-${deploymentType.name.lowercase()}"
+        val deliveryStreamName = "${tableName}-${suff}"
 
         //CDK로 답이 없음. 오버라이드라도 하게 해주지.. 그냥 콘솔에서 \n 추가?? (엔터키 누르기)
         val message: RuleTargetInput = RuleTargetInput.fromObject(

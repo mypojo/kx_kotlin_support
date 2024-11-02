@@ -17,7 +17,6 @@ import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.concurrent.delay
 import net.kotlinx.core.Kdsl
 import net.kotlinx.domain.job.Job
-import net.kotlinx.id.IdGenerator
 import net.kotlinx.json.gson.toGsonDataOrEmpty
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.koin.Koins.koinLazy
@@ -44,7 +43,6 @@ class BatchStepExecutor {
 
     private val aws: AwsClient by koinLazy()
     private val config: BatchStepConfig by koinLazy()
-    private val idGenerator: IdGenerator by koinLazy()
 
     /** 로컬에서 결과 체크하는 주기 */
     var checkInterval: Duration = 30.seconds
@@ -113,8 +111,8 @@ class BatchStepExecutor {
             S3LogicInput(pk, it, inputOptionJson)
         }
         val jobParam = Job(pk, sk)
-        //UUID를 꼭 쓰지 않아도 됨. 이렇게 하면 구분하기 편함
-        val sfnUuid = "${jobParam.pk}-${jobParam.sk}-${idGenerator.nextval()}"
+        //UUID를 꼭 쓰지 않아도 됨. 파일이름으로 혀용되는 이름으로 달것!
+        val sfnUuid = "${jobParam.pk}-${jobParam.sk}"
         jobParam.sfnId = sfnUuid
         val parameter = BatchStepParameter {
             jobPk = jobParam.pk

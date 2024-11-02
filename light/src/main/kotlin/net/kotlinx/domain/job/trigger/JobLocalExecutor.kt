@@ -3,7 +3,6 @@ package net.kotlinx.domain.job.trigger
 import com.google.common.eventbus.EventBus
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsInstanceMetadata
-import net.kotlinx.aws.AwsInstanceType
 import net.kotlinx.domain.job.*
 import net.kotlinx.domain.job.define.JobDefinitionRepository
 import net.kotlinx.exception.toSimpleString
@@ -26,7 +25,7 @@ class JobLocalExecutor(val profile: String? = null) {
     /**
      * @return pk 확인용 키 문자욜
      * */
-    suspend fun runJob(job: Job): String {
+    suspend fun execute(job: Job): String {
         val jobDef = JobDefinitionRepository.findById(job.pk)
         val jobService = jobDef.jobClass.newInstance()
         job.instanceMetadata = instanceMetadata
@@ -46,17 +45,24 @@ class JobLocalExecutor(val profile: String? = null) {
             jobRepository.updateItem(job, JobUpdateSet.START)
 
             //==============  싦행  ===================
-            jobService.doRun(job)
+            jobService.execute(job)
 
             //==============  결과 마킹 ===================
-            job.jobStatus = JobStatus.SUCCEEDED
-            job.endTime = LocalDateTime.now()
-            jobRepository.updateItem(job, JobUpdateSet.END)
+            when (job.jobStatus) {
+                JobStatus.RUNNING -> {
+                    job.jobStatus = JobStatus.SUCCEEDED
+                    job.endTime = LocalDateTime.now()
+                    jobRepository.updateItem(job, JobUpdateSet.END)
 
-            //실서버 강제호출의 경우 알람 전송
-            if (job.instanceMetadata!!.instanceType == AwsInstanceType.BATCH) {
-                if (job.jobExeFrom == JobExeFrom.ADMIN) {
                     eventBus.post(JobSuccessEvent(job))
+                }
+
+                JobStatus.PROCESSING -> {
+                    jobRepository.updateItem(job, JobUpdateSet.STATUS)
+                }
+
+                else -> {
+                    throw IllegalStateException("JobStatus is ${job.jobStatus} but not RUNNING or PROCESSING")
                 }
             }
         } catch (e: Throwable) {
@@ -75,6 +81,27 @@ class JobLocalExecutor(val profile: String? = null) {
             JobHolder.JOB.remove()
         }
 
+        return job.toKeyString()
+    }
+
+    //==================================================== SFN 콜백 ======================================================
+
+    suspend fun resumeSuccess(job: Job): String {
+        job.jobStatus = JobStatus.SUCCEEDED
+        job.endTime = LocalDateTime.now()
+        jobRepository.updateItem(job, JobUpdateSet.END)
+
+        eventBus.post(JobSuccessEvent(job))
+        return job.toKeyString()
+    }
+
+    suspend fun resumeFail(job: Job, jobErrMsg: String): String {
+        job.jobStatus = JobStatus.FAILED
+        job.endTime = LocalDateTime.now()
+        job.jobErrMsg = jobErrMsg
+        jobRepository.updateItem(job, JobUpdateSet.ERROR)
+
+        eventBus.post(JobFailEvent(job, RuntimeException(jobErrMsg)))
         return job.toKeyString()
     }
 

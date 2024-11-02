@@ -5,6 +5,7 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.time.toKotlinDuration
 
@@ -54,4 +55,12 @@ fun LocalDateTime.toLong(zoneId: ZoneId = TimeUtil.SEOUL): Long = this.atZone(zo
 
 /** Date 로 컴버팅*/
 fun LocalDateTime.toDate(zoneId: ZoneId = TimeUtil.SEOUL): Date = Date.from(this.atZone(zoneId).toInstant())
+
+//==================================================== 절삭 ======================================================
+
+/**
+ * 밀리초 단위를 제거하고 리턴하는 참고 샘플 코드
+ * SECONDS 로 해야 밀리초가 제거되고 SECONDS만 남는다
+ *  */
+fun LocalDateTime.truncatedMills(): LocalDateTime = this.truncatedTo(ChronoUnit.SECONDS)
 

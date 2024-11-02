@@ -29,7 +29,7 @@ class CdkLambdaLayer : CdkInterface {
     lateinit var name: String
 
     override val logicalName: String
-        get() = "${project.profileName}-layer_${name}-${deploymentType.name.lowercase()}"
+        get() = "${project.profileName}-layer_${name}-${suff}"
 
     /** 런타임 */
     var runtime: Runtime = Runtime.JAVA_17!!

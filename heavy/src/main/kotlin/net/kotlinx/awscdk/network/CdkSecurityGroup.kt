@@ -18,7 +18,7 @@ class CdkSecurityGroup(
 ) : CdkEnum {
 
     override val logicalName: String
-        get() = "${project.profileName}-sg_${sgName}-${deploymentType.name.lowercase()}"
+        get() = "${project.profileName}-sg_${sgName}-${suff}"
 
     /** 아웃바둔드 오픈 디폴트로 true */
     var allowAllOutbound: Boolean = true
@@ -73,7 +73,7 @@ class CdkSecurityGroup(
     fun load(stack: Stack): CdkSecurityGroup {
         try {
             val id = param.get(stack)
-            iSecurityGroup = SecurityGroup.fromSecurityGroupId(stack, "sg_${this.sgName}-${deploymentType.name.lowercase()}", id)
+            iSecurityGroup = SecurityGroup.fromSecurityGroupId(stack, "sg_${this.sgName}-${suff}", id)
         } catch (e: Exception) {
             println(" -> [${stack.stackName}] object already loaded -> $logicalName")
         }

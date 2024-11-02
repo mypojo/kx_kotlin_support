@@ -4,13 +4,14 @@ import com.google.common.eventbus.Subscribe
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.aws.lambda.dispatch.asynch.*
+import net.kotlinx.domain.job.EventBridgeJobStatus
 import net.kotlinx.domain.job.define.JobDefinitionRepository
 import net.kotlinx.reflect.name
 import net.kotlinx.slack.SlackMessageSenders
 import net.kotlinx.string.abbr
 
 /** AWS 이벤트들 */
-class LambdaDispatcherAwsEventBridgeListener {
+class AwsEventBridgeListener {
 
     private val log = KotlinLogging.logger {}
 
@@ -41,7 +42,7 @@ class LambdaDispatcherAwsEventBridgeListener {
         SlackMessageSenders.Alert.send {
             workDiv = EventBridgeSfnStatus::class.name()
             descriptions = listOf(event.sfnName)
-            body = listOf(event.cause.abbr(LambdaDispatcherAwsSnsListener.BODY_LIMIT))
+            body = listOf(event.cause.abbr(AwsSnsListener.BODY_LIMIT))
         }
     }
 
@@ -63,6 +64,15 @@ class LambdaDispatcherAwsEventBridgeListener {
             descriptions = listOf("알 수 없는 이벤트브릿지 전달입니다. 파싱해주세요")
             body = listOf(event.data.toPreety()) //알수 없는 메세지는 요약하지 않음
         }
+    }
+
+    //==================================================== 이하 각 커스텀 로직에 위치해야할 이벤트 처리 ======================================================
+
+    /** 잡 상태변경 */
+    @Subscribe
+    fun onStatueChange(event: EventBridgeJobStatus) {
+        val job = event.job
+        log.warn { "잡 이벤트 변경!! [${job.toKeyString()}] => ${job.jobStatus}" }
     }
 
 }

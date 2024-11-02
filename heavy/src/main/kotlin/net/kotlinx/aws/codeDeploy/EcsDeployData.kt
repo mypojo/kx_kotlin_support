@@ -1,4 +1,4 @@
-package net.kotlinx.aws.code
+package net.kotlinx.aws.codeDeploy
 
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.core.Kdsl

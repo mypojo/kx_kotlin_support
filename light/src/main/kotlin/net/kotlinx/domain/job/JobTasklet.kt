@@ -12,7 +12,15 @@ import net.kotlinx.reflect.name
  */
 interface JobTasklet {
 
-    suspend fun doRun(job: Job)
+    suspend fun execute(job: Job)
+
+    /**
+     * 비동기 찹 처리시 사용됨
+     * ex) SFN에서 크롤링한 데이터를 가지고 리포트 작성
+     *  */
+    suspend fun onProcessComplete(job: Job) {
+        //기본적으로 아무것도 하지않음
+    }
 
     /**
      * Task를 실행할 Job을 json 으로 구성해준다.

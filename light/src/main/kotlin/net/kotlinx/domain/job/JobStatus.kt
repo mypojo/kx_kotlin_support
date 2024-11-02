@@ -4,7 +4,7 @@ package net.kotlinx.domain.job
  * 잡 상태에 없는게 있어서 새로 만들었음
  *
  * 중간에 상태 생략 가능
- * (SCHEDULED) -> STARTING -> RUNNING -> (WAITING) -> SUCCEEDED or FAILED or CANCELED
+ * (RESERVED) -> STARTING -> [RUNNING or PROCESSING]  -> [SUCCEEDED or FAILED or CANCELED]
  *
  */
 enum class JobStatus(val desc: String) {
@@ -30,12 +30,10 @@ enum class JobStatus(val desc: String) {
     RUNNING("실행중"),
 
     /**
-     * 다른 IO를 기다리는 상황 (상태머신 전용)
-     * 상태머신의 wait = 간격초(seconds) 사용됨
-     * ex) 리포트 요청 API 날린 후 대기.
-     * ex) athena 쿼리 요청 후 결과를 기다림
-     */
-    WAITING("대기중"),
+     * 처리중
+     * SFN 등을 트리거 해서, 외부에서 작동중인 상태
+     *  */
+    PROCESSING("처리중"),
 
     //==================================================== 종료 ======================================================
 

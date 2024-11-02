@@ -10,6 +10,7 @@ import net.kotlinx.aws.batch.batch
 import net.kotlinx.aws.batch.submitJob
 import net.kotlinx.aws.batch.submitJobAndWaitStarting
 import net.kotlinx.aws.dynamo.DynamoUtil
+import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.toErrorLogLink
 import net.kotlinx.aws.lambda.invokeAsynch
 import net.kotlinx.aws.lambda.invokeSynch
 import net.kotlinx.aws.lambda.lambda
@@ -20,15 +21,13 @@ import net.kotlinx.domain.job.JobStatus
 import net.kotlinx.id.IdGenerator
 import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.koin.Koins.koinLazy
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 /**
  * 개별 잡을 실제 실행시키는 로직
  * 새로은 실행 방법이 자유롭게 추가 가능해야한다.
  * 주의!! 설정 파일이지만, 의존 관계가 필요함으로 이미 의존성이 다 주입된 JobTrigger를 역참조 한다.
  *  */
-interface JobTriggerMethod : KoinComponent {
+interface JobTriggerMethod {
 
     /** 이름 */
     val name: String
@@ -52,13 +51,14 @@ interface JobTriggerMethod : KoinComponent {
         override val name: String = "local"
         override val jobExeDiv: JobExeDiv = JobExeDiv.LOCAL
 
-        val jobSerializer: JobSerializer by koinLazy()
-        val jobLocalExecutor: JobLocalExecutor by koinLazy()
+        private val jobSerializer: JobSerializer by koinLazy()
+        private val jobLocalExecutor: JobLocalExecutor by koinLazy()
 
         private val log = KotlinLogging.logger {}
 
         override suspend fun trigger(op: JobTriggerOption): String {
             val input = jobSerializer.toJson(op)
+            log.trace { "실제 DDB에는 여기서 최종 입력됨" }
             val job = jobSerializer.toJob(input.toString().toGsonData())!!
 
             if (job.jobStatus == JobStatus.RESERVED) return job.toKeyString()
@@ -71,20 +71,20 @@ interface JobTriggerMethod : KoinComponent {
                  * */
                 AwsInstanceType.LAMBDA -> {
                     log.debug { "JobTriggerMethod LOCAL (${job.toKeyString()}) -> 동기화(${AwsInstanceTypeUtil.INSTANCE_TYPE}) 실행" }
-                    jobLocalExecutor.runJob(job)
+                    jobLocalExecutor.execute(job)
                 }
 
                 else -> {
                     if (op.synch) {
                         log.debug { "JobTriggerMethod LOCAL (${job.toKeyString()}) -> 동기화 실행" }
-                        jobLocalExecutor.runJob(job)
+                        jobLocalExecutor.execute(job)
                     } else {
                         //비동기는 그냥 스래드 생성해서 실행 (스래드풀X)
                         //주의!! 람다의 경우 이렇게 하면 호출이 시작만 스킵될 수 있음
                         log.debug { "JobTriggerMethod LOCAL (${job.toKeyString()}) -> 비동기화 실행" }
                         Thread {
                             runBlocking {
-                                jobLocalExecutor.runJob(job)
+                                jobLocalExecutor.execute(job)
                             }
                         }.start()
                         job.toKeyString()
@@ -107,14 +107,17 @@ class JobTriggerLambda(
 
     override val jobExeDiv: JobExeDiv = JobExeDiv.LAMBDA
 
-    private val jobSerializer: JobSerializer by inject()
-    private val idGenerator: IdGenerator by inject()
-    private val aws: AwsClient by inject()
-    private val jobRepository: JobRepository by inject()
+    private val jobSerializer: JobSerializer by koinLazy()
+    private val idGenerator: IdGenerator by koinLazy()
+    private val aws: AwsClient by koinLazy()
+    private val jobRepository: JobRepository by koinLazy()
 
     override suspend fun trigger(op: JobTriggerOption): String {
         val jobSk = op.jobSk ?: idGenerator.nextvalAsString()
         val jobParam = jobSerializer.toJson(op, jobSk)
+        if (op.preJobPersist) {
+            jobSerializer.toJob(jobParam.toString().toGsonData())
+        }
 
         log.trace { "기본적으로 현재 위치가 람다인경우, 로컬로 실행되게 해준다" }
         if (AwsInstanceTypeUtil.INSTANCE_TYPE == AwsInstanceType.LAMBDA) {
@@ -133,7 +136,9 @@ class JobTriggerLambda(
             val findJob = Job(op.jobPk, jobSk)
             if (op.synch) {
                 jobRepository.getItem(findJob)?.let {
-                    log.debug { "로그링크 : ${it.toLogLink()}" }
+                    log.debug { "클라우드와치 로그링크 : ${it.toLogLink()}" }
+                    log.debug { "DDB 콘솔 링크 : ${it.toConsoleLink()}" }
+                    log.debug { "에러 로그 링크 : ${it.toErrorLogLink()}" }
                 }
             }
         }
@@ -155,20 +160,23 @@ class JobTriggerBatch(
     private val log = KotlinLogging.logger {}
     override val jobExeDiv: JobExeDiv = JobExeDiv.BATCH
 
-    private val jobSerializer: JobSerializer by inject()
-    private val idGenerator: IdGenerator by inject()
-    private val aws1: AwsClient by inject()
+    private val jobSerializer: JobSerializer by koinLazy()
+    private val idGenerator: IdGenerator by koinLazy()
+    private val aws: AwsClient by koinLazy()
 
     override suspend fun trigger(op: JobTriggerOption): String {
         val jobSk = op.jobSk ?: idGenerator.nextvalAsString()
         val jobParam = jobSerializer.toJson(op, jobSk)
+        if (op.preJobPersist) {
+            jobSerializer.toJob(jobParam.toString().toGsonData())
+        }
         val findJob = Job(op.jobPk, jobSk)
         if (op.synch) {
-            val jobDetail = aws1.batch.submitJobAndWaitStarting(jobQueueName, jobDefinitionName, jobParam)
+            val jobDetail = aws.batch.submitJobAndWaitStarting(jobQueueName, jobDefinitionName, jobParam)
             log.debug { "잡 UI 링크 -> ${BatchUtil.toBatchUiLink(jobDetail.jobId!!)}" }
             log.debug { "잡 DDB 링크 -> ${findJob.toConsoleLink()}" }
         } else {
-            val jobId = aws1.batch.submitJob(jobQueueName, jobDefinitionName, jobParam)
+            val jobId = aws.batch.submitJob(jobQueueName, jobDefinitionName, jobParam)
             log.debug { "잡 UI 링크 -> ${BatchUtil.toBatchUiLink(jobId)}" }
             log.debug { "잡 DDB 링크 -> ${DynamoUtil.toConsoleLink(findJob.tableName, findJob)}" }
         }

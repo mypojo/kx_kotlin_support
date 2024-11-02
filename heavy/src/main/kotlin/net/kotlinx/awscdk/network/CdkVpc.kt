@@ -86,14 +86,14 @@ class CdkVpc : CdkInterface {
         val block = vpcCidr.split(".").take(2).joinToString(".") //앞의 2개 자리만 잘라줌
         val subnets = iVpc.availabilityZones.map { az ->
             val zoneName = az.substring(az.length - 1)
-            val subnetName = "${projectName}_subnet_$type/${zoneName}-${deploymentType.name.lowercase()}"
+            val subnetName = "${projectName}_subnet_$type/${zoneName}-${suff}"
             val subnet = PrivateSubnet.Builder.create(stack, subnetName)
                 .vpcId(iVpc.vpcId).availabilityZone(az).cidrBlock("${block}.${subnetCnt++}.0/${cidrMask}").build()
             TagUtil.name(subnet, subnetName)
             subnet
         }
 
-        val naclName = "${projectName}_nacl_${type}-${deploymentType.name.lowercase()}"
+        val naclName = "${projectName}_nacl_${type}-${suff}"
         val nacl = NetworkAcl.Builder.create(stack, naclName).vpc(iVpc).subnetSelection(
             SubnetSelection.builder().subnets(subnets).build()
         ).build()
@@ -164,7 +164,7 @@ class CdkVpc : CdkInterface {
      * 하위 프로젝트에서 그대로 호출해도 추가된 부분만 잘 적용됨
      *  */
     fun nacl(stack: Stack, subnetType: SubnetType, entrys: Map<String, CommonNetworkAclEntryOptions>) {
-        val naclId = "${project.profileName}_nacl_${subnetType.name.lowercase()}-${deploymentType.name.lowercase()}"
+        val naclId = "${project.profileName}_nacl_${subnetType.name.lowercase()}-${suff}"
         val nacl = NetworkAcl.Builder.create(stack, naclId).vpc(iVpc).subnetSelection(
             SubnetSelection.builder().subnetType(subnetType).build()
         ).build()

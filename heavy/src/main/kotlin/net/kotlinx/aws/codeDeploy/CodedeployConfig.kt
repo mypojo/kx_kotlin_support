@@ -1,4 +1,4 @@
-package net.kotlinx.aws.code
+package net.kotlinx.aws.codeDeploy
 
 /**
  * https://docs.aws.amazon.com/ko_kr/codedeploy/latest/userguide/deployment-configurations.html 참고
