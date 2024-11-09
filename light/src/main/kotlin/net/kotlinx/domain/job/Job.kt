@@ -8,7 +8,9 @@ import net.kotlinx.aws.fargate.FargateUtil
 import net.kotlinx.aws.lambda.LambdaUtil
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.gson.GsonSet
+import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.lazyLoad.LazyLatchProperty
+import net.kotlinx.reflect.name
 import net.kotlinx.time.toIso
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -145,6 +147,12 @@ class Job(override val pk: String, override val sk: String) : DynamoData {
 
     /** JOB 옵션 (json형식). 해당 잡에서 필요한 설정/옵션 값을 입력. ex) 처리 타입, 시작 날짜 등등   */
     var jobOption: GsonData = GsonData.empty()
+
+    /**
+     * 잡 옵션을 클래스로 매핑한경우 , 객체로 변경해서 리턴해줌.
+     * 없을경우 null을 리턴
+     *  */
+    inline fun <reified T> jobOptionClass(): T? = this.jobOption[T::class.name()].str?.toGsonData()?.fromJson<T>()
 
     //==================================================== 비연동값 ======================================================
 

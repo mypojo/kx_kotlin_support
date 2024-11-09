@@ -17,14 +17,14 @@ val AwsClient.kinesis: KinesisClient
 
 
 /** 객체(data class) 입력 샘플 */
-suspend fun <T : Identity<out Any>> KinesisClient.putRecord(streamName: String, data: T, gson: Gson = GsonSet.TABLE_UTC): PutRecordResponse = this.putRecord {
+suspend fun <T : Identity<out Any>> KinesisClient.putRecord(streamName: String, data: T, gson: Gson = GsonSet.TABLE_UTC_WITH_ZONE): PutRecordResponse = this.putRecord {
     this.streamName = streamName
     this.partitionKey = data.id.toString()
     this.data = gson.toJson(data)!!.toByteArray()
 }
 
 /** 다수의 객체(data class) 입력 샘플 */
-suspend fun <T : Identity<out Any>> KinesisClient.putRecords(streamName: String, datas: List<T>, gson: Gson = GsonSet.TABLE_UTC): PutRecordsResponse = this.putRecords {
+suspend fun <T : Identity<out Any>> KinesisClient.putRecords(streamName: String, datas: List<T>, gson: Gson = GsonSet.TABLE_UTC_WITH_ZONE): PutRecordsResponse = this.putRecords {
     this.streamName = streamName
     this.records = datas.map { data ->
         PutRecordsRequestEntry {

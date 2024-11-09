@@ -19,14 +19,15 @@ import java.time.LocalDateTime
 object GsonSet {
 
     /** 기본적인것들 세팅 */
-    private fun GsonBuilder.applyDefaut() {
+    private fun GsonBuilder.applyDefaut1() {
         setExclusionStrategies(NotExposeStrategy())
         registerTypeAdapter(GsonData::class.java, GsonAdapterUtil.GsonDataAdapter())
         registerTypeAdapter(BigDecimal::class.java, GsonAdapterUtil.BigDecimalAdapter())
     }
 
+    /** 기본 + 기본 시간대 변경 */
     private fun GsonBuilder.applyDefaut2() {
-        applyDefaut()
+        applyDefaut1()
         registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeAdapter(TimeFormat.YMDHMS)) //날짜만 변경해줌
         registerTypeAdapter(Map::class.java, GsonAdapterUtil.MapAdapter()) //Lambda 기본 변환에 사용 (다른데는 쓸일 없음)
     }
@@ -55,30 +56,46 @@ object GsonSet {
     /** 이쁘게 */
     val GSON_PRETTY: Gson by lazy {
         GsonBuilder().apply {
-            applyDefaut()
+            applyDefaut2()
             setPrettyPrinting()
         }.create()!!
     }
 
     /**
-     * 이하 적용된것
-     * AWS kinesis 입력데이터 ( athena table 데이터)
+     * bean(카멜) 을 athena table 데이터 등으로 바로 쓸때 사용
+     * 대부분 athena 로 읽으면 대소문자 구분을 안하는 경우가 많아서 UNDERSCORES로 하는게 편함
+     * timestamp 가 UTC만 지원하는겨웅 이걸 써야함
+     *  -> athena의 timestamp 가  UTC 지원하긴 한데??? 해보고 문서 수정!
      *  */
     val TABLE_UTC: Gson by lazy {
         GsonBuilder().apply {
-            applyDefaut()
+            applyDefaut1()
             setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeUtceAdapter(UtcConverter.ISO_INSTANT)) //날짜가 UTC
         }.create()!!
     }
 
     /**
-     * 이하 적용된것
-     * eventBridge event 적용
+     * TABLE_UTC 와 동일한데 ZONE 적용 -> 이러면 LocalDateTime으로 자동변환 가능해서 편하다
+     * ex) bean 을  kinesis or firehose 에 입력
+     * ex) eventBridge 의 event detail 부분을 만들때 사용
+     * @see TimeFormat.ISO_OFFSET 참고
      *  */
-    val BEAN_UTC_ZONE: Gson by lazy {
+    val TABLE_UTC_WITH_ZONE: Gson by lazy {
         GsonBuilder().apply {
-            applyDefaut()
+            applyDefaut1()
+            setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeUtceAdapter(UtcConverter.ISO_OFFSET)) //날짜가 UTC_ZONE
+        }.create()!!
+    }
+
+    /**
+     * bean 그대로 쓸때 사용
+     * 크게 쓸일이 없음..
+     *  */
+    val BEAN_UTC_WITH_ZONE: Gson by lazy {
+        GsonBuilder().apply {
+            applyDefaut1()
             registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeUtceAdapter(UtcConverter.ISO_OFFSET)) //날짜가 UTC_ZONE
         }.create()!!
     }

@@ -48,6 +48,5 @@ interface DdbBasicConverter<A : DdbBasic, B> : DataConverter<A, B> {
         private val log = KotlinLogging.logger {}
     }
 
-    //==================================================== 기�� 제공 ���리들 ======================================================
 
 }

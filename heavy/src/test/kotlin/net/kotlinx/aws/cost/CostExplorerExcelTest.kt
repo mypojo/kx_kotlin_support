@@ -36,7 +36,7 @@ fun main() {
     if (!dataFile.exists()) {
         log.info { "cost 데이터를 로드합니다.." }
         runBlocking {
-            val profileNames = IamCredential().profileDatas.map { it.profileName }.filter { it !in setOf("sin") } - listOf("kx")
+            val profileNames = IamCredential().profileDatas.map { it.profileName }.filter { it !in setOf("sin", "default","md") } - listOf("kx")
             log.debug { " -> 로드된 프로파일 : $profileNames" }
             val datas = profileNames.flatMap { profileName ->
                 val client = AwsConfig(profileName = profileName).toAwsClient()

@@ -1,4 +1,4 @@
-package net.kotlinx.domain.eventLog.data
+package net.kotlinx.domain.jpa.event
 
 import org.hibernate.proxy.HibernateProxy
 import org.springframework.data.domain.Persistable

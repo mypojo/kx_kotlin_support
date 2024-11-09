@@ -56,7 +56,7 @@ suspend fun S3Client.presignGetObjectUrl(block: S3PresignGet.() -> Unit = {}): S
 }
 
 /**
- * presign 다운로드 URL을 리턴 단축
+ * @see presignGetObjectUrl 의 단축버전
  *  */
 suspend fun S3Client.presignGetObject(bucket: String, key: String, duration: Duration = 5.minutes): String = presignGetObjectUrl {
     this.bucket = bucket

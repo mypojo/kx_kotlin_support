@@ -36,12 +36,16 @@ class UtcConverter {
         /**
          * kinesis에 사용
          * */
-        val ISO_INSTANT = UtcConverter {}
+        val ISO_INSTANT = UtcConverter {
+            //기본세팅 사용
+        }
 
         /**
          * eventBridge 에 사용
          * */
-        val ISO_OFFSET = UtcConverter {}
+        val ISO_OFFSET = UtcConverter {
+            timeFormat = TimeFormat.ISO_OFFSET
+        }
 
     }
 

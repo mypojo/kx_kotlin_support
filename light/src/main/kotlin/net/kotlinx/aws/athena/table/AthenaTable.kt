@@ -168,7 +168,8 @@ class AthenaTable {
             val targetSchemas = when (athenaTableFormat) {
 
                 /** 파티션 정의와 스키마 정의가 중복되면 안되는거 */
-                in setOf(AthenaTableFormat.Json, AthenaTableFormat.Csv) -> schema.filter { !nks.contains(it.key) }
+                //Parquet 추가..
+                in setOf(AthenaTableFormat.Json, AthenaTableFormat.Csv, AthenaTableFormat.Parquet) -> schema.filter { !nks.contains(it.key) }
 
                 /** 파티션 정의와 스키마 정의가 중복되도 되는가 */
                 else -> schema
@@ -304,7 +305,10 @@ class AthenaTable {
      * 외부 데이터는 json으로 파싱해서 사용하면 되고
      * 내부 1뎁스 데이터는 이거로 사용할것
      *  */
-    val mapString = "map<string, string>"
+    val mapString = AthenaType("map<string, string>")
+
+    /** 기본 어레이 스트링 */
+    val arrayString = AthenaType("array<string>")
 
     companion object {
         private val log = KotlinLogging.logger {}

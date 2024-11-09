@@ -18,7 +18,6 @@ interface DynamoBasic {
 
 /**
  * 제너릭 때문에 이 클래스를 끝까지 유지 해야함
- *
  *  */
 interface DynamoData : DynamoBasic {
 

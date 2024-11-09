@@ -21,7 +21,6 @@ class DynamoDbSupportRawKtTest : BeSpecHeavy() {
             val aws = koin<AwsClient>(findProfile97)
 
             Then("getItem") {
-
                 val resp = aws.dynamo.getItem {
                     this.tableName = "adv-dev"
                     this.consistentRead = false
@@ -45,10 +44,9 @@ class DynamoDbSupportRawKtTest : BeSpecHeavy() {
                     this.filterExpression = exp.filterExpression()
                     this.expressionAttributeValues = exp.expressionAttributeValues()
                 }
+                log.debug { "resp.scannedCount ${resp.scannedCount}" }
                 resp.items!!.forEach { println(it) }
-
             }
-
 
         }
     }

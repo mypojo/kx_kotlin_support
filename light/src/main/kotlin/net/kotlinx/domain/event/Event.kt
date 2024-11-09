@@ -1,22 +1,36 @@
-package net.kotlinx.domain.eventLog
+package net.kotlinx.domain.event
 
 
 import net.kotlinx.aws.AwsInstanceType
-import net.kotlinx.domain.eventLog.data.EventData
+import net.kotlinx.core.Kdsl
 import net.kotlinx.json.gson.GsonData
 import java.time.LocalDateTime
 
 
-/** 이벤트 공통 모음 */
+/**
+ * 이벤트 공통 모음
+ * ### 대상
+ * DB 트랜잭션, 보안접근, HTTP rest 호출 등등
+ *
+ * ##소스들 (이벤트브릿지 소스)
+ * #1. AWS 이벤트브릿지
+ * #2. WEB 요청 이벤트
+ * #3. JOB 처리결과 이벤트
+ *  */
 class Event {
+
+    @Kdsl
+    constructor(block: Event.() -> Unit = {}) {
+        apply(block)
+    }
 
     //==================================================== 공통 필수 ======================================================
 
     /**
-     * 유니크 ID
-     * GUI로 채번. 오류일경우 이 ID를 로그에 남기고 사용자에게 리턴.
+     * 이벤트 1회당 GUI로 생성되는 유니크 ID
+     * ex) 웹에서 오류일경우 이 ID를 로그에 남기고 사용자에게 리턴
      */
-    var eventId: Long = 0
+    var eventId: Long = -1
 
     /** eventTime 기준. ex) yyyymmdd.    파티셔닝에 사용됨.  */
     lateinit var eventDate: String
@@ -37,8 +51,15 @@ class Event {
     lateinit var eventDiv: String
 
     /**
+     * 이벤트 구분의 한글 설명값
+     * web : menu name
+     * job : job name
+     * *   */
+    lateinit var eventDivName: String
+
+    /**
      * web : http 결과코드
-     * job : JObStatus
+     * job : JobStatus
      */
     lateinit var eventStatus: String
 
@@ -46,7 +67,7 @@ class Event {
      * 이벤트 키벨류 데이터들
      * ex) campId
      */
-    lateinit var data: GsonData
+    lateinit var body: GsonData
 
     /**
      * 이벤트 상세 데이터들
@@ -74,7 +95,8 @@ class Event {
     /**
      * 이벤트 작업 대상이 되는 회원 ID -> 복합되서 인덱싱됨
      * web : 역할 전환을 한 멤버 (관리자 id가 아님)
-     * job : 단일 대상이 없으면 system 입력.
+     * job : 단일 대상이 없으면 system 입력
+     * level2 테이블은 여기로 인덱스가 걸릴 수 있음
      *  */
     var memberId: String = DEFAULT_MEMBER_ID
 

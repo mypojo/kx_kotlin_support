@@ -34,7 +34,7 @@ class CdkEventBridgeSchedule(
     fun addSchedule(jobName: String, enabled: Boolean, block: CronKrOptions.() -> Unit = {}): Rule {
         val options = CronKrOptions().apply(block)
         val ruleName = "${project.profileName}-${jobName}-${this.deploymentType}"
-        val comment = GsonSet.TABLE_UTC.toJson(options) //변환 전으로 해야함
+        val comment = GsonSet.GSON.toJson(options) //변환 전으로 해야함
         val rule = Rule(
             this.stack, ruleName, RuleProps.builder()
                 .enabled(enabled)

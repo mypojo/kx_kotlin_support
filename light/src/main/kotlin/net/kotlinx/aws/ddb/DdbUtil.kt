@@ -1,4 +1,4 @@
-package net.kotlinx.aws.dynamo
+package net.kotlinx.aws.ddb
 
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.string.encodeUrl
@@ -8,12 +8,11 @@ import kotlin.time.Duration
 /**
  * ttl은 초단위
  * */
-@Deprecated("DdbData")
-object DynamoUtil {
+object DdbUtil {
 
     /** DDB 콘솔 링크  */
-    fun toConsoleLink(tableName: String, key: DynamoBasic, region: String = AwsConfig.REGION_KR): String {
-        return "https://$region.console.aws.amazon.com/dynamodbv2/home?region=$region#edit-item?table=$tableName&itemMode=2&pk=${key.pk.encodeUrl()}&sk=${key.sk.encodeUrl()}&route=ROUTE_ITEM_EXPLORER"
+    fun toConsoleLink(tableName: String, ddbData: DdbData, region: String = AwsConfig.REGION_KR): String {
+        return "https://$region.console.aws.amazon.com/dynamodbv2/home?region=$region#edit-item?table=$tableName&itemMode=2&pk=${ddbData.pk.encodeUrl()}&sk=${ddbData.sk.encodeUrl()}&route=ROUTE_ITEM_EXPLORER"
     }
 
     /**

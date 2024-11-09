@@ -25,17 +25,18 @@ enum class TimeFormat(
     ISO(DateTimeFormatter.ISO_DATE_TIME),
 
     /**
-     * 존이나 오프셋이 없는 UTC 포매팅 -> Firehose 이것만 읽을 수 있음
-     * ex) kdf to parquet 변환시
-     * UTC기준으로 시간만 입력 = 존 정보에 따라 시간 자체가 변경됨 (withZone 옵션) = 공간절약
-     * 존 정보가 없음으로 athena 조회시에는 함수(AT TIME ZONE 'Asia/Seoul') 를 사용해야함
+     * 존이나 오프셋이 없는 UTC 포매팅
+     * ex) athena의 timestamp는 ZONE 정보 없이 UTC 기준으로만 저장됨. 읽을때 알아서 변환해서 읽는 형태
      * */
     ISO_INSTANT_SEOUL(DateTimeFormatter.ISO_INSTANT.withZone(TimeUtil.SEOUL)),
 
     /**
-     * 존 정보(오프셋)가 포함된 UTC 포매팅 -> eventBridge가 이것을 지원함
-     * 현재시간에 오프셋만 추가해줌 = 읽기 변하지만 추가 공간 필요
+     * 존 정보(오프셋)가 포함된 UTC 포매팅
      * ex) 2022-09-15T09:09:30.617838+09:00
+     * 이렇게 입력하면 만능 포맷이 됨으로 bean 매핑할때도 자주 사용
+     *
+     * athena 에서는 아래처럼 읽음
+     * ex) select from_iso8601_timestamp('2024-11-08T10:16:56.4411031+09:00') AT TIME ZONE 'Asia/Seoul';
      * */
     ISO_OFFSET(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
 

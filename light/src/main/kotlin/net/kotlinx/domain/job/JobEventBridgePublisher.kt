@@ -54,6 +54,12 @@ class JobEventBridgePublisher : LambdaDispatch {
 
         private val log = KotlinLogging.logger {}
 
+        /**
+         * JOB은 보통 2개의 이벤트브릿지 이벤트를 던진다
+         * #1. 상태변경 후킹용 이벤트브릿지 ex) kotlinx.job
+         * #2. athena에 트랜잭션 로깅용 이벤트브릿지 ex) ${PN}.job
+         * 이거는 1번
+         * */
         const val SOURCE = "kotlinx.job"
     }
 

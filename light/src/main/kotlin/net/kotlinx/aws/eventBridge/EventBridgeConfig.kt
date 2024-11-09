@@ -10,14 +10,14 @@ data class EventBridgeConfig (
     /**
      * 이벤트 대분류
      * ex) aws.ecs
-     * ex) samsung-01
+     * ex) ${pn}.job / ${pn}.web ..
      * */
     val source: String,
 
     /**
      * 이벤트 소분류
      * ex) ECS Task State Change
-     * ex) job or web
+     * ex) jobFinally, webFilter ..
      *  */
     val detailType: String,
 

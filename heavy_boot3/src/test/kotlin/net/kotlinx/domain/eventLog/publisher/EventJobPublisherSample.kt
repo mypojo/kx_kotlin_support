@@ -1,7 +1,7 @@
 package net.kotlinx.domain.eventLog.publisher
 
 import mu.KotlinLogging
-import net.kotlinx.domain.eventLog.EventPublishClient
+import net.kotlinx.domain.event.EventPublishClient
 import net.kotlinx.domain.job.Job
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.time.toLong

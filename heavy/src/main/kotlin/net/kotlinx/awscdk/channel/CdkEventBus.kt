@@ -59,6 +59,8 @@ class CdkEventBus : CdkInterface {
      * 타겟정보 정리
      * SnsTopic -> 정의되지 않은경우 파싱되지 않은 SNS
      * LambdaFunction -> 정의되지 않은경우 데드메시지
+     *
+     * 주의!! Role을 안넣어도 됨. 이경우 기본 Role이 자동으로 생성되서 입력됨
      * */
     fun substribe(stack: Stack, name: String, block: RuleProps.Builder.() -> Unit) {
         val ruleName = "${name}-${suff}"

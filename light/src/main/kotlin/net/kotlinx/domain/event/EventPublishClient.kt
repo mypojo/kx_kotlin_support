@@ -1,4 +1,4 @@
-package net.kotlinx.domain.eventLog
+package net.kotlinx.domain.event
 
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
@@ -8,7 +8,6 @@ import net.kotlinx.aws.eventBridge.EventBridgeConfig
 import net.kotlinx.aws.eventBridge.event
 import net.kotlinx.aws.eventBridge.putEvents
 import net.kotlinx.core.Kdsl
-import net.kotlinx.domain.eventLog.data.EventDataHolder
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.json.gson.GsonSet
 import net.kotlinx.koin.Koins.koinLazy
@@ -38,6 +37,9 @@ class EventPublishClient {
      *  */
     lateinit var eventBridgeConfig: EventBridgeConfig
 
+    /** 이벤트 처리용 GSON */
+    var gson = GsonSet.TABLE_UTC_WITH_ZONE
+
     /**
      * 한번에 보낼 최대 데이터 수 (이벤트브릿지 용량제한때문)
      * 편의상 용량 크기가 아니라 갯수로 구분함
@@ -47,20 +49,19 @@ class EventPublishClient {
     /**
      * 디폴드 생성 로직.
      * */
-    var eventFactory: () -> Event = {
-        Event().apply {
-            eventId = EventDataHolder.getOrMakeEventId()
+    var defaultFactory: () -> Event = {
+        Event {
+            eventId = EventDataHolder.EVENT_ID
 
-            val txTime = EventDataHolder.getTxTime()
+            val txTime = EventDataHolder.TX_TIME
             eventTime = txTime
             eventDate = TimeFormat.YMD[txTime]
 
-            data = EventDataHolder.getData()
-            datas = EventDataHolder.getDatas()
+            body = EventDataHolder.BODY
+            datas = EventDataHolder.DATAS
 
             instanceType = AwsInstanceTypeUtil.INSTANCE_TYPE
             ip = SystemUtil.IP
-
         }
     }
 
@@ -68,12 +69,12 @@ class EventPublishClient {
      * 여기서 발생하는 오류는 일단 무시.
      * 디폴트 생성후, 커스텀하게 업데이트 가능
      *  */
-    fun pub(block: (Event) -> Boolean) {
+    fun pub(eventBuilder: (Event) -> Boolean) {
         try {
 
-            val event = eventFactory()
+            val event = defaultFactory()
 
-            val ok = block(event)
+            val ok = eventBuilder(event)
             if (!ok) return
 
             runBlocking {
@@ -96,11 +97,11 @@ class EventPublishClient {
     }
 
     private suspend fun doPubEach(event: Event) {
-        val json = EventUtil.GSON.toJson(event)!!
+        val json = gson.toJson(event)!!
         if (log.isTraceEnabled) {
-            log.debug { " -> event json \n${GsonSet.GSON_PRETTY.toJson(event)}" }
+            log.debug { " -> eventbridge json \n${GsonSet.GSON_PRETTY.toJson(event)}" }
         }
-        log.info { "event 발송.. [${event.eventDiv}] 데이터 ${event.datas.size}건 (${json.toByteArray().size}byte)" }
+        log.info { "eventbridge put -> [${event.eventDiv}] 데이터 ${event.datas.size}건 (${json.toByteArray().size}byte)" }
         aws.event.putEvents(eventBridgeConfig, listOf(json))
     }
 

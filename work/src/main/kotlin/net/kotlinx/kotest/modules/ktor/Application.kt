@@ -4,6 +4,9 @@ import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import mu.KotlinLogging
+import net.kotlinx.koin.Koins
+import net.kotlinx.kotest.modules.AwsModule
+import net.kotlinx.kotest.modules.BasicModule
 import net.kotlinx.kotest.modules.ktor.plugins.configureRouting
 import net.kotlinx.kotest.modules.ktor.plugins.configureSecurity
 import net.kotlinx.system.SystemUtil
@@ -19,6 +22,15 @@ fun main() {
 }
 
 fun Application.allModules() {
+
+    /** 필수 내용만 로드.. */
+    Koins.startupOnlyOnce(
+        listOf(
+            BasicModule.moduleConfig(),
+            AwsModule.moduleConfig(),
+            KtorModule.moduleConfig(),
+        )
+    )
 
     //==================================================== 설정 ======================================================
     val log = KotlinLogging.logger {}

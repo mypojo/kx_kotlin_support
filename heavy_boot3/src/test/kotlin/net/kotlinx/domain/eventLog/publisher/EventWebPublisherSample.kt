@@ -4,8 +4,8 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import net.kotlinx.aws.AwsInstanceMetadata
-import net.kotlinx.domain.eventLog.EventPublishClient
-import net.kotlinx.domain.eventLog.EventUtil
+import net.kotlinx.domain.event.EventPublishClient
+import net.kotlinx.domain.event.EventUtil
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.number.toLocalDateTime
