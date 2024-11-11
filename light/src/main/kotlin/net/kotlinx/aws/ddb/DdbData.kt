@@ -10,6 +10,10 @@ interface DdbData {
     val pk: String
     val sk: String
 
+
+    //==================================================== 기본 메소드들 ======================================================
+
+    /** PK로 사용됨 */
     fun toKeyMap(): Map<String, AttributeValue> {
         return mapOf(
             DynamoBasic.PK to AttributeValue.S(this.pk),

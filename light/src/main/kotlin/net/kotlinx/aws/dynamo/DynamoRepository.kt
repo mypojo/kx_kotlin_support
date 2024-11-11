@@ -9,6 +9,7 @@ import net.kotlinx.aws.dynamo.query.batchGetItem
 /**
  * DDB 네이밍 맞춤용 리파지토리
  */
+@Deprecated("쓰지마셈")
 interface DynamoRepository<T : DynamoData> {
 
     val aws: AwsClient
