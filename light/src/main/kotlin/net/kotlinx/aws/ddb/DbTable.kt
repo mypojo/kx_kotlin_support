@@ -7,10 +7,10 @@ import net.kotlinx.core.Kdsl
 /**
  * DDB 객체를 입력 / 조회 하는데 필요한 각종 정보 모음
  * */
-class DdbTableConfig<T> {
+class DbTable {
 
     @Kdsl
-    constructor(block: DdbTableConfig<T>.() -> Unit = {}) {
+    constructor(block: DbTable.() -> Unit = {}) {
         apply(block)
     }
 
@@ -18,27 +18,31 @@ class DdbTableConfig<T> {
     lateinit var tableName: String
 
     /** 객체 변환기 */
-    lateinit var converter: DdbConverter<T>
+    lateinit var converter: DbConverter
+
+    //==================================================== 후크 ======================================================
+
+    /** 입력전 전처리 ex) TTL */
+    var beforePut: (DbItem) -> Unit = {}
+
+    /** 영속화 할지 여부.  */
+    var persist: (DbItem) -> Boolean = { true }
 
     //==================================================== 거의 고정 ======================================================
 
     /** PK 컬럼 이름.  */
-    var pk: String = PK
+    var pkName: String = PK_NAME
 
     /** SK 컬럼 이름.  */
-    var sk: String = SK
+    var skName: String = SK_NAME
 
-    /** 리전  */
+    /** DDB가 있는 리전  */
     var region: String = AwsConfig.REGION_KR
 
-    //====================================================  ======================================================
-
-    /** 콘솔링크 */
-    fun toConsoleLink(data: DdbData): String = DdbUtil.toConsoleLink(tableName, data, region)
 
     companion object {
-        const val PK = "pk"
-        const val SK = "sk"
+        const val PK_NAME = "pk"
+        const val SK_NAME = "sk"
     }
 
 

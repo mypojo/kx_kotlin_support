@@ -4,6 +4,7 @@ import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.ReturnValue
 import aws.sdk.kotlin.services.dynamodb.updateItem
+import net.kotlinx.aws.ddb.DbTable
 
 //==================================================== 트랜잭션 ======================================================
 //데이터 타입은 아래 문서 참고
@@ -33,8 +34,8 @@ suspend fun DynamoDbClient.updateItemMap(tableName: String, pk: String, sk: Stri
         this.tableName = tableName
         this.returnValues = ReturnValue.None //필요한 경우 없음.
         this.key = mapOf(
-            DynamoBasic.PK to AttributeValue.S(pk),
-            DynamoBasic.SK to AttributeValue.S(sk),
+            DbTable.PK_NAME to AttributeValue.S(pk),
+            DbTable.SK_NAME to AttributeValue.S(sk),
         )
         this.updateExpression = "set " + append.entries.joinToString(",") { "${columnName}.${it.key} = :${it.key}" }
         this.expressionAttributeValues = append.map { ":${it.key}" to AttributeValue.S(it.value) }.toMap()

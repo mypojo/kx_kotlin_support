@@ -31,9 +31,11 @@ class KoinsTest : BeSpecHeavy() {
             Then("커스텀 네이밍 가져오기") {
                 val koinData1 = koin<KoinData1>("ex01")
                 koinData1.name shouldBe "테스트1-ex01"
+            }
 
-                val koinData2 = koin<KoinData1>("ex99")
-
+            Then("커스텀 제너릭 가져오기 -> 안됨. 코인은 제너릭 지원 안함") {
+                val KoinData5 = koin<KoinData5<KoinData1>>()
+                KoinData5.name shouldBe "data02" //오버라이드된 두번째 다른 제너릭이 리턴됨
             }
 
             When("동일한 객체 2개 입력시") {

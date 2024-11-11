@@ -1,20 +1,12 @@
 package net.kotlinx.aws.dynamo
 
-import net.kotlinx.aws.AwsConfig
-import net.kotlinx.string.encodeUrl
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 
 /**
  * ttl은 초단위
  * */
-@Deprecated("DdbData")
 object DynamoUtil {
-
-    /** DDB 콘솔 링크  */
-    fun toConsoleLink(tableName: String, key: DynamoBasic, region: String = AwsConfig.REGION_KR): String {
-        return "https://$region.console.aws.amazon.com/dynamodbv2/home?region=$region#edit-item?table=$tableName&itemMode=2&pk=${key.pk.encodeUrl()}&sk=${key.sk.encodeUrl()}&route=ROUTE_ITEM_EXPLORER"
-    }
 
     /**
      * 지금 기준 X일 이후 지정. TTL은 초단위 이다.

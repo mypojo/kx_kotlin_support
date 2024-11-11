@@ -2,13 +2,13 @@ package net.kotlinx.kotest.modules
 
 import com.lectra.koson.obj
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.javaSdkv2.dynamoLock.DynamoLockManager
 import net.kotlinx.collection.toPair
 import net.kotlinx.json.koson.toGsonData
 import net.kotlinx.koin.KoinModule
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.lock.*
+import net.kotlinx.reflect.name
 import net.kotlinx.time.toLong
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
@@ -21,18 +21,22 @@ object ResourceLockModule : KoinModule {
 
     private val log = KotlinLogging.logger {}
 
-    val RESOURCE = AtomicLong()
+    private val RESOURCE = AtomicLong()
 
     override fun moduleConfig(): Module = module {
 
-        ResourceItem.TABLE_NAME = "system-dev"
+        single(named(ResourceItem::class.name())) {
+            ResourceItemTableUtil.createDefault {
+                tableName = "system-dev"
+            }
+        }
 
         AwsModule.IAM_PROFILES.profiles.forEach { pair ->
             val profile = pair.first
             single(named(profile)) {
                 ResourceLockManager {
                     lockManager = koin<DynamoLockManager>(profile)
-                    repository = ResourceItemRepository(koin<AwsClient>(profile))
+                    repository = ResourceItemRepository(profile)
                     factory = object : ResourceItemFactory {
                         override suspend fun createResource(req: ResourceLockReq, cnt: Int): List<ResourceItem> {
                             val (logic, adv) = req.resourcePk.split("#").toPair()

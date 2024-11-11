@@ -1,6 +1,10 @@
 package net.kotlinx.domain.ddb
 
-enum class DdbBasicGsi {
+/**
+ * 인덱스 정의
+ * */
+enum class DbMultiIndex {
+
     GSI01,
     GSI02,
     GSI03,

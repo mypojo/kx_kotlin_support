@@ -2,19 +2,19 @@ package net.kotlinx.domain.ddb.repeatTask
 
 import net.kotlinx.aws.dynamo.ddbJoin
 import net.kotlinx.aws.dynamo.ddbSplit
-import net.kotlinx.domain.ddb.DdbBasic
-import net.kotlinx.domain.ddb.DdbBasicConverter
+import net.kotlinx.domain.ddb.DbMultiIndexEachConverter
+import net.kotlinx.domain.ddb.DbMultiIndexItem
 import net.kotlinx.json.gson.GsonData
 
 
-class RepeatTaskConverter : DdbBasicConverter<DdbBasic, RepeatTask> {
+class RepeatTaskConverter : DbMultiIndexEachConverter<DbMultiIndexItem, RepeatTask> {
 
     override val pkPrefix: String = "repeat"
 
     /** member */
     override val skPrefix: String = "m"
 
-    override fun convertTo(ddb: DdbBasic): RepeatTask = RepeatTask().apply {
+    override fun convertTo(ddb: DbMultiIndexItem): RepeatTask = RepeatTask().apply {
         //==================================================== PK ======================================================
         val pks = ddb.pk.ddbSplit()
         check(pks.size == 3)
@@ -32,8 +32,8 @@ class RepeatTaskConverter : DdbBasicConverter<DdbBasic, RepeatTask> {
         body = ddb.body
     }
 
-    override fun convertFrom(item: RepeatTask): DdbBasic {
-        return DdbBasic(
+    override fun convertFrom(item: RepeatTask): DbMultiIndexItem {
+        return DbMultiIndexItem(
             pk = arrayOf(pkPrefix, item.group, item.div).ddbJoin(),
             sk = arrayOf(skPrefix, item.memberId, item.id).ddbJoin(3),
         ).apply {

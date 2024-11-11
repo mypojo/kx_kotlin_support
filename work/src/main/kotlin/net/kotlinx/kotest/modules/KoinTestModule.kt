@@ -18,6 +18,9 @@ class KoinData1(val name: String) : KoinData
 class KoinData2(val name: String) : KoinData
 class KoinData3(val name: String) : KoinData
 class KoinData4(val name: String) : KoinData
+
+class KoinData5<T>(val name: String)
+
 class PooService {
     val data2: KoinData2 = koin()
     val ex01: KoinData1 = koin("ex01")
@@ -47,6 +50,9 @@ object KoinTestModule : KoinModule {
         single { PooService() }
 
         single(named("ex01")) { DeveloperData(id = "kim") }
+
+        single { KoinData5<KoinData1>("data01") }
+        single { KoinData5<KoinData2>("data02") }
 
     }
 

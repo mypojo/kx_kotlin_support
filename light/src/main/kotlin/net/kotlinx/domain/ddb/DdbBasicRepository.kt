@@ -1,80 +1,47 @@
 package net.kotlinx.domain.ddb
 
-import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import net.kotlinx.aws.AwsClient
-import net.kotlinx.aws.dynamo.deleteItem
-import net.kotlinx.aws.dynamo.dynamo
-import net.kotlinx.aws.dynamo.getItem
-import net.kotlinx.aws.dynamo.putItem
-import net.kotlinx.aws.dynamo.query.DynamoExpression
-import net.kotlinx.aws.dynamo.query.DynamoResult
-import net.kotlinx.aws.dynamo.query.query
-import net.kotlinx.aws.dynamo.query.queryAll
-import net.kotlinx.koin.Koins.koinLazy
+import net.kotlinx.aws.ddb.exp.DbExpression
+import net.kotlinx.aws.dynamo.DynamoMap
 
-typealias aa<T> = suspend (item: T, last: Map<String, AttributeValue>?) -> DynamoResult<T>
 
 /** 기본 저장소 */
 class DdbBasicRepository<T>(
-    private val profile: String? = null,
-    private val converter: DdbBasicConverter<DdbBasic, T>,
+    private val repository: DbMultiIndexItemRepository,
+    private val eachConverter: DbMultiIndexEachConverter<DbMultiIndexItem, T>,
 ) {
-
-    private val aws by koinLazy<AwsClient>(profile)
 
     //==================================================== 기본 메소드 ======================================================
     suspend fun getItem(item: T): T? {
-        val query = converter.convertFrom(item)
-        val ddb = aws.dynamo.getItem(query) ?: return null
-        return converter.convertTo(ddb)
+        val param = eachConverter.convertFrom(item)
+        val ddb = repository.getItem(param) ?: return null
+        return eachConverter.convertTo(ddb)
     }
 
     suspend fun putItem(item: T) {
-        val ddb = converter.convertFrom(item)
-        aws.dynamo.putItem(ddb)
+        val ddb = eachConverter.convertFrom(item)
+        repository.putItem(ddb)
     }
 
     suspend fun deleteItem(item: T) {
-        val query = converter.convertFrom(item)
-        aws.dynamo.deleteItem(query)
+        val query = eachConverter.convertFrom(item)
+        repository.deleteItem(query)
     }
 
     //==================================================== 기본 쿼리 ======================================================
 
-    /** 인덱스 없이 SK 프리픽스 기반으로 조회 */
-    suspend fun findBySkPrefix(item: T, last: Map<String, AttributeValue>? = null, block: DynamoExpression.() -> Unit = {}): DynamoResult<T> {
-        val (basic, express) = converter.findBySkPrefix(item, last)
-        block(express)
-        val result2 = aws.dynamo.query(express)
-        val datas = result2.datas.map { basic.fromAttributeMap<DdbBasic>(it) }.map { converter.convertTo(it) }
-        return DynamoResult(datas, result2.lastEvaluatedKey)
+    /** 페이징 조회 */
+    suspend fun findBySkPrefix(item: T, index: DbMultiIndex? = null, block: DbExpression.() -> Unit = {}): Pair<List<T>, DynamoMap?> {
+        val param = eachConverter.convertFrom(item)
+        val dbResult = repository.findBySkPrefix(param, index, block)
+        val datas = dbResult.datas<DbMultiIndexItem>().map { eachConverter.convertTo(it) }
+        return datas to dbResult.lastEvaluatedKey
     }
 
-    /** 인덱스 없이 SK 프리픽스 기반으로 조회 */
-    suspend fun findAllBySkPrefix(data: T, block: DynamoExpression.() -> Unit = {}): List<T> {
-        val (basic, express) = converter.findBySkPrefix(data, null)
-        block(express)
-        val results = aws.dynamo.queryAll(express)
-        return results.map { basic.fromAttributeMap<DdbBasic>(it) }.map { converter.convertTo(it) }
-    }
-
-    //==================================================== 인덱스 쿼리 ======================================================
-
-    /** 인덱스 없이 SK 프리픽스 기반으로 조회 */
-    suspend fun findBySkPrefix(index: DdbBasicGsi,item: T, last: Map<String, AttributeValue>? = null, block: DynamoExpression.() -> Unit = {}): DynamoResult<T> {
-        val (basic, express) = converter.findBySkPrefix(index,item, last)
-        block(express)
-        val result2 = aws.dynamo.query(express)
-        val datas = result2.datas.map { basic.fromAttributeMap<DdbBasic>(it) }.map { converter.convertTo(it) }
-        return DynamoResult(datas, result2.lastEvaluatedKey)
-    }
-
-    /** 인덱스 없이 SK 프리픽스 기반으로 조회 */
-    suspend fun findAllBySkPrefix(index: DdbBasicGsi,data: T, block: DynamoExpression.() -> Unit = {}): List<T> {
-        val (basic, express) = converter.findBySkPrefix(index,data, null)
-        block(express)
-        val results = aws.dynamo.queryAll(express)
-        return results.map { basic.fromAttributeMap<DdbBasic>(it) }.map { converter.convertTo(it) }
+    /** 전체 조회 */
+    suspend fun findAllBySkPrefix(item: T, index: DbMultiIndex? = null, block: DbExpression.() -> Unit = {}): List<T> {
+        val param = eachConverter.convertFrom(item)
+        val dbResult = repository.findAllBySkPrefix(param, index, block)
+        return dbResult.map { eachConverter.convertTo(it) }
     }
 
 }

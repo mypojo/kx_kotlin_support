@@ -20,13 +20,14 @@ class ResourceItemRepositoryTest : BeSpecHeavy() {
             val pk1 = "ResourceItemRepositoryTest#1"
             val pk2 = "ResourceItemRepositoryTest#2"
             val repository = lock.repository
-            Then("입력") {
-
+            Then("입력 -> 리소스 테이블에 데이터가 생김") {
                 val req1 = ResourceLockReq {
                     resourcePk = pk1
+                    cause = "강제테스트" //이 문구는 락에 대한 정보라서, 리소스에는 저장 안됨
                 }
                 val req2 = ResourceLockReq {
                     resourcePk = pk2
+                    cause = "두반째 테스트"
                 }
 
                 lock.factory.createResource(req1, 3).forEach { repository.putItem(it) }

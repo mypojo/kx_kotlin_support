@@ -1,8 +1,8 @@
 package net.kotlinx.domain.ddb.repeatTask
 
 import io.kotest.matchers.shouldBe
-import net.kotlinx.domain.ddb.DdbBasic
-import net.kotlinx.domain.ddb.DdbBasicGsi
+import net.kotlinx.domain.ddb.DbMultiIndex
+import net.kotlinx.domain.ddb.DbMultiIndexItemRepository
 import net.kotlinx.domain.ddb.DdbBasicRepository
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.kotest.KotestUtil
@@ -14,12 +14,15 @@ import java.util.*
 
 class RepeatTaskRepositoryTest : BeSpecLight() {
 
-    val repository by lazy { DdbBasicRepository(findProfile97, RepeatTaskConverter()) }
+    private val repository by lazy {
+        DdbBasicRepository(
+            DbMultiIndexItemRepository(findProfile97),
+            RepeatTaskConverter(),
+        )
+    }
 
     init {
         initTest(KotestUtil.PROJECT)
-
-        DdbBasic.TABLE_NAME = "system-dev"
 
         Given("RepeatTask") {
 
@@ -98,7 +101,7 @@ class RepeatTaskRepositoryTest : BeSpecLight() {
                             memberId = "11"
                         }
                         val datas = repository.findBySkPrefix(req)
-                        datas.datas.size shouldBe 10
+                        datas.first.size shouldBe 10
                     }
 
                     Then("계정 22 (리미트걸어도 여러번 호출해서 전체 가져옴)") {
@@ -122,12 +125,12 @@ class RepeatTaskRepositoryTest : BeSpecLight() {
                         val req = RepeatTask {
                             time = currentTime
                         }
-                        val datas = repository.findBySkPrefix(DdbBasicGsi.GSI01, req)
-                        datas.datas.print()
-                        datas.datas.size shouldBe 2
+                        val datas = repository.findBySkPrefix(req, DbMultiIndex.GSI01).first
+                        datas.print()
+                        datas.size shouldBe 2
 
-                        datas.datas.first { it.memberId == "11" && it.time == currentTime }.id shouldBe dataset01.first { it.time == currentTime }.id
-                        datas.datas.first { it.memberId == "22" && it.time == currentTime }.id shouldBe dataset02.first { it.time == currentTime }.id
+                        datas.first { it.memberId == "11" && it.time == currentTime }.id shouldBe dataset01.first { it.time == currentTime }.id
+                        datas.first { it.memberId == "22" && it.time == currentTime }.id shouldBe dataset02.first { it.time == currentTime }.id
                     }
 
                 }

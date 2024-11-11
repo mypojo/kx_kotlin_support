@@ -24,6 +24,7 @@ class ResourceLockManagerTest : BeSpecHeavy() {
 
             val repository = lockManager.repository
 
+            /** 시간을 늘리면  DDB 테이블 데이터 쉽게 확인 가능 */
             val jobs = listOf(
                 "작업A" to 2,
                 "작업B" to 4,
@@ -43,13 +44,15 @@ class ResourceLockManagerTest : BeSpecHeavy() {
                             }
                             lockManager.acquireLock(req).use {
                                 it.resources.size shouldBe job.second
-                                log.debug { "${job.first} 진행중..." }
+                                log.debug { "${job.first} 진행중...  ${job.second.seconds}초 딜레이.." }
                                 job.second.seconds.delay()
                                 log.debug { "${job.first} 종료" }
                             }
                         }
                     }
                 }.parallelExecute() //락모듈은 스래드로 실행해야함!! 코루틴 ㄴㄴ
+
+                log.warn { "리소스 테이블에 리소스가 X개 있어야함" }
             }
 
             Then("추가 작업 실행 -> 기존 리소스 재사용") {

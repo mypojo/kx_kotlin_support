@@ -1,15 +1,12 @@
 package net.kotlinx.domain.job
 
-import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.aws.AwsInstanceMetadata
 import net.kotlinx.aws.AwsInstanceType
-import net.kotlinx.aws.dynamo.*
+import net.kotlinx.aws.ddb.DbItem
 import net.kotlinx.aws.fargate.FargateUtil
 import net.kotlinx.aws.lambda.LambdaUtil
 import net.kotlinx.json.gson.GsonData
-import net.kotlinx.json.gson.GsonSet
 import net.kotlinx.json.gson.toGsonData
-import net.kotlinx.lazyLoad.LazyLatchProperty
 import net.kotlinx.reflect.name
 import net.kotlinx.time.toIso
 import java.time.LocalDateTime
@@ -19,70 +16,17 @@ import java.time.temporal.ChronoUnit
  * DDB에 입력되는 메타데이터
  * https://www.notion.so/mypojo/Job-Module-serverless-docker-57e773b5f0494fb59dcbff5d9a8eb8f5
  */
-class Job(override val pk: String, override val sk: String) : DynamoData {
-
-    override val tableName: String
-        get() = TABLE_NAME
-
-    override fun toAttribute(): Map<String, AttributeValue> {
-        //인덱스 조합. 참고로 가져올때는 인덱스 없어도 됨
-        return mutableMapOf<String, AttributeValue>().apply {
-            this += DynamoBasic.PK to AttributeValue.S(pk)
-            this += DynamoBasic.SK to AttributeValue.S(sk)
-
-            //==================================================== 최초 생성시 필수 입력값 ======================================================
-            this += Job::reqTime.name to AttributeValue.S(reqTime.toIso())
-            this += Job::memberId.name to AttributeValue.S(memberId)
-            this += Job::ttl.name to AttributeValue.N(ttl.toString())
-            this += Job::memberReqTime.name to AttributeValue.S(memberReqTime) //인덱스용 입력
-            this += Job::jobStatus.name to AttributeValue.S(jobStatus.name)
-            this += Job::jobExeFrom.name to AttributeValue.S(jobExeFrom.name)
-            this += Job::jobContext.name to AttributeValue.S(jobContext.toString())
-            this += Job::jobOption.name to AttributeValue.S(jobOption.toString())
-            //==================================================== 공통 시스템 자동(필수) 입력값 ======================================================
-            startTime?.let { this += Job::startTime.name to AttributeValue.S(it.toIso()) }
-            updateTime?.let { this += Job::updateTime.name to AttributeValue.S(it.toIso()) }
-            endTime?.let { this += Job::endTime.name to AttributeValue.S(it.toIso()) }
-
-            jobErrMsg?.let { this += Job::jobErrMsg.name to AttributeValue.S(it) }
-            instanceMetadata?.let { this += Job::instanceMetadata.name to AttributeValue.S(GsonSet.GSON.toJson(instanceMetadata)) }
-
-            sfnId?.let { this += Job::sfnId.name to AttributeValue.S(it) }
-            jobEnv?.let { this += Job::jobEnv.name to AttributeValue.S(it) }
-        }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : DynamoData> fromAttributeMap(map: Map<String, AttributeValue>): T = Job(
-        map[DynamoBasic.PK]!!.asS(), map[DynamoBasic.SK]!!.asS()
-    ).apply {
-        //==================================================== 최초 생성시 필수 입력값 ======================================================
-        reqTime = map.findOrThrow(Job::reqTime)
-        memberId = map.findOrThrow(Job::memberId)
-        ttl = map.findOrThrow(Job::ttl)
-        jobStatus = map.findOrThrow(Job::jobStatus)
-        jobExeFrom = map.findOrThrow(Job::jobExeFrom)
-        jobContext = map.findOrThrow(Job::jobContext)
-
-        //==================================================== 공통 시스템 자동(필수) 입력값 ======================================================
-        startTime = map.find(Job::startTime)
-        updateTime = map.find(Job::updateTime)
-        endTime = map.find(Job::endTime)
-
-        jobErrMsg = map.find(Job::jobErrMsg)
-        instanceMetadata = map.findJson(Job::instanceMetadata)
-        jobOption = map.findOrThrow(Job::jobOption)
-        sfnId = map.find(Job::sfnId)
-        jobEnv = map.find(Job::jobEnv)
-
-    } as T
-
+class Job(override val pk: String, override val sk: String) : DbItem {
 
     //==================================================== 생성자 ======================================================
     /** 리플렉션용 기본 생성자. 일반 호출은 금지  */
+    @Deprecated("향후 삭제")
     constructor() : this("", "")
 
-    /** 조회 조건 입력시 */
+    /**
+     * 조회 조건 입력시
+     * null이 안됨으로 sk는 공백으로 체크해야함
+     *  */
     constructor(pk: String, sk: String = "", block: Job.() -> Unit = {}) : this(pk, sk) {
         block(this)
     }
@@ -189,13 +133,8 @@ class Job(override val pk: String, override val sk: String) : DynamoData {
      */
     fun toLogLink(): String? = instanceMetadata?.toLogLink(startTime)
 
-    /** DDB 콘솔 링크 */
-    fun toConsoleLink(): String = DynamoUtil.toConsoleLink(tableName, this)
 
     companion object {
-
-        /** 테이블 이름을 여기서 지정 (한번만 지정 가능) */
-        var TABLE_NAME: String by LazyLatchProperty()
 
         /** 아무것도 없으면 이거 입력  */
         const val DEFAULT_MEMBER = "system"
