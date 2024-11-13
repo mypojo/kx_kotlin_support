@@ -6,8 +6,8 @@ import mu.KotlinLogging
 import net.kotlinx.aws.dynamo.DynamoUtil
 import net.kotlinx.domain.ddb.DdbBasicRepository
 import net.kotlinx.domain.ddb.errorLog.ErrorLog
-import net.kotlinx.domain.ddb.errorLog.ErrorLogConverter
 import net.kotlinx.exception.toSimpleString
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.time.truncatedMills
 import java.time.LocalDateTime
 import java.util.*
@@ -22,7 +22,7 @@ class S3LogicFailEventDefaultListener {
 
     private val log = KotlinLogging.logger {}
 
-    private val repository by lazy { DdbBasicRepository(null, ErrorLogConverter()) }
+    private val repository by koinLazy<DdbBasicRepository<ErrorLog>>()
 
     /** 로그 지속시간 */
     var ttlDuraton = 1.days

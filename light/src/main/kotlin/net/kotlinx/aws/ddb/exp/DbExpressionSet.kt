@@ -1,26 +1,41 @@
-package net.kotlinx.aws.dynamo.query
+package net.kotlinx.aws.ddb.exp
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.core.Kdsl
+import net.kotlinx.string.lett
 
 
 /**
- * 쿼리 표현식 샘플
+ * 자주 사용되는 쿼리 표현식 샘플
  * */
-object DynamoExpressionSet {
+object DbExpressionSet {
+
+
+    /** 빈 스캔. 페이징 때문에 기본 템플릿은 있어야함  */
+    class None : DbExpression {
+
+        @Kdsl
+        constructor(block: None.() -> Unit = {}) {
+            apply(block)
+        }
+
+        override fun filterExpression(): String? = null
+        override fun expressionAttributeValues(): Map<String, AttributeValue>? = null
+    }
+
 
     /** PK 접두사로 스캐닝 (쿼리는 이거 불가능) */
-    class PkPrefix : DynamoExpression {
+    class PkPrefix : DbExpression {
 
         @Kdsl
         constructor(block: PkPrefix.() -> Unit = {}) {
             apply(block)
         }
 
-        override fun filterExpression(): String? = "begins_with ($pkName, :$pkName)"
+        override fun filterExpression(): String? = "begins_with (${pkName}, :${pkName})"
 
         override fun expressionAttributeValues(): Map<String, AttributeValue> = mapOf(
-            ":$pkName" to AttributeValue.S(pk)
+            ":${pkName}" to AttributeValue.S(pk)
         )
 
     }
@@ -29,31 +44,32 @@ object DynamoExpressionSet {
      * PK & SK 동일한거
      * SK 가 있을경우 SK도 비교해줌 ( 인덱스는 SK 동일하게 여러개 넣을 수 있음)
      *  */
-    class PkSkEq : DynamoExpression {
+    class PkSkEq : DbExpression {
 
         @Kdsl
         constructor(block: PkSkEq.() -> Unit = {}) {
             apply(block)
         }
 
-        override fun keyConditionExpression(): String = if (sk == null) "$pkName = :${pkName}" else "$pkName = :${pkName} AND $skName = :${skName}"
+        override fun keyConditionExpression(): String =
+            if (sk.isNullOrEmpty()) "${pkName} = :${pkName}" else "${pkName} = :${pkName} AND ${skName} = :${skName}"
 
         override fun expressionAttributeValues(): Map<String, AttributeValue> = buildMap {
             put(":${pkName}", AttributeValue.S(pk))
-            if (sk != null) put(":${skName}", AttributeValue.S(sk!!))
+            sk.lett { put(":${skName}", AttributeValue.S(it)) }
         }
 
     }
 
     /** SK 접두사 */
-    class SkPrefix : DynamoExpression {
+    class SkPrefix : DbExpression {
 
         @Kdsl
         constructor(block: SkPrefix.() -> Unit = {}) {
             apply(block)
         }
 
-        override fun keyConditionExpression(): String = "$pkName = :${pkName} AND begins_with (${skName}, :${skName})"
+        override fun keyConditionExpression(): String = "${pkName} = :${pkName} AND begins_with (${skName}, :${skName})"
 
         override fun expressionAttributeValues(): Map<String, AttributeValue> = mapOf(
             ":${pkName}" to AttributeValue.S(pk),
@@ -63,7 +79,7 @@ object DynamoExpressionSet {
     }
 
     /** SK 접두사 여러개 */
-    class SkPrefixIn : DynamoExpression {
+    class SkPrefixIn : DbExpression {
 
         lateinit var dd: String
 
@@ -72,7 +88,8 @@ object DynamoExpressionSet {
             apply(block)
         }
 
-        override fun keyConditionExpression(): String = "$pkName = :${pkName} AND (begins_with (${skName}, :${skName}) or begins_with (${skName}, :dd ) )   "
+        override fun keyConditionExpression(): String =
+            "${pkName} = :${pkName} AND (begins_with (${skName}, :${skName}) or begins_with (${skName}, :dd ) )   "
 
         override fun expressionAttributeValues(): Map<String, AttributeValue> = mapOf(
             ":${pkName}" to AttributeValue.S(pk),

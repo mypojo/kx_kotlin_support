@@ -1,12 +1,11 @@
 package net.kotlinx.aws.javaSdkv2.dynamoLock
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import net.kotlinx.aws.dynamo.DynamoData
-import net.kotlinx.aws.dynamo.findOrThrow
+import net.kotlinx.aws.ddb.DbItem
 import net.kotlinx.core.Kdsl
 
 /** 나머지 구현하기 */
-class DynamoLockReq : DynamoData {
+class DynamoLockReq : DbItem {
 
     @Kdsl
     constructor(block: DynamoLockReq.() -> Unit = {}) {
@@ -15,7 +14,6 @@ class DynamoLockReq : DynamoData {
 
     override lateinit var pk: String
     override lateinit var sk: String
-    override val tableName: String by lazy { throw UnsupportedOperationException("모듈에서 DDB 입력됨으로 여기는 사용되지 않습니다.") }
 
     //==================================================== 기본 설정값 ======================================================
 
@@ -41,22 +39,21 @@ class DynamoLockReq : DynamoData {
 
     //==================================================== 입출력 오버라이드 ======================================================
 
-    /** 추가 애트리뷰트 임으로, 키값은 없어도됨 */
-    override fun toAttribute(): Map<String, AttributeValue> {
+    /** 입력에만 사용됨? */
+    fun toAttribute(): Map<String, AttributeValue> {
         return mapOf(
             DynamoLockReq::div.name to AttributeValue.S(this.div),
             DynamoLockReq::comment.name to AttributeValue.S(this.comment),
         )
     }
 
-    /** 아무것도 하지않음 */
-    override fun <T : DynamoData> fromAttributeMap(map: Map<String, AttributeValue>): T {
-        @Suppress("UNCHECKED_CAST")
-        return DynamoLockReq {
-            pk = map.findOrThrow(DynamoLockReq::pk)
-            sk = map.findOrThrow(DynamoLockReq::sk)
-            div = map.findOrThrow(DynamoLockReq::div)
-            comment = map.findOrThrow(DynamoLockReq::comment)
-        } as T
-    }
+//    /** 아무것도 하지않음 */
+//    fun <T : DbItem> fromAttributeMap(map: Map<String, AttributeValue>): T {
+//        return DynamoLockReq {
+//            pk = map.findOrThrow(DynamoLockReq::pk)
+//            sk = map.findOrThrow(DynamoLockReq::sk)
+//            div = map.findOrThrow(DynamoLockReq::div)
+//            comment = map.findOrThrow(DynamoLockReq::comment)
+//        } as T
+//    }
 }

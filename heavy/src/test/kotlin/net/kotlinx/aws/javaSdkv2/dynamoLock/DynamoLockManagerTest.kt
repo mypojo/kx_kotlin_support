@@ -15,23 +15,23 @@ class DynamoLockManagerTest : BeSpecHeavy() {
     init {
         initTest(KotestUtil.PROJECT)
 
+        val pkName = "lock-test"
         Given("DynamoLockModule") {
 
             Then("락 테스트") {
 
                 val req01 = DynamoLockReq {
-                    pk = "aa"
+                    pk = pkName
                     sk = "bb"
                     div = "for test"
                     comment = "과금 테스트 입니다"
                 }
-
                 lockModule.acquireLock(req01).use {
                     log.info { "첫번째 락을 잡습니다..." }
                     1.seconds.sleep()
 
                     val req02 = DynamoLockReq {
-                        pk = "aa"
+                        pk = pkName
                         sk = "cc"
                         div = "for test v2"
                         comment = "과금 테스트 입니다 v2"
@@ -44,13 +44,14 @@ class DynamoLockManagerTest : BeSpecHeavy() {
 
                     shouldThrow<DynamoLockManager.DynamoLockFailException> {
                         val req03 = DynamoLockReq {
-                            pk = "aa"
+                            pk = pkName
                             sk = "bb" //첫 락과 동일값
                             div = "for test v3"
                             comment = "과금 테스트 입니다 v3"
                         }
+
+                        log.info { "세번째 락(같은값)을 잡습니다.. -> 락을 기다리다가 타임아웃이 발생해야함" }
                         lockModule.acquireLock(req03).use {
-                            log.info { "세번째 락(같은값)을 잡습니다" }
                             throw IllegalStateException("이 락이 통과되면 안됨!!")
                         }
                     }

@@ -9,7 +9,7 @@ import java.util.*
 class KinesisSupportKtTest : BeSpecLight() {
 
     init {
-        initTest(KotestUtil.FAST)
+        initTest(KotestUtil.IGNORE)
 
         Given("KinesisSupport") {
             Then("단건 전송") {

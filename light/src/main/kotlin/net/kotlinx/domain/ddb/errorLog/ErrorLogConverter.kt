@@ -2,14 +2,14 @@ package net.kotlinx.domain.ddb.errorLog
 
 import net.kotlinx.aws.dynamo.ddbJoin
 import net.kotlinx.aws.dynamo.ddbSplit
-import net.kotlinx.domain.ddb.DdbBasic
-import net.kotlinx.domain.ddb.DdbBasicConverter
+import net.kotlinx.domain.ddb.DbMultiIndexEachConverter
+import net.kotlinx.domain.ddb.DbMultiIndexItem
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.string.toLocalDateTime
 import net.kotlinx.time.TimeFormat
 
 
-class ErrorLogConverter : DdbBasicConverter<DdbBasic, ErrorLog> {
+class ErrorLogConverter : DbMultiIndexEachConverter<DbMultiIndexItem, ErrorLog> {
 
     companion object {
         const val PK_PREFIX: String = "errorLog"
@@ -20,7 +20,7 @@ class ErrorLogConverter : DdbBasicConverter<DdbBasic, ErrorLog> {
 
     override val skPrefix: String = SK_PREFIX
 
-    override fun convertTo(ddb: DdbBasic): ErrorLog = ErrorLog().apply {
+    override fun convertTo(ddb: DbMultiIndexItem): ErrorLog = ErrorLog().apply {
         //==================================================== PK ======================================================
         val pks = ddb.pk.ddbSplit()
         check(pks.size == 3)
@@ -39,8 +39,8 @@ class ErrorLogConverter : DdbBasicConverter<DdbBasic, ErrorLog> {
         stackTrace = ddb.body.remove(this::stackTrace.name)!!.str
     }
 
-    override fun convertFrom(item: ErrorLog): DdbBasic {
-        return DdbBasic(
+    override fun convertFrom(item: ErrorLog): DbMultiIndexItem {
+        return DbMultiIndexItem(
             pk = arrayOf(pkPrefix, item.group, item.div).ddbJoin(),
             sk = arrayOf(skPrefix, item.divId, item.id).ddbJoin(3),
         ).apply {

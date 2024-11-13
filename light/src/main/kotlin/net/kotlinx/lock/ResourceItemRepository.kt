@@ -1,12 +1,13 @@
 package net.kotlinx.lock
 
-import net.kotlinx.aws.AwsClient
-import net.kotlinx.aws.dynamo.DynamoRepository
+import net.kotlinx.aws.ddb.DbRepository
+import net.kotlinx.aws.ddb.DbTable
+import net.kotlinx.aws.ddb.exp.DbExpressionSet
+import net.kotlinx.aws.ddb.exp.queryAll
 import net.kotlinx.aws.dynamo.dynamo
-import net.kotlinx.aws.dynamo.query.DynamoExpressionSet
-import net.kotlinx.aws.dynamo.query.DynamoQuery
-import net.kotlinx.aws.dynamo.query.queryAll
 import net.kotlinx.concurrent.coroutineExecute
+import net.kotlinx.koin.Koins.koinLazy
+import net.kotlinx.reflect.name
 
 /**
  * DDB 간단접근용 헬퍼
@@ -14,12 +15,14 @@ import net.kotlinx.concurrent.coroutineExecute
  *
  * 기존코드 실사용은 일단 안함
  */
-class ResourceItemRepository(override val aws: AwsClient) : DynamoRepository<ResourceItem> {
 
-    override val emptyData: ResourceItem = ResourceItem("", "")
+class ResourceItemRepository(profile: String? = null) : DbRepository<ResourceItem>(profile) {
+
+    /** 여기서는 안씀 */
+    override val dbTable by koinLazy<DbTable>(ResourceItem::class.name())
 
     /** 사용중 여부 업데이트 */
-    suspend fun updateItemInUse(items: List<ResourceItem>, use: Boolean) {
+    fun updateItemInUse(items: List<ResourceItem>, use: Boolean) {
         items.map {
             suspend {
                 check(it.inUse != use)
@@ -31,13 +34,11 @@ class ResourceItemRepository(override val aws: AwsClient) : DynamoRepository<Res
 
     /** 리소스 전체 리스팅  */
     suspend fun findAllByPk(pk: String): List<ResourceItem> {
-        //xxxx
-        val query = DynamoQuery {
-            expression = DynamoExpressionSet.PkSkEq {
-                this.pk = pk
+        return aws.dynamo.queryAll {
+            DbExpressionSet.PkSkEq {
+                init(ResourceItem(pk, ""))
             }
         }
-        return aws.dynamo.queryAll(query, ResourceItem(pk, ""))
     }
 
     companion object {

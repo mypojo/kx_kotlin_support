@@ -9,7 +9,6 @@ import net.kotlinx.aws.batch.BatchUtil
 import net.kotlinx.aws.batch.batch
 import net.kotlinx.aws.batch.submitJob
 import net.kotlinx.aws.batch.submitJobAndWaitStarting
-import net.kotlinx.aws.dynamo.DynamoUtil
 import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.toErrorLogLink
 import net.kotlinx.aws.lambda.invokeAsynch
 import net.kotlinx.aws.lambda.invokeSynch
@@ -178,7 +177,7 @@ class JobTriggerBatch(
         } else {
             val jobId = aws.batch.submitJob(jobQueueName, jobDefinitionName, jobParam)
             log.debug { "잡 UI 링크 -> ${BatchUtil.toBatchUiLink(jobId)}" }
-            log.debug { "잡 DDB 링크 -> ${DynamoUtil.toConsoleLink(findJob.tableName, findJob)}" }
+            log.debug { "잡 DDB 링크 -> ${findJob.toConsoleLink()}" }
         }
         return jobParam.toString()
     }

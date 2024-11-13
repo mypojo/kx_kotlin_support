@@ -16,6 +16,7 @@ import net.kotlinx.json.gson.GsonSet
 import net.kotlinx.koin.KoinModule
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.MyEnv
+import net.kotlinx.kotest.modules.job.JobEvenListener
 import net.kotlinx.lazyLoad.lazyLoad
 import net.kotlinx.lazyLoad.lazyLoadSsm
 import net.kotlinx.lazyLoad.lazyLoadStringSsm
@@ -74,7 +75,10 @@ object BasicModule : KoinModule {
                 }
             }
 
-            EventBus(exceptionHandler).apply { register(DeadEventListener()) }
+            EventBus(exceptionHandler).apply {
+                register(DeadEventListener())
+                register(JobEvenListener())
+            }
         }
         single {
             val tempSeq = AtomicLong()

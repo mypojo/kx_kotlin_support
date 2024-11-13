@@ -3,7 +3,7 @@ package net.kotlinx.domain.ddb.errorLog
 import io.kotest.matchers.shouldBe
 import net.kotlinx.aws.dynamo.DynamoUtil
 import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.toErrorLogLink
-import net.kotlinx.domain.ddb.DdbBasic
+import net.kotlinx.domain.ddb.DbMultiIndexItemRepository
 import net.kotlinx.domain.ddb.DdbBasicRepository
 import net.kotlinx.domain.job.Job
 import net.kotlinx.kotest.KotestUtil
@@ -18,12 +18,16 @@ import kotlin.time.Duration.Companion.days
 
 class ErrorLogRepositoryTest : BeSpecLight() {
 
-    val repository by lazy { DdbBasicRepository(findProfile97, ErrorLogConverter()) }
+    /** 프로파일 때문에 DI 안함 */
+    private val repository by lazy {
+        DdbBasicRepository(
+            DbMultiIndexItemRepository(findProfile97),
+            ErrorLogConverter(),
+        )
+    }
 
     init {
         initTest(KotestUtil.PROJECT)
-
-        DdbBasic.TABLE_NAME = "system-dev"
 
         Given("ErrorLog") {
 

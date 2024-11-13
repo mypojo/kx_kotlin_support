@@ -7,7 +7,7 @@ package net.kotlinx.domain.job
 object JobUpdateSet {
 
     /** 시작 */
-    val START = listOf(
+    val START = setOf(
         net.kotlinx.domain.job.Job::jobStatus,
         net.kotlinx.domain.job.Job::jobContext,
         net.kotlinx.domain.job.Job::startTime,
@@ -15,14 +15,14 @@ object JobUpdateSet {
     ).map { it.name }
 
     /** 중간 상태변경 */
-    val STATUS = listOf(
+    val STATUS = setOf(
         net.kotlinx.domain.job.Job::jobStatus,
         net.kotlinx.domain.job.Job::jobContext,
         net.kotlinx.domain.job.Job::sfnId,
     ).map { it.name }
 
     /** 종료 */
-    val END = listOf(
+    val END = setOf(
         net.kotlinx.domain.job.Job::jobStatus,
         net.kotlinx.domain.job.Job::jobContext,
         net.kotlinx.domain.job.Job::endTime,
