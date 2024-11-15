@@ -20,7 +20,7 @@ class AthenaMs949Test : BeSpecLight() {
                 val download = athenaModule97.download {
                     query = """
                         SELECT nvm_camp_name "캠페인 명", nvm_camp_id "캠페인ID" 
-                        FROM nabus1.nv_camp_data 
+                        FROM xx.nv_camp_data 
                         WHERE basic_date = '20240801' 
                         limit 10
                     """

@@ -14,7 +14,7 @@ class AthenaTableTest : BeSpecLight() {
                 val table = AthenaTable {
                     icebugTable()
                     database = "d"
-                    bucket = "skale-work-dev"
+                    bucket = "xx-work-dev"
                     tableName = "demo"
                     s3Key = "data/${tableName}/"
                     schema = mapOf(

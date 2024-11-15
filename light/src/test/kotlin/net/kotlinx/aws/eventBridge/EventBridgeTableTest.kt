@@ -14,7 +14,7 @@ class EventBridgeTableTest : BeSpecHeavy() {
             Then("테이블 생성 dev") {
                 val table = EventBridgeTable.EVENTBRIDGE_LOG.apply {
                     database = "d1"
-                    bucket = "adpriv-work-dev"
+                    bucket = "xx-work-dev"
                     s3Key = "data/level1/${tableName}/"
                 }
                 athenaModule97.execute(table.dropForce())
@@ -24,7 +24,7 @@ class EventBridgeTableTest : BeSpecHeavy() {
             Then("테이블 생성 prod") {
                 val table = EventBridgeTable.EVENTBRIDGE_LOG.apply {
                     database = "p1"
-                    bucket = "adpriv-work-prod"
+                    bucket = "xx-work-prod"
                     s3Key = "data/level1/${tableName}/"
                 }
                 athenaModule97.execute(table.dropForce())

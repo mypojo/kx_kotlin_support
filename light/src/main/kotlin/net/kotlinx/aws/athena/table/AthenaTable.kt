@@ -14,8 +14,6 @@ import kotlin.time.Duration.Companion.days
  * 느리고 불안한 CDK보다 이게 더 나은 판단이라고 생각함
  *
  * 네이밍 컨벤션 = mysql 표준인 소문자 언더스코어로 통일한다.
- *
- * AthenaTableTest_sin_skale
  *  */
 class AthenaTable {
 

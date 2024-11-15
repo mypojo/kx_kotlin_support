@@ -37,7 +37,7 @@ internal class AthenaPartitionS3ModuleTest : BeSpecHeavy() {
                     tableName = "nv_camp_data"
                     partitionKeys = listOf("basic_date")
                     partitionSqlBuilder = AthenaPartitionSqlBuilder {
-                        bucketName = "nabus1-prod"
+                        bucketName = "xx-prod"
                         prefix = "data/${findProfile97.uppercase()}"
                     }
                 }
