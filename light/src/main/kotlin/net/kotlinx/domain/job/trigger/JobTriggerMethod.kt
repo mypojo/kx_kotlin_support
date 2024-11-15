@@ -9,10 +9,10 @@ import net.kotlinx.aws.batch.BatchUtil
 import net.kotlinx.aws.batch.batch
 import net.kotlinx.aws.batch.submitJob
 import net.kotlinx.aws.batch.submitJobAndWaitStarting
-import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.toErrorLogLink
 import net.kotlinx.aws.lambda.invokeAsynch
 import net.kotlinx.aws.lambda.invokeSynch
 import net.kotlinx.aws.lambda.lambda
+import net.kotlinx.domain.item.errorLog.errorLogQueryLink
 import net.kotlinx.domain.job.Job
 import net.kotlinx.domain.job.JobExeDiv
 import net.kotlinx.domain.job.JobRepository
@@ -135,9 +135,9 @@ class JobTriggerLambda(
             val findJob = Job(op.jobPk, jobSk)
             if (op.synch) {
                 jobRepository.getItem(findJob)?.let {
-                    log.debug { "클라우드와치 로그링크 : ${it.toLogLink()}" }
-                    log.debug { "DDB 콘솔 링크 : ${it.toConsoleLink()}" }
-                    log.debug { "에러 로그 링크 : ${it.toErrorLogLink()}" }
+                    log.debug { "클라우드와치 로그링크 : ${it.cloudWatchLogLink}" }
+                    log.debug { "DDB 콘솔 링크 : ${it.dynamoItemLink}" }
+                    log.debug { "에러 로그 링크 : ${it.errorLogQueryLink}" }
                 }
             }
         }
@@ -173,11 +173,11 @@ class JobTriggerBatch(
         if (op.synch) {
             val jobDetail = aws.batch.submitJobAndWaitStarting(jobQueueName, jobDefinitionName, jobParam)
             log.debug { "잡 UI 링크 -> ${BatchUtil.toBatchUiLink(jobDetail.jobId!!)}" }
-            log.debug { "잡 DDB 링크 -> ${findJob.toConsoleLink()}" }
+            log.debug { "잡 DDB 링크 -> ${findJob.dynamoItemLink}" }
         } else {
             val jobId = aws.batch.submitJob(jobQueueName, jobDefinitionName, jobParam)
             log.debug { "잡 UI 링크 -> ${BatchUtil.toBatchUiLink(jobId)}" }
-            log.debug { "잡 DDB 링크 -> ${findJob.toConsoleLink()}" }
+            log.debug { "잡 DDB 링크 -> ${findJob.dynamoItemLink}" }
         }
         return jobParam.toString()
     }

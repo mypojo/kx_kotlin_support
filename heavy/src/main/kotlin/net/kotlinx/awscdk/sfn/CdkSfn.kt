@@ -34,7 +34,7 @@ class CdkSfn : CdkInterface {
     lateinit var stack: Stack
 
     override val logicalName: String
-        get() = "${project.profileName}-$name-${suff}"
+        get() = "${projectName}-$name-${suff}"
 
     /** 새벽 기준으로 출근 할때까지 */
     var timeout: Duration = Duration.hours(6)

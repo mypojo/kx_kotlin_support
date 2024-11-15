@@ -36,7 +36,7 @@ class CdkLambda : CdkEnum {
     lateinit var lambdaName: String
 
     override val logicalName: String
-        get() = "${project.profileName}-${lambdaName}-${suff}"
+        get() = "${projectName}-${lambdaName}-${suff}"
 
     /** 필수 권한 */
     lateinit var role: IRole
@@ -120,7 +120,7 @@ class CdkLambda : CdkEnum {
     fun loadAlias(stack: Stack): CdkLambda {
         checkNotNull(aliasName)
 
-        val arn = "arn:aws:lambda:${project.region}:${project.awsId}:function:${logicalName}:${aliasName}"
+        val arn = "arn:aws:lambda:${awsConfig.region}:${awsConfig.awsId}:function:${logicalName}:${aliasName}"
         aliasFun = Function.fromFunctionArn(stack, arn, arn)
         return this
     }

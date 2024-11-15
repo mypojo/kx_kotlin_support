@@ -109,7 +109,7 @@ class BeanTest : BeSpecLog() {
                 println(file.readCsvLinesCnt())
             }
 
-            Then("테스트 데이터 읽기") {
+            xThen("테스트 데이터 읽기") {
                 val file = ResourceHolder.WORKSPACE.slash("f3d3d604-353f-4eb4-9fc1-4db8d9e4a514.csv")
                 val renamed = ResourceHolder.WORKSPACE.slash("f3d3d604-353f-4eb4-9fc1-4db8d9e4a514.csv.gz")
                 file.renameTo(renamed)

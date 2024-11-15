@@ -16,6 +16,7 @@ abstract class BeSpecLight : BeSpecKoin(MODULES) {
             AwsModule.moduleConfig(),
             JobModule.moduleConfig(),
             DbMultiIndexItemModule.moduleConfig(),
+
             BatchStepModule.moduleConfig(),
             KoinTestModule.moduleConfig(),
             LambdaDispatcherModule.moduleConfig(),

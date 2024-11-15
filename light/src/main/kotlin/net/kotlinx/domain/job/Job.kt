@@ -2,7 +2,7 @@ package net.kotlinx.domain.job
 
 import net.kotlinx.aws.AwsInstanceMetadata
 import net.kotlinx.aws.AwsInstanceType
-import net.kotlinx.aws.ddb.DbItem
+import net.kotlinx.aws.dynamo.enhanced.DbItem
 import net.kotlinx.aws.fargate.FargateUtil
 import net.kotlinx.aws.lambda.LambdaUtil
 import net.kotlinx.json.gson.GsonData
@@ -109,30 +109,33 @@ class Job(override val pk: String, override val sk: String) : DbItem {
     //==================================================== 편의 메소드 ======================================================
 
     /** 작동시간 밀리초 리턴 */
-    fun toIntervalMills(): Long? = when {
-        arrayOf(startTime, endTime).any { it == null } -> null
-        else -> ChronoUnit.MILLIS.between(startTime!!, endTime!!)
-    }
+    val intervalMills: Long?
+        get() = when {
+            arrayOf(startTime, endTime).any { it == null } -> null
+            else -> ChronoUnit.MILLIS.between(startTime!!, endTime!!)
+        }
+
 
     /**
-     * 매우 러프하게 계산해준다
-     * 이 코드를 참조해서 실제 계산
+     * 매우 러프하게 원화 단위로 비용을 계산해준다
+     * 이 코드를 참조해서 실제 계산할것
      *  */
-    fun toCost(): Double? {
-        val sumOfInterval = toIntervalMills() ?: return null
-        return when (instanceMetadata?.instanceType) {
-            AwsInstanceType.LAMBDA -> LambdaUtil.cost(sumOfInterval)
-            AwsInstanceType.BATCH -> FargateUtil.cost(0.5, 1.0, sumOfInterval)
-            else -> null
+    val cost: Double?
+        get() {
+            val sumOfInterval = intervalMills ?: return null
+            return when (instanceMetadata?.instanceType) {
+                AwsInstanceType.LAMBDA -> LambdaUtil.cost(sumOfInterval)
+                AwsInstanceType.BATCH -> FargateUtil.cost(0.5, 1.0, sumOfInterval)
+                else -> null
+            }
         }
-    }
 
     /**
      * 클라우드와치 로그 링크를 리턴
      * 이 뒤에 필터를 붙일 수 있다.
      */
-    fun toLogLink(): String? = instanceMetadata?.toLogLink(startTime)
-
+    val cloudWatchLogLink: String?
+        get() = instanceMetadata?.toLogLink(startTime)
 
     companion object {
 

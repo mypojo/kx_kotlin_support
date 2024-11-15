@@ -1,9 +1,11 @@
 package net.kotlinx.domain.ddb.repeatTask
 
 import io.kotest.matchers.shouldBe
-import net.kotlinx.domain.ddb.DbMultiIndex
-import net.kotlinx.domain.ddb.DbMultiIndexItemRepository
-import net.kotlinx.domain.ddb.DdbBasicRepository
+import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndex
+import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndexItemRepository
+import net.kotlinx.aws.dynamo.multiIndex.DdbBasicRepository
+import net.kotlinx.domain.item.repeatTask.RepeatTask
+import net.kotlinx.domain.item.repeatTask.RepeatTaskConverter
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest

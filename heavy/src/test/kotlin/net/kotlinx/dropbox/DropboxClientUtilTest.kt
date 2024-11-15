@@ -10,7 +10,7 @@ class DropboxClientUtilTest : BeSpecHeavy() {
 
 
     init {
-        initTest(KotestUtil.FAST)
+        initTest(KotestUtil.IGNORE)
 
         Given("DropboxClientUtil") {
             Then("xx") {

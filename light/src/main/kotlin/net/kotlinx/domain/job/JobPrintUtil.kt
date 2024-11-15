@@ -16,7 +16,7 @@ object JobPrintUtil {
                 it.pk, it.sk, it.jobStatus, it.instanceMetadata?.instanceType,
                 it.reqTime.toKr01(),
                 it.startTime?.toKr01() ?: "-",
-                it.toIntervalMills()?.toTimeString(),
+                it.intervalMills?.toTimeString(),
             )
         }.let {
             listOf("pk", "sk", "jobStatus", "instanceType", "reqTime", "startTime", "작동시간").toTextGrid(it)
@@ -30,8 +30,8 @@ object JobPrintUtil {
                 it.pk, it.sk, it.jobStatus, it.instanceMetadata?.instanceType,
                 it.reqTime.toKr01(),
                 it.startTime?.toKr01() ?: "-",
-                it.toIntervalMills()?.toTimeString(),
-                it.toLogLink(),
+                it.intervalMills?.toTimeString(),
+                it.cloudWatchLogLink,
             )
         }.let {
             listOf("pk", "sk", "jobStatus", "instanceType", "reqTime", "startTime", "작동시간", "로그링크").toTextGrid(it)

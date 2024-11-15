@@ -49,4 +49,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-batch")
 
+    //runtimeOnly("io.ktor:ktor-client-okhttp:2.3.10") //open API 의 ktor JVM http 엔진. 나는 okhttp 사용. 메인 버전 안따라감!!
+
 }

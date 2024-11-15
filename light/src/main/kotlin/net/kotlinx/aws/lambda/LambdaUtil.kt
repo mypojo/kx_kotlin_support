@@ -23,7 +23,7 @@ object LambdaUtil {
     const val COST_GI_PER_SEC = 0.0000166667
 
     /** 사용량(밀리초)를 원화로 변경 */
-    fun cost(mills: Long): Double = 1.0 * mills / 1000 * LambdaUtil.COST_GI_PER_SEC / 4 * AwsConfig.EXCHANGE_RATE  //256mb 기준
+    fun cost(mills: Long): Double = 1.0 * mills / 1000 * COST_GI_PER_SEC / 4 * AwsConfig.EXCHANGE_RATE  //256mb 기준
 
     //==================================================== 간단 예약어들  ======================================================
 

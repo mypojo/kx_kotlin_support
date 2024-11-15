@@ -28,10 +28,10 @@ class CdkBatchJobDefinition(
 
     /** VPC 이름 */
     override val logicalName: String
-        get() = "${project.profileName}-${name}-${suff}"
+        get() = "${projectName}-${name}-${suff}"
 
     val arn: String
-        get() = "arn:aws:batch:ap-northeast-2:${project.awsId}:job-definition/${logicalName}"
+        get() = "arn:aws:batch:ap-northeast-2:${awsConfig.awsId}:job-definition/${logicalName}"
 
     lateinit var jobDef: CfnJobDefinition
     lateinit var ecrImage: EcrImage

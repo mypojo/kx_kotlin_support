@@ -2,9 +2,11 @@ package net.kotlinx.domain.ddb.errorLog
 
 import io.kotest.matchers.shouldBe
 import net.kotlinx.aws.dynamo.DynamoUtil
-import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.toErrorLogLink
-import net.kotlinx.domain.ddb.DbMultiIndexItemRepository
-import net.kotlinx.domain.ddb.DdbBasicRepository
+import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndexItemRepository
+import net.kotlinx.aws.dynamo.multiIndex.DdbBasicRepository
+import net.kotlinx.domain.item.errorLog.ErrorLog
+import net.kotlinx.domain.item.errorLog.ErrorLogConverter
+import net.kotlinx.domain.item.errorLog.errorLogQueryLink
 import net.kotlinx.domain.job.Job
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -31,10 +33,24 @@ class ErrorLogRepositoryTest : BeSpecLight() {
 
         Given("ErrorLog") {
 
-            val job = Job("demoJob", "1234")
+            val job = Job("kwdDemoListJob", "59110001")
 
             Then("에러 로그 링크") {
-                log.info { "에러로그링크 -> ${job.toErrorLogLink()}" }
+                log.info { "에러로그링크 -> ${job.errorLogQueryLink}" }
+            }
+
+            When("카운팅 하기") {
+
+                val root = ErrorLog {
+                    group = "job"
+                    div = "kwdDemoListJob"
+                    divId = "59110001"
+                }
+
+                Then("에러 카운팅 조회") {
+                    val cnt = repository.findCntBySkPrefix(root)
+                    log.info { "로그 [${root.div}] : ${cnt}" }
+                }
             }
 
             When("단건 테스트") {

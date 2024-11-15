@@ -1,7 +1,7 @@
 package net.kotlinx.aws.javaSdkv2.dynamoLock
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import net.kotlinx.aws.ddb.DbItem
+import net.kotlinx.aws.dynamo.enhanced.DbItem
 import net.kotlinx.core.Kdsl
 
 /** 나머지 구현하기 */

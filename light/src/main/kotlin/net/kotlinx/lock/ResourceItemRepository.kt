@@ -1,10 +1,10 @@
 package net.kotlinx.lock
 
-import net.kotlinx.aws.ddb.DbRepository
-import net.kotlinx.aws.ddb.DbTable
-import net.kotlinx.aws.ddb.exp.DbExpressionSet
-import net.kotlinx.aws.ddb.exp.queryAll
 import net.kotlinx.aws.dynamo.dynamo
+import net.kotlinx.aws.dynamo.enhanced.DbRepository
+import net.kotlinx.aws.dynamo.enhanced.DbTable
+import net.kotlinx.aws.dynamo.enhancedExp.DbExpressionSet
+import net.kotlinx.aws.dynamo.enhancedExp.queryAll
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.reflect.name

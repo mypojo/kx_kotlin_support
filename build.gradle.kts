@@ -22,6 +22,7 @@ allprojects {
     //모든 구성에서 특정 의존성을 제거함
     configurations.all {
         exclude(group = "commons-logging", module = "commons-logging") //로그백하고 충돌남
+        exclude(group = "org.slf4j", module = "slf4j-simple") //Class path contains multiple SLF4J providers 회피
     }
 
     apply {
@@ -125,7 +126,7 @@ publishing {
                 from(project(":${projectName}").components["java"])
             }
         }
-        //모든 의존성이 순서대로 다 있어야함.
+        //모든 의존성이 순서대로 다 있어야함. 병렬처리 해보려다 접음.
         pub("core")
         pub("light")
         pub("heavy").run {

@@ -23,7 +23,7 @@ data class JobSta(
 
 fun Collection<Job>.toJobSta(): JobSta {
     val jobs = this
-    val sumOfDuration = jobs.sumOf { it.toIntervalMills() ?: 0 }
+    val sumOfDuration = jobs.sumOf { it.intervalMills ?: 0 }
     val monthTime = (sumOfDuration / 7 * 30.5).toLong()
     return JobSta(
         jobs.first(),
@@ -35,7 +35,7 @@ fun Collection<Job>.toJobSta(): JobSta {
         jobs.mapNotNull { it.startTime }.maxOf { it },
         sumOfDuration,
         sumOfDuration / jobs.size,
-        jobs.mapNotNull { it.toIntervalMills() }.maxOf { it },
+        jobs.mapNotNull { it.intervalMills }.maxOf { it },
         (FargateUtil.cost(1.0, 2.0, monthTime) * 1400 / 10000).halfUp(1),
     )
 }

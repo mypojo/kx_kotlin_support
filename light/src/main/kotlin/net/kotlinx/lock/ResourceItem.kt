@@ -1,6 +1,6 @@
 package net.kotlinx.lock
 
-import net.kotlinx.aws.ddb.DbItem
+import net.kotlinx.aws.dynamo.enhanced.DbItem
 import net.kotlinx.json.gson.GsonData
 
 /** 락 잡힌 리소스 */

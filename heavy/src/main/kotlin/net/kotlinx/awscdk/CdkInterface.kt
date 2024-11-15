@@ -33,12 +33,16 @@ interface CdkInterface {
         get() = SUFF
 
     /** 내부 간단 사용용 */
-    val project: AwsConfig
+    val awsConfig: AwsConfig
+        get() = AWS_CONFIG
+
+    /** 내부 간단 사용용 */
+    val project: CdkProject
         get() = PROJECT
 
     /** 내부 간단 사용용 */
     val projectName: String
-        get() = PROJECT_NAME
+        get() = PROJECT.projectName
 
     companion object {
 
@@ -50,13 +54,13 @@ interface CdkInterface {
         val SUFF: String
             get() = DEPLOYMENT_TYPE.name.lowercase()
 
-        /** 레거시때문에 PROJECT 라는 이름 유지 */
-        val PROJECT: AwsConfig
+        /** AWS 설정 */
+        val AWS_CONFIG: AwsConfig
             get() = koin<AwsConfig>()
 
-        /** 레거시때문에 PROJECT 라는 이름 유지 */
-        val PROJECT_NAME: String
-            get() = koin<AwsConfig>().profileName!!
+        /** 프로젝트 명 */
+        val PROJECT: CdkProject
+            get() = koin<CdkProject>()
 
     }
 

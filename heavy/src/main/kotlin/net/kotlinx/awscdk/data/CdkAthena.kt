@@ -41,7 +41,7 @@ class CdkAthena : CdkInterface {
         val depName = deploymentType.name.lowercase()
         database = CfnDatabase(
             stack, "glue_db_${logicalName}-$depName", CfnDatabaseProps.builder()
-                .catalogId(project.awsId) //계정 ID임
+                .catalogId(awsConfig.awsId) //계정 ID임
                 .databaseInput(
                     CfnDatabase.DatabaseInputProperty.builder()
                         .name(logicalName)
@@ -56,7 +56,7 @@ class CdkAthena : CdkInterface {
         workGroup = CfnWorkGroup(
             stack, workgroupName, CfnWorkGroupProps.builder()
                 .name(workgroupName)
-                .description("${project.profileName} workGroup for $depName")
+                .description("${projectName} workGroup for $depName")
                 .workGroupConfiguration(
                     CfnWorkGroup.WorkGroupConfigurationProperty.builder()
                         .bytesScannedCutoffPerQuery(GB_TO_BYTE * bytesScannedCutoffPerQueryGb)

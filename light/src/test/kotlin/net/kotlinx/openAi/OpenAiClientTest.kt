@@ -12,6 +12,7 @@ class OpenAiClientTest : BeSpecHeavy() {
 
         Given("OpenAiClient") {
             log.warn { "비용 나오고 오래걸림!!" }
+
             val openAiClient by koinLazy<OpenAiClient>()
 
             Then("요청 & 응답 샘플") {

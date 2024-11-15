@@ -24,10 +24,10 @@ class CdkBatchJobQueue : CdkInterface {
 
     /** VPC 이름 */
     override val logicalName: String
-        get() = "${project.profileName}-queue_${name}-${suff}"
+        get() = "${projectName}-queue_${name}-${suff}"
 
     val arn: String
-        get() = "arn:aws:batch:ap-northeast-2:${project.awsId}:job-queue/${logicalName}"
+        get() = "arn:aws:batch:ap-northeast-2:${awsConfig.awsId}:job-queue/${logicalName}"
 
     /** 결과 */
     lateinit var queue: CfnJobQueue

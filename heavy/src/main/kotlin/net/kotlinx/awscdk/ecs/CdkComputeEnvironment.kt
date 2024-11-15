@@ -25,7 +25,7 @@ class CdkComputeEnvironment : CdkInterface {
 
     /** VPC 이름 */
     override val logicalName: String
-        get() = "${project.profileName}_compenv_${type.name.lowercase()}-${suff}"
+        get() = "${projectName}_compenv_${type.name.lowercase()}-${suff}"
 
     lateinit var iVpc: IVpc
 

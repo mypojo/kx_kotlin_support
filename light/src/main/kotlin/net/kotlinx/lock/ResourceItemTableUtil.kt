@@ -1,6 +1,6 @@
 package net.kotlinx.lock
 
-import net.kotlinx.aws.ddb.DbTable
+import net.kotlinx.aws.dynamo.enhanced.DbTable
 
 object ResourceItemTableUtil {
 

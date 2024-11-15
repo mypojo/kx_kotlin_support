@@ -26,7 +26,7 @@ class CdkCodeBuild : CdkInterface {
 
     /** VPC 이름 */
     override val logicalName: String
-        get() = "${project.profileName}-${branchName}-${suff}"
+        get() = "${projectName}-${branchName}-${suff}"
 
     /** 코드커밋 저장소 */
     lateinit var codeRepository: IRepository

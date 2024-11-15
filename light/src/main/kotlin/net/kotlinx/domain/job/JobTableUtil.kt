@@ -2,8 +2,8 @@ package net.kotlinx.domain.job
 
 import net.kotlinx.aws.AwsInstanceType
 import net.kotlinx.aws.AwsInstanceTypeUtil
-import net.kotlinx.aws.ddb.DbTable
 import net.kotlinx.aws.dynamo.DynamoUtil
+import net.kotlinx.aws.dynamo.enhanced.DbTable
 import java.util.concurrent.TimeUnit
 
 object JobTableUtil {

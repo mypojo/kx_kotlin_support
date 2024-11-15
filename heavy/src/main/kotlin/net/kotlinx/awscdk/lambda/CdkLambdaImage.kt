@@ -34,7 +34,7 @@ class CdkLambdaImage : CdkEnum {
     lateinit var lambdaName: String
 
     override val logicalName: String
-        get() = "${project.profileName}-${lambdaName}-${suff}"
+        get() = "${projectName}-${lambdaName}-${suff}"
 
     /** 필수 권한 */
     lateinit var role: IRole

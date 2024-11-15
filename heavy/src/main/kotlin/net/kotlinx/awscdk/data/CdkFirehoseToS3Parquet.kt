@@ -126,7 +126,7 @@ class CdkFirehoseToS3Parquet : CdkInterface {
                                 .schemaConfiguration(
                                     SchemaConfigurationProperty.builder()
                                         .databaseName(databaseName)
-                                        .region(project.region)
+                                        .region(awsConfig.region)
                                         .roleArn(role.roleArn)
                                         .tableName(streamName)
                                         .versionId("LATEST")

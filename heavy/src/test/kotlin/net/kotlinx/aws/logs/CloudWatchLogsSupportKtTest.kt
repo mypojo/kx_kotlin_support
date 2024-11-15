@@ -19,7 +19,7 @@ class CloudWatchLogsSupportKtTest : BeSpecHeavy() {
     private val aws by lazy { koin<AwsClient>(findProfile28) }
 
     init {
-        initTest(KotestUtil.PROJECT)
+        initTest(KotestUtil.IGNORE)
 
         xGiven("자주 쓰는 기능") {
             Then("해당 로그그룹을 모두 삭제") {

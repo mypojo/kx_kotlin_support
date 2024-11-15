@@ -39,7 +39,7 @@ class CdkGlueDatabase : CdkInterface {
     fun create(stack: Stack) {
         database = CfnDatabase(
             stack, logicalName, CfnDatabaseProps.builder()
-                .catalogId(CdkInterface.PROJECT.awsId)
+                .catalogId(CdkInterface.AWS_CONFIG.awsId)
                 .databaseInput(
                     CfnDatabase.DatabaseInputProperty.builder()
                         .name(databaseName)

@@ -19,7 +19,7 @@ class CdkEcr(
 ) : CdkEnum {
 
     override val logicalName: String
-        get() = "${project.profileName}-${name}"
+        get() = "${projectName}-${name}"
 
     lateinit var iRepository: IRepository
 

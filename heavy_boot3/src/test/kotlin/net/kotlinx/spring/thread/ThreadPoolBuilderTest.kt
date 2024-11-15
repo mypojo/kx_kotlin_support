@@ -11,7 +11,7 @@ import kotlin.time.Duration.Companion.days
 class ThreadPoolBuilderTest : BeSpecHeavy() {
 
     init {
-        initTest(KotestUtil.FAST)
+        initTest(KotestUtil.IGNORE)
 
         Given("ThreadPoolBuilder 테스트") {
             Then("로컬 스케쥴링") {

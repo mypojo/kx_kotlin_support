@@ -20,7 +20,7 @@ class CdkBastion : CdkInterface {
 
     /** VPC 이름 */
     override val logicalName: String
-        get() = "${project.profileName}-ec2_${name}-${suff}"
+        get() = "${projectName}-ec2_${name}-${suff}"
 
     /** 이름 */
     var name: String = "bastion"

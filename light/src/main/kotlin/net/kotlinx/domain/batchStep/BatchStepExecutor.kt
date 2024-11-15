@@ -60,6 +60,12 @@ class BatchStepExecutor {
     var localCallback: ((Job) -> Unit)? = null
 
     /**
+     * 실생시 SFN을 동기화 해서 기다릴지??
+     * 보통 로컬에서 디버깅할때만 이렇게 사용함
+     *  */
+    var synchSfn = AwsInstanceTypeUtil.IS_LOCAL
+
+    /**
      * 작업들 업로드 & SFN실행 한번에.
      * @param datas 각 단위는 5~8분 이내로 처리 가능한 사이즈가 좋아보임. (부득이하게 좀 길어져도 안전하도록)
      * */
@@ -123,7 +129,7 @@ class BatchStepExecutor {
 
         startExecution(parameter, s3LogicInputs)
 
-        if (AwsInstanceTypeUtil.IS_LOCAL) {
+        if (synchSfn) {
             log.trace { "로컬인경우 작업을 다 기다린다음 결과 출력" }
             waitResult(sfnUuid)
             checkResult(sfnUuid)

@@ -14,7 +14,7 @@ import software.amazon.awscdk.services.sns.TopicProps
 class CdkTopic(val topicName: String) : CdkEnum {
 
     override val logicalName: String
-        get() = "${project.profileName}-topic-${topicName}-${suff}"
+        get() = "${projectName}-topic-${topicName}-${suff}"
 
     /** 전체 오픈할 기능 */
     var allOpenActions = listOf(
@@ -52,7 +52,7 @@ class CdkTopic(val topicName: String) : CdkEnum {
                 .conditions(
                     mapOf(
                         "StringEquals" to mapOf(
-                            "AWS:SourceOwner" to project.awsId
+                            "AWS:SourceOwner" to awsConfig.awsId
                         )
                     )
                 ).build()
@@ -70,7 +70,7 @@ class CdkTopic(val topicName: String) : CdkEnum {
     }
 
     fun load(stack: Stack): ITopic {
-        val arn = "arn:aws:sns:ap-northeast-2:${this.project.awsId}:${logicalName}"
+        val arn = "arn:aws:sns:ap-northeast-2:${this.awsConfig.awsId}:${logicalName}"
         return Topic.fromTopicArn(stack, logicalName, arn)
     }
 }

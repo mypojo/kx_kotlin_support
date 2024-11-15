@@ -61,7 +61,7 @@ class CdkSfnMapDist(
                                     "Resource" to "arn:aws:states:::lambda:invoke",
                                     "OutputPath" to "$.Payload",
                                     "Parameters" to mapOf(
-                                        "FunctionName" to "arn:aws:lambda:${cdkSfn.project.region}:${cdkSfn.project.awsId}:function:${lambdaName}",
+                                        "FunctionName" to "arn:aws:lambda:${cdkSfn.awsConfig.region}:${cdkSfn.awsConfig.awsId}:function:${lambdaName}",
                                         "Payload.$" to "$"
                                     ),
                                     "Retry" to listOf(

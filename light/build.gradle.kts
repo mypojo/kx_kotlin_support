@@ -27,6 +27,9 @@ dependencies {
     implementation("aws.smithy.kotlin:http-client-engine-okhttp-jvm:_") //http 설정에 필요  https://mvnrepository.com/artifact/aws.smithy.kotlin/http-client-engine-okhttp-jvm
 
     //==================================================== AWS 최소의존성 ======================================================
+    //리프레시 버전은 지정된 몇개의 의존성만 공통 버전을 지원한다. 아쉽게도 AWS 는 아님..
+    //https://github.com/Splitties/refreshVersions/tree/main/plugins/dependencies/src/main/kotlin/dependencies 참고
+    //이때문에 리프레시 버전에 하나 참조해서 , 프로퍼티로 사용함
     val awsVersion: String by project
     api("aws.sdk.kotlin:s3:$awsVersion")
     api("aws.sdk.kotlin:dynamodb:$awsVersion")
@@ -63,7 +66,7 @@ dependencies {
     //==================================================== 구아바 (이정도는 괜찮겠지) ======================================================
     api("com.google.guava:guava:_") //약 3mb
     //==================================================== 노션 SDK ======================================================
-    api("org.jraf:klibnotion:_") //약 1mb
+    api("org.jraf:klibnotion:_") //약 1mb 흠.. 미덥지 못하다. ktor  2점대 잘 동작하나 3점대 작동안함.. 업데이트가 안되는중.. 일단 무시
 
     //==================================================== 슬랙 ======================================================
     api("com.slack.api:slack-api-client:_") //기본 API만 포함함
@@ -84,23 +87,34 @@ dependencies {
     //==================================================== OPEN-AI ======================================================
     implementation("com.aallam.openai:openai-client:_") //open API (챗GPT) kotlin client
 
+    //==================================================== ktor-client (OPEN-AI / 노션 등 에서 사용) ======================================================
+    //클라이언트 버전은 서버 버전하고 동일하게 일단 가자. 충돌은 거기서 풀기
+    implementation("io.ktor:ktor-client-core:_") //open API 의 ktor core  베타인 3점대 쓰면 에러남..
+    runtimeOnly("io.ktor:ktor-client-okhttp:_") //open API 의 ktor JVM http 엔진. 나는 okhttp 사용.
 
-    //==================================================== ktor-client (OPEN-AI 에서 사용) ======================================================
-    implementation("io.ktor:ktor-client-core:_") //open API 의 ktor core  베타인 3점대에서 2점대로 낮춤. 아직 플러그인이 덜 완성된거 같음
-    implementation("io.ktor:ktor-client-okhttp:_") //open API 의 ktor JVM http 엔진. 나는 okhttp 사용
+    //==== 이하 플러그인 ====
+    implementation("io.ktor:ktor-client-auth:_")
 
     //==================================================== ktor-server (UI) ======================================================
     api("io.ktor:ktor-server-core-jvm:_")
     api("io.ktor:ktor-server-netty:_")
-    api("io.ktor:ktor-server-tests-jvm:_") {
-        // 람다용 호출 때문에 testImplementation -> implementation 로 변경
-        exclude("io.ktor","ktor-client-apache")
-    }
+    api("io.ktor:ktor-server-test-host:_") // -> io.ktor:ktor-server-tests-jvm에서 이름이 변경된듯
+//    api("io.ktor:ktor-server-tests-jvm:_") {
+//        // 람다용 호출 때문에 testImplementation -> implementation 로 변경
+//        exclude("io.ktor","ktor-client-apache")
+//    }
     api("io.ktor:ktor-server-html-builder-jvm:_") //kotlin html 간단 확장
+
+    //==== 이하 ktor 플러그인 ====
+
     // 인증 3종세트
     api("io.ktor:ktor-server-auth-jvm:_")
     api("io.ktor:ktor-server-auth-jwt-jvm:_")
     api("io.ktor:ktor-server-sessions-jvm:_")
+
+    api("io.ktor:ktor-server-auto-head-response-jvm:_")
+    api("io.ktor:ktor-server-host-common-jvm:_")
+    api("io.ktor:ktor-server-status-pages-jvm:_")
 
     //==================================================== 기타 ======================================================
     api("gov.nist.math:jama:1.0.3") //https://mvnrepository.com/artifact/gov.nist.math/jama 회귀분석 패키지

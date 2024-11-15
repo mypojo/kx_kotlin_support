@@ -13,7 +13,7 @@ import kotlin.time.Duration.Companion.seconds
 class CdkSqs(val name: String) : CdkEnum {
 
     override val logicalName: String
-        get() = "${project.profileName}-${name}-${suff}"
+        get() = "${projectName}-${name}-${suff}"
 
     /**
      * 메시지가 대기열에서 소비된 후에만 숨겨짐 (큐에서 읽어갔으나 아직 삭제 전)
@@ -61,7 +61,7 @@ class CdkSqs(val name: String) : CdkEnum {
 
     fun load(stack: Stack): CdkSqs {
         try {
-            iQueue = Queue.fromQueueArn(stack, "sqs-$logicalName", "arn:aws:sqs:ap-northeast-2:${project.awsId}:${logicalName}")
+            iQueue = Queue.fromQueueArn(stack, "sqs-$logicalName", "arn:aws:sqs:ap-northeast-2:${awsConfig.awsId}:${logicalName}")
         } catch (e: Exception) {
             println(" -> [${stack.stackName}] object already loaded -> $logicalName")
         }

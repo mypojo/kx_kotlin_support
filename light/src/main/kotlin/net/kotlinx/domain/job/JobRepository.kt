@@ -1,10 +1,10 @@
 package net.kotlinx.domain.job
 
 import aws.sdk.kotlin.services.dynamodb.model.Select
-import net.kotlinx.aws.ddb.DbRepository
-import net.kotlinx.aws.ddb.DbTable
-import net.kotlinx.aws.ddb.exp.*
 import net.kotlinx.aws.dynamo.dynamo
+import net.kotlinx.aws.dynamo.enhanced.DbRepository
+import net.kotlinx.aws.dynamo.enhanced.DbTable
+import net.kotlinx.aws.dynamo.enhancedExp.*
 import net.kotlinx.domain.job.define.JobDefinition
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.reflect.name
@@ -23,7 +23,10 @@ class JobRepository(profile: String? = null) : DbRepository<Job>(profile) {
         return aws.dynamo.query { findByPkInner(jobDef, block) }
     }
 
-    /** 전체 조회 */
+    /**
+     * 전체 조회
+     * ex) jobs.sortedByDescending { it.startTime }
+     *  */
     suspend fun findAllByPk(jobDef: JobDefinition, block: DbExpression.() -> Unit = {}): List<Job> {
         return aws.dynamo.queryAll { findByPkInner(jobDef, block) }
     }
@@ -59,6 +62,18 @@ class JobRepository(profile: String? = null) : DbRepository<Job>(profile) {
         block(this)
     }
 
+    /** 카운팅만 최적화 해서 가져옴 */
+    suspend fun findCntByStatusPk(jobStatus: JobStatus, jobDef: JobDefinition? = null): Int {
+        return aws.dynamo.queryCnt {
+            DbExpressionSet.PkSkEq {
+                init(dbTable, JobIndexUtil.GID_STATUS)
+                pk(Job::jobStatus.name to jobStatus.name)
+                jobDef?.let {
+                    sk(DbTable.PK_NAME to it.jobPk)
+                }
+            }
+        }
+    }
 
     //==================================================== LID_MEMBER 쿼리 ======================================================
 

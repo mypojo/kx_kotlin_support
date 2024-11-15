@@ -25,7 +25,7 @@ class CdkAlarmt : CdkInterface {
 
     /** DB 명 */
     override val logicalName: String
-        get() = "${project.profileName}-${alarmName}-${deploymentType}"
+        get() = "${projectName}-${alarmName}-${deploymentType}"
 
 
     /** 알람 이름 */

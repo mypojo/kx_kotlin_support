@@ -4,8 +4,8 @@ import aws.sdk.kotlin.services.dynamodb.getItem
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.scan
 import net.kotlinx.aws.AwsClient
-import net.kotlinx.aws.ddb.DbTable
-import net.kotlinx.aws.ddb.exp.DbExpressionSet
+import net.kotlinx.aws.dynamo.enhanced.DbTable
+import net.kotlinx.aws.dynamo.enhancedExp.DbExpressionSet
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest

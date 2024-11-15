@@ -31,7 +31,7 @@ class CdkSchedulerGroup : CdkInterface {
 
     /** 너무 길지않게 조정했음 */
     override val logicalName: String
-        get() = "${project.profileName}-${groupName}-${suff}"
+        get() = "${projectName}-${groupName}-${suff}"
 
     /** 결과 */
     lateinit var scheduleGroup: CfnScheduleGroup

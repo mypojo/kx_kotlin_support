@@ -43,7 +43,7 @@ class CdkVpc : CdkInterface {
     var natGateways: Int = 1
 
     /** VPC 이름 */
-    override val logicalName: String = "${project.profileName}_vpc-${suff}"
+    override val logicalName: String = "${projectName}_vpc-${suff}"
 
     val feer: IPeer
         get() = Peer.ipv4(iVpc.vpcCidrBlock)
@@ -66,7 +66,7 @@ class CdkVpc : CdkInterface {
             .natGateways(natGateways)
             .vpcName(logicalName)
             .maxAzs(maxAzs)
-            .subnetConfiguration(subnetTypes.map { subnetConfiguration(project.profileName!!, it) })
+            .subnetConfiguration(subnetTypes.map { subnetConfiguration(awsConfig.profileName!!, it) })
             .apply(block)
             .build()
         iVpc = Vpc(stack, logicalName, vpcProps)
@@ -145,7 +145,7 @@ class CdkVpc : CdkInterface {
     ) {
         services.forEach { service ->
             val serviceName = service.name.substringAfterLast(".")
-            val endpointName = "${this.project.profileName}_${this.deploymentType}_endpoint_${serviceName}"
+            val endpointName = "${this.projectName}_${this.deploymentType}_endpoint_${serviceName}"
             val endpoint = iVpc.addGatewayEndpoint(endpointName, GatewayVpcEndpointOptions.builder().service(service).build())
             endpoint.addToPolicy(
                 PolicyStatement.Builder.create()
@@ -164,7 +164,7 @@ class CdkVpc : CdkInterface {
      * 하위 프로젝트에서 그대로 호출해도 추가된 부분만 잘 적용됨
      *  */
     fun nacl(stack: Stack, subnetType: SubnetType, entrys: Map<String, CommonNetworkAclEntryOptions>) {
-        val naclId = "${project.profileName}_nacl_${subnetType.name.lowercase()}-${suff}"
+        val naclId = "${projectName}_nacl_${subnetType.name.lowercase()}-${suff}"
         val nacl = NetworkAcl.Builder.create(stack, naclId).vpc(iVpc).subnetSelection(
             SubnetSelection.builder().subnetType(subnetType).build()
         ).build()

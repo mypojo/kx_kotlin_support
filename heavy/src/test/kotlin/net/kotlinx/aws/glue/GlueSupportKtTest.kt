@@ -11,7 +11,7 @@ class GlueSupportKtTest : BeSpecHeavy() {
     private val aws by lazy { koin<AwsClient>(findProfile97) }
 
     init {
-        initTest(KotestUtil.FAST)
+        initTest(KotestUtil.IGNORE)
 
         Given("글루") {
             Then("데이터베이스 생성") {

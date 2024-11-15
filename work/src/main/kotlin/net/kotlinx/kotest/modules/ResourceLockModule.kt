@@ -7,6 +7,7 @@ import net.kotlinx.collection.toPair
 import net.kotlinx.json.koson.toGsonData
 import net.kotlinx.koin.KoinModule
 import net.kotlinx.koin.Koins.koin
+import net.kotlinx.kotest.MyEnv
 import net.kotlinx.lock.*
 import net.kotlinx.reflect.name
 import net.kotlinx.time.toLong
@@ -27,7 +28,7 @@ object ResourceLockModule : KoinModule {
 
         single(named(ResourceItem::class.name())) {
             ResourceItemTableUtil.createDefault {
-                tableName = "system-dev"
+                tableName = "system-${MyEnv.SUFFIX}"
             }
         }
 

@@ -8,6 +8,7 @@ import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.string.print
 import java.time.LocalDateTime
 import kotlin.time.Duration.Companion.hours
 
@@ -28,7 +29,19 @@ class JobRepositoryTest : BeSpecLight() {
     init {
         initTest(KotestUtil.IGNORE)
 
+        Given("카운팅 조회기능") {
+            Then("인덱스 - 카운트 조회") {
+                val itemCnt = jobRepository.findCntByStatusPk(JobStatus.SUCCEEDED)
+                log.info { "카운트 : $itemCnt" }
+            }
+        }
+
         Given("기본 조회기능") {
+
+            xThen("단일조회") {
+                val job = jobRepository.getItem(Job("kwdDemoMapJob", "58570001"))!!
+                listOf(job).print()
+            }
 
             xThen("테스트용 데이터 입력") {
                 repeat(5) {
@@ -61,7 +74,7 @@ class JobRepositoryTest : BeSpecLight() {
                 xThen("페이징 없이 전체 쿼리") {
                     val lastJobs = jobRepository.findAllByStatusPk(JobStatus.SUCCEEDED)
                     lastJobs.size shouldBeGreaterThan 4
-                    lastJobs.printSimple()
+                    log.info { "전체 크기 ${lastJobs.size}" }
                 }
             }
 

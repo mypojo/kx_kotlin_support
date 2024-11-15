@@ -17,7 +17,7 @@ class CdkParameter(
 
     /** 이름이 /로 끝나면 안됨 */
     override val logicalName: String
-        get() = "/cdk/${project.profileName}/${this.name}${if (deployment) "/${suff}" else ""}"
+        get() = "/cdk/${projectName}/${this.name}${if (deployment) "/${suff}" else ""}"
 
 
     /**

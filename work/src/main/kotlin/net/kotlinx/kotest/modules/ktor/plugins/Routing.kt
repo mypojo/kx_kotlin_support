@@ -27,7 +27,7 @@ fun Application.configureRouting() {
         }
     }
     install(IgnoreTrailingSlash) //후행되는 슬래시(/) 를 무시하게함.  (기본으로는 구분함)
-    //routing { 이건 install(Routing){ 하고 동일하다.
+
     routing {
 
         //==================================================== 기본설정 ======================================================

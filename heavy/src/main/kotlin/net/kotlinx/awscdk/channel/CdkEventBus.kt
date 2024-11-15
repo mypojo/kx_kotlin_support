@@ -27,7 +27,7 @@ class CdkEventBus : CdkInterface {
     lateinit var iEventBus: IEventBus
 
     fun create(stack: Stack) {
-        val stackId = "${project.profileName}-ev_${logicalName}"
+        val stackId = "${projectName}-ev_${logicalName}"
         iEventBus = EventBus(stack, stackId, EventBusProps.builder().eventBusName(logicalName).build())
         TagUtil.tag(iEventBus, deploymentType)
     }
@@ -38,12 +38,12 @@ class CdkEventBus : CdkInterface {
      * 코드 참고용임!
      *  */
     fun fromDefaultEventbus(stack: Stack, eventPattern: EventPattern = EventPatternUtil.AWS_CORE) {
-        val ruleName = "${project.profileName}-event_dispatch_${eventBusName}-${suff}"
+        val ruleName = "${projectName}-event_dispatch_${eventBusName}-${suff}"
         val eventDisRule = Rule(
             stack, ruleName, RuleProps.builder()
                 .enabled(true)
                 .ruleName(ruleName)
-                .description("AWS(eventbus) => ${project.profileName}(eventbus) / $deploymentType")
+                .description("AWS(eventbus) => ${projectName}(eventbus) / $deploymentType")
                 .targets(listOf(software.amazon.awscdk.services.events.targets.EventBus(iEventBus)))
                 .eventPattern(eventPattern)
                 .build()

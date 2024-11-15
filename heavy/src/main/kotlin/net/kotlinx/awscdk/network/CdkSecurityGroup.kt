@@ -18,7 +18,7 @@ class CdkSecurityGroup(
 ) : CdkEnum {
 
     override val logicalName: String
-        get() = "${project.profileName}-sg_${sgName}-${suff}"
+        get() = "${projectName}-sg_${sgName}-${suff}"
 
     /** 아웃바둔드 오픈 디폴트로 true */
     var allowAllOutbound: Boolean = true

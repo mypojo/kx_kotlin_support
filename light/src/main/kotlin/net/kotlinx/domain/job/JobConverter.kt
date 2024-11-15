@@ -1,9 +1,9 @@
 package net.kotlinx.domain.job
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
-import net.kotlinx.aws.ddb.DbConverter
-import net.kotlinx.aws.ddb.DbItem
-import net.kotlinx.aws.ddb.DbTable
+import net.kotlinx.aws.dynamo.enhanced.DbConverter
+import net.kotlinx.aws.dynamo.enhanced.DbItem
+import net.kotlinx.aws.dynamo.enhanced.DbTable
 import net.kotlinx.aws.dynamo.find
 import net.kotlinx.aws.dynamo.findJson
 import net.kotlinx.aws.dynamo.findOrThrow

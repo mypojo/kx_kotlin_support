@@ -97,10 +97,10 @@ class CdkAthenaUser : CdkInterface {
                 "athena:ListWorkGroups",
                 "athena:GetWorkGroup",
             )
-            val resourceCatalog = listOf("arn:aws:glue:${project.region}:${project.awsId}:catalog")
-            val resourceDatabase = tables.map { it.database }.distinct().map { "arn:aws:glue:${project.region}:${project.awsId}:database/${it}" }
-            val resourceTables = tables.map { "arn:aws:glue:${project.region}:${project.awsId}:table/${it.database}/${it.tableName}" }
-            val resourceWorkGroup = listOf("arn:aws:athena:${project.region}:${project.awsId}:workgroup/${workgroupName}")
+            val resourceCatalog = listOf("arn:aws:glue:${awsConfig.region}:${awsConfig.awsId}:catalog")
+            val resourceDatabase = tables.map { it.database }.distinct().map { "arn:aws:glue:${awsConfig.region}:${awsConfig.awsId}:database/${it}" }
+            val resourceTables = tables.map { "arn:aws:glue:${awsConfig.region}:${awsConfig.awsId}:table/${it.database}/${it.tableName}" }
+            val resourceWorkGroup = listOf("arn:aws:athena:${awsConfig.region}:${awsConfig.awsId}:workgroup/${workgroupName}")
             resources = resourceCatalog + resourceDatabase + resourceTables + resourceWorkGroup
         }
     }

@@ -4,7 +4,7 @@ import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.ReturnValue
 import aws.sdk.kotlin.services.dynamodb.updateItem
-import net.kotlinx.aws.ddb.DbTable
+import net.kotlinx.aws.dynamo.enhanced.DbTable
 
 //==================================================== 트랜잭션 ======================================================
 //데이터 타입은 아래 문서 참고
