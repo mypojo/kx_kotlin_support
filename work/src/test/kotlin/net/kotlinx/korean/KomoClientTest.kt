@@ -62,10 +62,10 @@ class KomoClientTest : BeSpecHeavy() {
 
                 val xls = Excel()
                 xls.createSheet("키워드_형태소분석").apply {
-                    addHeader(listOf("도메인", "키워드", "형태소", "카운트"))
+                    addHeader(listOf("도메인", "키워드", "형태소(코드)", "형태소(한글)", "카운트"))
                     crwResults.forEach { e ->
                         e.second.forEach {
-                            writeLine(arrayOf(e.first, it.kwdName, it.pos, it.cnt))
+                            writeLine(arrayOf(e.first, it.kwdName, it.pos, it.posName, it.cnt))
                         }
                     }
                 }

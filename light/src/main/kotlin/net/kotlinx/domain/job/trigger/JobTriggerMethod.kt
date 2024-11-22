@@ -60,7 +60,10 @@ interface JobTriggerMethod {
             log.trace { "실제 DDB에는 여기서 최종 입력됨" }
             val job = jobSerializer.toJob(input.toString().toGsonData())!!
 
-            if (job.jobStatus == JobStatus.RESERVED) return job.toKeyString()
+            if (op.jobStatus == JobStatus.RESERVED) {
+                log.info { " => [${job.toKeyString()}] 예약된 잡임으로 로컬 실행 스킵" }
+                return job.toKeyString()
+            }
 
             return when (AwsInstanceTypeUtil.INSTANCE_TYPE) {
 
@@ -118,7 +121,12 @@ class JobTriggerLambda(
             jobSerializer.toJob(jobParam.toString().toGsonData())
         }
 
-        log.trace { "기본적으로 현재 위치가 람다인경우, 로컬로 실행되게 해준다" }
+        if (op.jobStatus == JobStatus.RESERVED) {
+            log.info { " => [$jobParam] 예약된 잡임으로 [$jobExeDiv] 실행 스킵" }
+            return jobParam.toString()
+        }
+
+        log.trace { "기본적으로 현재 위치가 람다인경우, 람다를 다시 호출하는게 아닌, 현재 람다에서 로컬로 실행되게 해준다" }
         if (AwsInstanceTypeUtil.INSTANCE_TYPE == AwsInstanceType.LAMBDA) {
             log.info { "현재 인스턴스 타입 = ${AwsInstanceTypeUtil.INSTANCE_TYPE} -> 람다를 다시 트리거하지 않고 로컬(람다)에서 실행됩니다" }
             return JobTriggerMethod.LOCAL.trigger(op)
@@ -169,6 +177,12 @@ class JobTriggerBatch(
         if (op.preJobPersist) {
             jobSerializer.toJob(jobParam.toString().toGsonData())
         }
+
+        if (op.jobStatus == JobStatus.RESERVED) {
+            log.info { " => [$jobParam] 예약된 잡임으로 [$jobExeDiv] 실행 스킵" }
+            return jobParam.toString()
+        }
+
         val findJob = Job(op.jobPk, jobSk)
         if (op.synch) {
             val jobDetail = aws.batch.submitJobAndWaitStarting(jobQueueName, jobDefinitionName, jobParam)

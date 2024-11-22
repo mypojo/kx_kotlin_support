@@ -20,9 +20,13 @@ fun Long.minWith(compare: Long): Long = this.coerceAtMost(compare)
 
 /**
  * 밀리초를 시간으로 변환
+ * 편의상 "초" 단위 입력의로 의심시 밀리초로 건버팅해줌
  * ex) 1681869805.seconds.inWholeMilliseconds.toLocalDateTime().toKr01()
  *  */
-fun Long.toLocalDateTime(zone: ZoneId = TimeUtil.SEOUL): LocalDateTime = Instant.ofEpochMilli(this).atZone(zone).toLocalDateTime()!!
+fun Long.toLocalDateTime(zone: ZoneId = TimeUtil.SEOUL): LocalDateTime {
+    val value = if (this < 2000000000) this * 1000 else this
+    return Instant.ofEpochMilli(value).atZone(zone).toLocalDateTime()!!
+}
 
 /**
  * 비율을 구할때.

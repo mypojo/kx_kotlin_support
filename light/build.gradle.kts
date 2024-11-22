@@ -85,7 +85,7 @@ dependencies {
     implementation("com.google.apis:google-api-services-sheets:v4-rev614-1.18.0-rc") //구글시트
 
     //==================================================== OPEN-AI ======================================================
-    implementation("com.aallam.openai:openai-client:_") //open API (챗GPT) kotlin client
+    api("com.aallam.openai:openai-client:_") //open API (챗GPT) kotlin client.  커스텀 host를 로드하려면 implementation -> api 로 해야함
 
     //==================================================== ktor-client (OPEN-AI / 노션 등 에서 사용) ======================================================
     //클라이언트 버전은 서버 버전하고 동일하게 일단 가자. 충돌은 거기서 풀기

@@ -6,7 +6,6 @@ import com.google.common.eventbus.Subscribe
 import com.google.common.eventbus.SubscriberExceptionHandler
 import mu.KotlinLogging
 import net.kotlinx.aws.s3.S3Data
-import net.kotlinx.core.ProtocolPrefix
 import net.kotlinx.file.slash
 import net.kotlinx.google.GoogleSecret
 import net.kotlinx.google.GoogleService
@@ -22,8 +21,6 @@ import net.kotlinx.lazyLoad.lazyLoadSsm
 import net.kotlinx.lazyLoad.lazyLoadStringSsm
 import net.kotlinx.notion.NotionDatabaseClient
 import net.kotlinx.notion.NotionPageBlockClient
-import net.kotlinx.openAi.OpenAiClient
-import net.kotlinx.openAi.OpenAiModels
 import net.kotlinx.reflect.name
 import net.kotlinx.slack.SlackApp
 import net.kotlinx.slack.SlackMessageSenders
@@ -104,12 +101,6 @@ object BasicModule : KoinModule {
         single {
             val secretValue by lazyLoadStringSsm("/notion/key")
             NotionPageBlockClient(secretValue)
-        }
-        single {
-            OpenAiClient {
-                apiKey = "${ProtocolPrefix.SSM}/gpt4/demo/key"
-                modelId = OpenAiModels.GPT_4
-            }
         }
         single {
             log.info { "구글 서비스가 로드됩니다" }

@@ -14,6 +14,7 @@ abstract class BeSpecLight : BeSpecKoin(MODULES) {
         val MODULES = listOf(
             BasicModule.moduleConfig(),
             AwsModule.moduleConfig(),
+            ApiAiModule.moduleConfig(),
             JobModule.moduleConfig(),
             DbMultiIndexItemModule.moduleConfig(),
 

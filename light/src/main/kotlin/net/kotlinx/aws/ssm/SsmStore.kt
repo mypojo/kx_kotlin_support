@@ -4,6 +4,8 @@ import aws.sdk.kotlin.services.ssm.SsmClient
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.TimeUnit
 
 /**
@@ -19,16 +21,25 @@ class SsmStore(
 
     /** 캐시값 우선 리턴 */
     operator fun get(key: String): String {
-        synchronized(this) {
-            return cache.get(key) {
-                runBlocking {
-                    val value = ssmClient.find(key)
-                    checkNotNull(value) { "[$key] 요청된 경로에 데이터가 없습니다. 확인이 필요합니다 -> https://ap-northeast-2.console.aws.amazon.com/systems-manager/parameters/?region=ap-northeast-2&tab=Table" }
-                    value
+        return synchronized(this) {
+            runBlocking {
+                MUTEX.withLock {
+                    cache.get(key) {
+                        val value = runBlocking { ssmClient.find(key) }
+                        checkNotNull(value) { "[$key] 요청된 경로에 데이터가 없습니다. 확인이 필요합니다 -> https://ap-northeast-2.console.aws.amazon.com/systems-manager/parameters/?region=ap-northeast-2&tab=Table" }
+                        value
+                    }!!
                 }
-            }!!
+            }
         }
     }
 
+
+    companion object {
+
+        /** 코루틴 동시 요청시 사용 */
+        private val MUTEX = Mutex()
+
+    }
 
 }
