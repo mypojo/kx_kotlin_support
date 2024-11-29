@@ -3,9 +3,10 @@ package net.kotlinx.aws.dynamo
 import aws.sdk.kotlin.services.dynamodb.model.ExportFormat
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.athena.AthenaModule
-import net.kotlinx.aws.athena.AthenaTable
-import net.kotlinx.aws.athena.AthenaTableFormat
-import net.kotlinx.aws.athena.AthenaTablePartitionType
+import net.kotlinx.aws.athena.table.AthenaTable
+import net.kotlinx.aws.athena.table.AthenaTableFormat
+import net.kotlinx.aws.athena.table.AthenaTablePartitionType
+
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
@@ -33,7 +34,7 @@ class DynamoDbExporterKtTest : BeSpecLog() {
 
             Then("step2 - ion 형식으로 external 테이블 생성") {
                 val basicDate = "20220101"
-                val table = AthenaTable().apply {
+                val table = AthenaTable {
                     tableName = "job_dev_$basicDate"
                     bucket = "sin-work-dev"
                     s3Key = "temp/ddb-export/job-dev/..."  //s3ResultPath

@@ -1,6 +1,6 @@
 package net.kotlinx.awscdk.data
 
-import net.kotlinx.aws.athena.AthenaTable
+import net.kotlinx.aws.athena.table.AthenaTable
 import net.kotlinx.awscdk.CdkInterface
 import net.kotlinx.awscdk.basic.TagSet
 import net.kotlinx.awscdk.iam.*

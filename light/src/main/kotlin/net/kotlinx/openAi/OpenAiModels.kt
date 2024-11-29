@@ -61,6 +61,8 @@ object OpenAiModels {
         /** 토큰 1M당 5$ */
         const val SONAR_HUGE: String = "llama-3.1-sonar-huge-128k-online"
 
+        const val CHAT_SMALL: String = "llama-3.1-sonar-small-128k-chat"
+
         const val CHAT_LARGE: String = "llama-3.1-sonar-large-128k-chat"
 
         const val OPEN_LARGE: String = "llama-3.1-70b-instruct"

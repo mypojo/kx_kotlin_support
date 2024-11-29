@@ -1,7 +1,11 @@
 package net.kotlinx.domain.batchTask
 
 
-/** 배치 작업 */
+/** 
+ * 배치 작업
+ * 
+ * 람다 256mb 기준 => 로직 2개 & 키워드 약 400개 정도 처리가능
+ *  */
 class BatchTask {
 
     /** 유니크한 ID */

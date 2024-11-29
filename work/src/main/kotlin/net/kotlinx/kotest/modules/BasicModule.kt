@@ -16,6 +16,10 @@ import net.kotlinx.koin.KoinModule
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.MyEnv
 import net.kotlinx.kotest.modules.job.JobEvenListener
+import net.kotlinx.kotest.modules.lambdaDispatcher.AwsEventBridgeListener
+import net.kotlinx.kotest.modules.lambdaDispatcher.AwsEventListener
+import net.kotlinx.kotest.modules.lambdaDispatcher.AwsSnsListener
+import net.kotlinx.kotest.modules.lambdaDispatcher.LambdaDispatcherDefaultListener
 import net.kotlinx.lazyLoad.lazyLoad
 import net.kotlinx.lazyLoad.lazyLoadSsm
 import net.kotlinx.lazyLoad.lazyLoadStringSsm
@@ -75,6 +79,10 @@ object BasicModule : KoinModule {
             EventBus(exceptionHandler).apply {
                 register(DeadEventListener())
                 register(JobEvenListener())
+                register(LambdaDispatcherDefaultListener())
+                register(AwsEventBridgeListener())
+                register(AwsEventListener())
+                register(AwsSnsListener())
             }
         }
         single {

@@ -3,6 +3,8 @@ package net.kotlinx.aws.athena.table
 import mu.KotlinLogging
 import net.kotlinx.collection.toQueryString
 import net.kotlinx.core.Kdsl
+import net.kotlinx.string.toLocalDate
+import net.kotlinx.time.toYmd
 import kotlin.time.Duration.Companion.days
 
 
@@ -40,7 +42,7 @@ class AthenaTable {
     /**
      * 테이블 시작점의 S3 key
      * 폴더형식 이여야 한다 ( / 로 끝나야함)
-     * ex) collect/member/
+     * ex) collect/${테이블명}/
      *  */
     lateinit var s3Key: String
 
@@ -114,6 +116,19 @@ class AthenaTable {
     /** 프로젝션 옵션 입력 */
     infix fun Pair<String, AthenaType>.PROJECTION(option: Map<String, String>): Pair<String, AthenaType> {
         projectionMap[this.first] = option
+        return this
+    }
+
+    /**
+     * 프로젝션 옵션  간단 입력
+     * 시작일로부터 X년
+     *  */
+    infix fun Pair<String, AthenaType>.PROJECTION(range: Pair<String, Long>): Pair<String, AthenaType> {
+        projectionMap[this.first] = mapOf(
+            "type" to "date",
+            "range" to "${range.first},${range.first.toLocalDate().plusYears(range.second).toYmd()}",
+            "format" to "yyyyMMdd",
+        )
         return this
     }
 

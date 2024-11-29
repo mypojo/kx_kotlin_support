@@ -41,9 +41,6 @@ abstract class BeSpecKoin(modules: List<Module>) : BeSpecLog() {
     /** sm */
     val findProfile9780 by lazy { findProfile("97", "80") }
 
-    /** mt */
-    val findProfile59 by lazy { findProfile("59") }
-
     //==================================================== 자주 사용 ======================================================
 
     val aws97 by koinLazy<AwsClient>(findProfile97)

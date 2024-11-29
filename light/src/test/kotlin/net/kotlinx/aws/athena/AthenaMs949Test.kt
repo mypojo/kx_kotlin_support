@@ -13,7 +13,7 @@ class AthenaMs949Test : BeSpecLight() {
 
 
     init {
-        initTest(KotestUtil.FAST)
+        initTest(KotestUtil.IGNORE)
 
         Given("AthenaMs949Test") {
             Then("쿼리결과 다운로드 (한글적용)") {

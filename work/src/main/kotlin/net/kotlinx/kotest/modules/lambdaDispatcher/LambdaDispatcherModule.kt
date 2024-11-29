@@ -1,10 +1,8 @@
 package net.kotlinx.kotest.modules.lambdaDispatcher
 
-import com.google.common.eventbus.EventBus
 import mu.KotlinLogging
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatcher
 import net.kotlinx.koin.KoinModule
-import net.kotlinx.koin.Koins.koin
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -16,15 +14,8 @@ object LambdaDispatcherModule : KoinModule {
     override fun moduleConfig(): Module = module {
         single {
             log.debug { "LambdaDispatcher 이벤트 등록.." }
-            val eventBus = koin<EventBus>()
-            eventBus.register(LambdaDispatcherDefaultListener())
-            eventBus.register(AwsEventBridgeListener())
-            eventBus.register(AwsEventListener())
-            eventBus.register(AwsSnsListener())
             LambdaDispatcher()
         }
-
-
     }
 
 }

@@ -13,12 +13,13 @@ import net.kotlinx.time.toKr01
 
 /** 간단 출력 */
 fun List<DataSource>.printSimple() {
-    listOf("id", "type", "name", "createdTime", "lastUpdatedTime").toTextGridPrint {
+    listOf("id", "type", "name","arn", "createdTime", "lastUpdatedTime").toTextGridPrint {
         this.map {
             arrayOf(
                 it.dataSourceId,
                 it.type,
                 it.name,
+                it.arn,
                 it.createdTime!!.toLocalDateTime().toKr01(),
                 it.lastUpdatedTime!!.toLocalDateTime().toKr01()
             )
