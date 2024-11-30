@@ -9,7 +9,7 @@ repositories {
     }
     dependencies {
         /** 셀프 참조로 가져온다. 버전 정보는 하드코딩 */
-        val kotlinSupportVersionForBuild = "2024-07-54"
+        val kotlinSupportVersionForBuild = "2024-08-13"
         implementation("net.kotlinx.kotlin_support:heavy:${kotlinSupportVersionForBuild}")
     }
 }
