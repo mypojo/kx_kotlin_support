@@ -7,7 +7,7 @@ import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
 
-class QuicksightAnalysisSupportKtTest : BeSpecHeavy() {
+class QuicksightSupportKtTest : BeSpecHeavy() {
 
     private val aws by lazy { koin<AwsClient>(findProfile28) }
 
@@ -19,7 +19,6 @@ class QuicksightAnalysisSupportKtTest : BeSpecHeavy() {
             val profile = findProfile28
 
             Then("분석 리스팅") {
-                //????
                 val analyses = aws.quicksight.listAnalyses {
                     awsAccountId = aws.awsConfig.awsId
                 }

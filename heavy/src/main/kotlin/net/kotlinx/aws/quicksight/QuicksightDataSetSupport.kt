@@ -38,6 +38,7 @@ suspend fun QuickSightClient.describeDataSet(dataSetId: String): DataSet {
     }.dataSet!!
 }
 
+/** 데이터세트 삭제 */
 suspend fun QuickSightClient.deleteDataSet(dataSetId: String): DeleteDataSetResponse = this.deleteDataSet {
     this.awsAccountId = awsConfig.awsId
     this.dataSetId = dataSetId
@@ -62,13 +63,40 @@ suspend fun QuickSightClient.describeIngestion(dataSetId: String, ingestionId: S
  * 데이터세트 리프레시
  * SPICE 적용된 순서대로 갱신 해줘야함 -> 최종 데이터셋이 갱신되면 대시보드도 자동으로 변경됨
  *  */
-suspend fun QuickSightClient.refreshDataSet(dataSetId: String, checkInterval: Duration = 10.seconds, checkTimeout: Duration = 10.minutes): IngestionStatus {
+suspend fun QuickSightClient.refreshDataSet(dataSetId: String, synch: Boolean = false, checkInterval: Duration = 10.seconds, checkTimeout: Duration = 10.minutes): IngestionStatus {
     val ingestion = createIngestion(dataSetId)
+    if (!synch) return IngestionStatus.Queued
+
     return doUntilTimeout(checkInterval, checkTimeout) {
         val describeIngestion = describeIngestion(dataSetId, ingestion.ingestionId!!)
         val status = describeIngestion.ingestion!!.ingestionStatus
         if (status in setOf(IngestionStatus.Completed, IngestionStatus.Failed, IngestionStatus.Cancelled)) status else null
     }
+}
+
+/** 데이터세트 생성 */
+suspend fun QuickSightClient.createDataSet(dataSet: QuicksightDataSetConfig): CreateDataSetResponse = this.createDataSet {
+    folderArns = dataSet.folderIds.map { "arn:aws:quicksight:${awsConfig.region}:${awsConfig.awsId}:folder/${it}" }
+    permissions = QuicksightPermissionUtil.toDataSet(awsConfig, dataSet.users)
+    awsAccountId = awsConfig.awsId
+    dataSetId = dataSet.dataSetId
+    name = dataSet.dataSetName
+    importMode = dataSet.importMode
+    physicalTableMap = mapOf(
+        "AthenaTable" to PhysicalTable.CustomSql(
+            CustomSql {
+                dataSourceArn = "arn:aws:quicksight:${awsConfig.region}:${awsConfig.awsId}:datasource/${dataSet.dataSourceId}"
+                name = dataSet.dataSetId //일단 동일하게
+                sqlQuery = dataSet.query
+                columns = dataSet.columns.entries.map { e ->
+                    InputColumn {
+                        name = e.key
+                        type = e.value
+                    }
+                }
+            })
+    )
+
 }
 
 

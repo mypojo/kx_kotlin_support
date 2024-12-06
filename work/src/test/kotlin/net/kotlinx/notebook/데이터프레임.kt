@@ -17,7 +17,7 @@ class 데이터프레임 : BeSpecLog() {
 
         Given("데이터프레임") {
             Then("만들기 등등.. xx") {
-// create columns
+                // create columns
                 val fromTo by columnOf("LoNDon_파리", "MAdrid_miLAN", "londON_StockhOlm", "Budapest_PaRis", "Brussels_londOn")
                 val flightNumber by columnOf(10045.0, Double.NaN, 10065.0, Double.NaN, 10085.0)
                 val recentDelays by columnOf("23,47", null, "24, 43, 87", "13", "67, 32")
@@ -28,8 +28,8 @@ class 데이터프레임 : BeSpecLog() {
                 df.print()
 
                 // typed accessors for columns
-// that will appear during
-// dataframe transformation
+                // that will appear during
+                // dataframe transformation
                 val origin by column<String>()
                 val destination by column<String>()
 

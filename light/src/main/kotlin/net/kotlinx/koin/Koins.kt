@@ -82,7 +82,7 @@ object Koins {
     /**
      * 한번만 시작함 & 재시작 없음
      * ex) 전체 테스트 수행
-     * ex) 그래들 스크립트 등
+     * ex) 그래들 스크립트 등 <-- xxx 그래들은 재사용되기때문에 항상 리셋 필요
      * synchronized 는 혹시나 해서 넣어줬음
      *  */
     fun startupOnlyOnce(modules: List<Module> = emptyList(), block: Module.() -> Unit = {}) {
@@ -102,6 +102,7 @@ object Koins {
     /**
      * 간단하게 인라인으로 시작 & 재시작함
      * ex) CDK 스크립트
+     * ex) 그래들 스크립트
      *  */
     fun startupReset(modules: List<Module> = emptyList(), block: Module.() -> Unit = {}) {
         synchronized(this) {

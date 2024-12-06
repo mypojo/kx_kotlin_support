@@ -61,12 +61,4 @@ abstract class BeSpecKoin(modules: List<Module>) : BeSpecLog() {
      * */
     private fun findProfile(id: String, suff: String? = null): String = AwsModule.IAM_PROFILES.findProfileByAwsId(id, suff)
 
-//    override fun extensions() = listOf(
-//        io.kotest.koin.KoinExtension(
-//            modules = MyLightKoinStarter.MODULES,
-//            mockProvider = null,
-//            mode = KoinLifecycleMode.Root,
-//        )
-//    )
-
 }

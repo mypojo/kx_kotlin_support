@@ -73,6 +73,7 @@ class CdkDynamoDb : CdkInterface {
                 .apply(block)
                 .build()
         )
+        TagUtil.tag(iTable, deploymentType)
         return this
     }
 
@@ -87,8 +88,6 @@ class CdkDynamoDb : CdkInterface {
                 .sortKey(sk)
                 .build()
         )
-
-        TagUtil.tag(iTable, deploymentType)
     }
 
     /** 단축 명령어 */

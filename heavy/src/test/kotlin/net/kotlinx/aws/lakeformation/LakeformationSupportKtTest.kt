@@ -15,6 +15,12 @@ class LakeformationSupportKtTest : BeSpecHeavy() {
     init {
         initTest(KotestUtil.IGNORE)
 
+        Given("옵티마이저") {
+            Then("최적화 옵션 켜기") {
+                aws.lake.updateTableAllStorageOptimizer("d2", "conv_ac")
+            }
+        }
+
         Given("레이크포메이션 권한") {
 
             val profile = findProfile97

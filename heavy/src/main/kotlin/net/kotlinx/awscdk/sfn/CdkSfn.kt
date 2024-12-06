@@ -21,6 +21,8 @@ import software.amazon.awscdk.services.stepfunctions.StateMachineProps
 /**
  * ID 중복 최소한만 고려 (화면에 안예쁘게 나옴)
  * ex)  {"jobOption":{"sfnId":"9a25f502-588c-42e6-8be5-00955f1a60ac","basicDate":"20230414"},"jobOptionText":"{\"sfnId\":\"9a25f502-588c-42e6-8be5-00955f1a60ac\",\"basicDate\":\"20230414\"}"}
+ *
+ * 내부 객체들을 inner class 로 했어야 했다.. 아쉽네.
  * */
 class CdkSfn : CdkInterface {
 

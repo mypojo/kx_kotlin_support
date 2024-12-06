@@ -13,7 +13,7 @@ import net.kotlinx.time.toKr01
 
 /** 간단 출력 */
 fun List<DataSource>.printSimple() {
-    listOf("id", "type", "name","arn", "createdTime", "lastUpdatedTime").toTextGridPrint {
+    listOf("id", "type", "name", "arn", "createdTime", "lastUpdatedTime").toTextGridPrint {
         this.map {
             arrayOf(
                 it.dataSourceId,
@@ -59,7 +59,7 @@ suspend fun QuickSightClient.deleteDataSourceIfExist(dataSourceId: String): Dele
  * 적절한 권한이 있어야 , 데이터세트 만들기 할때 데이터 소스가 보인다
  * 데이터소스를 삭제하더라도, SPICE에 있는건 여전히 사용가능
  * */
-suspend fun QuickSightClient.createDataSourceS3(id: String, sourceName: String, s3: S3Data, vararg users: String): CreateDataSourceResponse {
+suspend fun QuickSightClient.createDataSourceS3(id: String, sourceName: String, s3: S3Data, users: List<String>): CreateDataSourceResponse {
     return this.createDataSource {
         awsAccountId = awsConfig.awsId
         dataSourceId = id
@@ -73,11 +73,11 @@ suspend fun QuickSightClient.createDataSourceS3(id: String, sourceName: String, 
                 }
             }
         )
-        permissions = QuicksightUtil.toPermissions(awsConfig, users.toList())
+        permissions = QuicksightPermissionUtil.toDataSource(awsConfig, users)
     }
 }
 
-suspend fun QuickSightClient.createDataSourceAthena(id: String, sourceName: String, workGroup: String, vararg users: String): CreateDataSourceResponse {
+suspend fun QuickSightClient.createDataSourceAthena(id: String, sourceName: String, workGroup: String, users: List<String>): CreateDataSourceResponse {
     return this.createDataSource {
         awsAccountId = awsConfig.awsId
         dataSourceId = id
@@ -88,6 +88,6 @@ suspend fun QuickSightClient.createDataSourceAthena(id: String, sourceName: Stri
                 this.workGroup = workGroup
             }
         )
-        permissions = QuicksightUtil.toPermissions(awsConfig, users.toList())
+        permissions = QuicksightPermissionUtil.toDataSource(awsConfig, users)
     }
 }

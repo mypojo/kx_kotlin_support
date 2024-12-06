@@ -83,7 +83,10 @@ object RegexSet {
         return escaped
     }
 
-    /** 두 패턴 사이의 값을 찾는 정규식. (매칭 미포함) */
+    /**
+     * 두 패턴 사이의 값을 찾는 정규식. (매칭 미포함)
+     * 참고로 """으로 삼중 따옴표를 사용하면, 역슬래시 / 포함하여 어떤 문자도 따로 escape 할 필요가 없습니다.
+     *  */
     fun extract(pref: String, suff: String): String = "(?<=${escape(pref)}).*?(?=${escape(suff)})"
 
     /** 두 패턴 사이의 값을 찾는 정규식. (매칭 포함)  */

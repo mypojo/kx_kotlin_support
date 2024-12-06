@@ -22,7 +22,7 @@ object FileGzipUtil {
     fun gzip(file: File): File {
         return File(file.absolutePath + SUFF).also { zipFile ->
             GZIPOutputStream(FileOutputStream(zipFile)).use { gos ->
-                FileInputStream(zipFile).use { fis ->
+                FileInputStream(file).use { fis ->
                     // copy zipFile
                     val buffer = ByteArray(1024)
                     var len: Int

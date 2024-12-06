@@ -1,9 +1,7 @@
 package net.kotlinx.aws.quicksight
 
-import aws.sdk.kotlin.services.quicksight.model.ResourcePermission
 import com.lectra.koson.arr
 import com.lectra.koson.obj
-import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.s3.S3Data
 
 object QuicksightUtil {
@@ -24,20 +22,5 @@ object QuicksightUtil {
             "format" to "CSV"
         }
     }.toString()
-
-    /** 퀵사이트 권한으로 변경 */
-    fun toPermissions(awsConfig: AwsConfig, users: List<String>): List<ResourcePermission> = users.map {
-        ResourcePermission {
-            principal = "arn:aws:quicksight:${awsConfig.region}:${awsConfig.awsId}:user/default/${it}"
-            actions = listOf(
-                "quicksight:DescribeDataSource",
-                "quicksight:DescribeDataSourcePermissions",
-                "quicksight:PassDataSource",
-                "quicksight:UpdateDataSource",
-                "quicksight:DeleteDataSource",
-                "quicksight:UpdateDataSourcePermissions",
-            )
-        }
-    }
 
 }

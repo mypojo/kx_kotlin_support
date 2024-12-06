@@ -12,7 +12,11 @@ import software.constructs.IConstruct
  *  */
 enum class TagSet {
 
+    /** 사내 특정 그룹을 지정 */
     IamGroup,
+
+    /** 다수의 프로젝트가 있는경우 */
+    Project,
     ;
 
     fun tag(target: IConstruct, value: String) {
