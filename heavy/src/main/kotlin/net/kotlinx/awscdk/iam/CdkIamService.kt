@@ -49,6 +49,12 @@ enum class CdkIamService(
      * 개별 설정하기 귀찮아서 이걸로 통일
      * */
     QUICKSIGHT("quicksight"),
+
+    /**
+     * 배드락 배치 처리시 iam-role 을 입력하는데
+     * 이 역할이 bedrock 에서 작동 (s3 읽기 등등)을 할 수 있어야함
+     * */
+    BEDROCK("bedrock"),
     ;
 
     val serviceName: String

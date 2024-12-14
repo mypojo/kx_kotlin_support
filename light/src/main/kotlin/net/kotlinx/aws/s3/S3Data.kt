@@ -32,6 +32,9 @@ data class S3Data(
      */
     fun toFullPath(): String = arrayOf(PROTO, bucket, key).joinToString("/")
 
+    /** 끝애 /가 있는 디렉토리 형태로 전달 */
+    fun toFullPathDir(): String = arrayOf(PROTO, bucket, key).joinToString("/") + "/"
+
     /** 프로토콜이 없는 일반 path */
     fun toPath(): String = arrayOf(bucket, key).joinToString("/")
 
@@ -42,7 +45,7 @@ data class S3Data(
     fun toPublicLink(region: String = "ap-northeast-2"): String = "https://${bucket}.s3.${region}.amazonaws.com/${key.encodeUrl()}"
 
     /** file 처럼, 경로 추가 */
-    fun slash(append:String): S3Data = S3Data(this.bucket,"${this.key}/${append}")
+    fun slash(append: String): S3Data = S3Data(this.bucket, "${this.key}/${append}")
 
     companion object {
 

@@ -31,6 +31,7 @@ dependencies {
 
     api("gov.nist.math:jama:1.0.3") //https://mvnrepository.com/artifact/gov.nist.math/jama 회귀분석 패키지
 
+    implementation("org.openpnp:opencv:4.5.1-2") //이미지 관련 처리
 
     //==================================================== 테스트 (하위에서 사용하기 위해서 API로 등록) ======================================================
     api("io.kotest:kotest-runner-junit5:_") //kotest 의존성 추가.  현재버전의경우 scan 이슈가 있어서 프로퍼티 설정 해줘야함

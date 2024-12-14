@@ -14,6 +14,7 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * 횟수 제한이 아니라 시간으로 제한을 거는데 사용
  * ex) 데이터 갱신 요청, athena 쿼리 등을 요청 후, 완료를 기다림
+ * @param action 리턴이 null이 아니면 종료
  * */
 suspend fun <T> doUntilTimeout(checkInterval: Duration = 10.seconds, checkTimeout: Duration = 10.minutes, action: suspend () -> T?): T {
     val sleeper = CoroutineSleepTool(checkInterval)

@@ -23,6 +23,8 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * https://github.com/aallam/openai-kotlin
  * 멀티플랫폼용 client의 래퍼
+ *
+ * 가능하면 AWS bedrock 같은걸 쓰는게 정신건강에 좋음
  *  */
 @BetaOpenAI
 class OpenAiClient {

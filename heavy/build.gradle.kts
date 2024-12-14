@@ -22,6 +22,7 @@ dependencies {
     val awsVersion: String by project
     api("aws.sdk.kotlin:iam:$awsVersion") //용량 큼
     api("aws.sdk.kotlin:rds:$awsVersion")
+    api("aws.sdk.kotlin:rdsdata:$awsVersion") // 오로라 서버리스 v2 API 호출  https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/kotlin/usecases/serverless_rds
     api("aws.sdk.kotlin:codedeploy:$awsVersion")
     api("aws.sdk.kotlin:secretsmanager:$awsVersion")
     api("aws.sdk.kotlin:ec2:$awsVersion") //용량 큼. 27 mbyte
@@ -36,6 +37,9 @@ dependencies {
     api("aws.sdk.kotlin:lakeformation:$awsVersion") //레이크 포메이션 테그생성 등
     api("aws.sdk.kotlin:glue:$awsVersion") //글루 데이터베이스 생성 등
     api("aws.sdk.kotlin:quicksight:$awsVersion") //퀵사이트
+
+    api("aws.sdk.kotlin:bedrock:$awsVersion") //배드록. 약 2mb  시리즈 전체 -> https://central.sonatype.com/search?q=g%3Aaws.sdk.kotlin+bedrock&smo=true
+    api("aws.sdk.kotlin:bedrockruntime:$awsVersion") //배드록 런다임. 실제 모델 호출에 사용
 
 //    api("aws.sdk.kotlin:pricing:$awsVersion") //제품의 비용(고정) 확인용
 //    api("aws.sdk.kotlin:xray:$awsVersion")

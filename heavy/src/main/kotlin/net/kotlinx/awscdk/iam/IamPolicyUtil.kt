@@ -40,6 +40,8 @@ object IamPolicyUtil {
         "events:*", //이벤트브릿지
         "scheduler:*", //스케쥴러
         "lakeformation:*", //레이크 포메이션
+        "quicksight:*", //퀵사이트 (데이터셋 생성, 갱신 등)
+        "bedrock:*", //배드락 배치처리
 
         "codepipeline:StartPipelineExecution", //코드파이프라인 트리거용 (파이프라인 시작 트리거에 부여해야함). 향후 별도 권한으로 뺄것
         "elasticloadbalancing:*", //코드디플로이가 로드밸런서 교체할때 필요함

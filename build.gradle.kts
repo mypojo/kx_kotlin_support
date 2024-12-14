@@ -95,6 +95,8 @@ allprojects {
         description = "AWS 람다 레이어용 전체 의존성 압축파일 생성"
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
+        outputs.upToDateWhen { false } //더티체크 하지않고 무조건 실행
+
         val files = configurations.runtimeClasspath.get()
         from(files) {
             into("java/lib") //java 디렉토리 안에 연관 의존성 저장

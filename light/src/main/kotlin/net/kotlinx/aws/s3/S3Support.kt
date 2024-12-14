@@ -63,6 +63,9 @@ suspend inline fun S3Client.putObject(bucket: String, key: String, file: File, m
     }
 }
 
+/** 업로드 단축 */
+suspend inline fun S3Client.putObject(path: S3Data, file: File, metadata: Map<String, String>? = null) = putObject(path.bucket, path.key, file, metadata)
+
 /** 바이트 업로드 */
 suspend inline fun S3Client.putObject(bucket: String, key: String, byteArray: ByteArray) = putObject(bucket, key, ByteStream.fromBytes(byteArray))
 
@@ -252,6 +255,9 @@ suspend inline fun S3Client.getObjectLines(bucket: String, key: String, charset:
         null
     }
 }
+
+/** 단축 */
+suspend inline fun S3Client.getObjectText(s3data: S3Data): String? = getObjectText(s3data.bucket, s3data.key)
 
 /**
  * 없으면 null을 리턴한다

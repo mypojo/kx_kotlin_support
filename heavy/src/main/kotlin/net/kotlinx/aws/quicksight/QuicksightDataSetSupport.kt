@@ -44,12 +44,12 @@ suspend fun QuickSightClient.deleteDataSet(dataSetId: String): DeleteDataSetResp
     this.dataSetId = dataSetId
 }
 
-/** 데이터 새로고침 */
-suspend fun QuickSightClient.createIngestion(dataSetId: String): CreateIngestionResponse = this.createIngestion {
+/** 데이터 새로고침 (전체) */
+suspend fun QuickSightClient.createIngestion(dataSetId: String, ingestionType: IngestionType): CreateIngestionResponse = this.createIngestion {
     this.awsAccountId = awsConfig.awsId
     this.dataSetId = dataSetId
     this.ingestionId = UUID.randomUUID().toString() //유니크 ID 생성해서 넣어줌
-    this.ingestionType = IngestionType.FullRefresh
+    this.ingestionType = ingestionType
 }
 
 /** 데이터 새로고침 체크 */
@@ -63,8 +63,14 @@ suspend fun QuickSightClient.describeIngestion(dataSetId: String, ingestionId: S
  * 데이터세트 리프레시
  * SPICE 적용된 순서대로 갱신 해줘야함 -> 최종 데이터셋이 갱신되면 대시보드도 자동으로 변경됨
  *  */
-suspend fun QuickSightClient.refreshDataSet(dataSetId: String, synch: Boolean = false, checkInterval: Duration = 10.seconds, checkTimeout: Duration = 10.minutes): IngestionStatus {
-    val ingestion = createIngestion(dataSetId)
+suspend fun QuickSightClient.refreshDataSet(
+    dataSetId: String,
+    ingestionType: IngestionType,
+    synch: Boolean = false,
+    checkInterval: Duration = 10.seconds,
+    checkTimeout: Duration = 10.minutes
+): IngestionStatus {
+    val ingestion = createIngestion(dataSetId, ingestionType)
     if (!synch) return IngestionStatus.Queued
 
     return doUntilTimeout(checkInterval, checkTimeout) {
@@ -74,7 +80,9 @@ suspend fun QuickSightClient.refreshDataSet(dataSetId: String, synch: Boolean = 
     }
 }
 
-/** 데이터세트 생성 */
+/**
+ * 데이터세트 생성
+ *  */
 suspend fun QuickSightClient.createDataSet(dataSet: QuicksightDataSetConfig): CreateDataSetResponse = this.createDataSet {
     folderArns = dataSet.folderIds.map { "arn:aws:quicksight:${awsConfig.region}:${awsConfig.awsId}:folder/${it}" }
     permissions = QuicksightPermissionUtil.toDataSet(awsConfig, dataSet.users)
@@ -96,29 +104,15 @@ suspend fun QuickSightClient.createDataSet(dataSet: QuicksightDataSetConfig): Cr
                 }
             })
     )
-
 }
 
 
-//suspend fun QuickSightClient.asd(dataSetId: String, ingestionId: String) {
-//
-//
-//    this.startAssetBundleExportJob {
-//        this.awsAccountId = awsConfig.awsId
-//        this.dataSetId = dataSetId
-//        this.exportJobId = UUID.randomUUID().toString()
-//        this.exportJobType = ExportJobType.AssetBundle
-//        this.exportJobName = "exportJobName"
-//        this.exportJobOutput = ExportJobOutput{
-//            this.assetBundleExportJobOutput = AssetBundleExportJobOutput{
-//                this.assetBundleExportJobOutputType = AssetBundleExportJobOutputType.AssetBundle
-//                this.assetBundleExportJobOutputLocation = AssetBundleExportJobOutputLocation{
-//                    this.s3ExportLocation = S3ExportLocation{
-//                        this.bucket = "XXXXXX"
-//                        this.prefix = "prefix"
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
+/**
+ * 증분 업데이트 설정
+ * 소스코드 참고용..
+ * */
+suspend fun QuickSightClient.putDataSetRefreshProperties(dataSetId: String) {
+    this.putDataSetRefreshProperties {
+
+    }
+}

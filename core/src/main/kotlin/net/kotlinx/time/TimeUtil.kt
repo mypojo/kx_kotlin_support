@@ -90,7 +90,7 @@ object TimeUtil {
     }
 
     /**
-     * 해당 날짜 기준으로, 주의 시작날짜(월요일)
+     * 해당 날짜 기준으로, 주의 시작날짜(월요일) 리턴
      * ex) 주 1회 작동하는 기능의 pk
      *  */
     fun firstDateOfWeek(date: LocalDate = LocalDate.now()): LocalDate = date.minusDays(date.dayOfWeek.value - 1L)
