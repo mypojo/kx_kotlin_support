@@ -9,6 +9,9 @@ import com.lectra.koson.arr
 import com.lectra.koson.obj
 import io.ktor.util.*
 import mu.KotlinLogging
+import net.kotlinx.ai.AiModel
+import net.kotlinx.ai.AiTextClient
+import net.kotlinx.ai.AiTextResult
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.s3.S3Data
@@ -27,7 +30,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 
-class BedrockRuntime {
+class BedrockRuntime : AiTextClient {
 
     @Kdsl
     constructor(block: BedrockRuntime.() -> Unit = {}) {
@@ -39,7 +42,7 @@ class BedrockRuntime {
     /**
      * @see BedrockModels
      * */
-    lateinit var modelId: String
+    override lateinit var model: AiModel
 
     /** 결과토큰인가? */
     var maxTokens: Int = 1000
@@ -77,16 +80,18 @@ class BedrockRuntime {
     /** 입력 S3 경로 */
     lateinit var workPath: S3Data
 
+    override suspend fun chat(msg: String): AiTextResult = invokeModel(listOf(msg))
+
     /**
      * 단일 요청 버전
      * https://docs.aws.amazon.com/bedrock/latest/userguide/inference-api.html
      * */
-    suspend fun invokeModel(vararg messages: Any): BedrockResult {
+    suspend fun invokeModel(messages: List<Any>): AiTextResult {
         val data = createJson(messages)
-        return client.brr.invokeModel(modelId, data)
+        return client.brr.invokeModel(model, data)
     }
 
-    private fun createJson(messages: Array<out Any>): ObjectType {
+    private fun createJson(messages: List<Any>): ObjectType {
         val data = obj {
             "anthropic_version" to "bedrock-2023-05-31"
             "max_tokens" to maxTokens
@@ -127,7 +132,7 @@ class BedrockRuntime {
 
         val inputJsonl = currentDir.slash(INPUT_NAME).apply {
             //jsonl 파일 생성
-            val jsonl = datas.map { createJson(it.toTypedArray()) }.joinToString("\n")
+            val jsonl = datas.map { createJson(it) }.joinToString("\n")
             val inputFile = AwsInstanceTypeUtil.INSTANCE_TYPE.root.slash(jobId).slash(INPUT_NAME)
             inputFile.writeText(jsonl)
             client.s3.putObject(this, inputFile)
@@ -135,7 +140,7 @@ class BedrockRuntime {
 
         return client.br.createModelInvocationJob {
             this.jobName = "${jobName}-${jobDate}-${jobId}"
-            this.modelId = this@BedrockRuntime.modelId
+            this.modelId = model.id
             this.roleArn = "arn:aws:iam::${client.awsConfig.awsId}:role/${batchRole}"
             this.inputDataConfig = ModelInvocationJobInputDataConfig.S3InputDataConfig(
                 ModelInvocationJobS3InputDataConfig {
@@ -168,7 +173,7 @@ class BedrockRuntime {
 
         log.debug { " -> [${current.jobName}] ${current.status}" }
 
-        if (current.status !in STATUS_END) return null
+        if (current.status in STATUS_END) return null
 
         if (current.status != ModelInvocationJobStatus.Completed) throw IllegalStateException("Bedrock Batch Job Status [$jobArn] ${current.status} -> ${current.message}")
 

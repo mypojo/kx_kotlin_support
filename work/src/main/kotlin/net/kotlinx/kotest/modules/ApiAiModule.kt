@@ -28,8 +28,8 @@ object ApiAiModule : KoinModule {
         single(named(OpenAiModels.Gpt::class.name())) {
             OpenAiClient {
                 apiKey = "${ProtocolPrefix.SSM}/api/${OpenAiModels.Gpt::class.name()}/demo/key"
-                modelId = OpenAiModels.Gpt.GPT_4O_MINI
-                systemMessages = systemMsgs
+                model = OpenAiModels.Gpt.GPT_4O_MINI
+                systemMessage = systemMsgs.joinToString("\n")
                 assistantId = "asst_4nTAjrx6gq5pO1MJryIVEa2x"
             }
         }
@@ -37,9 +37,9 @@ object ApiAiModule : KoinModule {
             OpenAiClient {
                 apiKey = "${ProtocolPrefix.SSM}/api/${OpenAiModels.Perplexity::class.name()}/demo/key"
                 host = OpenAiModels.Perplexity.HOST
-                modelId = OpenAiModels.Perplexity.SONAR_SMALL
+                model = OpenAiModels.Perplexity.SONAR_SMALL
                 //modelId = OpenAiModels.Perplexity.SONAR_HUGE
-                systemMessages = systemMsgs  //아직 어시스턴스 없이 채팅만 지원함. 이거 해도 안되는거 많음..
+                systemMessage = systemMsgs.joinToString("\n")  //아직 어시스턴스 없이 채팅만 지원함. 이거 해도 안되는거 많음..
                 responseFormat = ChatResponseFormat.Text //단순 JSON 지원 안함.  스키마가 있어가 해야하는듯?
             }
         }

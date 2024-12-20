@@ -115,8 +115,8 @@ class JobTriggerLambda(
     private val jobRepository: JobRepository by koinLazy()
 
     override suspend fun trigger(op: JobTriggerOption): String {
-        val jobSk = op.jobSk ?: idGenerator.nextvalAsString()
-        val jobParam = jobSerializer.toJson(op, jobSk)
+        op.jobSk = op.jobSk ?: idGenerator.nextvalAsString()
+        val jobParam = jobSerializer.toJson(op)
         if (op.preJobPersist) {
             jobSerializer.toJob(jobParam.toString().toGsonData())
         }
@@ -127,7 +127,7 @@ class JobTriggerLambda(
         }
 
         log.trace { "기본적으로 현재 위치가 람다인경우, 람다를 다시 호출하는게 아닌, 현재 람다에서 로컬로 실행되게 해준다" }
-        if (AwsInstanceTypeUtil.INSTANCE_TYPE == AwsInstanceType.LAMBDA) {
+        if (op.synch && AwsInstanceTypeUtil.INSTANCE_TYPE == AwsInstanceType.LAMBDA) {
             log.info { "현재 인스턴스 타입 = ${AwsInstanceTypeUtil.INSTANCE_TYPE} -> 람다를 다시 트리거하지 않고 로컬(람다)에서 실행됩니다" }
             return JobTriggerMethod.LOCAL.trigger(op)
         }
@@ -140,7 +140,7 @@ class JobTriggerLambda(
             log.info { "람다 실행 [$jobParam] - 동기화(${op.synch})" }
         }
         if (log.isDebugEnabled) {
-            val findJob = Job(op.jobPk, jobSk)
+            val findJob = Job(op.jobPk, op.jobSk!!)
             if (op.synch) {
                 jobRepository.getItem(findJob)?.let {
                     log.debug { "클라우드와치 로그링크 : ${it.cloudWatchLogLink}" }
@@ -172,8 +172,8 @@ class JobTriggerBatch(
     private val aws: AwsClient by koinLazy()
 
     override suspend fun trigger(op: JobTriggerOption): String {
-        val jobSk = op.jobSk ?: idGenerator.nextvalAsString()
-        val jobParam = jobSerializer.toJson(op, jobSk)
+        op.jobSk = op.jobSk ?: idGenerator.nextvalAsString()
+        val jobParam = jobSerializer.toJson(op)
         if (op.preJobPersist) {
             jobSerializer.toJob(jobParam.toString().toGsonData())
         }
@@ -183,7 +183,7 @@ class JobTriggerBatch(
             return jobParam.toString()
         }
 
-        val findJob = Job(op.jobPk, jobSk)
+        val findJob = Job(op.jobPk, op.jobSk!!)
         if (op.synch) {
             val jobDetail = aws.batch.submitJobAndWaitStarting(jobQueueName, jobDefinitionName, jobParam)
             log.debug { "잡 UI 링크 -> ${BatchUtil.toBatchUiLink(jobDetail.jobId!!)}" }

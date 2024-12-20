@@ -102,7 +102,8 @@ suspend fun QuickSightClient.createDataSet(dataSet: QuicksightDataSetConfig): Cr
                         type = e.value
                     }
                 }
-            })
+            }
+        )
     )
 }
 
@@ -113,6 +114,10 @@ suspend fun QuickSightClient.createDataSet(dataSet: QuicksightDataSetConfig): Cr
  * */
 suspend fun QuickSightClient.putDataSetRefreshProperties(dataSetId: String) {
     this.putDataSetRefreshProperties {
+        this.awsAccountId = awsConfig.awsId
+        this.dataSetId = dataSetId
+        this.dataSetRefreshProperties {
 
+        }
     }
 }

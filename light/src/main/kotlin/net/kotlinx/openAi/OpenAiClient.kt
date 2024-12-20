@@ -13,9 +13,13 @@ import com.aallam.openai.client.OpenAIHost
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import mu.KotlinLogging
+import net.kotlinx.ai.AiModel
+import net.kotlinx.ai.AiTextClient
+import net.kotlinx.ai.AiTextResult
 import net.kotlinx.core.Kdsl
+import net.kotlinx.json.gson.ResultGsonData
+import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.lazyLoad.lazyLoadString
-import net.kotlinx.time.TimeStart
 import java.util.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -27,7 +31,7 @@ import kotlin.time.Duration.Companion.seconds
  * 가능하면 AWS bedrock 같은걸 쓰는게 정신건강에 좋음
  *  */
 @BetaOpenAI
-class OpenAiClient {
+class OpenAiClient : AiTextClient {
 
     @Kdsl
     constructor(block: OpenAiClient.() -> Unit = {}) {
@@ -82,7 +86,7 @@ class OpenAiClient {
     //==================================================== 편의기능 ======================================================
 
     /** 디폴트 모델 ID */
-    var modelId: String = OpenAiModels.Gpt.GPT_4O_MINI
+    override var model: AiModel = OpenAiModels.Gpt.GPT_4O_MINI
 
     /**
      * 디폴트 응답 포맷
@@ -110,40 +114,61 @@ class OpenAiClient {
      * 시스템 메세지
      * 채팅에 사용됨
      *  */
-    var systemMessages: List<String> = emptyList()
+    var systemMessage: Any? = null
 
     private val mutex = Mutex()
 
     /** 단순 채팅 질문 */
-    suspend fun chat(msg: String): ChatCompletion {
+    override suspend fun chat(msg: String): AiTextResult {
 
         mutex.withLock {
-            if (systemMessages.isEmpty() && assistantId != null) {
+            if (systemMessage == null && assistantId != null) {
                 log.debug { " -> 시스템 메세지가 없음 -> assistantId ${assistantId} 를 시스템 메시지로 가져옴" }
-                systemMessages = listOf(ai.assistant(AssistantId(assistantId!!))!!.instructions!!)
+                systemMessage = ai.assistant(AssistantId(assistantId!!))!!.instructions!!
             }
         }
 
-        val start = TimeStart()
-        val systems = when {
-            systemMessages.isEmpty() -> emptyList()
-            else -> listOf(ChatMessage(role = ChatRole.System, content = systemMessages.joinToString("\n")))
-        }
+        val start = System.currentTimeMillis()
+
+        val systemPrompt = systemMessage?.let { listOf(ChatMessage(role = ChatRole.System, content = it.toString())) } ?: emptyList()
+
         val reqs = ChatCompletionRequest(
-            model = ModelId(modelId),
-            messages = systems + ChatMessage(role = ChatRole.User, content = msg),
+            model = ModelId(model.id),
+            messages = systemPrompt + ChatMessage(role = ChatRole.User, content = msg),
             responseFormat = responseFormat,
             temperature = temperature
             //maxTokens = 2000,  //PX는 이거 넣으면 고장남..
         )
-        log.trace { " => 시스템 멘트 : ${systems.joinToString { it.content!!.replace("\n", "/") }}" }
+        val duration = System.currentTimeMillis() - start
+        log.trace { " => 시스템 멘트 : ${systemPrompt.joinToString { it.content!!.replace("\n", "/") }}" }
 
         val completion = ai.chatCompletion(reqs)
+        val usage = completion.usage!!
+        log.debug {
+            val usageText = "${usage.promptTokens} + ${usage.completionTokens} = ${usage.totalTokens}"
+            " -> [${model.id}] 결과 ${completion.choices.size}건 -> $usageText"
+        }
 
-        val usage = completion.usage?.let { "${it.promptTokens} + ${it.completionTokens} = ${it.totalTokens}" } ?: "N/A"
+        check(completion.choices.size == 1) { "system용 결과는 1개로만 가정" }
+        val fitstContent = completion.choices.first().message.messageContent!!
+        val gson = when (fitstContent) {
+            is TextContent -> {
+                val text = fitstContent.content
+                val replaced = when {
+                    text.contains("```json") -> text.substringBetween("```json" to "```")
+                    else -> text
+                }
+                replaced.toGsonData()
+            }
 
-        log.debug { " -> [$modelId] 결과 ${completion.choices.size}건 -> 걸린시간 $start => $usage" }
-        return completion
+            else -> {
+                log.warn { "!!! 문자열 형식 확인필요 !!! -> ${fitstContent::class}" }
+                fitstContent.toString().toGsonData()
+            }
+        }
+
+        val result = if (gson.isObject) ResultGsonData(true, gson) else ResultGsonData(false, gson)
+        return AiTextResult(model, result, usage.promptTokens!!, usage.completionTokens!!, duration)
     }
 
     /** 스래드로 작업 */

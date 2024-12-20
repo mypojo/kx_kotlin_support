@@ -1,5 +1,6 @@
 package net.kotlinx.aws.bedrock
 
+import net.kotlinx.ai.AiTextResult
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.file.slash
@@ -27,10 +28,9 @@ class BedrockRuntimeSupportTest : BeSpecHeavy() {
 
             val bedrockRoot = S3Data("adpriv-work-dev", "bedrock")
 
-
             val sonet = BedrockRuntime {
                 client = aws97
-                modelId = BedrockModels.OnDemand.CLAUDE_35_SONNET
+                model = BedrockModels.OnDemand.CLAUDE_35_SONNET
                 system = LandingPageInspectionUtil.PROMPT
                 workPath = bedrockRoot
                 batchRole = "app-admin"
@@ -38,7 +38,7 @@ class BedrockRuntimeSupportTest : BeSpecHeavy() {
 
             val haiku = BedrockRuntime {
                 client = aws97
-                modelId = BedrockModels.OnDemand.CLAUDE_3_HAIKU
+                model = BedrockModels.OnDemand.CLAUDE_3_HAIKU
                 system = LandingPageInspectionUtil.PROMPT
                 workPath = bedrockRoot
                 batchRole = "app-admin"
@@ -46,8 +46,8 @@ class BedrockRuntimeSupportTest : BeSpecHeavy() {
 
             Then("간단질의") {
                 val file = imageFile[0]
-                val result = sonet.invokeModel(file)
-                log.info { "[${result.inputTokens}/${result.outputTokens}] -> ${result.data}" }
+                val result = sonet.invokeModel(listOf(file))
+                log.info { "[${result.inputTokens}/${result.outputTokens}] -> ${result.body}" }
             }
 
             Then("배치실행") {
@@ -64,7 +64,7 @@ class BedrockRuntimeSupportTest : BeSpecHeavy() {
                 data class Result(
                     val file: File,
                     val name: String,
-                    val result: BedrockResult,
+                    val result: AiTextResult,
                     val duration: String,
                 )
 
@@ -80,7 +80,7 @@ class BedrockRuntimeSupportTest : BeSpecHeavy() {
                             Result(
                                 file,
                                 e.key,
-                                e.value.invokeModel(file),
+                                e.value.invokeModel(listOf(file)),
                                 start.toString(),
                             )
                         }
@@ -89,7 +89,7 @@ class BedrockRuntimeSupportTest : BeSpecHeavy() {
 
                 listOf("파일", "모델", "입력토큰", "출력토큰", "걸린시간", "결과").toTextGridPrint {
                     results.map {
-                        arrayOf(it.file.name, it.name, it.result.inputTokens, it.result.outputTokens, it.duration, it.result.data)
+                        arrayOf(it.file.name, it.name, it.result.inputTokens, it.result.outputTokens, it.duration, it.result.body)
                     }
                 }
             }

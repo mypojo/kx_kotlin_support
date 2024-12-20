@@ -1,6 +1,7 @@
 package net.kotlinx.openAi
 
 import com.aallam.openai.client.OpenAIHost
+import net.kotlinx.ai.AiModel
 
 
 /**
@@ -34,11 +35,21 @@ object OpenAiModels {
 
         //==================================================== 어시스턴트 가능 ======================================================
 
-        /** 토큰 1M당 3$ */
-        const val GPT_4O: String = "gpt-4o-2024-08-06"
+        /** GPT */
+        val GPT_4O: AiModel = AiModel {
+            id = "gpt-4o-2024-11-20"
+            name = "gpt-4o"
+            costOfInputToken = 2.50 / 1000
+            costOfOutputToken = 10.0 / 1000
+        }
 
-        /** 토큰 1M당 0.15$ */
-        const val GPT_4O_MINI: String = "gpt-4o-mini-2024-07-18"
+        /** GPT 미니 */
+        val GPT_4O_MINI: AiModel = AiModel {
+            id = "gpt-4o-mini-2024-07-18"
+            name = "gpt-4o-mini"
+            costOfInputToken = 0.150 / 1000
+            costOfOutputToken = 0.6 / 1000
+        }
     }
 
     /**
@@ -54,10 +65,23 @@ object OpenAiModels {
 
         val HOST = OpenAIHost("https://api.perplexity.ai")
 
-        /** 토큰 1M당 0.2$ */
-        const val SONAR_SMALL: String = "llama-3.1-sonar-small-128k-online"
-        /** 토큰 1M당 1$ */
-        const val SONAR_LARGE: String = "llama-3.1-sonar-large-128k-online"
+        val SONAR_SMALL: AiModel = AiModel {
+            id = "llama-3.1-sonar-small-128k-online"
+            name = "퍼플렉시티-small"
+            costOfRequest = 5.0 / 1000
+            costOfInputToken = 0.2 / 1000
+            costOfOutputToken = 0.2 / 1000
+        }
+
+        val SONAR_LARGE: AiModel = AiModel {
+            id = "llama-3.1-sonar-large-128k-online"
+            name = "퍼플렉시티-large"
+            costOfRequest = 5.0 / 1000
+            costOfInputToken = 1.0 / 1000
+            costOfOutputToken = 1.0 / 1000
+        }
+
+
         /** 토큰 1M당 5$ */
         const val SONAR_HUGE: String = "llama-3.1-sonar-huge-128k-online"
 

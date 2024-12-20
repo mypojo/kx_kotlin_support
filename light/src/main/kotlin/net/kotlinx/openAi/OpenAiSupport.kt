@@ -1,12 +1,9 @@
 package net.kotlinx.openAi
 
 import com.aallam.openai.api.BetaOpenAI
-import com.aallam.openai.api.chat.ChatCompletion
-import com.aallam.openai.api.chat.TextContent
 import com.aallam.openai.api.file.File
 import com.aallam.openai.api.message.Message
 import com.aallam.openai.api.message.MessageContent
-import mu.KotlinLogging
 import net.kotlinx.number.toLocalDateTime
 import net.kotlinx.number.toSiText
 import net.kotlinx.string.abbr
@@ -16,28 +13,6 @@ import net.kotlinx.time.toKr01
 
 /** 첫번째 매칭 & 마지막 매칭으로 잘라준다 */
 fun String.substringBetween(range: Pair<String, String>): String = this.substringAfter(range.first).substringBeforeLast(range.second).trim()
-
-/** chat 결과를 간단하게 리턴해준다. */
-fun ChatCompletion.toListString(): List<String> {
-    val log = KotlinLogging.logger {}
-    return this.choices.map { choice ->
-        when (val messageContent = choice.message.messageContent!!) {
-            is TextContent -> {
-                val text = messageContent.content
-                when {
-                    text.contains("```json") -> text.substringBetween("```json" to "```")
-                    else -> text
-                }
-            }
-
-            else -> {
-                log.warn { "!!! 문자열 형식 확인필요 !!! -> ${messageContent::class}" }
-                messageContent.toString()
-            }
-        }
-    }
-}
-
 
 /**
  * 결과 간단 문자열화

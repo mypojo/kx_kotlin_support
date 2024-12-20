@@ -45,7 +45,10 @@ data class S3Data(
     fun toPublicLink(region: String = "ap-northeast-2"): String = "https://${bucket}.s3.${region}.amazonaws.com/${key.encodeUrl()}"
 
     /** file 처럼, 경로 추가 */
-    fun slash(append: String): S3Data = S3Data(this.bucket, "${this.key}/${append}")
+    fun slash(append: String): S3Data {
+        val path = if (isDirectory) this.key else "${this.key}/"
+        return S3Data(this.bucket, "${path}${append}")
+    }
 
     companion object {
 

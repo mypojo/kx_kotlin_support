@@ -148,7 +148,7 @@ data class AwsConfig(
          * 간단 계산용 환율
          * 뉴 노멀 적용
          *  */
-        const val EXCHANGE_RATE: Int = 1400
+        const val EXCHANGE_RATE: Int = 1420
 
     }
 }

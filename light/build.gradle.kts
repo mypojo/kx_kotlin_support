@@ -48,6 +48,9 @@ dependencies {
     api("aws.sdk.kotlin:ses:$awsVersion") //2m 밖에 안함
     api("aws.sdk.kotlin:codecommit:$awsVersion") //3m.. 그래도 넣자
 
+    api("aws.sdk.kotlin:bedrock:$awsVersion") //배드록. 약 2mb  시리즈 전체 -> https://central.sonatype.com/search?q=g%3Aaws.sdk.kotlin+bedrock&smo=true
+    api("aws.sdk.kotlin:bedrockruntime:$awsVersion") //배드록 런다임. 약 1m 실제 모델 호출에 사용
+
     //==================================================== AWS 람다 ======================================================
     api("com.amazonaws:aws-lambda-java-core:_") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함
     api("com.amazonaws:aws-lambda-java-events:_")  //핸들러에 매핑되는 이벤트 객체들 (안쓰면 필요없음)

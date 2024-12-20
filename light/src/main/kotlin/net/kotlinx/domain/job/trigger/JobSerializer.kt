@@ -59,9 +59,9 @@ class JobSerializer(val profile: String? = null) {
     }
 
     /** job을 AWS lambda / BATCH 에 전송할 잡 설정(DDB 키값전송)으로 변환 */
-    fun toJson(op: JobTriggerOption, jobSk: String? = null): ObjectType = obj {
+    fun toJson(op: JobTriggerOption): ObjectType = obj {
         AwsNaming.JOB_PK to op.jobPk
-        jobSk?.let { AwsNaming.JOB_SK to it }  //sk는 옵션이다.
+        op.jobSk?.let { AwsNaming.JOB_SK to it }  //sk는 옵션이다.
 
         //파싱값 입력 4개
         Job::jobOption.name to op.jobOption.toString() //이건 무조건 문자열로 입력
