@@ -1,8 +1,6 @@
-package net.kotlinx.aws1
+package net.kotlinx.aws
 
 import io.kotest.matchers.shouldBe
-import net.kotlinx.aws.AwsInstanceType
-import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
