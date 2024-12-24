@@ -34,7 +34,7 @@ class RetryTemplate(block: RetryTemplate.() -> Unit) : suspend (suspend () -> An
     /** 오류시 로깅 */
     var onError: (tryCnt: Int, e: Throwable) -> Unit = { tryCnt: Int, e: Throwable ->
         val title = if (name.isEmpty()) "" else "[$name]"
-        log.warn { " => $title ${e.toSimpleString()} -> retry $tryCnt/$retries " }
+        log.warn { " => retry $title $tryCnt/$retries => ${e.toSimpleString()}" }
     }
 
     /** 리트라이 시도 */

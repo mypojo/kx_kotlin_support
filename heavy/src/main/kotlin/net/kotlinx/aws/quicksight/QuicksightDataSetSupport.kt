@@ -90,34 +90,61 @@ suspend fun QuickSightClient.createDataSet(dataSet: QuicksightDataSetConfig): Cr
     dataSetId = dataSet.dataSetId
     name = dataSet.dataSetName
     importMode = dataSet.importMode
-    physicalTableMap = mapOf(
-        "AthenaTable" to PhysicalTable.CustomSql(
-            CustomSql {
-                dataSourceArn = "arn:aws:quicksight:${awsConfig.region}:${awsConfig.awsId}:datasource/${dataSet.dataSourceId}"
-                name = dataSet.dataSetId //일단 동일하게
-                sqlQuery = dataSet.query
-                columns = dataSet.columns.entries.map { e ->
-                    InputColumn {
-                        name = e.key
-                        type = e.value
+
+    when (dataSet.type) {
+
+        QuicksightDataSetConfigType.QUERY -> physicalTableMap = mapOf(
+            "AthenaTable" to PhysicalTable.CustomSql(
+                CustomSql {
+                    dataSourceArn = "arn:aws:quicksight:${awsConfig.region}:${awsConfig.awsId}:datasource/${dataSet.dataSourceId}"
+                    name = dataSet.dataSetId //일단 동일하게
+                    sqlQuery = dataSet.query
+                    columns = dataSet.columns.entries.map { e ->
+                        InputColumn {
+                            name = e.key
+                            type = e.value
+                        }
                     }
                 }
-            }
+            )
         )
-    )
-}
 
+        QuicksightDataSetConfigType.TABLE -> physicalTableMap = mapOf(
+            "AthenaTable" to PhysicalTable.RelationalTable(
+                RelationalTable {
+                    dataSourceArn = "arn:aws:quicksight:${awsConfig.region}:${awsConfig.awsId}:datasource/${dataSet.dataSourceId}"
+                    schema = dataSet.schema
+                    name = dataSet.tableName
+                    inputColumns = dataSet.columns.entries.map { e ->
+                        InputColumn {
+                            name = e.key
+                            type = e.value
+                        }
+                    }
+                }
+            )
+        )
+    }
+}
 
 /**
  * 증분 업데이트 설정
- * 소스코드 참고용..
+ * 설정시 한번 자동으로 리프레시 되는듯
  * */
-suspend fun QuickSightClient.putDataSetRefreshProperties(dataSetId: String) {
+suspend fun QuickSightClient.putDataSetRefreshProperties(dataSetId: String, columnName: String, windowSize: Long, unit: LookbackWindowSizeUnit = LookbackWindowSizeUnit.Day) {
     this.putDataSetRefreshProperties {
         this.awsAccountId = awsConfig.awsId
         this.dataSetId = dataSetId
         this.dataSetRefreshProperties {
-
+            this.refreshConfiguration = RefreshConfiguration {
+                this.incrementalRefresh {
+                    this.lookbackWindow = LookbackWindow {
+                        this.columnName = columnName
+                        this.size = windowSize
+                        this.sizeUnit = unit
+                    }
+                }
+            }
         }
     }
 }

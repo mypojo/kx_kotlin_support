@@ -13,7 +13,7 @@ import kotlin.time.Duration.Companion.seconds
 class CdkSqs(val name: String) : CdkEnum {
 
     override val logicalName: String
-        get() = "${projectName}-${name}-${suff}"
+        get() = "${projectName}-${name}-${suff}${fifoSuffix}"
 
     /**
      * 메시지가 대기열에서 소비된 후에만 숨겨짐 (큐에서 읽어갔으나 아직 삭제 전)
@@ -22,6 +22,8 @@ class CdkSqs(val name: String) : CdkEnum {
      * 표시 제한 시간이 만료되기 전에 소비자가 메시지를 삭제하지 못하면 다른 소비자가 메시지를 다시 볼 수 있음
      * 각 메시지의 처리 시간을 고려할 만큼 충분히 커야 함
      * 디폴트 30초.  0 ~ 12시간
+     *
+     * 람다에 직접 연결할경우 람다의 타임아웃보다 크거나 같아야함.
      * */
     var visibilityTimeout: kotlin.time.Duration = 30.seconds
 
@@ -41,6 +43,10 @@ class CdkSqs(val name: String) : CdkEnum {
     var retentionPeriod: kotlin.time.Duration = 4.days
 
     var fifo: Boolean = false
+
+    /** 피포큐의 이름은 반드시 .fifo로 끝나야한다.. */
+    val fifoSuffix: String
+        get() = if (fifo) ".fifo" else ""
 
     lateinit var iQueue: IQueue
 

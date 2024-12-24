@@ -12,8 +12,6 @@ import net.kotlinx.guava.fromJsonList
 import net.kotlinx.json.gson.GsonSet
 import net.kotlinx.koin.Koins
 import net.kotlinx.kotest.modules.BeSpecHeavy
-import net.kotlinx.lazyLoad.lazyLoadStringSsm
-import net.kotlinx.openApi.KoreaeximClient
 import net.kotlinx.system.ResourceHolder
 import net.kotlinx.time.toYmdF01
 import java.io.File
@@ -36,7 +34,7 @@ fun main() {
     if (!dataFile.exists()) {
         log.info { "cost 데이터를 로드합니다.." }
         runBlocking {
-            val profileNames = IamCredential().profileDatas.map { it.profileName }.filter { it !in setOf("sin", "default","md") } - listOf("kx")
+            val profileNames = IamCredential().profileDatas.map { it.profileName }.filter { it !in setOf("sin", "default", "md") } - listOf("kx")
             log.debug { " -> 로드된 프로파일 : $profileNames" }
             val datas = profileNames.flatMap { profileName ->
                 val client = AwsConfig(profileName = profileName).toAwsClient()
@@ -69,19 +67,19 @@ fun main() {
 
     val lines = GsonSet.GSON.fromJsonList<CostExplorerLine>(dataFile.readText())
 
-    val wonDoller = runBlocking {
-        val secret by lazyLoadStringSsm("/api/koreaexim/key")
-        try {
-            val client = KoreaeximClient(secret)
-            client.dollarWon()
-        } catch (e: Exception) {
-            log.warn { "달러원 오류!! -> 강제 매핑  ${e.toSimpleString()}" }
-            1380
-        }
-    }
+//    val wonDoller = runBlocking {
+//        val secret by lazyLoadStringSsm("/api/koreaexim/key")
+//        try {
+//            val client = KoreaeximClient(secret)
+//            client.dollarWon()
+//        } catch (e: Exception) {
+//            log.warn { "달러원 오류!! -> 강제 매핑  ${e.toSimpleString()}" }
+//            1380
+//        }
+//    }
 
     CostExplorerExcel {
-        won = wonDoller.toDouble()
+        //won = wonDoller.toInt()
         costDatas = lines
         groupByProject()
         eachProject()

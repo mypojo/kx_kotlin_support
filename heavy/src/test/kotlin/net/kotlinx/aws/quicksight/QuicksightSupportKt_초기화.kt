@@ -32,10 +32,13 @@ class QuicksightSupportKt_초기화 : BeSpecHeavy() {
                 items.printSimple()
             }
 
-            xThen("데이터세트 삭제") {
+            Then("데이터세트 삭제") {
                 val items = client.quicksight.listDataSets()
-                items.forEach { t -> client.quicksight.deleteDataSet(t.dataSetId!!) }
-                log.warn { "데이터세트 ${items.size}건 삭제 완료" }
+                items.printSimple()
+                items.filter { it.name in setOf("People Overview", "Web and Social Media Analytics", "Business Review", "Sales Pipeline") }.forEach {
+                    client.quicksight.deleteDataSet(it.dataSetId!!)
+                    log.warn { "데이터세트 ${it.name} 삭제 완료" }
+                }
             }
 
             Then("데이터소스 리스팅") {

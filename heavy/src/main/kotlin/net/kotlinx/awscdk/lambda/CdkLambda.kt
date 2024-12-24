@@ -14,13 +14,6 @@ import software.amazon.awscdk.services.logs.RetentionDays
 import software.amazon.awscdk.services.sqs.IQueue
 import kotlin.time.Duration.Companion.minutes
 
-/**
- * 함수에 URL 오픈
- * 각 함수별로 다를 수 있으니 별도 지정해서 사용
- *  */
-fun IFunction.url(type: FunctionUrlAuthType = FunctionUrlAuthType.NONE) {
-    this.addFunctionUrl(FunctionUrlOptions.builder().authType(type).build()) //외부 오픈됨. 알리아스 & 버전 없음!
-}
 
 /**
  * 람다 함수 정의 (일반 버전)

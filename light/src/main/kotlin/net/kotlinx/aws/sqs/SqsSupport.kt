@@ -1,22 +1,27 @@
 package net.kotlinx.aws.sqs
 
-import aws.sdk.kotlin.services.sqs.SqsClient
-import aws.sdk.kotlin.services.sqs.deleteMessageBatch
-import aws.sdk.kotlin.services.sqs.model.DeleteMessageBatchRequestEntry
-import aws.sdk.kotlin.services.sqs.model.Message
-import aws.sdk.kotlin.services.sqs.model.MessageSystemAttributeName
-import aws.sdk.kotlin.services.sqs.model.SendMessageBatchRequestEntry
-import aws.sdk.kotlin.services.sqs.receiveMessage
-import aws.sdk.kotlin.services.sqs.sendMessageBatch
+import aws.sdk.kotlin.services.sqs.*
+import aws.sdk.kotlin.services.sqs.model.*
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.regist
 import net.kotlinx.collection.doUntilNotEmpty
+import java.util.*
 
 val AwsClient.sqs: SqsClient
     get() = getOrCreateClient { SqsClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /** 디폴트 최대 수. 기본설정이 1임..  */
 private const val MAX_NUMBER_OF_MESSAGES = 10
+
+/** FIFO 단건전송 */
+suspend fun SqsClient.sendFifo(queueUrl: String, messageGroupId: String, body: Any, uid: String = UUID.randomUUID().toString()): SendMessageResponse {
+    return this.sendMessage {
+        this.queueUrl = queueUrl
+        this.messageGroupId = messageGroupId
+        this.messageBody = body.toString()
+        this.messageDeduplicationId = uid
+    }
+}
 
 /**
  * 여러개 보낼때. 오류건을 리턴한다.

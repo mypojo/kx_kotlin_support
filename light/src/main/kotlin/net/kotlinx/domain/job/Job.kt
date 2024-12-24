@@ -36,7 +36,12 @@ class Job(override val pk: String, override val sk: String) : DbItem {
     /** JOB 요청 시간 (복합되서 인덱싱됨)  */
     lateinit var reqTime: LocalDateTime
 
-    /** 관련 회원 ID . 없으면 system 입력. (복합되서 인덱싱됨)   */
+    /**
+     * 관련 회원 ID or AWS ID 조합 (외부 요청인경우)
+     * 없으면 system 입력. (복합되서 인덱싱됨)
+     * ex) ${memberId}
+     * ex) ${awsId}#${reqId}
+     * */
     var memberId: String = DEFAULT_MEMBER
 
     /** TTL. */
