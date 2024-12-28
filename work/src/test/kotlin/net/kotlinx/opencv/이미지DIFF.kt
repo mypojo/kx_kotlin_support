@@ -5,7 +5,6 @@ import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.system.ResourceHolder
-import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.MatOfDMatch
 import org.opencv.core.MatOfKeyPoint
@@ -29,9 +28,9 @@ class 이미지DIFF : BeSpecLog() {
     init {
         initTest(KotestUtil.IGNORE)
 
-        log.info { "라이브러리 로드.." }
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
-        log.info { "라이브러리 로드 종료" }
+//        log.info { "라이브러리 로드.." }
+//        System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
+//        log.info { "라이브러리 로드 종료" }
 
         Given("이미지DIFF") {
 

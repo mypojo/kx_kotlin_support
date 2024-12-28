@@ -1,7 +1,10 @@
 package net.kotlinx.spring.opencsv
 
 import io.kotest.matchers.shouldBe
-import net.kotlinx.file.*
+import net.kotlinx.file.FileGzipUtil
+import net.kotlinx.file.FileZipTemplate
+import net.kotlinx.file.slash
+import net.kotlinx.file.slashDir
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -65,12 +68,6 @@ class CsvItemWriterTemplateTest : BeSpecLog() {
                 Then("${largeCnt}건 -> 디렉토리 압축 파일1개 생성 (내부에 x개의 파일 있음)") {
                     doTest(largeCnt, workspace.slashDir("MS949-${largeCnt}건"))
                 }
-            }
-
-            Then("임시테스트") {
-                val dir = ResourceHolder.WORKSPACE.slash("aceCounterDirectDbJob_69660001")
-                val zip = dir.slash("dbdirect_2024_12_03-14_23.csv").gzip()
-                println(zip.absolutePath)
             }
         }
     }

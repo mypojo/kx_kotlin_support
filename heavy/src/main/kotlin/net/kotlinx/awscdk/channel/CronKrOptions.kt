@@ -65,6 +65,6 @@ class CronKrOptions {
         const val OFFSET_HOUR: Int = 9
 
         /** 특정 시간들을 UTC로 변환 */
-        fun hourToUtc(vararg krHours: Int): String = krHours.map { CronKrOptions().apply { krHour = it }.updateToUtc().hour }.joinToString(",")
+        fun hourToUtc(vararg krHours: Int): String = krHours.joinToString(",") { CronKrOptions().apply { krHour = it }.updateToUtc().hour ?: "" }
     }
 }

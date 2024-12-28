@@ -51,9 +51,7 @@ class StepEnd : LambdaDispatchLogic {
         val job = jobRepository.getItem(Job(option.jobPk, option.jobSk))!!
 
         log.trace { "BatchStepCallback 이 등록되어있다면 실행" }
-        Koins.koinOrNull<BatchStepCallback>(job.pk)?.let {
-            it.execute(option, job)
-        }
+        Koins.koinOrNull<BatchStepCallback>(job.pk)?.execute(option, job)
 
         val datas = retry.withRetry {
             athenaModule.readAll {

@@ -203,7 +203,7 @@ suspend inline fun S3Client.listFiles(bucket: String, prefix: String): List<S3Da
 suspend inline fun S3Client.deleteDir(bucket: String, prefix: String): Int = this.listFiles(bucket, prefix).also { deleteAll(it) }.size
 
 /**  버킷 단위로 벌크 삭제한다. 대부분 페이징해서 호출할테니 별도의 사이즈 제한은 없음  */
-suspend inline fun S3Client.deleteAll(datas: Collection<S3Data>) {
+inline fun S3Client.deleteAll(datas: Collection<S3Data>) {
     val groupByBucket = datas.groupBy { it.bucket } //버킷별로 호출
     groupByBucket.entries.map { (bucket, list) ->
         suspend {

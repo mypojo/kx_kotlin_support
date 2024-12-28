@@ -64,7 +64,7 @@ suspend fun CloudWatchLogsClient.download(logGroupName: String, logStreamName: S
         }
         token = results.nextForwardToken
         val events = results.events!!
-        out.appendText(events.map { it.message }.joinToString("\n")) //성능 주의!! 많이 하지 말것
+        out.appendText(events.joinToString("\n") { it.message!! }) //성능 주의!! 많이 하지 말것
         log.trace { " -> [$it] 로그수 ${events.size} 저장됨" }
         events.isEmpty()
     }

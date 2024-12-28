@@ -24,7 +24,7 @@ val HttpServletRequest.cookieMap: Map<String, String>
 
 /** HTML 요청인지 여부. ajax 여부를 판단할때 사용된다   */
 val HttpServletRequest.isTextHtmlReq: Boolean
-    get() = this.getHeader("Accept")?.contains("text/html") ?: false
+    get() = this.getHeader("Accept")?.contains("text/html") == true
 
 /**
  * 스키마가 달린 패스를 구한다.

@@ -133,7 +133,7 @@ class BatchStepExecutor {
             log.trace { "로컬인경우 작업을 다 기다린다음 결과 출력" }
             waitResult(sfnUuid)
             checkResult(sfnUuid)
-            localCallback?.let { it.invoke(jobParam) }
+            localCallback?.invoke(jobParam)
         }
         return jobParam
     }

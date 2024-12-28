@@ -21,8 +21,6 @@ import java.net.URLDecoder
  * net.kotlinx.aws1.s3.FirehoseKrHandler::handleRequest
  *
  * https://gist.github.com/sawyerh/f809cc6d539c54287fc87223fc6c0f9b
- *
- * @see net.kotlinx.aws.lambdaCommon.CommonFunctionHandler 단독 매핑 보다는 이걸 우선 사용할것
  */
 class FirehoseKrHandler : RequestHandler<S3Event, String> {
 

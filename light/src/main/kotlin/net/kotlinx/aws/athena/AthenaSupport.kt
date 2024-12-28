@@ -1,3 +1,5 @@
+package net.kotlinx.aws.athena
+
 import aws.sdk.kotlin.services.athena.AthenaClient
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.regist

@@ -8,11 +8,12 @@ const val SI_T = SI_G * 1024
 
 /** 간단한 SI 단위를 리턴해준다. 소수점 이런거 없음 */
 fun Long.toSiText(suff: String = "byte"): String {
+    val org = this
     return when {
-        this < SI_K -> "$this $suff"
-        this < SI_M -> "${this / SI_K} k$suff"
-        this < SI_G -> "${this / SI_M} m$suff"
-        this < SI_T -> "${this / SI_G} g$suff"
+        org < SI_K -> "$this $suff"
+        org < SI_M -> "${this / SI_K} k$suff"
+        org < SI_G -> "${this / SI_M} m$suff"
+        org < SI_T -> "${this / SI_G} g$suff"
         else -> "${this / SI_T} t$suff"
     }
 

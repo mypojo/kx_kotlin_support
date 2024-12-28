@@ -19,17 +19,17 @@ class CloudtrailTool {
     lateinit var athenaModule: AthenaModule
 
     /** 테이블 삭제 */
-    fun dropTable() = athenaModule.execute("DROP TABLE IF EXISTS  ${table.tableNameWithDatabase}")
+    suspend fun dropTable() = athenaModule.execute("DROP TABLE IF EXISTS  ${table.tableNameWithDatabase}")
 
     /** 스키마 생성 & 파티션 생성 */
-    fun create() = athenaModule.execute(ddl())
+    suspend fun create() = athenaModule.execute(ddl())
 
     /**
      * 파티션 전체 or 부분 업데이트
      * 클라우드 트레일 파티션은 key=value 형식이 아니라서 일단 작업 해준다
      * 아이스버그 마렵다..
      *  */
-    fun updatePartition(datas: List<Triple<String, String, String>>) {
+    suspend fun updatePartition(datas: List<Triple<String, String, String>>) {
         val partition = datas.map { data ->
             """
             PARTITION (year='${data.first}', month='${data.second}', day='${data.third}')

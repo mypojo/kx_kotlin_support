@@ -1,4 +1,4 @@
-//package net.kotlinx.spring.session
+package net.kotlinx.spring.session//package net.kotlinx.spring.session
 //
 //import com.google.common.base.Objects
 //import org.springframework.session.Session

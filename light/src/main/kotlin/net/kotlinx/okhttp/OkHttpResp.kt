@@ -28,7 +28,7 @@ data class OkHttpResp(
             GzipSource(response.body.source()).buffer().readUtf8()
         } else {
             val contentType = response.headers["content-type"]
-            val charSetConfig = contentType?.let { it.contains("charset", false) } ?: false
+            val charSetConfig = contentType?.contains("charset", false) == true
             when {
                 // 하지만 응답 헤더와는 다르게 작업되는 사이트의 경우 강제 입력 ex) text/html 이렇게만 덜렁 있음..
                 okHttpReq.defaultChsrSet != null && !charSetConfig -> {

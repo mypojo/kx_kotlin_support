@@ -28,7 +28,7 @@ fun Timestamp.toText(): String {
 /** 간단 텍스트로 리턴해줌 */
 fun PropertyValue<*>.toValueString(): String {
     return when (val value = this.value!!) {
-        is SelectOption -> "${value.name}"
+        is SelectOption -> value.name
         is RichTextList -> "${value.plainText}"
         is DateOrDateRange -> {
             if (value.end == null) {

@@ -65,9 +65,7 @@ class StepStart : LambdaDispatchLogic {
         log.debug { "job [${job.toKeyString()}] 로그 insert" }
 
         log.trace { "BatchStepCallback 이 등록되어있다면 실행" }
-        Koins.koinOrNull<BatchStepCallback>(job.pk)?.let {
-            it.execute(option, job)
-        }
+        Koins.koinOrNull<BatchStepCallback>(job.pk)?.execute(option, job)
 
         return StepStartContext(
             LocalDateTime.now(),

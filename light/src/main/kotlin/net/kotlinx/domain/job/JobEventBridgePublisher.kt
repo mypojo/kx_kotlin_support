@@ -11,7 +11,9 @@ import net.kotlinx.guava.postEvent
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.koin.Koins.koinLazy
 
-/** 잡 이벤트브릿지 - 상태변경 */
+/**
+ * 잡 이벤트브릿지 - 상태변경
+ *  */
 data class EventBridgeJobStatus(val job: Job) : AwsLambdaEvent {
 
     companion object {
@@ -20,7 +22,13 @@ data class EventBridgeJobStatus(val job: Job) : AwsLambdaEvent {
 }
 
 /**
- * AWS 이벤트브릿지
+ * job이 종료되었을때 JobEvenDefaultListener가 있다면 이벤트브릿지로 이벤트를 던짐
+ * 이 이벤트브릿지가 람다로 연결되어있다면 이 LambdaDispatch가 작동함
+ * ex) central 계정으로 잡 실행 -> 콜백을 나의 이벤트 브릿지로 수신 -> 내 람다 실행
+ *
+ * 참고!
+ * #1 타계정 이벤트버스는 구독이 안됨
+ * #2 람다 실행 대신 URL 호출도 가능 -> 레거시에서 사용
  * */
 class JobEventBridgePublisher : LambdaDispatch {
 

@@ -1,6 +1,5 @@
 package net.kotlinx.kotest.modules.ktor.routes
 
-import io.ktor.server.application.*
 import io.ktor.server.html.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*

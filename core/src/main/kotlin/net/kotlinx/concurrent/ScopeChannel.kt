@@ -87,7 +87,7 @@ class ScopeChannel(
     /** 닫기 */
     fun close(cause: Throwable? = null): Boolean = channel.close(cause)
 
-    suspend fun startMonitoring(monitoringDelay: Long = TimeUnit.SECONDS.toMillis(5)) {
+    fun startMonitoring(monitoringDelay: Long = TimeUnit.SECONDS.toMillis(5)) {
         val monitoringSleeper = CoroutineSleepTool(monitoringDelay.milliseconds)
         scope.launch(context) {
             log.debug { "모니터링 시작.." }
@@ -127,7 +127,7 @@ class ScopeChannel(
         log.warn { "channel closed -> receive 종료" }
     }
 
-    private suspend fun <T> executeLaunch(doCallback: suspend (T) -> Unit, data: T) {
+    private fun <T> executeLaunch(doCallback: suspend (T) -> Unit, data: T) {
         scope.launch(context) {
             try {
                 withTimeout(timeout) {

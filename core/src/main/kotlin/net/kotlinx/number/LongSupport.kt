@@ -24,7 +24,8 @@ fun Long.minWith(compare: Long): Long = this.coerceAtMost(compare)
  * ex) 1681869805.seconds.inWholeMilliseconds.toLocalDateTime().toKr01()
  *  */
 fun Long.toLocalDateTime(zone: ZoneId = TimeUtil.SEOUL): LocalDateTime {
-    val value = if (this < 2000000000) this * 1000 else this
+    val org = this
+    val value = if (org < 2000000000L) this * 1000 else this
     return Instant.ofEpochMilli(value).atZone(zone).toLocalDateTime()!!
 }
 

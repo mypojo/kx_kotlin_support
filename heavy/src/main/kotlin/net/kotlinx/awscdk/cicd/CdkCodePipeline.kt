@@ -69,7 +69,7 @@ class CdkCodePipeline : CdkInterface {
 
     fun create(stack: Stack, block: PipelineProps.Builder.() -> Unit = {}): CdkCodePipeline {
 
-        val srcArtifact = Artifact.artifact("src-art-${logicalName}");
+        val srcArtifact = Artifact.artifact("src-art-${logicalName}")
         pipeline = Pipeline(
             stack, logicalName, PipelineProps.builder()
                 .role(role)

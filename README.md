@@ -1,9 +1,9 @@
 # 소개
 kotlin용 각종 도구 모음입니다.
- - 간단한 도우미 유틸들
+- 간단한 도우미 유틸들
 - AWS Client 확장
 - AWS CDK DSL 제공
-- 구글 / 노션 API 샘플
+- 구글 / 노션 등의 API 샘플
 - Spring / Hibernate 샘플
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/license/mit-0/)

@@ -1,4 +1,4 @@
-//package net.kotlinx.spring.session
+package net.kotlinx.spring.session//package net.kotlinx.spring.session
 //
 //import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 //import net.kotlinx.aws.dynamo.DynamoBasic

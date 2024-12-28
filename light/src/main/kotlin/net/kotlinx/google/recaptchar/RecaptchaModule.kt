@@ -28,7 +28,7 @@ class RecaptchaModule(
         }
 
         val result = GsonData.parse(resp.respText)
-        val success = result["success"].bool ?: false
+        val success = result["success"].bool == true
         if (!success) {
             for (each in result["error-codes"]) {
                 log.debug { "[${remoteip}]로 부터의 캡챠코드 검증실패 : $each" }

@@ -18,6 +18,7 @@ val AwsClient.event: EventBridgeClient
  * 총 항목의 크기가 256 kb 이하만 가능 -> 더 크다면 S3를 권장함
  * *   */
 suspend fun EventBridgeClient.putEvents(config: EventBridgeConfig, datas: List<String>): PutEventsResponse {
+
     val response = this.putEvents {
         this.entries = datas.map { data ->
             PutEventsRequestEntry {

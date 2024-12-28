@@ -1,6 +1,7 @@
 package net.kotlinx.file
 
 import java.io.File
+import java.nio.charset.Charset
 
 /**
  * 파일을 패스 형식으로 나타낼때
@@ -31,4 +32,17 @@ fun File.listAllFiles(): List<File> {
         }
     }
     return files
+}
+
+/**
+ * readLines 인데 앞의 특정 부분만 사용하고 싶을때
+ * @see readLines
+ * */
+fun File.readLines(limit: Int, charset: Charset = Charsets.UTF_8): List<String> {
+    val result = ArrayList<String>()
+    forEachLine(charset) {
+        if (result.size >= limit) return@forEachLine
+        result.add(it)
+    }
+    return result
 }

@@ -8,7 +8,7 @@ object CdkIamRoleSet {
     /** 앱 실행용 관리자 권한 */
     val APP_ADMIN = CdkIamRole {
         roleName = "app-admin"
-        services = CdkIamService.values().map { it.serviceName }
+        services = CdkIamService.entries.map { it.serviceName }
         managedPolicy(CdkManagedPolicySet.SCHEDULER)
     }
 

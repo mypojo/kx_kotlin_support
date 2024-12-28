@@ -1,6 +1,5 @@
 package net.kotlinx.aws.athena
 
-import athena
 import aws.sdk.kotlin.services.athena.getQueryExecution
 import aws.sdk.kotlin.services.athena.model.QueryExecution
 import aws.sdk.kotlin.services.athena.model.QueryExecutionContext
@@ -172,16 +171,17 @@ class AthenaModule {
     }
 
     /** 단건 처리 */
-    fun readAll(athenaQuery: String): List<List<String>> = runBlocking { startAndWait(AthenaReadAll(athenaQuery)).lines!! }
+    suspend fun readAll(athenaQuery: String): List<List<String>> = startAndWait(AthenaReadAll(athenaQuery)).lines!!
 
     /** 단건 처리 (DSL용) */
-    fun readAll(block: () -> String): List<List<String>> = readAll(block())
+    suspend fun readAll(block: () -> String): List<List<String>> = readAll(block())
 
     /**
      * 단건 처리
      * sqls.map { suspend { athenaModule.execute(it) } }.coroutineExecute()
      *  */
-    fun execute(athenaQuery: String): AthenaExecute = runBlocking { startAndWait(AthenaExecute(athenaQuery)) }
+    //fun execute(athenaQuery: String): AthenaExecute = runBlocking { startAndWait(AthenaExecute(athenaQuery)) }
+    suspend fun execute(athenaQuery: String): AthenaExecute = startAndWait(AthenaExecute(athenaQuery))
 
     /**
      * 내부 간단 실행기

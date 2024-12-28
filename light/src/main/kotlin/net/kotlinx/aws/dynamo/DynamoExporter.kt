@@ -64,7 +64,7 @@ class DynamoExporter(private val aws: AwsClient, block: DynamoExporter.() -> Uni
     /**
      * 보통 x 분 걸림
      * */
-    suspend fun exportAndWait() {
+    fun exportAndWait() {
         measureTimeString {
             export()
             wait()

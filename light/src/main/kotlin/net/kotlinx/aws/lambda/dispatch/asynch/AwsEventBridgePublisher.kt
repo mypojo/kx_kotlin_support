@@ -19,6 +19,9 @@ data class EventBridgeSchedulerEvent(
 
 data class EventBridgeEcsTaskStateChange(val group: String, val stoppedReason: String) : AwsLambdaEvent
 
+/**
+ * SFN 상태 변경(성공/실패 ..) 이벤트 전달
+ * */
 data class EventBridgeSfnStatus(
     val sfnName: String,
     /** job의 ${pk}-${sk} */
@@ -87,7 +90,7 @@ class AwsEventBridgePublisher : LambdaDispatch {
                     "CodePipeline Pipeline Execution State Change" -> {
                         val pipeline = detail["pipeline"].str!!
                         val state = detail["state"].str!!
-                        bus.postEvent({ EventBridgePipeline(pipeline, state) })
+                        bus.postEvent { EventBridgePipeline(pipeline, state) }
                     }
 
                     else -> {

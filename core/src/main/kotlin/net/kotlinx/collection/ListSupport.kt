@@ -13,7 +13,7 @@ fun <T> List<T>.toPair(): Pair<T, T> {
  * 주로 static을 초기화 할때 사용
  * operator는 사용하지 않음
  *  */
-fun <T> MutableList<T>.addAndGet(block: () -> T): T {
+fun <T, R : T> MutableList<T>.addAndGet(block: () -> R): R {
     val data = block()
     this += data
     return data

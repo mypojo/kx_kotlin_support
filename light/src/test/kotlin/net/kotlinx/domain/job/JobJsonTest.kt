@@ -2,6 +2,11 @@ package net.kotlinx.domain.job
 
 import com.lectra.koson.obj
 import io.kotest.matchers.shouldBe
+import net.kotlinx.aws.eventBridge.EventBridgeConfig
+import net.kotlinx.aws.eventBridge.event
+import net.kotlinx.aws.eventBridge.putEvents
+import net.kotlinx.aws.sqs.sendFifo
+import net.kotlinx.aws.sqs.sqs
 import net.kotlinx.domain.job.trigger.JobSerializer
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.koson.toGsonData
@@ -24,7 +29,7 @@ class JobJsonTest : BeSpecLight() {
             val jobId = UUID.randomUUID().toString()
             val awsId = "975050157771"
             val userId = "1234"
-            val job = Job("demoJob","${awsId}#${jobId}") {
+            val job = Job("demoJob", "${awsId}#${jobId}") {
                 memberId = userId
                 jobOption = obj {
                     "inputFilePath" to "s3://bucket/input.txt"
@@ -46,8 +51,20 @@ class JobJsonTest : BeSpecLight() {
                 job1.jobEnv shouldBe job.jobEnv
             }
 
-            Then("SQS 전송") {
+            Then("이벤트 강제 전송") {
 
+                val jobStatusByAccount = EventBridgeConfig(
+                    EventBridgeConfig.byAccount("992365606987", "job_from_adpriv-prod"),
+                    JobEventBridgePublisher.SOURCE,
+                    EventBridgeJobStatus.DETAIL_TYPE,
+                )
+
+                val jobJson = GsonData.fromObj(job).toString()
+                aws97.event.putEvents(jobStatusByAccount, listOf(jobJson))
+            }
+
+            Then("SQS 전송") {
+                aws97.sqs.sendFifo("job_from_adpriv-prod", jobJson.toString(), jobId)
             }
 
         }

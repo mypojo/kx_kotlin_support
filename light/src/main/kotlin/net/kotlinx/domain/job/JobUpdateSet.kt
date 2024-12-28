@@ -8,28 +8,28 @@ object JobUpdateSet {
 
     /** 시작 */
     val START = setOf(
-        net.kotlinx.domain.job.Job::jobStatus,
-        net.kotlinx.domain.job.Job::jobContext,
-        net.kotlinx.domain.job.Job::startTime,
-        net.kotlinx.domain.job.Job::instanceMetadata,
+        Job::jobStatus,
+        Job::jobContext,
+        Job::startTime,
+        Job::instanceMetadata,
     ).map { it.name }
 
     /** 중간 상태변경 */
     val STATUS = setOf(
-        net.kotlinx.domain.job.Job::jobStatus,
-        net.kotlinx.domain.job.Job::jobContext,
-        net.kotlinx.domain.job.Job::sfnId,
+        Job::jobStatus,
+        Job::jobContext,
+        Job::sfnId,
     ).map { it.name }
 
     /** 종료 */
     val END = setOf(
-        net.kotlinx.domain.job.Job::jobStatus,
-        net.kotlinx.domain.job.Job::jobContext,
-        net.kotlinx.domain.job.Job::endTime,
+        Job::jobStatus,
+        Job::jobContext,
+        Job::endTime,
     ).map { it.name }
 
     /** 예외 발생시 업데이트 */
-    val ERROR = (END + net.kotlinx.domain.job.Job::jobErrMsg.name)
+    val ERROR = (END + Job::jobErrMsg.name)
 
 
 }

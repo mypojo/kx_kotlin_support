@@ -1,6 +1,5 @@
 package net.kotlinx.aws.athena
 
-import download
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.s3.presignGetObject
 import net.kotlinx.aws.s3.s3

@@ -2,7 +2,6 @@ package net.kotlinx.kotest.modules.job
 
 import com.google.common.eventbus.Subscribe
 import mu.KotlinLogging
-import net.kotlinx.domain.job.EventBridgeJobStatus
 import net.kotlinx.domain.job.JobFailEvent
 import net.kotlinx.domain.job.JobSuccessEvent
 
@@ -25,13 +24,6 @@ class JobEvenListener {
     fun onFinish(event: JobSuccessEvent) {
         val job = event.job
         log.info { "job success : ${job.toKeyString()}" }
-    }
-
-    /** 잡 상태변경 */
-    @Subscribe
-    fun onStatueChange(event: EventBridgeJobStatus) {
-        val job = event.job
-        log.warn { "잡 이벤트 변경!! [${job.toKeyString()}] => ${job.jobStatus}" }
     }
 
 }

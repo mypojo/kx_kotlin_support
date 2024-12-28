@@ -101,7 +101,7 @@ class EventPublishClient {
         if (log.isTraceEnabled) {
             log.debug { " -> eventbridge json \n${GsonSet.GSON_PRETTY.toJson(event)}" }
         }
-        log.info { "eventbridge put -> [${event.eventDiv}] 데이터 ${event.datas.size}건 (${json.toByteArray().size}byte)" }
+        log.info { "eventbridge put -> [${event.eventDiv}] 내부데이터 ${event.datas.size}건 (${json.toByteArray().size}byte)" }
         aws.event.putEvents(eventBridgeConfig, listOf(json))
     }
 

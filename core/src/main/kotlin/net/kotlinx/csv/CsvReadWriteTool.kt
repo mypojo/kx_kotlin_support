@@ -13,7 +13,7 @@ import java.util.zip.GZIPOutputStream
 
 
 /**
- * 파일을 즉시 읽고 다시 써주는 간이도구
+ * 파일을 즉시! 읽고 다시 써주는 간이도구
  * 람다에서 800mb 가량의 데이터 처리 시도시 에러난다.. 디스크 문제일수도 있음
  *  */
 class CsvReadWriteTool {

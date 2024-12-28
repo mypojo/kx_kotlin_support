@@ -15,7 +15,6 @@ class CdkSfnBatch(
     /**
      * 정해진 키 값들이 args[] 로 매핑됨. -> 각 데이터는 문자열 형식만 가능함
      * 여기 키값 들은 batch 에서 매핑을 따로 해주어야 한다.
-     * @see net.kotlinx.awscdk.component.CdkBatchJobDefinition
      * */
     var input = mapOf(
         BatchUtil.BATCH_ARGS01 to "$.${AwsNaming.OPTION}" //이거 하나로

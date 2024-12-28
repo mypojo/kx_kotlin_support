@@ -70,7 +70,6 @@ class JobLocalExecutor(val profile: String? = null) {
             log.error { "JOB 에러 => ${job.toKeyString()}" }
             run {
                 job.jobStatus = JobStatus.FAILED
-                job.jobContext = job.jobContext
                 job.jobErrMsg = e.toSimpleString()
                 job.endTime = LocalDateTime.now()
                 jobRepository.updateItem(job, JobUpdateSet.ERROR)

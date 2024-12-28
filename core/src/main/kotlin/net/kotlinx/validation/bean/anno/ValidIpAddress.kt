@@ -23,7 +23,7 @@ class ValidIpAddressValidator : ConstraintValidator<ValidIpAddress, String> {
             return false
         }
         return parts.all { part ->
-            part.toIntOrNull()?.let { it in 0..255 } ?: false
+            part.toIntOrNull()?.let { it in 0..255 } == true
         }
     }
 }
