@@ -5,24 +5,6 @@ import mu.KotlinLogging
 import net.kotlinx.json.serial.SerialToJson
 import net.kotlinx.string.lett
 
-/** 간단 변환. 없으면 빈거 리턴 */
-fun String?.toGsonDataOrEmpty(): GsonData {
-    if (this.isNullOrBlank()) return GsonData.empty()
-    return this.toGsonData()
-}
-
-/** 간단 변환 */
-fun String.toGsonData(): GsonData = GsonData.parse(this)
-
-/** 간단 변환 */
-fun List<GsonData>.toGsonArray(): GsonData = GsonData.array().also { ar -> this.forEach { ar.add(it) } }
-
-/**
- * 간단 변환을 문자열로 변경함
- * ex) athena array<string> 으로 캐스팅
- *  */
-fun List<GsonData>.toGsonArrayAsStr(): GsonData = GsonData.array().also { ar -> this.forEach { ar.add(it.toString()) } }
-
 /**
  * koson 은 특정값 읽기가 안됨 -> 간단 읽기 & 수정 용으로 작성
  * 편의상 불변객체 유지를 하지 않음

@@ -16,7 +16,7 @@ class CdkPolicyStatement {
     }
 
     lateinit var actions: List<String>
-    var resources: List<String> = IamPolicyUtil.ALL
+    var resources: List<String> = IamPolicyAdminUtil.ALL
 
     /** 형식은 임의로 지정했음 */
     var conditions: Map<String, Any> = mapOf()

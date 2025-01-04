@@ -2,6 +2,8 @@ package net.kotlinx.domain.job
 
 import com.lectra.koson.obj
 import io.kotest.matchers.shouldBe
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.eventBridge.EventBridgeConfig
 import net.kotlinx.aws.eventBridge.event
 import net.kotlinx.aws.eventBridge.putEvents
@@ -29,11 +31,11 @@ class JobJsonTest : BeSpecLight() {
             val jobId = UUID.randomUUID().toString()
             val awsId = "975050157771"
             val userId = "1234"
-            val job = Job("demoJob", "${awsId}#${jobId}") {
+            val job = Job("kwdExtractJob", "${awsId}#${jobId}") {
                 memberId = userId
                 jobOption = obj {
-                    "inputFilePath" to "s3://bucket/input.txt"
-                    "outputFilePath" to "s3://bucket/output.txt"
+                    "inputFilePath" to "s3://bucket/input.csv"
+                    "outputFilePath" to "s3://bucket/output.csv"
                 }.toGsonData()
                 jobEnv = "lambdaJob"
             }
@@ -64,7 +66,9 @@ class JobJsonTest : BeSpecLight() {
             }
 
             Then("SQS 전송") {
-                aws97.sqs.sendFifo("job_from_adpriv-prod", jobJson.toString(), jobId)
+                val client by koinLazy<AwsClient>(findProfile99)
+                val queueName = AwsConfig.serviceUrl("sqs", "975050157771", "${findProfile97}-job-dev.fifo")
+                client.sqs.sendFifo(queueName, "job-test", "")
             }
 
         }

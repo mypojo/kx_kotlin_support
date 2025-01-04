@@ -6,6 +6,7 @@ import com.google.common.cache.CacheBuilder
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import mu.KotlinLogging
 import java.util.concurrent.TimeUnit
 
 /**
@@ -25,6 +26,7 @@ class SsmStore(
             runBlocking {
                 MUTEX.withLock {
                     cache.get(key) {
+                        log.debug { "SSM [$key] 데이터 로드..." }
                         val value = runBlocking { ssmClient.find(key) }
                         checkNotNull(value) { "[$key] 요청된 경로에 데이터가 없습니다. 확인이 필요합니다 -> https://ap-northeast-2.console.aws.amazon.com/systems-manager/parameters/?region=ap-northeast-2&tab=Table" }
                         value
@@ -36,6 +38,8 @@ class SsmStore(
 
 
     companion object {
+
+        private val log = KotlinLogging.logger {}
 
         /** 코루틴 동시 요청시 사용 */
         private val MUTEX = Mutex()

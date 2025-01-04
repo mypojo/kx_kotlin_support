@@ -26,6 +26,10 @@ data class AiTextResult(
     ) {
 
 
+    /**
+     * 금액($)
+     *  @see printSimple  참고
+     * */
     fun cost(): Double = model.cost(inputTokens, outputTokens)
 
 

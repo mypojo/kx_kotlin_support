@@ -1,6 +1,5 @@
 package net.kotlinx.aws.sqs
 
-import com.lectra.koson.obj
 import net.kotlinx.concurrent.delay
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -33,16 +32,6 @@ class SqsSupportKtTest : BeSpecHeavy() {
                 val messages = aws97.sqs.receiveMessage(queueName)
                 println(messages.size)
                 //aws97.sqs.deleteMessageBatch(queueName, messages)
-            }
-        }
-
-        Given("테스트 입력") {
-            Then("fifo큐 입력") {
-                val queueName = "${findProfile97}-job-dev.fifo"
-                val body = obj {
-                    "name" to "test"
-                }
-                aws97.sqs.sendFifo(queueName, "job-test", body)
             }
         }
 

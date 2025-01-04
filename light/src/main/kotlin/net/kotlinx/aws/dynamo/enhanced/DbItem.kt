@@ -26,6 +26,12 @@ interface DbItem {
     fun toKeyString(): String = "${pk}:${sk}"
 
     /**
+     * PK / SK를 조합해서 유니크한 문자열 생성.
+     * file 이름으로도 사용 가능
+     *  */
+    fun toKeyPairString(): String = "${pk}-${sk}"
+
+    /**
      * 테이블 정보.
      * 성능에 문제 없겠지?? 있으면 늦은 초기화
      * */

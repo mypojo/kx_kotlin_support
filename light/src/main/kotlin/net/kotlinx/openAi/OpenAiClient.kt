@@ -121,14 +121,14 @@ class OpenAiClient : AiTextClient {
     /** 단순 채팅 질문 */
     override suspend fun chat(msg: String): AiTextResult {
 
+        val start = System.currentTimeMillis()
+
         mutex.withLock {
             if (systemMessage == null && assistantId != null) {
                 log.debug { " -> 시스템 메세지가 없음 -> assistantId ${assistantId} 를 시스템 메시지로 가져옴" }
                 systemMessage = ai.assistant(AssistantId(assistantId!!))!!.instructions!!
             }
         }
-
-        val start = System.currentTimeMillis()
 
         val systemPrompt = systemMessage?.let { listOf(ChatMessage(role = ChatRole.System, content = it.toString())) } ?: emptyList()
 
@@ -139,12 +139,11 @@ class OpenAiClient : AiTextClient {
             temperature = temperature
             //maxTokens = 2000,  //PX는 이거 넣으면 고장남..
         )
-        val duration = System.currentTimeMillis() - start
         log.trace { " => 시스템 멘트 : ${systemPrompt.joinToString { it.content!!.replace("\n", "/") }}" }
 
         val completion = ai.chatCompletion(reqs)
         val usage = completion.usage!!
-        log.debug {
+        log.trace {
             val usageText = "${usage.promptTokens} + ${usage.completionTokens} = ${usage.totalTokens}"
             " -> [${model.id}] 결과 ${completion.choices.size}건 -> $usageText"
         }
@@ -167,6 +166,7 @@ class OpenAiClient : AiTextClient {
             }
         }
 
+        val duration = System.currentTimeMillis() - start
         val result = if (gson.isObject) ResultGsonData(true, gson) else ResultGsonData(false, gson)
         return AiTextResult(model, result, usage.promptTokens!!, usage.completionTokens!!, duration)
     }

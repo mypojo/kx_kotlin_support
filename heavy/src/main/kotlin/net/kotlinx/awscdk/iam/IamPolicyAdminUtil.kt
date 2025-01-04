@@ -7,7 +7,7 @@ import software.amazon.awscdk.services.iam.PolicyStatement
 import software.amazon.awscdk.services.iam.PolicyStatementProps
 
 
-object IamPolicyUtil {
+object IamPolicyAdminUtil {
 
     /** 관리자용 권한 샘플 */
     val DEFAULT_ADMIN_ACTIONS = listOf(

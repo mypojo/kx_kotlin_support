@@ -13,7 +13,10 @@ val AwsClient.sqs: SqsClient
 /** 디폴트 최대 수. 기본설정이 1임..  */
 private const val MAX_NUMBER_OF_MESSAGES = 10
 
-/** FIFO 단건전송 */
+/**
+ * FIFO 단건전송
+ * @param queueUrl 타계정으로 전송시  https 로 시작하는 URL 입력
+ *  */
 suspend fun SqsClient.sendFifo(queueUrl: String, messageGroupId: String, body: Any, uid: String = UUID.randomUUID().toString()): SendMessageResponse {
     return this.sendMessage {
         this.queueUrl = queueUrl

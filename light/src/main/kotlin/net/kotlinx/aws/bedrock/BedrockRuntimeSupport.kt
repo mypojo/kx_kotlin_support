@@ -25,12 +25,13 @@ suspend fun BedrockRuntimeClient.invokeModel(model: AiModel, body: Any): AiTextR
         this.accept = "application/json" //json으로 통일
         this.body = body.toString().toByteArray()
     }
-    val duration = System.currentTimeMillis() - start
 
     val body = GsonData.parse(resp.body.toString(Charsets.UTF_8))
     val content: GsonData = body["content"]
     val inputTokens = body["usage"]["input_tokens"].int!!
     val outputTokens = body["usage"]["output_tokens"].int!!
+
+    val duration = System.currentTimeMillis() - start
     return try {
         check(content.size == 1)
         val result = content[0]["text"].str?.let { ResultGsonData(true, it.toGsonData()) } ?: ResultGsonData(false, content)

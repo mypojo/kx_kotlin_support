@@ -36,6 +36,43 @@ fun File.readCsvLines(charset: Charset = CharSets.UTF_8, callback: (List<String>
     }
 }
 
+/**
+ * CSV 파일을 읽어 첫 번째 라인을 헤더로 처리하고, 지정된 청크 크기만큼의 라인을 모아서 처리
+ * @param charset 파일의 문자 인코딩 (기본값: UTF-8)
+ * @param chunkSize 한 번에 처리할 라인의 수
+ * @param callback 헤더와 청크 단위의 데이터를 처리하는 콜백 함수
+ */
+fun File.readCsvLinesWithHeaderAndChunk(
+    charset: Charset = Charsets.UTF_8,
+    chunkSize: Int = 100,
+    callback: (header: List<String>, rows: List<List<String>>) -> Unit
+) {
+    val reader = csvReader { this.charset = charset.toString() }
+    reader.open(this) {
+        val iterator = readAllAsSequence().iterator()
+
+        // 첫 번째 라인을 헤더로 처리
+        if (!iterator.hasNext()) return@open
+        val header = iterator.next()
+
+        // 청크 단위로 데이터 처리
+        val chunk = mutableListOf<List<String>>()
+        while (iterator.hasNext()) {
+            chunk.add(iterator.next())
+            if (chunk.size == chunkSize) {
+                callback(header, chunk.toList())
+                chunk.clear()
+            }
+        }
+
+        // 남은 데이터 처리
+        if (chunk.isNotEmpty()) {
+            callback(header, chunk.toList())
+        }
+    }
+}
+
+
 /** 라인 카운트 리턴 */
 fun File.readCsvLinesCnt(charset: Charset = CharSets.UTF_8): Long {
     var count = 0L

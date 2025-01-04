@@ -28,7 +28,6 @@ class CodeCommitSupportKtTest : BeSpecHeavy() {
                     this.commitSpecifier = "refs/heads/dev"
                     this.filePath = ".gitignore"
                 }.revisionDag
-
                 history.size shouldBeGreaterThan 1
                 history.print()
             }

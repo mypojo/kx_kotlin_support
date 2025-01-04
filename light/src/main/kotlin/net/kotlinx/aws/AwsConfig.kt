@@ -150,5 +150,10 @@ data class AwsConfig(
          *  */
         const val EXCHANGE_RATE: Int = 1420
 
+        /**
+         * 일반적으로 제공되는 AWS 서비스 URL
+         *  */
+        fun serviceUrl(serviceId: String, awsId: String, name: String, region: String = REGION_KR): String = "https://${serviceId}.${region}.amazonaws.com/${awsId}/${name}"
+
     }
 }

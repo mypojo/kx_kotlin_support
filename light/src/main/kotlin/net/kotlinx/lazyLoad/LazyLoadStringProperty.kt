@@ -39,7 +39,6 @@ class LazyLoadStringProperty(
                     initValue!!.startsWith(ProtocolPrefix.SSM) -> {
                         val ssmUrl = initValue!!.removePrefix(ProtocolPrefix.SSM)
                         try {
-                            log.debug { "SSM [$ssmUrl] 데이터 로드..." }
                             aws.ssmStore[ssmUrl]
                         } catch (e: IllegalStateException) {
                             throw IllegalArgumentException("ssmStore $ssmUrl not found  -> ${e.toSimpleString()}")
