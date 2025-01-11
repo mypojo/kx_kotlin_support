@@ -5,7 +5,7 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.s3.getObjectDownload
-import net.kotlinx.aws.s3.listFiles
+import net.kotlinx.aws.s3.listObjects
 import net.kotlinx.aws.s3.s3
 import net.kotlinx.aws.ssm.find
 import net.kotlinx.aws.ssm.ssm
@@ -67,7 +67,7 @@ class LazyLoadFileProperty(val inputFile: File) {
                 val input = S3Data.parse(info)
                 runBlocking {
                     if (input.isDirectory) {
-                        val s3Files = aws.s3.listFiles(input.bucket, input.key)
+                        val s3Files = aws.s3.listObjects(input.bucket, input.key)
                         s3Files.forEach { s3File ->
                             val eachFile = delegateFile.slash(s3File.fileName)
                             if (eachFile.exists()) return@forEach

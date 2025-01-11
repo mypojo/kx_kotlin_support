@@ -149,7 +149,7 @@ suspend inline fun S3Client.objectSize(data: S3Data) {
  * 기본 설정으로 메타데이터는 동일하게 복제됨
  *  */
 suspend fun S3Client.moveDir(fromDir: S3Data, toDir: S3Data) {
-    val fromDatas = this.listFiles(fromDir.bucket, fromDir.key)
+    val fromDatas = this.listObjects(fromDir.bucket, fromDir.key)
     for (fromData in fromDatas) {
         this.copyObject {
             this.copySource = fromData.toPath()
@@ -192,15 +192,18 @@ suspend inline fun S3Client.listDirs(bucket: String, prefix: String): List<S3Dat
  * 최대 1천개 가져오니 주의!!
  * 페이징은 별도로 구현할것
  *  */
-suspend inline fun S3Client.listFiles(bucket: String, prefix: String): List<S3Data> = this.listObjectsV2 {
+suspend inline fun S3Client.listObjects(bucket: String, prefix: String): List<S3Data> = this.listObjectsV2 {
     this.bucket = bucket
     this.prefix = prefix
 }.contents?.map { S3Data(bucket, it.key!!) } ?: emptyList()
 
+/** 간단 메소드 */
+suspend inline fun S3Client.listObjects(s3data: S3Data): List<S3Data> = this.listObjects(s3data.bucket, s3data.key)
+
 //==================================================== 삭제 ======================================================
 
 /** 자주 사용하는거라 등록함 */
-suspend inline fun S3Client.deleteDir(bucket: String, prefix: String): Int = this.listFiles(bucket, prefix).also { deleteAll(it) }.size
+suspend inline fun S3Client.deleteDir(bucket: String, prefix: String): Int = this.listObjects(bucket, prefix).also { deleteAll(it) }.size
 
 /**  버킷 단위로 벌크 삭제한다. 대부분 페이징해서 호출할테니 별도의 사이즈 제한은 없음  */
 inline fun S3Client.deleteAll(datas: Collection<S3Data>) {

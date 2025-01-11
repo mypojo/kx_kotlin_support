@@ -19,15 +19,15 @@ suspend fun CodeCommitClient.getCommit(repositoryName: String, commitId: String)
     }.commit!!
 }
 
-/** 특정 브랜치의 가장최근 커밋 */
+/**
+ * 특정 브랜치의 가장최근 커밋
+ * 참고!!! 특정 파일의 커밋 리스트는 API에서 제공하지만, 특정 브랜치의 커밋 리스트는 API로 제공하지 않음.. (이유 모르겠다.. git 명령어로 할수는 있음)
+ *  => 이때문에 CICD 배포완료시 최근 X개의 커밋을 서머리해서 보여주는 기능을 만들 수 없음
+ *  */
 suspend fun CodeCommitClient.getBranchCommit(repositoryName: String, branchName: String): Commit {
     val branch = this.getBranch {
         this.repositoryName = repositoryName
         this.branchName = branchName
     }
-    val resp = this.getCommit {
-        this.repositoryName = repositoryName
-        this.commitId = branch.branch!!.commitId!!
-    }
-    return resp.commit!!
+    return getCommit(repositoryName, branch.branch!!.commitId!!)
 }

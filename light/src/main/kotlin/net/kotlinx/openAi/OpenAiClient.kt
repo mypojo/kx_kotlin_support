@@ -1,7 +1,6 @@
 package net.kotlinx.openAi
 
 import com.aallam.openai.api.BetaOpenAI
-import com.aallam.openai.api.assistant.AssistantId
 import com.aallam.openai.api.chat.*
 import com.aallam.openai.api.http.Timeout
 import com.aallam.openai.api.logging.Logger
@@ -10,11 +9,11 @@ import com.aallam.openai.client.LoggingConfig
 import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
 import com.aallam.openai.client.OpenAIHost
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import io.ktor.util.*
 import mu.KotlinLogging
 import net.kotlinx.ai.AiModel
 import net.kotlinx.ai.AiTextClient
+import net.kotlinx.ai.AiTextInput.AiTextInputFile
 import net.kotlinx.ai.AiTextResult
 import net.kotlinx.core.Kdsl
 import net.kotlinx.json.gson.ResultGsonData
@@ -77,8 +76,11 @@ class OpenAiClient : AiTextClient {
             ),
             logging = LoggingConfig(
                 logger = Logger.Empty //기본 로거 사용하면, println 으로 로그가 다수 찍힌다. 이것을 방지
-            )
-
+            ),
+//            httpClientConfig = {
+//                expectSuccess = false
+//                this.useDefaultTransformers = false
+//            },
         )
         OpenAI(config)
     }
@@ -116,32 +118,36 @@ class OpenAiClient : AiTextClient {
      *  */
     var systemMessage: Any? = null
 
-    private val mutex = Mutex()
-
-    /** 단순 채팅 질문 */
-    override suspend fun chat(msg: String): AiTextResult {
+    override suspend fun invokeModel(input: List<Any>): AiTextResult {
+        check(input.isNotEmpty())
 
         val start = System.currentTimeMillis()
 
-        mutex.withLock {
-            if (systemMessage == null && assistantId != null) {
-                log.debug { " -> 시스템 메세지가 없음 -> assistantId ${assistantId} 를 시스템 메시지로 가져옴" }
-                systemMessage = ai.assistant(AssistantId(assistantId!!))!!.instructions!!
+        val systemPrompt = systemMessage?.let { ChatMessage(role = ChatRole.System, content = it.toString()) }
+
+        val userMessages = convertToUserMessage(input)
+
+        val allMessages = listOfNotNull(systemPrompt, userMessages)
+        if (log.isTraceEnabled) {
+            allMessages.forEach {
+                log.trace { " -> ${it}" }
             }
         }
 
-        val systemPrompt = systemMessage?.let { listOf(ChatMessage(role = ChatRole.System, content = it.toString())) } ?: emptyList()
-
         val reqs = ChatCompletionRequest(
             model = ModelId(model.id),
-            messages = systemPrompt + ChatMessage(role = ChatRole.User, content = msg),
+            messages = allMessages,
             responseFormat = responseFormat,
             temperature = temperature
             //maxTokens = 2000,  //PX는 이거 넣으면 고장남..
         )
-        log.trace { " => 시스템 멘트 : ${systemPrompt.joinToString { it.content!!.replace("\n", "/") }}" }
 
-        val completion = ai.chatCompletion(reqs)
+        val completion = try {
+            ai.chatCompletion(reqs)
+        } catch (e: Exception) {
+            return AiTextResult.fail(model, input, e)
+        }
+
         val usage = completion.usage!!
         log.trace {
             val usageText = "${usage.promptTokens} + ${usage.completionTokens} = ${usage.totalTokens}"
@@ -149,6 +155,7 @@ class OpenAiClient : AiTextClient {
         }
 
         check(completion.choices.size == 1) { "system용 결과는 1개로만 가정" }
+
         val fitstContent = completion.choices.first().message.messageContent!!
         val gson = when (fitstContent) {
             is TextContent -> {
@@ -168,7 +175,32 @@ class OpenAiClient : AiTextClient {
 
         val duration = System.currentTimeMillis() - start
         val result = if (gson.isObject) ResultGsonData(true, gson) else ResultGsonData(false, gson)
-        return AiTextResult(model, result, usage.promptTokens!!, usage.completionTokens!!, duration)
+        return AiTextResult(model, input, result, usage.promptTokens!!, usage.completionTokens!!, duration)
+    }
+
+    private fun convertToUserMessage(messages: List<Any>): ChatMessage {
+
+        if (messages.size == 1) {
+            val msg = messages.first()
+            if (msg is CharSequence) {
+                return ChatMessage(role = ChatRole.User, content = msg.toString())
+            }
+        }
+
+        return ChatMessage(
+            role = ChatRole.User, messageContent = ListContent(
+                messages.map { msg ->
+                    when (msg) {
+                        is AiTextInputFile -> {
+                            val url = msg.url ?: throw IllegalStateException("OpenAi Input url Not Found")
+                            ImagePart(url)
+                        }
+
+                        else -> TextPart(msg.toString())
+                    }
+                }
+            )
+        )
     }
 
     /** 스래드로 작업 */

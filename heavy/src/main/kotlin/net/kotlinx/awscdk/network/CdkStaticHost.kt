@@ -5,7 +5,9 @@ import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.RemovalPolicy
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.certificatemanager.Certificate
+import software.amazon.awscdk.services.cloudfront.DistributionProps
 import software.amazon.awscdk.services.route53.IHostedZone
+import software.amazon.awscdk.services.s3.BucketProps
 
 
 /**
@@ -51,22 +53,32 @@ class CdkStaticHost {
      *  */
     var hostS3Name: String? = null
 
+    var s3Build: BucketProps.Builder.() -> Unit = {}
+
+    var cloudBuild: DistributionProps.Builder.() -> Unit = {}
+
+    //==================================================== 결과 ======================================================
+
+    lateinit var origon: CdkS3
+
+    lateinit var cloudFront: CdkCloudFront
+
     fun create(stack: Stack) {
         val s3Name = hostS3Name ?: hostDomain
-        val origonBucket = CdkS3(s3Name).apply {
+        origon = CdkS3(s3Name).apply {
             domain = true
             removalPolicy = RemovalPolicy.DESTROY
             publicReadAccess = true
             publicAll = true
             websiteIndexDocument = this@CdkStaticHost.websiteIndexDocument
-            create(stack)
+            create(stack, s3Build)
         }
 
-        val cloudFront = CdkCloudFront {
+        cloudFront = CdkCloudFront {
             domain = hostDomain
-            origin = CdkCloudFront.forWebsite(origonBucket.iBucket)
+            origin = CdkCloudFront.forWebsite(origon.iBucket)
             iCertificate = Certificate.fromCertificateArn(stack, "hosting-${hostDomain}", certArn)
-            create(stack)
+            create(stack, cloudBuild)
         }
         Route53Util.arecord(stack, hostedZone, hostDomain, cloudFront.distribution.toRecordTarget())
 

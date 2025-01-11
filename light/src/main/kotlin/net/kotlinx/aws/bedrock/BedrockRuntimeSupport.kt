@@ -17,13 +17,13 @@ val AwsClient.brr: BedrockRuntimeClient
 /**
  * agent 아닌, 일반 모델 실행
  * */
-suspend fun BedrockRuntimeClient.invokeModel(model: AiModel, body: Any): AiTextResult {
+suspend fun BedrockRuntimeClient.invokeModel(model: AiModel, input: Any): AiTextResult {
     val start = System.currentTimeMillis()
     val resp = this.invokeModel {
         this.modelId = model.id
         this.contentType = "application/json" //json으로 통일
         this.accept = "application/json" //json으로 통일
-        this.body = body.toString().toByteArray()
+        this.body = input.toString().toByteArray()
     }
 
     val body = GsonData.parse(resp.body.toString(Charsets.UTF_8))
@@ -35,9 +35,9 @@ suspend fun BedrockRuntimeClient.invokeModel(model: AiModel, body: Any): AiTextR
     return try {
         check(content.size == 1)
         val result = content[0]["text"].str?.let { ResultGsonData(true, it.toGsonData()) } ?: ResultGsonData(false, content)
-        AiTextResult(model, result, inputTokens, outputTokens, duration)
+        AiTextResult(model,input, result, inputTokens, outputTokens, duration)
     } catch (e: Exception) {
         val result = ResultGsonData(false, content)
-        AiTextResult(model, result, inputTokens, outputTokens, duration)
+        AiTextResult(model,input, result, inputTokens, outputTokens, duration)
     }
 }

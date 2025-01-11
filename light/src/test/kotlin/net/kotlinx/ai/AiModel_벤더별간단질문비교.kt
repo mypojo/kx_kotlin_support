@@ -15,7 +15,7 @@ class AiModel_벤더별간단질문비교 : BeSpecLight() {
 
         Given("GPT") {
 
-            val set = AiModelSet {
+            val set = AiModelLocalSet {
                 aws = aws97
                 systemPrompt = obj {
                     "codeLanguage" to "kotlin"
@@ -31,13 +31,20 @@ class AiModel_벤더별간단질문비교 : BeSpecLight() {
                         ]
                     }
                 }
+//                clients = listOf(
+//                    gpt4O,
+//                    gpt4OMini,
+//                    perplexityLarge,
+//                    perplexitySmall,
+//                    claudeSonet,
+//                    claudeHaiku,
+//                )
+                /** 벤더별 기능작동 테스트 */
                 clients = listOf(
-                    gpt4O,
                     gpt4OMini,
-                    perplexityLarge,
                     perplexitySmall,
-                    claudeSonet,
                     claudeHaiku,
+                    deepseek,
                 )
             }
 

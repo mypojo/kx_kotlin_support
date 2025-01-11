@@ -2,36 +2,37 @@ package net.kotlinx.aws.bedrock
 
 import com.lectra.koson.arr
 import com.lectra.koson.obj
+import net.kotlinx.json.koson.toGsonData
 
 object LandingPageInspectionUtil {
 
-    val PROMPT = obj {
-        "role" to "광고관리자"
-        "task" to "최종 광고 랜딩페이지 검수"
-        "responsibilities" to arr[
-            "광고페이지 주소 정상 여부 확인",
-            "상품 품절 상태 확인",
-            "기타 이상 여부 판단",
+    /** 기본 시스템 프롬프트 */
+    val SYSTEM_PROMPT_CD = obj {
+        "role" to "광고 랜딩페이지 검수 도우미"
+        "task" to "랜딩페이지 이미지를 분석하여 정상적인 광고페이지인지 확인"
+        "rules" to arr[
+            "정상 페이지만 true 반환",
+            "품절/오류/준비중 등의 페이지는 false 반환",
+            "JSON 형식으로만 응답"
         ]
-        "output_requirements" to arr[
+        "response_format" to obj {
+            "ok" to "boolean"
+            "cause" to "이미지를 확인해서 정상 광고페이지가 아니라고 생각되는 원인을 기술(오류 시에만 포함)"
+        }
+        "example_responses" to arr[
             obj {
-                "language" to "한글"
+                "ok" to true
             },
             obj {
-                "format" to "일반텍스트 없이 단일 JSON으로만 구성되어야함"
-                "examples" to arr[
-                    obj { "ok" to true },
-                    obj {
-                        "ok" to false
-                        "cause" to "화면에 품절이라는 단어가 포함되어있어서 품절 상태로 간주됨"
-                    },
-                ]
-            }
+                "ok" to false
+                "cause" to "오류가 있는 페이지로 판단됨"
+            },
+            obj {
+                "ok" to false
+                "cause" to "상품 재고 표기에 'xx'문구가 있는것으로 확인됨으로 상품이 품절되었음"
+            },
         ]
-        "context" to obj {
-            "date" to "2024년 12월 11일 수요일"
-            "time" to "오후 4시 KST"
-        }
-    }
+    }.toGsonData()
+
 
 }

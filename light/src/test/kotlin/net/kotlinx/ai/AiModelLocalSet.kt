@@ -5,19 +5,20 @@ import com.aallam.openai.api.chat.ChatResponseFormat
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.bedrock.BedrockModels
 import net.kotlinx.aws.bedrock.BedrockRuntime
+import net.kotlinx.aws.s3.S3Data
+import net.kotlinx.aws.ssm.ssmStore
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.core.Kdsl
-import net.kotlinx.core.ProtocolPrefix
 import net.kotlinx.openAi.OpenAiClient
 import net.kotlinx.openAi.OpenAiModels
 import net.kotlinx.reflect.name
 
 /** 각종 모델 테스트용 */
 @OptIn(BetaOpenAI::class)
-class AiModelSet {
+class AiModelLocalSet {
 
     @Kdsl
-    constructor(block: AiModelSet.() -> Unit = {}) {
+    constructor(block: AiModelLocalSet.() -> Unit = {}) {
         apply(block)
     }
     //==================================================== 설정 ======================================================
@@ -44,12 +45,13 @@ class AiModelSet {
         }.coroutineExecute(coroutineLimit)
     }
 
+    val bedrockRoot by lazy { S3Data("${aws.awsConfig.profileName}-work-dev", "bedrock") }
 
-    //==================================================== 내장 모델들 ======================================================
+    //==================================================== 오픈 API ======================================================
 
     val gpt4O by lazy {
         OpenAiClient {
-            apiKey = KEY_GPT
+            apiKey = aws.ssmStore[KEY_GPT]
             model = OpenAiModels.Gpt.GPT_4O
             systemMessage = systemPrompt!!.toString()
         }
@@ -57,7 +59,7 @@ class AiModelSet {
 
     val gpt4OMini by lazy {
         OpenAiClient {
-            apiKey = KEY_GPT
+            apiKey = aws.ssmStore[KEY_GPT]
             model = OpenAiModels.Gpt.GPT_4O_MINI
             systemMessage = systemPrompt!!.toString()
         }
@@ -65,7 +67,7 @@ class AiModelSet {
 
     val perplexitySmall by lazy {
         OpenAiClient {
-            apiKey = KEY_PERPLEXITY
+            apiKey = aws.ssmStore[KEY_PERPLEXITY]
             host = OpenAiModels.Perplexity.HOST
             model = OpenAiModels.Perplexity.SONAR_SMALL
             systemMessage = systemPrompt!!  //아직 어시스턴스 없이 채팅만 지원함. 이거 해도 안되는거 많음..
@@ -75,7 +77,7 @@ class AiModelSet {
 
     val perplexityLarge by lazy {
         OpenAiClient {
-            apiKey = KEY_PERPLEXITY
+            apiKey = aws.ssmStore[KEY_PERPLEXITY]
             host = OpenAiModels.Perplexity.HOST
             model = OpenAiModels.Perplexity.SONAR_LARGE
             systemMessage = systemPrompt!!  //아직 어시스턴스 없이 채팅만 지원함. 이거 해도 안되는거 많음..
@@ -83,11 +85,24 @@ class AiModelSet {
         }
     }
 
+    val deepseek by lazy {
+        OpenAiClient {
+            apiKey = aws.ssmStore[KEY_DEEPSEEK]
+            host = OpenAiModels.Deepseek.HOST
+            model = OpenAiModels.Deepseek.CHAT
+            //responseFormat = ChatResponseFormat.Text  // 텍스트는 잘되는에 이미지는 422 Unprocessable Entity 오류남
+        }
+    }
+
+    //==================================================== 아마존 배드락 ======================================================
+
     val claudeSonet by lazy {
         BedrockRuntime {
             client = aws
             model = BedrockModels.OnDemand.CLAUDE_35_SONNET
             system = systemPrompt!!
+            batchWorkPath = bedrockRoot
+            batchRole = "app-admin"
         }
     }
 
@@ -96,13 +111,16 @@ class AiModelSet {
             client = aws
             model = BedrockModels.OnDemand.CLAUDE_3_HAIKU
             system = systemPrompt!!
+            batchWorkPath = bedrockRoot
+            batchRole = "app-admin"
         }
     }
 
     companion object {
-        private val KEY_GPT = "${ProtocolPrefix.SSM}/api/${OpenAiModels.Gpt::class.name()}/demo/key"
-        private val KEY_PERPLEXITY = "${ProtocolPrefix.SSM}/api/${OpenAiModels.Perplexity::class.name()}/demo/key"
 
+        private val KEY_GPT = "/api/${OpenAiModels.Gpt::class.name()}/service/key"
+        private val KEY_PERPLEXITY = "/api/${OpenAiModels.Perplexity::class.name()}/service/key"
+        private val KEY_DEEPSEEK = "/api/${OpenAiModels.Deepseek::class.name()}/service/key"
 
     }
 

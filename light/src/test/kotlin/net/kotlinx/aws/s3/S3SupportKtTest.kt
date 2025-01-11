@@ -33,7 +33,7 @@ internal class S3SupportKtTest : BeSpecHeavy() {
             }
 
             Then("페이징읽기") {
-                val files = aws.s3.listFiles("$profile-work-dev", "code/")
+                val files = aws.s3.listObjects("$profile-work-dev", "code/")
                 files.size shouldBeGreaterThan 0
                 files.print()
             }

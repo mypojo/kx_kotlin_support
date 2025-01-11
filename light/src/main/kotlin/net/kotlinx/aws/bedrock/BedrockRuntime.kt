@@ -11,6 +11,7 @@ import io.ktor.util.*
 import mu.KotlinLogging
 import net.kotlinx.ai.AiModel
 import net.kotlinx.ai.AiTextClient
+import net.kotlinx.ai.AiTextInput.AiTextInputFile
 import net.kotlinx.ai.AiTextResult
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceTypeUtil
@@ -24,7 +25,6 @@ import net.kotlinx.file.slash
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.koson.toKsonArray
 import net.kotlinx.time.TimeFormat
-import java.io.File
 import java.util.*
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -78,15 +78,13 @@ class BedrockRuntime : AiTextClient {
     lateinit var batchRole: String
 
     /** 입력 S3 경로 */
-    lateinit var workPath: S3Data
-
-    override suspend fun chat(msg: String): AiTextResult = invokeModel(listOf(msg))
+    lateinit var batchWorkPath: S3Data
 
     /**
      * 단일 요청 버전
      * https://docs.aws.amazon.com/bedrock/latest/userguide/inference-api.html
      * */
-    suspend fun invokeModel(messages: List<Any>): AiTextResult {
+    override suspend fun invokeModel(messages: List<Any>): AiTextResult {
         val data = createJson(messages)
         return client.brr.invokeModel(model, data)
     }
@@ -128,7 +126,7 @@ class BedrockRuntime : AiTextClient {
 
         val jobDate = TimeFormat.YMD.get()
         val jobId = UUID.randomUUID().toString()
-        val currentDir = workPath.slash(jobDate).slash(jobName).slash(jobId)
+        val currentDir = batchWorkPath.slash(jobDate).slash(jobName).slash(jobId)
 
         val inputJsonl = currentDir.slash(INPUT_NAME).apply {
             //jsonl 파일 생성
@@ -199,13 +197,14 @@ class BedrockRuntime : AiTextClient {
 
         private fun convert(any: Any): KosonType {
             return when (any) {
-                is File -> {
+                is AiTextInputFile -> {
+                    val file = any.file ?: throw IllegalStateException("Bedrock Input File Not Found")
                     obj {
                         "type" to "image"
                         "source" to obj {
                             "type" to "base64" //지금은 base64 만 지원하는듯. s3 안됨
-                            "media_type" to "image/${any.extension.lowercase()}"
-                            "data" to any.readBytes().encodeBase64()
+                            "media_type" to "image/${file.extension.lowercase()}"
+                            "data" to file.readBytes().encodeBase64()
                         }
                     }
                 }

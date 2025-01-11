@@ -14,7 +14,7 @@ import net.kotlinx.kotest.modules.BeSpecHeavy
 
 class SesSupportKtTest : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile99 }
+    private val profileName by lazy { findProfile97 }
     private val aws by lazy { koin<AwsClient>(profileName) }
 
     init {
@@ -22,7 +22,7 @@ class SesSupportKtTest : BeSpecHeavy() {
 
         Given("ses") {
 
-            xThen("이메일 전송") {
+            Then("이메일 전송") {
 
                 log.warn { "이메일이 실제 발송됩니다.!!" }
 
@@ -49,14 +49,12 @@ class SesSupportKtTest : BeSpecHeavy() {
                 val emailRequest = SendEmailRequest {
                     destination = Destination {
                         toAddresses = listOf(
-                            "mypojo@11h11m.com",
-                            "my.pojo@gmail.com",
+                            "seunghan.shin@nhnad.com",
                         )
                     }
                     message = emailBody
-                    source = "meta@11h11m.com"
+                    source = "my.pojo@gmail.com"
                 }
-
 
                 aws.ses.sendEmail(emailRequest)
             }

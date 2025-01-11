@@ -42,14 +42,23 @@ fun String.toCamelFromSnake(): String = RegexSet.SNAKE.replace(this) { it.value.
 fun String.abbr(size: Int, suff: String = ".."): String = if (this.length <= size) this else "${this.substring(0, kotlin.math.min(this.length, size))}$suff"
 
 
+/** 전체가 숫자인지? 간단 테스트 메소드 */
+fun String.isNumeric(): Boolean = RegexSet.NUMERIC.matches(this)
+
+//==================================================== 인코딩 ======================================================
+
 /** URL 인코딩 */
 fun String.encodeUrl(): String = URLEncoder.encode(this, "UTF-8")
 
 /** URL 디코딩 */
 fun String.decodeUrl(): String = URLDecoder.decode(this, "UTF-8")
 
-/** 전체가 숫자인지? 간단 테스트 메소드 */
-fun String.isNumeric(): Boolean = RegexSet.NUMERIC.matches(this)
+/** Base64 인코딩 */
+fun String.encodeBase64(): String = Base64.getEncoder().encodeToString(this.toByteArray())
+
+/** Base64 디코딩 */
+fun String.decodeBase64(): String = String(Base64.getDecoder().decode(this))
+
 
 //==================================================== 프리미티브 변환 ======================================================
 

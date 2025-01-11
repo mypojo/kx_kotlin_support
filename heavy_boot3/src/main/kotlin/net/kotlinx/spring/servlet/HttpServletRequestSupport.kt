@@ -22,9 +22,18 @@ val HttpServletRequest.forwardedIp: String
 val HttpServletRequest.cookieMap: Map<String, String>
     get() = this.cookies?.let { cookies.associate { it.name to it.value } } ?: emptyMap()
 
+/** 헤더 가져옴 */
+val HttpServletRequest.headerMap: Map<String, String>
+    get() = this.headerNames?.toList()?.associate { it to this.getHeader(it) } ?: emptyMap()
+
 /** HTML 요청인지 여부. ajax 여부를 판단할때 사용된다   */
 val HttpServletRequest.isTextHtmlReq: Boolean
     get() = this.getHeader("Accept")?.contains("text/html") == true
+
+
+/** 인증 문구가 없으면 null 리턴함 */
+val HttpServletRequest.authorization: Pair<String, String>?
+    get() = HttpAuthUtil.validate(getHeader("authorization"))
 
 /**
  * 스키마가 달린 패스를 구한다.

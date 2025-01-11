@@ -1,5 +1,6 @@
 package net.kotlinx.csv
 
+import com.github.doyaaaaaken.kotlincsv.client.CsvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import net.kotlinx.string.CharSets
@@ -43,11 +44,10 @@ fun File.readCsvLines(charset: Charset = CharSets.UTF_8, callback: (List<String>
  * @param callback 헤더와 청크 단위의 데이터를 처리하는 콜백 함수
  */
 fun File.readCsvLinesWithHeaderAndChunk(
-    charset: Charset = Charsets.UTF_8,
+    reader: CsvReader = csvReader(),
     chunkSize: Int = 100,
     callback: (header: List<String>, rows: List<List<String>>) -> Unit
 ) {
-    val reader = csvReader { this.charset = charset.toString() }
     reader.open(this) {
         val iterator = readAllAsSequence().iterator()
 

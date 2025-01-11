@@ -18,6 +18,7 @@ object IamPolicyAdminUtil {
         "athena:*",
         "sqs:*",
         "sns:*",
+        "ses:*",
         "s3:*",
         "kinesis:*",
         "dynamodb:*",

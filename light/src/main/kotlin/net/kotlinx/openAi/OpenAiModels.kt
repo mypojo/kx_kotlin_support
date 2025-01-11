@@ -15,6 +15,26 @@ import net.kotlinx.ai.AiModel
 object OpenAiModels {
 
     /**
+     * 중국 딥시크
+     * https://api-docs.deepseek.com/quick_start/pricing/
+     *
+     * 아직 이미지 지원 안함
+     *  */
+    object Deepseek {
+
+        val HOST = OpenAIHost("https://api.deepseek.com")
+
+        /** 애네 이거 원툴임 */
+        val CHAT: AiModel = AiModel {
+            id = "deepseek-chat"
+            name = "딥시크"
+            costOfInputToken = 0.14 / 1000
+            costOfOutputToken = 0.28 / 1000
+        }
+
+    }
+
+    /**
      * https://platform.openai.com/account/limits
      * 2024년 2월 기준
      * #1. batch는 채팅만됨
