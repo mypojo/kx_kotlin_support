@@ -42,6 +42,8 @@ fun File.readCsvLines(charset: Charset = CharSets.UTF_8, callback: (List<String>
  * @param charset 파일의 문자 인코딩 (기본값: UTF-8)
  * @param chunkSize 한 번에 처리할 라인의 수
  * @param callback 헤더와 청크 단위의 데이터를 처리하는 콜백 함수
+ *
+ * 간단한거에만 쓸것!.
  */
 fun File.readCsvLinesWithHeaderAndChunk(
     reader: CsvReader = csvReader(),

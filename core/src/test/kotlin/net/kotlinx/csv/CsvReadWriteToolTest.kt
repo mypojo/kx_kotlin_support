@@ -52,7 +52,7 @@ class CsvReadWriteToolTest : BeSpecLight() {
                 CsvReadWriteTool {
                     readerFile = file1
                     writerFile = file2
-                    writerCharset(CharSets.MS949)
+                    writerFactory = { CsvUtil.ms949Writer() }
                 }
             }
 
@@ -60,7 +60,7 @@ class CsvReadWriteToolTest : BeSpecLight() {
                 CsvReadWriteTool {
                     readerFile = file1
                     writerFile = file3
-                    writerCharset(CharSets.MS949)
+                    writerFactory = { CsvUtil.ms949Writer() }
                     writerGzip = true
                 }
             }
@@ -76,7 +76,7 @@ class CsvReadWriteToolTest : BeSpecLight() {
                     CsvReadWriteTool {
                         readerInputStream = it.body?.toInputStream()!!
                         writerFile = file4
-                        writerCharset(CharSets.MS949)
+                        writerFactory = { CsvUtil.ms949Writer() }
                         writerGzip = true
                     }
                 }

@@ -33,7 +33,10 @@ suspend fun BatchStepExecutor.startExecutionBatchTask(sk: String, batchTaskIds: 
     )
 }
 
-/** 기존 버전의 간단버전 */
+/**
+ * 기존 버전의 간단버전
+ * job 베이스로 시작 & 각종 상태처리 추가
+ *  */
 suspend fun BatchStepExecutor.startExecutionBatchTask(job: Job, batchTaskIds: List<String>, datas: List<List<String>>, block: BatchStepOption.() -> Unit = {}) {
     job.jobStatus = JobStatus.PROCESSING
     val param = this.startExecutionBatchTask(

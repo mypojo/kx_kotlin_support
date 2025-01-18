@@ -7,6 +7,11 @@ import net.kotlinx.file.slash
 import java.io.File
 import java.util.*
 
+
+/**
+ * MS949로 다운로드 설정
+ * AthenaMs949Support.kt 참고
+ *  */
 class AthenaMs949 {
 
     @Kdsl

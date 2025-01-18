@@ -5,6 +5,7 @@ import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.common.eventbus.SubscriberExceptionHandler
 import mu.KotlinLogging
+import net.kotlinx.api.ecos.EcosClient
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.file.slash
 import net.kotlinx.google.GoogleSecret
@@ -102,6 +103,11 @@ object BasicModule : KoinModule {
             )
         }
 
+        /** 한국은행 API */
+        single {
+            val apikey by lazyLoadStringSsm("/api/ecos/key")
+            EcosClient(apikey)
+        }
         single {
             val secretValue by lazyLoadStringSsm("/notion/key")
             NotionDatabaseClient(secretValue)

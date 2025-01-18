@@ -27,4 +27,14 @@ object AthenaUtil {
             }
         }
     }
+
+    /** 간단한 스키마 정보 리턴 */
+    fun schemaColumn(dbName: String, tableName: String): String {
+        return """
+                SELECT ordinal_position,column_name, data_type
+                FROM information_schema.columns 
+                WHERE table_schema = '${dbName}' AND table_name = '${tableName}'
+                order by ordinal_position
+            """
+    }
 }

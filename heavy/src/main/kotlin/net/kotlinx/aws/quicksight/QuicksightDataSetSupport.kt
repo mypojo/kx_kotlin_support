@@ -91,6 +91,15 @@ suspend fun QuickSightClient.createDataSet(dataSet: QuicksightDataSetConfig): Cr
     name = dataSet.dataSetName
     importMode = dataSet.importMode
 
+    dataSet.rowLevelPermissionDataSet?.let { dataSetName ->
+        rowLevelPermissionDataSet = RowLevelPermissionDataSet {
+            permissionPolicy = RowLevelPermissionPolicy.GrantAccess //기본으로 이거
+            status = Status.Enabled
+            this.formatVersion = RowLevelPermissionFormatVersion.Version1  //버전2는 뭔지 모르겠음..
+            this.arn = "arn:aws:quicksight:${awsConfig.region}:${awsConfig.awsId}:dataset/${dataSetName}"
+        }
+    }
+
     when (dataSet.type) {
 
         QuicksightDataSetConfigType.QUERY -> physicalTableMap = mapOf(

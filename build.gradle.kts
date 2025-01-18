@@ -147,6 +147,7 @@ publishing {
                 username = providers["${host.first}.maven.username"]
                 password = providers["${host.first}.maven.password"]
             }
+            isAllowInsecureProtocol = true
         }
     }
 }

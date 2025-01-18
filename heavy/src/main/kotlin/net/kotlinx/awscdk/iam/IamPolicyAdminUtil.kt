@@ -37,6 +37,7 @@ object IamPolicyAdminUtil {
         "sts:*",
         "ecr:*",
         "firehose:*",
+        "cloudfront:*", //클라우드프론트 CICD 등 배포할때 사용
         "states:*", //sfn.. 애네 이름에 일관성이 없음.
         "events:*", //이벤트브릿지
         "scheduler:*", //스케쥴러

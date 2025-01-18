@@ -171,6 +171,19 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
      * */
     inline fun <reified T> fromJson(gson: Gson = GsonSet.GSON): T = gson.fromJson(delegate, T::class.java)
 
+
+    //==================================================== 특수 ======================================================
+
+    /**
+     * 스래드 세이프 하지 않음 주의!!
+     *  */
+    fun addAndGet(key: String, num: Long = 1L) {
+        check(isObject)
+        val value = get(key).long ?: 0L
+        put(key, value + num)
+    }
+
+
     companion object {
 
         private val log = KotlinLogging.logger {}

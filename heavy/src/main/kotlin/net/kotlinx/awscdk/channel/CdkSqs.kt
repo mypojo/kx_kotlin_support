@@ -9,7 +9,10 @@ import software.amazon.awscdk.services.sqs.QueueProps
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
 
-/** enum */
+/**
+ * 기본 DLQ 용도라 1개는 반드시 사용됨
+ * ex) 람다 타임아웃시 DLQ에 입력됨
+ * */
 class CdkSqs(val name: String) : CdkEnum {
 
     override val logicalName: String

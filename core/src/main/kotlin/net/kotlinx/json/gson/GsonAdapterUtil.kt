@@ -1,11 +1,17 @@
 package net.kotlinx.json.gson
 
 import com.google.gson.*
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
+import net.kotlinx.regex.RegexSet
+import net.kotlinx.string.retainFrom
 import net.kotlinx.time.TimeFormat
 import net.kotlinx.time.UtcConverter
+import java.io.IOException
 import java.lang.reflect.Type
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.util.*
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.Throws
 
@@ -119,104 +125,58 @@ object GsonAdapterUtil {
     }
 
 //    //==================================================== 깡 어뎁터 샘플. 컴파일 시점에 정의되어있어야 한다. (JsonAdapter 용) ======================================================
-//    /**
-//     * 숫자만 남기고 다 제거 ex) 날짜 수집
-//     * ex) @JsonAdapter(GsonSerializerUtil.NumericStringAdapter.class)
-//     */
-//    class StringNumericOnlyAdapter : TypeAdapter<String>() {
-//        @Throws(IOException::class)
-//        override fun read(reader: JsonReader): String {
-//            val string = reader.nextString()
-//            return RegEx.NUMERIC.retainFrom(string)
-//        }
-//
-//        @Throws(IOException::class)
-//        override fun write(writer: JsonWriter, value: String) {
-//            writer.value(value)
-//        }
-//    }
-//
-//    /**
-//     * json 숫자타입의 크기가 Long 보다 작아서 최대치의 숫자를 json으로 넘기면 자바스크립트에서 짤림.
-//     * 이때문에  문자로 치환해야할 경우에 사용
-//     */
-//    class NumToStrAdapter : TypeAdapter<Long?>() {
-//        @Throws(IOException::class)
-//        override fun write(writer: JsonWriter, value: Long?) {
-//            writer.value(StringUtil.toString(value))
-//        }
-//
-//        @Throws(IOException::class)
-//        override fun read(`in`: JsonReader): Long? {
-//            return NumberUtil.parseLong(`in`.nextString(), null)
-//        }
-//    }
-//
-//    /** 마스킹 샘플  */
-//    class Mask01Adapter : TypeAdapter<String>() {
-//        @Throws(IOException::class)
-//        override fun read(`in`: JsonReader): String {
-//            val string = `in`.nextString()
-//            return string.trim { it <= ' ' }
-//        }
-//
-//        @Throws(IOException::class)
-//        override fun write(writer: JsonWriter, value: String) {
-//            writer.value("**" + value.substring(2))
-//        }
-//    }
-//
-//    /**
-//     * 트림 시켜서 입력받는다.
-//     */
-//    class StringTrimAdapter : TypeAdapter<String>() {
-//        @Throws(IOException::class)
-//        override fun read(reader: JsonReader): String {
-//            val string = reader.nextString()
-//            return string.trim { it <= ' ' }
-//        }
-//
-//        @Throws(IOException::class)
-//        override fun write(writer: JsonWriter, value: String) {
-//            writer.value(value)
-//        }
-//    }
-//
-//    /**
-//     * 전화번호 입력
-//     */
-//    class StringHpAdapter : TypeAdapter<String>() {
-//        @Throws(IOException::class)
-//        override fun read(reader: JsonReader): String {
-//            var string = reader.nextString().trim { it <= ' ' }
-//            //안드로이드에서 입력되는것을 한국?식으로 바꿔준다.
-//            if (string.startsWith("+82")) {
-//                string = string.replaceFirst("\\+82".toRegex(), "0")
-//            }
-//            //csv 등에서 입력시 숫자형이라 앞에 0이 짤리는 현상을 막아준다.
-//            if (string.startsWith("10")) {
-//                string = "0$string"
-//            }
-//            return RegEx.NUMERIC.retainFrom(string)
-//        }
-//
-//        @Throws(IOException::class)
-//        override fun write(writer: JsonWriter, value: String) {
-//            writer.value(value)
-//        }
-//    }
-//
-//    /** 소문자로 치환 입력  */
-//    class StringToLowerAdapter : TypeAdapter<String>() {
-//        @Throws(IOException::class)
-//        override fun read(reader: JsonReader): String {
-//            val string = reader.nextString()
-//            return string.trim { it <= ' ' }.lowercase(Locale.getDefault())
-//        }
-//
-//        @Throws(IOException::class)
-//        override fun write(writer: JsonWriter, value: String) {
-//            writer.value(value)
-//        }
-//    }
+
+
+    /** 마스킹 샘플  */
+    class Mask01Adapter : TypeAdapter<String>() {
+
+        @Throws(IOException::class)
+        override fun read(`in`: JsonReader): String {
+            val string = `in`.nextString()
+            return string.trim { it <= ' ' }
+        }
+
+        @Throws(IOException::class)
+        override fun write(writer: JsonWriter, value: String) {
+            writer.value("**" + value.substring(2))
+        }
+    }
+
+    /**
+     * 전화번호 입력
+     */
+    class StringHpAdapter : TypeAdapter<String>() {
+        @Throws(IOException::class)
+        override fun read(reader: JsonReader): String {
+            var string = reader.nextString().trim { it <= ' ' }
+            //안드로이드에서 입력되는것을 한국?식으로 바꿔준다.
+            if (string.startsWith("+82")) {
+                string = string.replaceFirst("\\+82".toRegex(), "0")
+            }
+            //csv 등에서 입력시 숫자형이라 앞에 0이 짤리는 현상을 막아준다.
+            if (string.startsWith("10")) {
+                string = "0$string"
+            }
+            return string.retainFrom(RegexSet.NUMERIC)
+        }
+
+        @Throws(IOException::class)
+        override fun write(writer: JsonWriter, value: String) {
+            writer.value(value)
+        }
+    }
+
+    /** 소문자로 치환 입력  */
+    class StringToLowerAdapter : TypeAdapter<String>() {
+        @Throws(IOException::class)
+        override fun read(reader: JsonReader): String {
+            val string = reader.nextString()
+            return string.trim { it <= ' ' }.lowercase(Locale.getDefault())
+        }
+
+        @Throws(IOException::class)
+        override fun write(writer: JsonWriter, value: String) {
+            writer.value(value)
+        }
+    }
 }

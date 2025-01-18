@@ -7,7 +7,7 @@ import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.s3.putObject
 import net.kotlinx.aws.s3.s3
 import net.kotlinx.csv.CsvReadWriteTool
-import net.kotlinx.string.CharSets
+import net.kotlinx.csv.CsvUtil
 
 
 /**
@@ -34,7 +34,7 @@ suspend fun AthenaModule.download(block: AthenaMs949.() -> Unit): AthenaMs949 {
         CsvReadWriteTool {
             readerInputStream = it.body?.toInputStream()!!
             writerFile = ct.queryResultFile
-            writerCharset(CharSets.MS949)
+            writerFactory = { CsvUtil.ms949Writer() }
             writerGzip = ct.gzip
             processor = ct.processor
         }

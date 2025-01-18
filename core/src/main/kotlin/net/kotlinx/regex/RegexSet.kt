@@ -34,6 +34,9 @@ object RegexSet {
     /** 알바벳+숫자 */
     object ALPAH_NUMERIC {
 
+        /** 알파벳 온리  */
+        val ALPA = "[a-zA-Z]*".toRegex()
+
         /** 알파벳+영문+완성형한글  */
         val HAN = "[a-zA-Z\\d가-힣]*".toRegex()
 

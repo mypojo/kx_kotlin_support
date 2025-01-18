@@ -1,5 +1,6 @@
 package net.kotlinx.openApi
 
+import net.kotlinx.api.KoreaeximClient
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight

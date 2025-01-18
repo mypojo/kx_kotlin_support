@@ -1,4 +1,4 @@
-package net.kotlinx.openApi
+package net.kotlinx.api
 
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.koin.Koins.koin
@@ -13,6 +13,7 @@ import java.time.LocalDate
  * 한국 수출입은행 공개 API
  * https://www.koreaexim.go.kr/ir/HPHKIR020M01?apino=2&viewtype=C&searchselect=&searchword=
  * */
+@Deprecated("고장남..한국은행꺼 쓰세요")
 class KoreaeximClient(private val secret: String, private val client: OkHttpClient = koin<OkHttpClient>()) {
 
     companion object {

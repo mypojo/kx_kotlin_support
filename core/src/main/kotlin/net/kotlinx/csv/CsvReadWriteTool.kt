@@ -8,13 +8,16 @@ import net.kotlinx.core.Kdsl
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
-import java.nio.charset.Charset
 import java.util.zip.GZIPOutputStream
 
 
 /**
- * 파일을 즉시! 읽고 다시 써주는 간이도구
- * 람다에서 800mb 가량의 데이터 처리 시도시 에러난다.. 디스크 문제일수도 있음
+ * 대용량 CSV 읽고 쓰는 간단 처리기
+ * 스프링 배치 의존성을 제거하는것이 핵심 (무거움)
+ * 람다에서 800mb 가량의 데이터 처리 시도시 에러남. 디스크 확보 필요
+ *
+ * 간단한데만 사용할것
+ * @see net.kotlinx.csv.chunkTools.CsvReadWriteTools
  *  */
 class CsvReadWriteTool {
 
@@ -35,12 +38,17 @@ class CsvReadWriteTool {
         }
     }
 
+    //==================================================== 처리 설정 ======================================================
+
     /** 라인단위 처리 */
     var processor: (List<String>) -> List<String> = { it }
 
     //==================================================== IN ======================================================
 
-    /** 입력파일 */
+    /** 입력 스트림 */
+    lateinit var readerInputStream: InputStream
+
+    /** 입력 파일 -> 스트림 */
     var readerFile: File? = null
         set(value) {
             readerInputStream = value!!.inputStream()
@@ -50,29 +58,20 @@ class CsvReadWriteTool {
     /**
      * reader factory
      * 인코딩이나 delimiter 등을 조절
+     * @see CsvUtil
      *  */
     var readerFactory: () -> CsvReader = { csvReader() }
-
-    /** 간단 캐릭터셋 변경 */
-    fun readerCharset(value: Charset) {
-        readerFactory = { csvReader { charset = value.name() } }
-    }
-
-    /** 입력파일 스트림 */
-    lateinit var readerInputStream: InputStream
 
     //==================================================== OUT ======================================================
 
     /** 결과파일 */
     lateinit var writerFile: File
 
-    /** writer 팩토리 */
+    /**
+     * writer 팩토리
+     * ex) writerFactory = { CsvUtil.ms949Writer() }
+     *  */
     var writerFactory: () -> CsvWriter = { csvWriter() }
-
-    /** 간단 캐릭터셋 변경 */
-    fun writerCharset(value: Charset) {
-        writerFactory = { csvWriter { charset = value.name() } }
-    }
 
     /** 압축 여부 */
     var writerGzip: Boolean = false

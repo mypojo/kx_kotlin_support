@@ -45,6 +45,7 @@ class 스크린캡쳐 : BeSpecLog() {
                         browser.close()
                     }
                 }
+                println(file)
             }
 
         }

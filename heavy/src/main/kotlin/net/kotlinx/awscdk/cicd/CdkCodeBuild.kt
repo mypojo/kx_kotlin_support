@@ -68,8 +68,11 @@ class CdkCodeBuild : CdkInterface {
     /** 내부에서 테스트 등을 수행할 수 있음으로 프로그램 가동용 역할 넣으면됨 */
     lateinit var role: IRole
 
-    /** VPC */
-    lateinit var vpc: IVpc
+    /** VPC. 이게 없어도 됨 */
+    var vpc: IVpc? = null
+
+    /** 코드빌드용 SG */
+    var securityGroups: List<ISecurityGroup>? = null
 
     /**
      * 동시에 빌드 가능한 숫자.
@@ -83,8 +86,6 @@ class CdkCodeBuild : CdkInterface {
      * */
     var buildImage = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
 
-    /** 코드빌드용 SG */
-    lateinit var securityGroups: List<ISecurityGroup>
 
     /**
      * 컨테이너 환경변수

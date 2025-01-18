@@ -287,6 +287,16 @@ class AthenaTable {
         return dataPath
     }
 
+    //==================================================== 간편기능 ======================================================
+
+    /** 간단하게 insert 구문 제작*/
+    fun insertSql(datas: List<List<String>>): String {
+        return """
+            INSERT INTO ${this.tableNameWithDatabase} ( ${this.schema.keys.joinToString(",")}) 
+            VALUES ${datas.joinToString(",") { data -> data.joinToString(",", "(", ")") { "'${it}'" } }}
+        """.trimIndent()
+    }
+
 
     //==================================================== 간단설정 ======================================================
     fun icebugTable() {

@@ -45,6 +45,9 @@ class QuicksightDataSetConfig {
     /** 기본으로 테이블 */
     var type: QuicksightDataSetConfigType = QuicksightDataSetConfigType.TABLE
 
+    /** 로우 기반 퍼시면에 사용할 데이터세트 */
+    var rowLevelPermissionDataSet: String? = null
+
 
     //==================================================== 옵션 - 테이블 매핑 ======================================================
 
