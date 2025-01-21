@@ -23,6 +23,20 @@ class StringNumberSupportKtTest : BeSpecLog() {
                 "1.23E+8".toBigDecimal2() shouldBe BigDecimal("123000000.00")
                 "9.99E-5".toBigDecimal2() shouldBe BigDecimal("0.0000999")
             }
+
+
+            Then("문자열 숫자넘 패징") {
+
+                "aa.result".padNumIncrease() shouldBe "aa.result-R001"
+                "aa.result-R001".padNumIncrease() shouldBe "aa.result-R002"
+                "aa.result-R009".padNumIncrease() shouldBe "aa.result-R010"
+                "aa.result-R099".padNumIncrease() shouldBe "aa.result-R100"
+
+                "aa.result".padNumIncrease("-A") shouldBe "aa.result-A001"
+                "aa.result-A87".padNumIncrease("-A") shouldBe "aa.result-A088"
+                "aa.result-A87".padNumIncrease("-A", 2) shouldBe "aa.result-A88"
+            }
+
         }
     }
 }

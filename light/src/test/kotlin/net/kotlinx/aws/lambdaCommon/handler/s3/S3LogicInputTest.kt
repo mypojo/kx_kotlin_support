@@ -1,7 +1,7 @@
 package net.kotlinx.aws.lambdaCommon.handler.s3
 
 import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.S3LogicInput
-import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.S3LogicPath
+import net.kotlinx.json.gson.GsonData
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -17,13 +17,11 @@ class S3LogicInputTest : BeSpecLog() {
                 val input = S3LogicInput("defaultLogic", listOf("a", "b", "c"))
                 val json = input.toJson()
                 println(json)
-                val out = S3LogicInput.parseJson(json)
-                println(out)
+                println(GsonData.fromObj(input))
 
-                val path = S3LogicPath("upload/sfnBatchModuleInput/16a23f53-15b1-4b48-a628-7708b5b3daee/00000.txt")
-                println(path.fileName)
-                println(path.pathId)
-                println(path.outputDir)
+                val out = S3LogicInput.parseJson(json)
+                check(out.logicId == input.logicId)
+
             }
         }
     }

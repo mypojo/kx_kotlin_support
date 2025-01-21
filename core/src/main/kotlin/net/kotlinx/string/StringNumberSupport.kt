@@ -2,6 +2,7 @@ package net.kotlinx.string
 
 import net.kotlinx.core.PackageNameSupport
 import net.kotlinx.number.halfUp
+import net.kotlinx.number.padStart
 import net.kotlinx.regex.RegexSet
 import java.math.BigDecimal
 import java.math.MathContext
@@ -38,4 +39,21 @@ fun String.toBigDecimal2(): BigDecimal {
         //변환을 무시한다ㅣ
     }
     return this.retainFrom(RegexSet.NUMERIC_DOT).toBigDecimal()
+}
+
+/**
+ * 문자열 뒤에 특정 숫자 일련번호를 붙인다
+ * ex) aa.result ->  aa.result-r001
+ * ex) aa.result-r001 -> aa.result-r002
+ * */
+fun String.padNumIncrease(prefix: String = "-R", pad: Int = 3, append: Int = 1): String {
+    val format = Regex("""^(.*)${prefix}(\d+)$""")
+    val matchResult = format.find(this)
+    return if (matchResult != null) {
+        val (body, num) = matchResult.destructured
+        val increasedNum = num.toInt() + append
+        "$body${prefix}${increasedNum.toString().padStart(pad, '0')}"
+    } else {
+        "$this${prefix}${1.padStart(pad, '0')}"
+    }
 }

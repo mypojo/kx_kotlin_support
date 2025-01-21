@@ -41,6 +41,9 @@ object AwsNaming {
     /** 결과 등의 본문 */
     const val BODY: String = "body"
 
+    /** 입력값 등 */
+    const val DATAS: String = "datas"
+
     //==================================================== 버킷 관련 ======================================================
     const val BUCKET = "bucket"
 

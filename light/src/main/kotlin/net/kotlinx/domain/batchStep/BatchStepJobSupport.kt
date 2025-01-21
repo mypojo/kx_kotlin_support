@@ -8,8 +8,8 @@ import net.kotlinx.koin.Koins.koin
 /** SFN 콘솔 링크 */
 val Job.batchStepLink: String?
     get() {
-        if (sfnId == null) return null
+        if (lastSfnId == null) return null
         val awsConfig = koin<AwsConfig>()
         val stepConfig = koin<BatchStepConfig>()
-        return awsConfig.sfnConfig.consoleLink(stepConfig.stateMachineName, sfnId!!)
+        return awsConfig.sfnConfig.consoleLink(stepConfig.stateMachineName, lastSfnId!!)
     }

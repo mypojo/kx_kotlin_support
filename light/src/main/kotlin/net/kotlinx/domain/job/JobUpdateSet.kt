@@ -14,11 +14,21 @@ object JobUpdateSet {
         Job::instanceMetadata,
     ).map { it.name }
 
-    /** 중간 상태변경 */
+    /**
+     * SFN 등, 상태가 연속적이여야 할 경우 중간 저장
+     *  -> 이 정보는 callback 등에서 다시 로드함
+     *  */
     val STATUS = setOf(
         Job::jobStatus,
         Job::jobContext,
+    ).map { it.name }
+
+    /**
+     * SFN  정보만 미리 기입 (콜백 처리를 위함)
+     *  */
+    val SFN = setOf(
         Job::sfnId,
+        Job::lastSfnId,
     ).map { it.name }
 
     /** 종료 */

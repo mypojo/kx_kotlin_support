@@ -71,7 +71,6 @@ internal class S3SupportKtTest : BeSpecHeavy() {
                 }
             }
 
-
             xThen("메타데이터 읽기 2") {
                 val metadata = aws.s3.getObjectMetadata("$profile-work-dev", "work/job/nplKwdDown01Job/20050001/OUTPUT.csv")!!
                 println(metadata)

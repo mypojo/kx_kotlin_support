@@ -16,7 +16,6 @@ import net.kotlinx.concurrent.CoroutineSleepTool
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.concurrent.delay
 import net.kotlinx.core.Kdsl
-import net.kotlinx.domain.job.Job
 import net.kotlinx.json.gson.toGsonDataOrEmpty
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.koin.Koins.koinLazy
@@ -24,7 +23,6 @@ import net.kotlinx.time.TimeStart
 import net.kotlinx.time.measureTimeString
 import net.kotlinx.time.toTimeString
 import java.io.File
-import java.util.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -41,7 +39,10 @@ class BatchStepExecutor {
 
     private val log = KotlinLogging.logger {}
 
+    /** 클라이언트 */
     private val aws: AwsClient by koinLazy()
+
+    /** 설정 */
     private val config: BatchStepConfig by koinLazy()
 
     /** 로컬에서 결과 체크하는 주기 */
@@ -54,37 +55,18 @@ class BatchStepExecutor {
     var workDir: File = File(AwsInstanceTypeUtil.INSTANCE_TYPE.root, "BatchStep")
 
     /**
-     * 로컬에서 SFN 종료되면 출력해줄 후크
-     * ex) 정상종료 확인용 작업 결과치 간단 통계
-     *  */
-    var localCallback: ((Job) -> Unit)? = null
-
-    /**
      * 실생시 SFN을 동기화 해서 기다릴지??
      * 보통 로컬에서 디버깅할때만 이렇게 사용함
      *  */
     var synchSfn = AwsInstanceTypeUtil.IS_LOCAL
 
     /**
-     * 작업들 업로드 & SFN실행 한번에.
-     * @param datas 각 단위는 5~8분 이내로 처리 가능한 사이즈가 좋아보임. (부득이하게 좀 길어져도 안전하도록)
-     * */
-    suspend fun startExecution(parameter: BatchStepParameter, datas: List<S3LogicInput>): BatchStepParameter {
-        val option = parameter.option
-        if (option.retrySfnId == null) {
-            upload(datas, option.targetSfnId)
-        } else {
-            log.warn { "[${option.retrySfnId}] 재시도 요청 -> S3로 업로드는 스킵!!" }
-        }
-        aws.sfn.startExecution(config.stateMachineName, parameter.option.sfnId, parameter.toJson())
-        return parameter
-    }
-
-    /**
      * 설정된 정보로 업로드
      * 파일 업로드는 프로그레스 체크할정도로 오래걸리지 않음
+     * @param datas 각 단위는 5~8분 이내로 처리 가능한 사이즈가 좋아보임. (부득이하게 좀 길어져도 안전하도록)
      *  */
-    fun upload(datas: List<S3LogicInput>, targetSfnId: String) {
+    fun upload(targetSfnId: String, datas: List<S3LogicInput>) {
+
         val thidDir = File(workDir, "${targetSfnId}}")
         val workUploadDir = "${config.workUploadInputDir}$targetSfnId/"
         measureTimeString {
@@ -106,37 +88,50 @@ class BatchStepExecutor {
     }
 
     /**
-     * 실행 간단 축약버전
-     * 내부 프로그램은 이걸로 통일하자.
-     * @param block 여기서 mode 등을 조절하면됨
+     * Job 베이스의 간단 실행
+     * 결과 대기 & 콜백 기능이 추가됨
      *  */
-    suspend fun startExecution(pk: String, sk: String, splitedDatas: List<List<String>>, inputOption: Any, block: BatchStepOption.() -> Unit = {}): Job {
+    suspend fun startExecution(parameter: BatchStepParameter) {
 
-        val inputOptionJson = inputOption.toString()
-        val s3LogicInputs = splitedDatas.map {
-            S3LogicInput(pk, it, inputOptionJson)
-        }
-        val jobParam = Job(pk, sk)
-        //UUID를 꼭 쓰지 않아도 됨. 파일이름으로 혀용되는 이름으로 달것!
-        val sfnUuid = "${jobParam.pk}-${jobParam.sk}"
-        jobParam.sfnId = sfnUuid
-        val parameter = BatchStepParameter {
-            jobPk = jobParam.pk
-            jobSk = jobParam.sk
-            sfnId = sfnUuid
-            block()
-        }
-
-        startExecution(parameter, s3LogicInputs)
+        val sfnId = parameter.option.sfnId
+        aws.sfn.startExecution(config.stateMachineName, parameter.option.sfnId, parameter.toJson()) //이 메소드를 여기서만 호출함
 
         if (synchSfn) {
             log.trace { "로컬인경우 작업을 다 기다린다음 결과 출력" }
-            waitResult(sfnUuid)
-            checkResult(sfnUuid)
-            localCallback?.invoke(jobParam)
+            waitResult(sfnId)
+            checkResult(sfnId)
         }
-        return jobParam
     }
+
+    /**
+     * 간단 재실행
+     * 그대로 재실행함으로 별도의 옵션 필요없음
+     *  */
+    suspend fun startExecutionRetry(failedSfnId: String, newSfnId: String) {
+
+        val execution = config.describeExecution(failedSfnId)
+        log.warn { "작업 재시도!! [$failedSfnId] -> job의 상태 ${execution.status}" }
+        check(execution.status == ExecutionStatus.Failed) { "SFN은 작업상태가 ${ExecutionStatus.Failed} 인것만 재시도가 가능합니다" }
+
+        val optionBody = execution.input.toGsonDataOrEmpty()["option"]
+        log.info { "재시도 입력값 : $optionBody" }
+
+        val parameter = BatchStepParameter {
+            option = BatchStepOption {
+                jobPk = optionBody[AwsNaming.JOB_PK].str!!
+                jobSk = optionBody[AwsNaming.JOB_SK].str!!
+                sfnId = newSfnId
+                retrySfnId = failedSfnId
+                optionBody["sfnOption"].lett {
+                    sfnOption = it.str!!  //단순 문자열임 주의!!
+                }
+            }
+
+        }
+
+        startExecution(parameter)
+    }
+
 
     /** SFN이 종료될때까지 대기한다 */
     suspend fun waitResult(sfnId: String) {
@@ -180,34 +175,6 @@ class BatchStepExecutor {
             log.warn { "결과로그 파싱 실패!! -> ${option.toPreety()}" }
         }
 
-    }
-
-
-    /** 간단 재실행 */
-    suspend fun retry(failedSfnId: String) {
-
-        val batchStepConfig: BatchStepConfig = koin()
-
-        val execution = batchStepConfig.describeExecution(failedSfnId)
-        log.warn { "작업 재시도!! [$failedSfnId] -> 작업상태 ${execution.status}" }
-        check(execution.status == ExecutionStatus.Failed) { "작업상태가 실패 상태가 아닙니다!!" }
-
-        val option = execution.input.toGsonDataOrEmpty()["option"]
-        log.info { "재시도 입력값 : $option" }
-
-        val sfnUuid = UUID.randomUUID().toString()
-        val input = BatchStepParameter {
-            jobPk = option[AwsNaming.JOB_PK].str!!
-            jobSk = option[AwsNaming.JOB_SK].str!!
-            sfnId = sfnUuid
-            retrySfnId = failedSfnId
-            option["sfnOption"].lett {
-                sfnOption = it.str!!  //단순 문자열임 주의!!
-            }
-        }
-        startExecution(input, emptyList())
-        waitResult(sfnUuid)
-        checkResult(sfnUuid)
     }
 
 

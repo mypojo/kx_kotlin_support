@@ -88,9 +88,15 @@ class Job(override val pk: String, override val sk: String) : DbItem {
 
     /**
      * SFN ID
+     * 가장 최근 실행한 SFN ID이다 (재시도의 경우 변경됨)
      * 일반 잡이 아니라 SFN 스텝 전체를 1개의 잡으로 입력
      * */
     var sfnId: String? = null
+
+    /**
+     * 가장 최근 실행한 SFN ID이다 (재시도의 경우 변경됨)
+     * */
+    var lastSfnId: String? = null
 
     //==================================================== 공통 옵션 입력값 ======================================================
 

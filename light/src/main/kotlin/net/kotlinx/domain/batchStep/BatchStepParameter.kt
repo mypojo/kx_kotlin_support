@@ -18,14 +18,9 @@ import net.kotlinx.json.serial.SerialToJson
 @Serializable
 class BatchStepParameter : SerialToJson {
 
-    /**
-     * 주의!! 실제 BatchStepParameter 에는 별로 넣을게 없다.
-     * 따라서 블록에는 BatchStepOption 를 사용하니 주의할것!!
-     * */
     @Kdsl
-    constructor(method: String? = null, block: BatchStepOption.() -> Unit) {
-        this.method = method
-        option = BatchStepOption(block)
+    constructor(block: BatchStepParameter.() -> Unit = {}) {
+        apply(block)
     }
 
     /** SFN에서 직접 전달해주는 메소드. 혹시 받을 일이 있을까 해서 넣어둠 */
@@ -35,7 +30,7 @@ class BatchStepParameter : SerialToJson {
      * 실제 옵션
      * CDK의 $.option 과 스키마가 일치해야 한다
      *  */
-    val option: BatchStepOption
+    lateinit var option: BatchStepOption
 
     //==================================================== 변환 세트 ======================================================
 
@@ -43,6 +38,10 @@ class BatchStepParameter : SerialToJson {
 
     companion object Parse : SerialParseJson {
         override fun parseJson(json: String): BatchStepParameter = SerialJsonSet.JSON_OTHER.decodeFromString<BatchStepParameter>(json)
+
+
+
+
     }
 
 }

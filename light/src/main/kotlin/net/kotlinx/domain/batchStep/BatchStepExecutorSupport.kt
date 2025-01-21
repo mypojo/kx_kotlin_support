@@ -1,11 +1,13 @@
 package net.kotlinx.domain.batchStep
 
+import mu.KotlinLogging
 import net.kotlinx.aws.lambda.dispatch.asynch.EventBridgeSfnStatus
 import net.kotlinx.collection.toPair
 import net.kotlinx.domain.job.Job
 import net.kotlinx.domain.job.JobRepository
 import net.kotlinx.domain.job.define.JobDefinitionRepository
 import net.kotlinx.domain.job.trigger.JobLocalExecutor
+import net.kotlinx.exception.toSimpleString
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.reflect.newInstance
 
@@ -13,6 +15,11 @@ import net.kotlinx.reflect.newInstance
  * resume 샘플
  * */
 suspend fun JobLocalExecutor.resume(event: EventBridgeSfnStatus, onEventSfnStatusAlert: (EventBridgeSfnStatus) -> Unit = {}) {
+
+    val log = KotlinLogging.logger {}
+
+    log.info { "[${event.sfnName}] resume -> ${event.name} (${event.status})" }
+
     val (pk, sk) = event.name.substringAfter(".").split(".").toPair()
 
     val jobRepository = koin<JobRepository>()
@@ -34,8 +41,15 @@ suspend fun JobLocalExecutor.resume(event: EventBridgeSfnStatus, onEventSfnStatu
                 job.jobContext = sfnJob.jobContext
             }
 
-            jobService.onProcessComplete(job)
-            this.resumeSuccess(job)
+            try {
+                jobService.onProcessComplete(job)
+                this.resumeSuccess(job)
+            } catch (e: Exception) {
+                log.warn { "onProcessComplete 처리중 예외! -> ${e.toSimpleString()}" }
+                e.printStackTrace()
+                this.resumeFail(job, "onProcessComplete 처리중 예외! -> ${e.toSimpleString()}")
+            }
+
         }
 
         else -> {

@@ -35,6 +35,11 @@ class BatchStepOption {
      * */
     lateinit var sfnId: String
 
+    /**
+     * 디폴트로 인라인모드 최대값 사용
+     * */
+    var maxConcurrency: Int = 40
+
     /** 이게 있으면 재시도로 간주. 재시도이면 업로드 안함.  */
     var retrySfnId: String? = null
 

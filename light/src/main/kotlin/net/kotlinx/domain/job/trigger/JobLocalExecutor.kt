@@ -44,7 +44,7 @@ class JobLocalExecutor(val profile: String? = null) {
             job.startTime = LocalDateTime.now()
             jobRepository.updateItem(job, JobUpdateSet.START)
 
-            //==============  싦행  ===================
+            //==============  실행  ===================
             jobService.execute(job)
 
             //==============  결과 마킹 ===================

@@ -40,6 +40,7 @@ class JobConverter(private val table: DbTable) : DbConverter {
             item.instanceMetadata?.let { put(Job::instanceMetadata.name, AttributeValue.S(GsonSet.GSON.toJson(it))) }
 
             item.sfnId?.let { put(Job::sfnId.name, AttributeValue.S(it)) }
+            item.lastSfnId?.let { put(Job::lastSfnId.name, AttributeValue.S(it)) }
             item.jobEnv?.let { put(Job::jobEnv.name, AttributeValue.S(it)) }
         }
     }
@@ -66,6 +67,7 @@ class JobConverter(private val table: DbTable) : DbConverter {
             instanceMetadata = map.findJson(Job::instanceMetadata)
             jobOption = map.findOrThrow(Job::jobOption)
             sfnId = map.find(Job::sfnId)
+            lastSfnId = map.find(Job::lastSfnId)
             jobEnv = map.find(Job::jobEnv)
         } as T
     }

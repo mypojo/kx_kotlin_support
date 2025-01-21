@@ -46,7 +46,7 @@ class CsvItemWriterTemplate {
                         this.header = this@CsvItemWriterTemplate.header
                     }
                     this.workspace = file
-                    this.name = workspace.name
+                    this.fileName = workspace.name
                     this.limit = this@CsvItemWriterTemplate.limit
                 }.build()
             }

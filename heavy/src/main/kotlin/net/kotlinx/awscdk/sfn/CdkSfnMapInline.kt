@@ -1,6 +1,8 @@
 package net.kotlinx.awscdk.sfn
 
 import net.kotlinx.aws.AwsNaming
+import net.kotlinx.domain.batchStep.stepDefault.StepStart
+import net.kotlinx.reflect.name
 import software.amazon.awscdk.services.stepfunctions.CustomState
 import software.amazon.awscdk.services.stepfunctions.CustomStateProps
 import software.amazon.awscdk.services.stepfunctions.State
@@ -9,6 +11,9 @@ import software.amazon.awscdk.services.stepfunctions.State
 /**
  * SFN MAP 작업 : S3 list -> lambda
  * 병렬 작업하는애들 개별 상태관리 하지 않고, 인라인으로 관리함 (저렴)
+ *
+ * 아래 설정 참고
+ * https://docs.aws.amazon.com/ko_kr/step-functions/latest/dg/state-map-distributed.html
  * */
 class CdkSfnMapInline(
     override val cdkSfn: CdkSfn,
@@ -23,12 +28,18 @@ class CdkSfnMapInline(
     /** 스탭 내부의 state 이름 */
     var stepName: String = "${name}Inline"
 
-    var itemPath: String = "$.StepStart.datas"
+    //var itemPath: String = "$.StepStart.datas"
+    var itemPath: String = "$.${AwsNaming.OPTION}.${StepStart::class.name()}.${AwsNaming.BODY}.${AwsNaming.DATAS}"
 
     var resultPath: String = "$.${AwsNaming.OPTION}.${name}"
 
-    /** DISTRIBUTED 모드는 람다 리밋까지 지원 */
-    var maxConcurrency: Int = 40
+    /**
+     * maxConcurrency 하드설정 안쓰고 사용자 입력으로 사용함!
+     * DISTRIBUTED 모드는 람다 리밋까지 지원
+     * INLINE 모드는 최대 40개인듯
+     * 참고! 이 설정은 UI에서는 불가능함.. 에반데..
+     * */
+    var maxConcurrencyPath : String = "$.${AwsNaming.OPTION}.maxConcurrency"
 
     /** 컴포넌트가 없어서 수동으로 지정해야 한다.. 없으면 종료 */
     var next: String? = null
@@ -47,7 +58,7 @@ class CdkSfnMapInline(
                 null -> "End" to true
                 else -> "Next" to next
             },
-            "MaxConcurrency" to maxConcurrency,
+            "MaxConcurrencyPath" to maxConcurrencyPath,
             "ItemsPath" to itemPath,
             "ResultPath" to resultPath, // 별도의 ResultSelector 는 필요없다. 최종작업의 결과만 ResultSelector 하면 그게 array로 입력됨
             "ItemProcessor" to mapOf(

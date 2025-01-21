@@ -48,7 +48,8 @@ class StepStart : LambdaDispatchLogic {
             }
         }
 
-        val job = Job(option.jobPk, option.jobSk) {
+        //context 정보를 저장하기 위해서 필요함
+        val sfnContextLog = Job(option.jobPk, option.jobSk) {
             jobStatus = JobStatus.RUNNING
             reqTime = LocalDateTime.now()
             jobStatus = JobStatus.RUNNING
@@ -61,11 +62,11 @@ class StepStart : LambdaDispatchLogic {
             jobExeFrom = JobExeFrom.SFN
             sfnId = option.sfnId
         }
-        jobRepository.putItem(job)
-        log.debug { "job [${job.toKeyString()}] 로그 insert" }
+        jobRepository.putItem(sfnContextLog)
+        log.debug { "job [${sfnContextLog.toKeyString()}] 로그 insert" }
 
         log.trace { "BatchStepCallback 이 등록되어있다면 실행" }
-        Koins.koinOrNull<BatchStepCallback>(job.pk)?.execute(option, job)
+        Koins.koinOrNull<BatchStepCallback>(sfnContextLog.pk)?.execute(option, sfnContextLog)
 
         return StepStartContext(
             LocalDateTime.now(),

@@ -34,17 +34,23 @@ class JobSerializer(val profile: String? = null) {
         val jobPk = input[AwsNaming.JOB_PK].str ?: return null
         val jobSk = input[AwsNaming.JOB_SK].str ?: idGenerator.nextvalAsString()
 
-        val job = Job(jobPk, jobSk) {
+        //#1 디폴트로 기존 DDB 데이터 사용 (재시도시 lastSfnId 읽어오기 등등)
+        //#2 입력된 JSON 으로 오버라이드
+        val job = Job(jobPk, jobSk).let {
+            jobRepository.getItem(it) ?: it
+        }.apply {
             val jobDefinition = JobDefinitionRepository.findById(pk)
             val jobTrigger = jobDefinition.jobTriggerMethod
+
+            //무조건 오버라이드 하는값
             reqTime = LocalDateTime.now()
             jobEnv = jobTrigger.name
-            //파싱값 입력 4개
-            jobOption = input[Job::jobOption.name].str!!.toGsonData()
-            input[Job::memberId.name].str?.let { memberId = it }
             jobExeFrom = input.enum<JobExeFrom>(Job::jobExeFrom.name) ?: JobExeFrom.UNKNOWN
             jobStatus = input.enum<JobStatus>(Job::jobStatus.name) ?: JobStatus.STARTING
-            sfnId = input[Job::sfnId.name].str
+
+            //옵션에 있으면 오버라이드 하는값 (아래  toJson() 하고 1:1 매핑)
+            input[Job::jobOption.name].str?.let { jobOption = it.toGsonData()}
+            input[Job::memberId.name].str?.let { memberId = it }
 
             //특수한 경우 예외 처리해줌
             if (jobDefinition.jobExecuteType == JobExecuteType.NOLOG) {
@@ -54,11 +60,14 @@ class JobSerializer(val profile: String? = null) {
             log.debug { " -> job 신규생성 $pk / $sk" }
         }
         block(job)
-        jobRepository.putItem(job) //UI때문에 미리 가입력을 해도 됨 -> 이경우 여기서 오버라이드
+        jobRepository.putItem(job) //이경우 여기서 오버라이드 쓰기 -> STARTING 으로 표기됨
         return job
     }
 
-    /** job을 AWS lambda / BATCH 에 전송할 잡 설정(DDB 키값전송)으로 변환 */
+    /**
+     * job을 AWS lambda / BATCH 에 전송할 잡 설정(DDB 키값전송)으로 변환
+     * 전체를 그냥 시리얼라이즈 하기에는.. 불안 요소가 있어서 선택적으로 작업함
+     *  */
     fun toJson(op: JobTriggerOption): ObjectType = obj {
         AwsNaming.JOB_PK to op.jobPk
         op.jobSk?.let { AwsNaming.JOB_SK to it }  //sk는 옵션이다.
@@ -66,9 +75,9 @@ class JobSerializer(val profile: String? = null) {
         //파싱값 입력 4개
         Job::jobOption.name to op.jobOption.toString() //이건 무조건 문자열로 입력
         Job::memberId.name to op.memberId
-        Job::jobExeFrom.name to op.jobExeFrom.name
-        Job::sfnId.name to op.sfnId
+
         Job::jobStatus.name to op.jobStatus
+        Job::jobExeFrom.name to op.jobExeFrom.name
     }
 
 }

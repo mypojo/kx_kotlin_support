@@ -24,7 +24,7 @@ class MultiResourceItemWriterBuilder {
     lateinit var workspace: File
 
     /** 파일 네임. 파일명을 강제로 다시 string으로 변환해서 재조합 하는거 같음  */
-    lateinit var name: String
+    lateinit var fileName: String
 
     /**
      * 기본값은 MS 엑셀이 읽기 가능한 최대수 1048576 기준.
@@ -43,7 +43,7 @@ class MultiResourceItemWriterBuilder {
             setDelegate((itemWriter as ResourceAwareItemWriterItemStream<in T>?)!!)
             setItemCountLimitPerResource(limit)
             setResourceSuffixCreator(resourceSuffixCreator)
-            setResource(FileSystemResource(File(workspace, name + "_")))
+            setResource(FileSystemResource(File(workspace, fileName + "_")))
         }
     }
 
