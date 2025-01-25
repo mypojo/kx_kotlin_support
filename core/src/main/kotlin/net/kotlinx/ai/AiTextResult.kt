@@ -16,7 +16,7 @@ data class AiTextResult(
     /**
      * 입력 데이터
      * */
-    val input: Any,
+    val input: List<AiTextInput>,
 
     /**
      * 결과 데이터.
@@ -48,7 +48,7 @@ data class AiTextResult(
     companion object {
 
         /** 공용 예외 처리 */
-        fun fail(model: AiModel, input: Any, e: Exception): AiTextResult {
+        fun fail(model: AiModel, input: List<AiTextInput>, e: Exception): AiTextResult {
             return AiTextResult(model, input, ResultGsonData(false, GsonData.parse(e.toSimpleString())), 0, 0, 0).apply {
                 this.exception = e
             }

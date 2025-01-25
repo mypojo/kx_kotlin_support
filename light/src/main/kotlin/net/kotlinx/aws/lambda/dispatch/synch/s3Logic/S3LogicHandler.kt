@@ -1,16 +1,20 @@
 package net.kotlinx.aws.lambda.dispatch.synch.s3Logic
 
 import aws.sdk.kotlin.services.s3.deleteObject
+import aws.sdk.kotlin.services.s3.model.NoSuchKey
 import com.google.common.eventbus.EventBus
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceTypeUtil
-import net.kotlinx.aws.s3.getObjectText
+import net.kotlinx.aws.s3.getObjectDownload
 import net.kotlinx.aws.s3.putObject
 import net.kotlinx.aws.s3.s3
 import net.kotlinx.aws.with
 import net.kotlinx.core.Kdsl
+import net.kotlinx.file.gzip
+import net.kotlinx.file.slash
 import net.kotlinx.file.slashDir
+import net.kotlinx.file.unGzip
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.koin.Koins.koinOrCheck
@@ -62,7 +66,17 @@ class S3LogicHandler {
             log.trace { "입력파일(S3) 로드.." }
 
             //csv로 안하고 그냥 한덩어리로 읽음
-            val inputJsonText = aws.s3.with { getObjectText(workBucket, s3InputDataKey) }
+            val inputJsonText = aws.s3.with {
+                //getObjectText(workBucket, s3InputDataKey)
+                val localInput = workDir.slash("input.txt.gz") //이름은 상관없음.
+                localInput.delete()
+                try {
+                    getObjectDownload(workBucket, s3InputDataKey, localInput)
+                    localInput.unGzip().readText()
+                } catch (e: NoSuchKey) {
+                    null
+                }
+            }
             if (inputJsonText == null) {
                 log.warn { "파일없음으로 스킵 $s3InputDataKey" } //리스팅 중에 다른 람다에서 처리가 완료된 경우
                 return
@@ -89,8 +103,10 @@ class S3LogicHandler {
             put("output", s3LogicOutput.result)
         }
 
-        val outFile = File(workDir, "${path.fileName}.json")
-        outFile.writeText(resultJson.toString())
+        val outFile =  File(workDir, "${path.fileName}.json").run {
+            writeText(resultJson.toString())
+            gzip()
+        }
 
         val outputKey = "${path.outputDir}${path.pathId}/${outFile.name}"
         log.trace { "결과파일 생성.. $outputKey" }

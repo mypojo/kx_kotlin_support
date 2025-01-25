@@ -1,22 +1,16 @@
-package net.kotlinx.domain.batchTask
+package net.kotlinx.domain.batchTask.sfn
 
 import mu.KotlinLogging
+import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.S3LogicInput
 import net.kotlinx.domain.batchStep.BatchStepExecutor
+import net.kotlinx.domain.batchTask.BatchTaskExecutor
+import net.kotlinx.domain.batchTask.BatchTaskOptionUtil
 import net.kotlinx.domain.job.JobRepository
 import net.kotlinx.domain.job.JobUpdateSet
+import net.kotlinx.json.gson.GsonData
 import net.kotlinx.koin.Koins.koin
+import net.kotlinx.reflect.name
 import net.kotlinx.string.padNumIncrease
-import org.koin.core.module.Module
-import org.koin.core.qualifier.named
-
-/** BatchTask 등록 (늦은 초기화함) */
-fun Module.registBatchTask(id: String, block: BatchTask.() -> Unit) {
-    single(named(id)) {
-        BatchTask().apply(block).apply {
-            this.id = id
-        }
-    }
-}
 
 /**
  * 간단버전
@@ -30,11 +24,22 @@ suspend fun BatchStepExecutor.startExecution(op: BatchTaskSfn) {
     if (op.job.sfnId == null) {
         //==================================================== 첫 시도 ======================================================
         val sfnId = op.parameter.option.sfnId
-        if (op.batchTaskIds.isNotEmpty()) {
-            log.trace { "인메모리 데이터가 입력되는경우 해당 데이터를 S3로 업로드" }
-            val inputs = BatchTaskOptionUtil.toS3LogicInputs(op.batchTaskIds, op.datas, op.inputOptionBlock)
-            this.upload(sfnId, inputs)
+        op.batchTaskInputInmemery?.let {
+            log.info { "인메모리 데이터가 입력되는경우 해당 데이터를 S3로 업로드" }
+            this.uploadAllInmemory(sfnId, it.toS3LogicInputs())
         }
+        op.batchTaskInputCsv?.let { csv ->
+            log.info { "CSV 데이터가 입력되는경우 해당 데이터를 청크단위로 읽어서 json array 형태로 S3로 업로드" }
+            val tool = csv.csvReadWriteTools
+            val inputOption = BatchTaskOptionUtil.inputOption(csv.batchTaskIds, csv.inputOptionBlock)
+            tool.processor = {
+                val lines = it.rows.map { GsonData.fromObj(it).toString() } //CSV 라인을 json array로
+                val logicInput = S3LogicInput(BatchTaskExecutor::class.name(), lines, inputOption)
+                this.upload(sfnId, it.index, logicInput)
+            }
+            tool.run()
+        }
+
         op.job.sfnId = sfnId
         op.job.lastSfnId = sfnId
         koin<JobRepository>().updateItem(op.job, JobUpdateSet.SFN)

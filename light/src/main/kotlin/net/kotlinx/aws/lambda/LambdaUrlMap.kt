@@ -17,7 +17,7 @@ class LambdaUrlMap(private val delegate: MutableMap<String, Any> = mutableMapOf(
 
     var headers = mapOf(
         "x-forwarded-for" to "11.22.33.44",
-        "user-agent" to "demo",
+        "user-agent" to "demo2",
     )
 
     lateinit var url: HttpUrl

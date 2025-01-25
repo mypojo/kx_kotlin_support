@@ -3,6 +3,7 @@ package net.kotlinx.aws.cost
 import aws.sdk.kotlin.services.costexplorer.model.CostExplorerException
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import net.kotlinx.api.ecos.EcosClientUtil
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.iam.IamCredential
 import net.kotlinx.aws.toAwsClient
@@ -34,8 +35,8 @@ fun main() {
     if (!dataFile.exists()) {
         log.info { "cost 데이터를 로드합니다.." }
         runBlocking {
-            val profileNames = IamCredential().profileDatas.map { it.profileName }.filter { it !in setOf("sin", "default", "md") } - listOf("kx")
-            log.debug { " -> 로드된 프로파일 : $profileNames" }
+            val profileNames = IamCredential().profileDatas.map { it.profileName }.filter { it !in setOf("sin", "default") } - listOf("kx")
+            log.info { " -> 로드된 프로파일 : $profileNames" }
             val datas = profileNames.flatMap { profileName ->
                 val client = AwsConfig(profileName = profileName).toAwsClient()
                 val byService = try {
@@ -79,7 +80,7 @@ fun main() {
 //    }
 
     CostExplorerExcel {
-        //won = wonDoller.toInt()
+        won = runBlocking { EcosClientUtil.dollarWon().toInt() }
         costDatas = lines
         groupByProject()
         eachProject()

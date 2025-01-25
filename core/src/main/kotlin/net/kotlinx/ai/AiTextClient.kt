@@ -3,22 +3,20 @@ package net.kotlinx.ai
 /**
  * 간단 인터페이스
  * 배드락 기반으로 구현
+ * 1회성 요청에 대해서만 사용한다
+ *
+ * 참고용어
+ * # Text : 1회성 요청 / 응답
+ * # Chat : 채팅
  * */
 interface AiTextClient {
 
     val model: AiModel
 
-    /**
-     * 기본 함수
-     * */
-    suspend fun invokeModel(messages: List<Any>): AiTextResult
+    /** 간단하게 1회성으로 채팅 입력 */
+    suspend fun text(input: List<AiTextInput>): AiTextResult
 
-
-    //==================================================== 편의 메소드 ======================================================
-
-    /**
-     * 간단하게 채팅 입력해서 결과 비교용
-     * */
-    suspend fun chat(msg: String): AiTextResult = invokeModel(listOf(msg))
+    /** 간단하게 1회성으로 채팅 입력 */
+    suspend fun text(input: String): AiTextResult = text(listOf(AiTextInput.AiTextString(input)))
 
 }

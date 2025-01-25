@@ -11,7 +11,7 @@ import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.system.ResourceHolder
 
 @OptIn(BetaOpenAI::class)
-class AiModel_이미지질문비교 : BeSpecHeavy() {
+class AiModel_이미지_랜딩확인 : BeSpecHeavy() {
 
     private val root = ResourceHolder.WORKSPACE.parentFile.slash("AI").slash("bedrock_랜딩페이지모니터링")
 
@@ -24,7 +24,10 @@ class AiModel_이미지질문비교 : BeSpecHeavy() {
     )
 
     private val imageFile = files.map {
-        AiTextInput.AiTextInputFile(file = root.slash(it), url = s3Root.slash(it).toPublicLink())
+        AiTextInput.AiTextImage {
+            file = root.slash(it)
+            url = s3Root.slash(it).toPublicLink()
+        }
     }
 
     init {
@@ -34,20 +37,14 @@ class AiModel_이미지질문비교 : BeSpecHeavy() {
 
             val set = AiModelLocalSet {
                 aws = aws97
-                systemPrompt = LandingPageInspectionUtil.SYSTEM_PROMPT_CD
+                this.systemPrompt = LandingPageInspectionUtil.SYSTEM_PROMPT_CD
                 clients = listOf(
                     gpt4O,
-                    //gpt4OMini, //가끔 품절 아닌데 품절로 뜸
-                    //claudeSonet,  //잘되는데 비쌈
-                    //claudeHaiku, //프롬프트 인식 불가
+                    gpt4OMini, //가끔 품절 아닌데 품절로 뜸
+                    claudeSonet,  //잘되는데 비쌈
+                    claudeHaiku, //프롬프트 인식 불가
                     //deepseek  //에러남
                 )
-            }
-
-            Then("간단질의") {
-                val file = imageFile[0]
-                val result = set.clients[0].invokeModel(listOf(file))
-                listOf(result).printSimple()
             }
 
             Then("배치실행") {
@@ -64,7 +61,7 @@ class AiModel_이미지질문비교 : BeSpecHeavy() {
                     set.clients.map { client ->
                         suspend {
                             //퍼블렉시티의 경우 파일만 첨부가 불가능. 반드시 텍스트가 같이 입력되어야함
-                            client.invokeModel(listOf(input)).also {
+                            client.text(listOf(input)).also {
                                 it.name = input.file?.name ?: "-"
                             }
                         }

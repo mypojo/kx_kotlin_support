@@ -30,7 +30,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 /**
-
+ * 일단 사용안함..
  *  */
 @OptIn(BetaOpenAI::class) //스래드 사용
 class OpenAiThread(

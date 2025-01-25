@@ -22,6 +22,8 @@ import java.util.zip.GZIPOutputStream
  *
  * 클라우드 환경에서 쓰이는거만 남김
  * 중요!! 코루틴을 지원하며 싱글 스래드로 작동함!! -> 람다에서 최소 비용 & 싱글스래드로 청크단위로 합쳐서 코루틴 처리할것!
+ *
+ * 중단된 파일 이어쓰는 기능을 하려고 했으나.. 압축이나 헤더 문제 때문에 힘듬 => 그냥 분리 & 청크처리 하는게 훨씬 좋음!
  *  */
 class CsvReadWriteTools : SuspendRunnable {
 
@@ -55,6 +57,7 @@ class CsvReadWriteTools : SuspendRunnable {
             chunkDatas.add(iterator.next())
             if (chunkDatas.size == chunkSize) {
                 processor.invoke(CsvChunk(index++, chunkDatas.toList(), header, csvWriter))
+                csvWriter?.flush() //중단시 재시도를 위해서
                 chunkDatas.clear()
             }
         }
@@ -62,6 +65,7 @@ class CsvReadWriteTools : SuspendRunnable {
         // 남은 데이터 처리
         if (chunkDatas.isNotEmpty()) {
             processor.invoke(CsvChunk(index++, chunkDatas.toList(), header, csvWriter))
+            csvWriter?.flush()
         }
     }
 
@@ -75,9 +79,6 @@ class CsvReadWriteTools : SuspendRunnable {
 
     /** 첫 로우가 헤더인지? */
     var withHeader: Boolean = false
-
-    /** 첫 로우가 헤더인지? */
-    var before: Boolean = false
 
     //==================================================== IN (필수) ======================================================
 
@@ -111,7 +112,8 @@ class CsvReadWriteTools : SuspendRunnable {
         get() = when {
 
             writerFile != null -> {
-                if (writerGzip) GZIPOutputStream(FileOutputStream(writerFile)) else FileOutputStream(writerFile)
+                val fileOut = FileOutputStream(writerFile)
+                if (writerGzip) GZIPOutputStream(fileOut) else fileOut
             }
 
             else -> null

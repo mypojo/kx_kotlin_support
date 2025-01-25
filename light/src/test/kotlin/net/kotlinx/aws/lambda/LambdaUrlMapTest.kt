@@ -13,14 +13,20 @@ class LambdaUrlMapTest : BeSpecLog() {
         initTest(KotestUtil.FAST)
 
         Given("LambdaUrlMap") {
-            Then("Lambda 형식을  handler에 적합한 map 으로 변환") {
+            Then("Lambda to") {
                 val urlMap = LambdaUrlMap {
-                    url = "https://docs.gradle.org/8.4/userguide/command?a=b&c=dd".toHttpUrl()
+                    url = "https://docs.gradle.org/8.4/userguide/command?a=bb&c=dd".toHttpUrl()
                 }
-                log.info { " -> $urlMap" }
+                log.info { " => $urlMap" }
                 urlMap["rawPath"] shouldBe "/8.4/userguide/command"
                 GsonData.fromObj(urlMap)["queryStringParameters"]["c"].str shouldBe "dd"
+
+                val gson = GsonData.fromObj(urlMap)
+                log.debug { "gson -> $gson" }
+                gson.isObject shouldBe true
+                gson["queryStringParameters"].toMap() shouldBe mapOf("a" to "bb", "c" to "dd")
             }
+
         }
     }
 }

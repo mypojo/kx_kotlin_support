@@ -16,7 +16,7 @@ import net.kotlinx.system.ResourceHolder
 import net.kotlinx.time.TimeFormat
 
 @OptIn(BetaOpenAI::class)
-class AiModel_이미지질문비교_CSV저장 : BeSpecHeavy() {
+class AiModel_이미지_랜딩확인_CSV저장 : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.IGNORE)
@@ -25,7 +25,7 @@ class AiModel_이미지질문비교_CSV저장 : BeSpecHeavy() {
 
             val set = AiModelLocalSet {
                 aws = aws97
-                systemPrompt = LandingPageInspectionUtil.SYSTEM_PROMPT_CD
+                this.systemPrompt = LandingPageInspectionUtil.SYSTEM_PROMPT_CD
                 clients = listOf(gpt4O)
             }
 
@@ -36,14 +36,16 @@ class AiModel_이미지질문비교_CSV저장 : BeSpecHeavy() {
 
                 val orgImgs = aws97.s3.listObjects(path)
                     .filter { it.fileName.endsWith(".png") }.map {
-                        AiTextInput.AiTextInputFile(url = it.toPublicLink())
+                        AiTextInput.AiTextImage {
+                            url = it.toPublicLink()
+                        }
                     }
 
                 val results = orgImgs.flatMap { input ->
                     set.clients.map { client ->
                         suspend {
                             //퍼블렉시티의 경우 파일만 첨부가 불가능. 반드시 텍스트가 같이 입력되어야함
-                            client.invokeModel(listOf(input)).also {
+                            client.text(listOf(input)).also {
                                 it.name = input.url ?: "-"
                             }
                         }
@@ -56,7 +58,7 @@ class AiModel_이미지질문비교_CSV저장 : BeSpecHeavy() {
                     addHeader(listOf("파일명", "성공", "사유"))
 
                     results.map {
-                        val file = (it.input as List<AiTextInput.AiTextInputFile>).first()
+                        val file = (it.input as List<AiTextInput.AiTextImage>).first()
                         writeLine(
                             listOf(
                                 XlsHyperlink(file.name) {

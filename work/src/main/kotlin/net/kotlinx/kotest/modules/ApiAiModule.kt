@@ -30,7 +30,6 @@ object ApiAiModule : KoinModule {
                 apiKey = "${ProtocolPrefix.SSM}/api/${OpenAiModels.Gpt::class.name()}/demo/key"
                 model = OpenAiModels.Gpt.GPT_4O_MINI
                 systemMessage = systemMsgs.joinToString("\n")
-                assistantId = "asst_4nTAjrx6gq5pO1MJryIVEa2x"
             }
         }
         single(named(OpenAiModels.Perplexity::class.name())) {

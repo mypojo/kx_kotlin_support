@@ -4,7 +4,7 @@ import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.chat.ChatResponseFormat
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.bedrock.BedrockModels
-import net.kotlinx.aws.bedrock.BedrockRuntime
+import net.kotlinx.aws.bedrock.BedrockTextClient
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.ssm.ssmStore
 import net.kotlinx.concurrent.coroutineExecute
@@ -40,7 +40,7 @@ class AiModelLocalSet {
     fun executeSingle(query: String): List<AiTextResult> {
         return clients.map {
             suspend {
-                it.chat(query)
+                it.text(query)
             }
         }.coroutineExecute(coroutineLimit)
     }
@@ -53,7 +53,7 @@ class AiModelLocalSet {
         OpenAiClient {
             apiKey = aws.ssmStore[KEY_GPT]
             model = OpenAiModels.Gpt.GPT_4O
-            systemMessage = systemPrompt!!.toString()
+            systemMessage = this@AiModelLocalSet.systemPrompt!!.toString()
         }
     }
 
@@ -61,7 +61,7 @@ class AiModelLocalSet {
         OpenAiClient {
             apiKey = aws.ssmStore[KEY_GPT]
             model = OpenAiModels.Gpt.GPT_4O_MINI
-            systemMessage = systemPrompt!!.toString()
+            systemMessage = this@AiModelLocalSet.systemPrompt!!.toString()
         }
     }
 
@@ -70,7 +70,7 @@ class AiModelLocalSet {
             apiKey = aws.ssmStore[KEY_PERPLEXITY]
             host = OpenAiModels.Perplexity.HOST
             model = OpenAiModels.Perplexity.SONAR_SMALL
-            systemMessage = systemPrompt!!  //아직 어시스턴스 없이 채팅만 지원함. 이거 해도 안되는거 많음..
+            systemMessage = this@AiModelLocalSet.systemPrompt!!  //아직 어시스턴스 없이 채팅만 지원함. 이거 해도 안되는거 많음..
             responseFormat = ChatResponseFormat.Text //단순 JSON 지원 안함.  스키마가 있어가 해야하는듯?
         }
     }
@@ -80,7 +80,7 @@ class AiModelLocalSet {
             apiKey = aws.ssmStore[KEY_PERPLEXITY]
             host = OpenAiModels.Perplexity.HOST
             model = OpenAiModels.Perplexity.SONAR_LARGE
-            systemMessage = systemPrompt!!  //아직 어시스턴스 없이 채팅만 지원함. 이거 해도 안되는거 많음..
+            systemMessage = this@AiModelLocalSet.systemPrompt!!  //아직 어시스턴스 없이 채팅만 지원함. 이거 해도 안되는거 많음..
             responseFormat = ChatResponseFormat.Text //단순 JSON 지원 안함.  스키마가 있어가 해야하는듯?
         }
     }
@@ -97,20 +97,20 @@ class AiModelLocalSet {
     //==================================================== 아마존 배드락 ======================================================
 
     val claudeSonet by lazy {
-        BedrockRuntime {
+        BedrockTextClient {
             client = aws
             model = BedrockModels.OnDemand.CLAUDE_35_SONNET
-            system = systemPrompt!!
+            this.systemPrompt = this@AiModelLocalSet.systemPrompt!!
             batchWorkPath = bedrockRoot
             batchRole = "app-admin"
         }
     }
 
     val claudeHaiku by lazy {
-        BedrockRuntime {
+        BedrockTextClient {
             client = aws
             model = BedrockModels.OnDemand.CLAUDE_3_HAIKU
-            system = systemPrompt!!
+            this.systemPrompt = this@AiModelLocalSet.systemPrompt!!
             batchWorkPath = bedrockRoot
             batchRole = "app-admin"
         }

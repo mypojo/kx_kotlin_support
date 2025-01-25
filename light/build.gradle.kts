@@ -50,6 +50,7 @@ dependencies {
 
     api("aws.sdk.kotlin:bedrock:$awsVersion") //배드록. 약 2mb  시리즈 전체 -> https://central.sonatype.com/search?q=g%3Aaws.sdk.kotlin+bedrock&smo=true
     api("aws.sdk.kotlin:bedrockruntime:$awsVersion") //배드록 런다임. 약 1m 실제 모델 호출에 사용
+    api("aws.sdk.kotlin:bedrockagent:$awsVersion") //배드록 에이전트.
 
     //==================================================== AWS 람다 ======================================================
     api("com.amazonaws:aws-lambda-java-core:_") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함
@@ -118,6 +119,10 @@ dependencies {
     api("io.ktor:ktor-server-auto-head-response-jvm:_")
     api("io.ktor:ktor-server-host-common-jvm:_")
     api("io.ktor:ktor-server-status-pages-jvm:_")
+
+    //==================================================== 크롤릭 ======================================================
+    api("com.microsoft.playwright:playwright:_")
+
 
     //==================================================== 기타 ======================================================
     api("gov.nist.math:jama:1.0.3") //https://mvnrepository.com/artifact/gov.nist.math/jama 회귀분석 패키지

@@ -3,15 +3,14 @@ package net.kotlinx.aws.bedrock
 import aws.sdk.kotlin.services.bedrock.createModelInvocationJob
 import aws.sdk.kotlin.services.bedrock.getModelInvocationJob
 import aws.sdk.kotlin.services.bedrock.model.*
-import com.lectra.koson.KosonType
-import com.lectra.koson.ObjectType
-import com.lectra.koson.arr
-import com.lectra.koson.obj
-import io.ktor.util.*
+import aws.sdk.kotlin.services.bedrockruntime.converse
+import aws.sdk.kotlin.services.bedrockruntime.invokeModel
+import aws.sdk.kotlin.services.bedrockruntime.model.InferenceConfiguration
+import aws.sdk.kotlin.services.bedrockruntime.model.SystemContentBlock
 import mu.KotlinLogging
 import net.kotlinx.ai.AiModel
 import net.kotlinx.ai.AiTextClient
-import net.kotlinx.ai.AiTextInput.AiTextInputFile
+import net.kotlinx.ai.AiTextInput
 import net.kotlinx.ai.AiTextResult
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceTypeUtil
@@ -23,17 +22,21 @@ import net.kotlinx.collection.doUntilTimeout
 import net.kotlinx.core.Kdsl
 import net.kotlinx.file.slash
 import net.kotlinx.json.gson.GsonData
-import net.kotlinx.json.koson.toKsonArray
+import net.kotlinx.json.gson.ResultGsonData
+import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.time.TimeFormat
 import java.util.*
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 
-class BedrockRuntime : AiTextClient {
+/**
+ * converse 가 더 추천됨.. 하지만 converse는 배치 처리가 없음
+ * */
+class BedrockTextClient : AiTextClient {
 
     @Kdsl
-    constructor(block: BedrockRuntime.() -> Unit = {}) {
+    constructor(block: BedrockTextClient.() -> Unit = {}) {
         apply(block)
     }
 
@@ -44,33 +47,17 @@ class BedrockRuntime : AiTextClient {
      * */
     override lateinit var model: AiModel
 
-    /** 결과토큰인가? */
-    var maxTokens: Int = 1000
-
     /**
-     * 0~1
-     * 0일수록 보수적인 답변. 검수 같은 작업은 0으로 세팅
+     * temperature  등의 설정
      * */
-    var temperature: Int = 0
-
-    /**
-     * 0~1
-     * ?? 모름.  검수 작업에는 0.1을 추천한다고 하네?
-     *  */
-    var topP: Double = 0.1
-
-    /**
-     * 결과를 몇개 고를지
-     * 일반적으로 1개면 될듯
-     *  */
-    var topK: Int = 1
+    var inferenceConfig: InferenceConfiguration? = null
 
     /**
      * 시스템 프롬프트
      * 아래 링크 참조
      * https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts-templates.html
      *  */
-    lateinit var system: Any
+    lateinit var systemPrompt: Any
 
     //==================================================== 이하 대량처리 옵션 ======================================================
 
@@ -80,38 +67,74 @@ class BedrockRuntime : AiTextClient {
     /** 입력 S3 경로 */
     lateinit var batchWorkPath: S3Data
 
+    //==================================================== 함수 ======================================================
+
     /**
      * 단일 요청 버전
      * https://docs.aws.amazon.com/bedrock/latest/userguide/inference-api.html
      * */
-    override suspend fun invokeModel(messages: List<Any>): AiTextResult {
-        val data = createJson(messages)
-        return client.brr.invokeModel(model, data)
+    override suspend fun text(input: List<AiTextInput>): AiTextResult = converse(input)
+
+    /**
+     * AWS가 호출유형을 표준화한 호출방법
+     * */
+    suspend fun converse(input: List<AiTextInput>): AiTextResult {
+        val resp = client.brr.converse {
+            this.modelId = model.id
+            this.system = listOf(
+                SystemContentBlock.Text(systemPrompt.toString())  //시스템 프롬프트는 무조건 하나로
+            )
+            this.inferenceConfig = inferenceConfig
+            this.messages = listOf(
+                BedrockTextConverter.convert(input) //무조건 한개만 입력
+            )
+        }
+        val json = GsonData.parse(resp.output!!.asMessage().content.first().asText())
+        val inputTokens = resp.usage!!.inputTokens
+        val outputTokens = resp.usage!!.outputTokens
+        val result = ResultGsonData(json.isObject, json)
+        return AiTextResult(model, input, result, inputTokens, outputTokens, resp.metrics!!.latencyMs)
     }
 
-    private fun createJson(messages: List<Any>): ObjectType {
-        val data = obj {
-            "anthropic_version" to "bedrock-2023-05-31"
-            "max_tokens" to maxTokens
-            "temperature" to temperature
-            "top_p" to topP
-            "top_k" to topK
-            "system" to system.toString()
-            "messages" to arr[
-                obj {
-                    "role" to "user"
-                    "content" to messages.map { convert(it) }.toKsonArray()
-                },
-            ]
+    /**
+     * agent 아닌, 일반 모델 실행.
+     * 개별 모델 전용 API임. 가능하면 통일화된 converse 를 사용할것
+     * @see converse
+     * */
+    suspend fun invokeModel(input: List<AiTextInput>): AiTextResult {
+        val json = BedrockTextInvokerConverter.convert(this, input)
+        val start = System.currentTimeMillis()
+        val resp = client.brr.invokeModel {
+            this.modelId = model.id
+            this.contentType = "application/json" //json으로 통일
+            this.accept = "application/json" //json으로 통일
+            this.body = json.toString().toByteArray()
         }
-        return data
+
+        val body = GsonData.parse(resp.body.toString(Charsets.UTF_8))
+        val content: GsonData = body["content"]
+        val inputTokens = body["usage"]["input_tokens"].int!!
+        val outputTokens = body["usage"]["output_tokens"].int!!
+
+        val duration = System.currentTimeMillis() - start
+        return try {
+            check(content.size == 1)
+            val result = content[0]["text"].str?.let { ResultGsonData(true, it.toGsonData()) } ?: ResultGsonData(false, content)
+            AiTextResult(model, input, result, inputTokens, outputTokens, duration)
+        } catch (e: Exception) {
+            val result = ResultGsonData(false, content)
+            AiTextResult(model, input, result, inputTokens, outputTokens, duration)
+        }
     }
+
+
+    //==================================================== 대량처리 ======================================================
 
     /**
      * 간이 메소드
      * 오래걸릴 수 있으니 일케 하면 안됨
      *  */
-    suspend fun invokeModelBatchAndWaitCompleted(jobName: String, datas: List<List<Any>>): List<GsonData> {
+    suspend fun invokeModelBatchAndWaitCompleted(jobName: String, datas: List<List<AiTextInput>>): List<GsonData> {
         val job = invokeModelBatch(jobName, datas)
         val results = doUntilTimeout(30.seconds, 30.minutes) { getModelBatchOrNull(job.jobArn) }
         return results
@@ -121,16 +144,17 @@ class BedrockRuntime : AiTextClient {
      * 대량 처리 버전
      * https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-data.html
      *  */
-    suspend fun invokeModelBatch(jobName: String, datas: List<List<Any>>): CreateModelInvocationJobResponse {
+    suspend fun invokeModelBatch(jobName: String, datas: List<List<AiTextInput>>): CreateModelInvocationJobResponse {
         check(datas.size >= 100) { "배치는 최소 100개 이상만 가능함" }
 
         val jobDate = TimeFormat.YMD.get()
         val jobId = UUID.randomUUID().toString()
         val currentDir = batchWorkPath.slash(jobDate).slash(jobName).slash(jobId)
 
+        val textClient = this
         val inputJsonl = currentDir.slash(INPUT_NAME).apply {
             //jsonl 파일 생성
-            val jsonl = datas.map { createJson(it) }.joinToString("\n")
+            val jsonl = datas.map { BedrockTextInvokerConverter.convert(textClient, it) }.joinToString("\n")
             val inputFile = AwsInstanceTypeUtil.INSTANCE_TYPE.root.slash(jobId).slash(INPUT_NAME)
             inputFile.writeText(jsonl)
             client.s3.putObject(this, inputFile)
@@ -194,29 +218,6 @@ class BedrockRuntime : AiTextClient {
             ModelInvocationJobStatus.Expired,
             ModelInvocationJobStatus.Stopped,
         )
-
-        private fun convert(any: Any): KosonType {
-            return when (any) {
-                is AiTextInputFile -> {
-                    val file = any.file ?: throw IllegalStateException("Bedrock Input File Not Found")
-                    obj {
-                        "type" to "image"
-                        "source" to obj {
-                            "type" to "base64" //지금은 base64 만 지원하는듯. s3 안됨
-                            "media_type" to "image/${file.extension.lowercase()}"
-                            "data" to file.readBytes().encodeBase64()
-                        }
-                    }
-                }
-
-                else -> {
-                    obj {
-                        "type" to "text"  //'text', 'image', 'tool_use', 'tool_result'
-                        "text" to any.toString()
-                    }
-                }
-            }
-        }
     }
 
 

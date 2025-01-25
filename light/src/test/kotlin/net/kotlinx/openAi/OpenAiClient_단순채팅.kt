@@ -23,7 +23,7 @@ class OpenAiClient_단순채팅 : BeSpecHeavy() {
         Given("GPT") {
             val client by koinLazy<OpenAiClient>(OpenAiModels.Gpt::class.name())
             Then("채팅") {
-                val result = client.chat(query)
+                val result = client.text(query)
                 listOf(result).printSimple()
             }
         }
@@ -31,7 +31,7 @@ class OpenAiClient_단순채팅 : BeSpecHeavy() {
         Given("perplexity") {
             val client by koinLazy<OpenAiClient>(OpenAiModels.Perplexity::class.name())
             Then("채팅") {
-                val result = client.chat(query)
+                val result = client.text(query)
                 listOf(result).printSimple()
             }
         }

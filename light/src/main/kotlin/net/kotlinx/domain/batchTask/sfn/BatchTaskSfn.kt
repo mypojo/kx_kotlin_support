@@ -1,9 +1,10 @@
-package net.kotlinx.domain.batchTask
+package net.kotlinx.domain.batchTask.sfn
 
-import com.lectra.koson.Koson
 import net.kotlinx.core.Kdsl
 import net.kotlinx.domain.batchStep.BatchStepOption
 import net.kotlinx.domain.batchStep.BatchStepParameter
+import net.kotlinx.domain.batchTask.BatchTaskExecutor
+import net.kotlinx.domain.batchTask.batchTaskSk
 import net.kotlinx.domain.job.Job
 import net.kotlinx.reflect.name
 
@@ -35,13 +36,14 @@ class BatchTaskSfn {
     /** 기본 파라메터로 일단 생성 */
     val parameter: BatchStepParameter
 
-    //==================================================== 입력데이터 (인메모리) ======================================================
+    //==================================================== 입력데이터 ======================================================
 
-    var batchTaskIds: List<String> = emptyList()
+    /** 입력데이터 (인메모리) */
+    var batchTaskInputInmemery: BatchTaskInputInmemery? = null
 
-    var datas: List<List<String>> = emptyList()
-
-    var inputOptionBlock: Koson.() -> Unit = {}
+    /** 입력데이터 청크 */
+    var batchTaskInputCsv: BatchTaskInputCsv? = null
 
 
 }
+

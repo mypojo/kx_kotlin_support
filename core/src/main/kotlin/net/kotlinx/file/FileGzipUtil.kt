@@ -11,6 +11,8 @@ import java.util.zip.GZIPOutputStream
 /** 단일 파일 압축 */
 fun File.gzip(): File = FileGzipUtil.gzip(this)
 
+fun File.unGzip(): File = FileGzipUtil.unGzip(this)
+
 /**
  * 스트림 압축은 GzipResourceSupport 참고
  * */

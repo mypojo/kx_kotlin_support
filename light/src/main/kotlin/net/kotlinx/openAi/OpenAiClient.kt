@@ -13,7 +13,7 @@ import io.ktor.util.*
 import mu.KotlinLogging
 import net.kotlinx.ai.AiModel
 import net.kotlinx.ai.AiTextClient
-import net.kotlinx.ai.AiTextInput.AiTextInputFile
+import net.kotlinx.ai.AiTextInput
 import net.kotlinx.ai.AiTextResult
 import net.kotlinx.core.Kdsl
 import net.kotlinx.json.gson.ResultGsonData
@@ -107,27 +107,28 @@ class OpenAiClient : AiTextClient {
     //==================================================== 디폴트 시스템 메세지 ======================================================
 
     /**
-     * 어시스턴트 ID
-     * 메세지 쓰는경우 필수.  (시스템 메세지, 기본 첨부파일 등을 포함함)
-     *  */
-    var assistantId: String? = null
-
-    /**
      * 시스템 메세지
      * 채팅에 사용됨
      *  */
     var systemMessage: Any? = null
 
-    override suspend fun invokeModel(input: List<Any>): AiTextResult {
-        check(input.isNotEmpty())
+    /** 퓨샷 프롬프트 등 , 커스텀한 프롬프트 */
+    var prompts: List<ChatMessage> = emptyList()
+
+    override suspend fun text(inputs: List<AiTextInput>): AiTextResult {
 
         val start = System.currentTimeMillis()
 
         val systemPrompt = systemMessage?.let { ChatMessage(role = ChatRole.System, content = it.toString()) }
 
-        val userMessages = convertToUserMessage(input)
+        val userMessages = OpenAiTextConverter.convert(inputs)
 
-        val allMessages = listOfNotNull(systemPrompt, userMessages)
+        val allMessages = buildList {
+            systemPrompt?.let { add(it) } //시스템 프롬프트가 같이 있음
+            addAll(prompts)
+            add(userMessages)
+        }
+
         if (log.isTraceEnabled) {
             allMessages.forEach {
                 log.trace { " -> ${it}" }
@@ -145,7 +146,7 @@ class OpenAiClient : AiTextClient {
         val completion = try {
             ai.chatCompletion(reqs)
         } catch (e: Exception) {
-            return AiTextResult.fail(model, input, e)
+            return AiTextResult.fail(model, inputs, e)
         }
 
         val usage = completion.usage!!
@@ -175,36 +176,8 @@ class OpenAiClient : AiTextClient {
 
         val duration = System.currentTimeMillis() - start
         val result = if (gson.isObject) ResultGsonData(true, gson) else ResultGsonData(false, gson)
-        return AiTextResult(model, input, result, usage.promptTokens!!, usage.completionTokens!!, duration)
+        return AiTextResult(model, inputs, result, usage.promptTokens!!, usage.completionTokens!!, duration)
     }
-
-    private fun convertToUserMessage(messages: List<Any>): ChatMessage {
-
-        if (messages.size == 1) {
-            val msg = messages.first()
-            if (msg is CharSequence) {
-                return ChatMessage(role = ChatRole.User, content = msg.toString())
-            }
-        }
-
-        return ChatMessage(
-            role = ChatRole.User, messageContent = ListContent(
-                messages.map { msg ->
-                    when (msg) {
-                        is AiTextInputFile -> {
-                            val url = msg.url ?: throw IllegalStateException("OpenAi Input url Not Found")
-                            ImagePart(url)
-                        }
-
-                        else -> TextPart(msg.toString())
-                    }
-                }
-            )
-        )
-    }
-
-    /** 스래드로 작업 */
-    fun thread(assistantId: String = this.assistantId!!, threadId: String = UUID.randomUUID().toString()): OpenAiThread = OpenAiThread(this, assistantId, threadId)
 
 
 }

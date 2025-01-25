@@ -16,6 +16,7 @@ import net.kotlinx.concurrent.CoroutineSleepTool
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.concurrent.delay
 import net.kotlinx.core.Kdsl
+import net.kotlinx.file.gzip
 import net.kotlinx.json.gson.toGsonDataOrEmpty
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.koin.Koins.koinLazy
@@ -61,12 +62,11 @@ class BatchStepExecutor {
     var synchSfn = AwsInstanceTypeUtil.IS_LOCAL
 
     /**
-     * 설정된 정보로 업로드
+     * 처리할 데이터를 인메모리로 업로드
      * 파일 업로드는 프로그레스 체크할정도로 오래걸리지 않음
      * @param datas 각 단위는 5~8분 이내로 처리 가능한 사이즈가 좋아보임. (부득이하게 좀 길어져도 안전하도록)
      *  */
-    fun upload(targetSfnId: String, datas: List<S3LogicInput>) {
-
+    fun uploadAllInmemory(targetSfnId: String, datas: List<S3LogicInput>) {
         val thidDir = File(workDir, "${targetSfnId}}")
         val workUploadDir = "${config.workUploadInputDir}$targetSfnId/"
         measureTimeString {
@@ -74,9 +74,11 @@ class BatchStepExecutor {
             thidDir.mkdirs()
             datas.mapIndexed { index, data ->
                 suspend {
-                    val file = File(thidDir, "$index.txt".padStart(5 + 4, '0')) //5자리까지 예상
-                    val textJson = data.toJson()
-                    file.writeText(textJson)
+                    val file = File(thidDir, "$index.txt".padStart(5 + 4, '0')).apply {
+                        //파일 인련번호는 5자리까지 예상
+                        val textJson = data.toJson()
+                        writeText(textJson)
+                    }.gzip()
                     val workUploadKey = "${workUploadDir}${file.name}"
                     aws.s3.putObject(config.workUploadBuket, workUploadKey, file)
                 }
@@ -85,6 +87,22 @@ class BatchStepExecutor {
         }.also {
             log.debug { "S3로 업로드 start => 데이터 ${datas.size}건 => 걸린시간 $it" }
         }
+    }
+
+    /** 하나씩 업로드 */
+    suspend fun upload(targetSfnId: String, index: Int, data: S3LogicInput) {
+        check(index >= 0)
+        val thidDir = File(workDir, "${targetSfnId}}")
+        val workUploadDir = "${config.workUploadInputDir}$targetSfnId/"
+        thidDir.mkdirs()
+
+        val file = File(thidDir, "$index.txt".padStart(5 + 4, '0')).apply {
+            //파일 인련번호는 5자리까지 예상
+            val textJson = data.toJson()
+            writeText(textJson)
+        }.gzip()
+        val workUploadKey = "${workUploadDir}${file.name}"
+        aws.s3.putObject(config.workUploadBuket, workUploadKey, file)
     }
 
     /**

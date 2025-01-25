@@ -26,7 +26,7 @@ class OpenAiClient_메세지_댓글입력 : BeSpecHeavy() {
             val client by koinLazy<OpenAiClient>(OpenAiModels.Gpt::class.name())
 
             Then("메세지") {
-                val thread = client.thread()
+                val thread = OpenAiThread(client, "!!", "??") //향후 별도 클라이언트로 만들기
                 thread.message(query.joinToString("\n")).also {
                     println(it.toListString().first().toGsonData().toPreety())
                 }
@@ -50,7 +50,6 @@ class OpenAiClient_메세지_댓글입력 : BeSpecHeavy() {
                 thread.message(q3.joinToString("\n"), listOf(demoFile)).also {
                     println(it.toListString().first().toGsonData().toPreety())
                 }
-
 
             }
         }

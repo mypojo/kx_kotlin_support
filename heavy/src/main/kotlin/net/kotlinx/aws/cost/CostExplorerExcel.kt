@@ -124,7 +124,7 @@ class CostExplorerExcel(block: CostExplorerExcel.() -> Unit = {}) {
                         "실제 금액보다 조금 적은 금액이 표기됩니다",
                     )
                 },
-                "비율(%)",
+                "합산비용비율(%)",
             ).flattenAny()
         )
 
@@ -159,6 +159,21 @@ class CostExplorerExcel(block: CostExplorerExcel.() -> Unit = {}) {
                 XlsFormula("SUM( ${totalCol}${2}:${totalCol}${gridEndRowNum})") {
                     style = sheet.excel.style.percentage
                 }
+            ).flattenAny()
+        )
+        //합계의 증감 퍼센트
+        sheet.writeLine(
+            listOf(
+                "증감",
+                "-",
+                (1..(totalMonths.size - 1)).map {
+                    val col1 = StringIntUtil.intToUpperAlpha(it + 2)
+                    val col2 = StringIntUtil.intToUpperAlpha(it + 1)
+                    val currentRow = gridEndRowNum + 1
+                    XlsFormula("ROUND((${col1}${currentRow}-${col2}${currentRow})/${col2}${currentRow}*100,2)")
+                },
+                "-",
+                "-",
             ).flattenAny()
         )
     }
@@ -199,11 +214,13 @@ class CostExplorerExcel(block: CostExplorerExcel.() -> Unit = {}) {
                     }
                 },
                 "월비용(만원)",
+                "증감(%)",
             ).flattenAny().convertHeader()
         )
 
         val startCol = StringIntUtil.intToUpperAlpha(2)
         val endCol = StringIntUtil.intToUpperAlpha(keyNames.size + 1)
+        val sumCol = StringIntUtil.intToUpperAlpha(keyNames.size + 2)
         val lastMonth = TimeFormat.YM_F01[LocalDate.now().minusMonths(1)]
         totalMonths.forEachIndexed { i, month ->
             val groupByService = targeteList.filter { it.timeSeries == month }.associateBy { it.key!! }
@@ -212,6 +229,7 @@ class CostExplorerExcel(block: CostExplorerExcel.() -> Unit = {}) {
             val row = i + 1 + 1 //헤더 + 0부터 시작
 
             val isLastMonth = month == lastMonth
+
             val line = listOf(
                 when (isLastMonth) {
                     true -> XlsComment(month) {
@@ -222,6 +240,7 @@ class CostExplorerExcel(block: CostExplorerExcel.() -> Unit = {}) {
                 },
                 values,
                 XlsFormula("ROUND(SUM(${startCol}${row}:${endCol}${row}) ,0)"),
+                if (row <= 2) "" else XlsFormula("ROUND((${sumCol}${row}-${sumCol}${row - 1})/${sumCol}${row - 1}*100,2)") { iferror = true }, //합계비용 증감
             ).flattenAny()
 
             if (isLastMonth) {

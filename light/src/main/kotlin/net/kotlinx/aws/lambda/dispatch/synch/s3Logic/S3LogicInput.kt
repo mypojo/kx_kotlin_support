@@ -18,9 +18,9 @@ data class S3LogicInput(
      *  */
     val logicId: String,
     /**
-     * 데이터들
+     * 데이터들.
      * 일단 텍스트 덩어리로 입력함 (각 로직에서 파싱)
-     * 가능하면 json 으로 입력
+     * 일반문자, csv, json 등등 다양한 가능성이 있음 -> 이때문에 가능하면 json 으로 입력
      *  */
     val datas: List<String>,
     /** 로직 옵션 */

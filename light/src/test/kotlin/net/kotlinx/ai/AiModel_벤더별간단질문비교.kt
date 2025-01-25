@@ -17,7 +17,7 @@ class AiModel_벤더별간단질문비교 : BeSpecLight() {
 
             val set = AiModelLocalSet {
                 aws = aws97
-                systemPrompt = obj {
+                this.systemPrompt = obj {
                     "codeLanguage" to "kotlin"
                     "awsSdk" to "kotlin SDK"
                     "requirements" to obj {
@@ -42,9 +42,10 @@ class AiModel_벤더별간단질문비교 : BeSpecLight() {
                 /** 벤더별 기능작동 테스트 */
                 clients = listOf(
                     gpt4OMini,
-                    perplexitySmall,
+                    //perplexitySmall,
+                    claudeSonet,
                     claudeHaiku,
-                    deepseek,
+                    //deepseek,
                 )
             }
 
