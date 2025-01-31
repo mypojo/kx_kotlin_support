@@ -10,7 +10,9 @@ import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
 /**
- * gson 결과를 래핀해준다
+ * gson 결과를 래핑해준다
+ * json이 아닌경우 아래처럼 회피 가능
+ * @RequestMapping("view/search", produces = ["text/html"])
  * */
 class SpringGsonConverter(
     val gson: Gson = GsonSet.GSON,

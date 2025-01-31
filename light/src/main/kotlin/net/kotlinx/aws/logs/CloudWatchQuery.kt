@@ -2,6 +2,7 @@ package net.kotlinx.aws.logs
 
 import aws.sdk.kotlin.services.cloudwatchlogs.CloudWatchLogsClient
 import aws.sdk.kotlin.services.cloudwatchlogs.getQueryResults
+import aws.sdk.kotlin.services.cloudwatchlogs.model.GetQueryResultsResponse
 import aws.sdk.kotlin.services.cloudwatchlogs.model.QueryStatus
 import aws.sdk.kotlin.services.cloudwatchlogs.startQuery
 import kotlinx.coroutines.delay
@@ -39,27 +40,16 @@ class CloudWatchQuery {
 
 }
 
-data class CloudWatchResult(
-    val logGroupName: String,
-    val logStream: String,
-    val message: String,
-) {
-
-    /** 시간 컨트롤은 일단 무시. UTC 조절해야함. */
-    fun toLogLink(): String = CloudWatchUtil.toLogLink(logGroupName, logStream)
-
-}
-
 /**
  * 쿼리 날리고 받아온다.
  * 대부분 로컬에서 테스트로 작동함으로 그냥 여기다 간단히 코딩함
  *  */
-suspend fun CloudWatchLogsClient.queryAndWait(block: CloudWatchQuery.() -> Unit = {}): List<CloudWatchResult> {
+suspend fun CloudWatchLogsClient.queryAndWait(block: CloudWatchQuery.() -> Unit = {}): GetQueryResultsResponse {
     val log = KotlinLogging.logger {}
     val op = CloudWatchQuery().apply(block)
     val startQueryResponse = this.startQuery {
         this.logGroupNames = op.logGroupNames
-        this.queryString = "fields @log,@logStream,@message | filter @message like /${op.query}/ | limit ${op.limit}"
+        this.queryString = "fields @timestamp,@log,@logStream,@message | filter @message like /${op.query}/ | limit ${op.limit}"
         this.startTime = op.startTime.toLong()
         this.endTime = op.endTime.toLong()
         this.limit = op.limit
@@ -81,14 +71,7 @@ suspend fun CloudWatchLogsClient.queryAndWait(block: CloudWatchQuery.() -> Unit 
                 }
 
                 QueryStatus.Complete -> {
-                    return@withTimeout resp.results!!.map { line ->
-                        //성능 무시
-                        CloudWatchResult(
-                            line.first { it.field == "@log" }.value!!.substringAfter(":"), //이상하게 넘어온다. ex) 123456789:/aws/lambda/xx-fn
-                            line.first { it.field == "@logStream" }.value!!,
-                            line.first { it.field == "@message" }.value!!.dropLast(1) //마지막 문자로 들어오는 개행을 삭제해준다.
-                        )
-                    }
+                    return@withTimeout resp
                 }
 
                 else -> throw IllegalStateException("${resp.status} is not required")

@@ -8,23 +8,24 @@ import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.string.print
-import net.kotlinx.string.toTextGrid
+import net.kotlinx.string.toTextGridPrint
 import net.kotlinx.system.ResourceHolder
+import net.kotlinx.time.toKr01
 import net.kotlinx.time.toLong
 import java.time.LocalDateTime
 
 class CloudWatchLogsSupportKtTest : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile28 }
-    private val aws by lazy { koin<AwsClient>(findProfile28) }
+    private val profileName by lazy { findProfile97 }
+    private val aws by lazy { koin<AwsClient>(findProfile97) }
 
     init {
         initTest(KotestUtil.IGNORE)
 
         xGiven("자주 쓰는 기능") {
             Then("해당 로그그룹을 모두 삭제") {
-                val profileName  = findProfile97
-                val aws  = koin<AwsClient>(profileName)
+                val profileName = findProfile97
+                val aws = koin<AwsClient>(profileName)
                 log.warn { "[/aws/lambda/$profileName-fn-dev] 로그 삭제.." }
                 aws.logs.cleanLogStream("/aws/lambda/$profileName-fn-dev")
             }
@@ -56,11 +57,22 @@ class CloudWatchLogsSupportKtTest : BeSpecHeavy() {
 
             Then("전체 로그 대상으로 쿼리") {
                 val doQuery = aws.logs.queryAndWait {
-                    this.logGroupNames = listOf("/aws/lambda/aa/-fn-dev")
-                    this.query = "WAS lambda 과금"
+                    this.logGroupNames = listOf("/aws/lambda/adpriv-fn-dev")
+                    this.query = "Job"
                     this.startTime = LocalDateTime.now().minusHours(1)
                 }
-                listOf("메시지", "링크").toTextGrid(doQuery.map { arrayOf(it.message, it.toLogLink()) }).print()
+
+                listOf("시간", "스트림", "링크", "메세지").toTextGridPrint {
+                    doQuery.logs.map {
+                        arrayOf(
+                            it.timestamp.toKr01(),
+                            it.logStream,
+                            it.logLink,
+                            it.message,
+                        )
+                    }
+                }
+
             }
         }
     }

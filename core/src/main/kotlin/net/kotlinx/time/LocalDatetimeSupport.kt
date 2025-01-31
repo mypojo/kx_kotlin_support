@@ -56,6 +56,12 @@ fun LocalDateTime.toLong(zoneId: ZoneId = TimeUtil.SEOUL): Long = this.atZone(zo
 /** Date 로 컴버팅*/
 fun LocalDateTime.toDate(zoneId: ZoneId = TimeUtil.SEOUL): Date = Date.from(this.atZone(zoneId).toInstant())
 
+/**
+ * UTC 기준시간을 특정 존의 시간으로 변경
+ * ex) AWS의 클라우드와치 이벤트 시간(UTC로 제공됨)을 서울로 변경
+ *  */
+fun LocalDateTime.toZone(zoneId: ZoneId = TimeUtil.SEOUL): LocalDateTime = this.atZone(ZoneId.of("UTC")).withZoneSameInstant(zoneId).toLocalDateTime()
+
 //==================================================== 절삭 ======================================================
 
 /**

@@ -6,9 +6,11 @@ import com.github.doyaaaaaken.kotlincsv.client.CsvWriter
 import com.github.doyaaaaaken.kotlincsv.client.ICsvFileWriter
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
+import mu.KotlinLogging
 import net.kotlinx.concurrent.SuspendRunnable
 import net.kotlinx.core.Kdsl
 import net.kotlinx.exception.KnownException
+import net.kotlinx.exception.toSimpleString
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -19,6 +21,7 @@ import java.util.zip.GZIPOutputStream
 /**
  * 대용량 CSV 읽고 쓰는 복잡한 처리기
  * 스프링 배치 의존성을 제거하는것이 핵심 (무거움) => 대신 분할쓰기 등의 기능은 없음 (어차피 뉴 메타는 분산 처리라 분할쓰기 필요없음)
+ * ex) x테라의 대용량 파일 -> 100mb의 X개 파일로 분리 -> 각 분리파일을 람다에서 CsvReadWriteTools 로 읽어서 처리
  *
  * 클라우드 환경에서 쓰이는거만 남김
  * 중요!! 코루틴을 지원하며 싱글 스래드로 작동함!! -> 람다에서 최소 비용 & 싱글스래드로 청크단위로 합쳐서 코루틴 처리할것!
@@ -33,11 +36,21 @@ class CsvReadWriteTools : SuspendRunnable {
     }
 
     override suspend fun run() {
-        readerFactory().openAsync(readerInputStream) {
-            when (writerOutputStream) {
-                null -> doProcess(null)
-                else -> writerFactory().openAsync(writerOutputStream!!) { doProcess(this) }
+        try {
+            readerFactory().openAsync(readerInputStream) {
+                when (writerOutputStream) {
+                    null -> doProcess(null)
+                    else -> writerFactory().openAsync(writerOutputStream!!) {
+                        try {
+                            doProcess(this)
+                        } catch (e: KnownException.ItemSkipException) {
+                            log.warn { "현재 item을 skip 합니다! -> ${e.toSimpleString()}" }
+                        }
+                    }
+                }
             }
+        } catch (e: KnownException.StopException) {
+            log.warn { "작업을 중단합니다! -> ${e.toSimpleString()}" }
         }
     }
 
@@ -125,6 +138,10 @@ class CsvReadWriteTools : SuspendRunnable {
     /** 결과파일 -> 스트림 */
     var writerFile: File? = null
 
+
+    companion object {
+        private val log = KotlinLogging.logger {}
+    }
 
 }
 
