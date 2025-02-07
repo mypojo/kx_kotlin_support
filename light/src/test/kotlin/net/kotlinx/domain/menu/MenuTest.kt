@@ -1,6 +1,8 @@
 package net.kotlinx.domain.menu
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
+import net.kotlinx.delegate.MapAttributeDelegate
 import net.kotlinx.domain.developer.DeveloperData
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
@@ -14,12 +16,19 @@ internal class MenuTest : BeSpecLog() {
 
     companion object {
 
-        /** 설정 확장 - 아이콘 추가 */
+        /** 설정 확장  ->  이렇게 하면 지저분함  */
         private var Menu.icon: String
             get() = this.attributes["icon"]?.toString() ?: ""
             set(value) {
                 this.attributes["icon"] = value
             }
+
+        /** 설정 확장 - 위임자로 확장 */
+        var Menu.title: String by MapAttributeDelegate<String>()
+
+        /** 설정 확장 - 위임자로 확장 */
+        var Menu.age: Long by MapAttributeDelegate<Long>()
+
 
         val MENUS: MenuList = MenuList {
             menu("index", "인덱스")
@@ -50,8 +59,11 @@ internal class MenuTest : BeSpecLog() {
         lateinit var BUY2: Menu
     }
 
+
     init {
         initTest(KotestUtil.FAST)
+
+
 
         Given("MenuList") {
             Then("메뉴 리스팅") {
@@ -65,6 +77,31 @@ internal class MenuTest : BeSpecLog() {
             Then("companion 할당 확인") {
                 LOGIN.icon shouldBe "login.gif"
                 BUY2.configRoles shouldBe listOf(Role.A, Role.C)
+            }
+
+            When("메뉴 확장") {
+
+                val m = Menu()
+                m.name = "test"
+
+                Then("없는데 가져오면 예외") {
+                    shouldThrow<IllegalStateException> {
+                        println(m.title)
+                    }
+                    shouldThrow<IllegalStateException> {
+                        println(m.age)
+                    }
+                }
+
+                Then("입력하면 정상 출력") {
+                    m.title = "하마"
+                    m.title shouldBe "하마"
+
+                    m.age = 778
+                    m.age shouldBe 778
+                }
+
+
             }
         }
     }

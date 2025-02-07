@@ -1,6 +1,7 @@
 package net.kotlinx.domain.menu
 
 import net.kotlinx.core.Kdsl
+import net.kotlinx.delegate.MapAttribute
 import net.kotlinx.domain.developer.DeveloperData
 import net.kotlinx.domain.tree.Treeable
 
@@ -10,7 +11,7 @@ import net.kotlinx.domain.tree.Treeable
  *
  * 대부분의 설정시 하위 객체도 같이 설정
  * */
-class Menu : Treeable<String, Menu> {
+class Menu : Treeable<String, Menu>, MapAttribute {
 
     /** 기본 생성 */
     @Kdsl
@@ -52,7 +53,7 @@ class Menu : Treeable<String, Menu> {
      * 메뉴 속성
      * 커스텀 해서 사용하세요
      * */
-    var attributes: MutableMap<String, Any> = mutableMapOf()
+    override var attributes: MutableMap<String, Any> = mutableMapOf()
 
     /** 부모 메뉴  */
     override var parent: Menu? = null

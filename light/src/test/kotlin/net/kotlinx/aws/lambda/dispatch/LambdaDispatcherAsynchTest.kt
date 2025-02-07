@@ -47,6 +47,41 @@ class LambdaDispatcherAsynchTest : BeSpecHeavy() {
             }
         }
 
+        Given("S3 이벤트 수신") {
+            val event = obj {
+                "version" to "0"
+                "id" to "195b34f3-ae17-9b41-a42b-b16fcdec8ec7"
+                "detail-type" to "Object Created"
+                "source" to "aws.s3"
+                "account" to "992365606987"
+                "time" to "2025-02-06T02:25:19Z"
+                "region" to "ap-northeast-2"
+                "resources" to arr[
+                    "arn:aws:s3:::nabus-new-real-work"
+                ]
+                "detail" to obj {
+                    "version" to "0"
+                    "bucket" to obj {
+                        "name" to "nabus-new-real-work"
+                    }
+                    "object" to obj {
+                        "key" to "integration/adpriv/OUTPUT/tv-banner-07.html"
+                        "size" to 1415
+                        "etag" to "02e4ed8357db06eda74a7ec4cc680153"
+                        "sequencer" to "0067A41D8F0A04DA0A"
+                    }
+                    "request-id" to "MB6EBFGP616WJ0ZQ"
+                    "requester" to "992365606987"
+                    "source-ip-address" to "49.254.179.205"
+                    "reason" to "PutObject"
+                }
+            }
+
+            Then("설정된 스케쥴링으로 이벤트 수신") {
+                dispatcher.handleRequest(event)
+            }
+        }
+
 
     }
 

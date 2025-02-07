@@ -11,11 +11,8 @@ import net.kotlinx.concurrent.SuspendRunnable
 import net.kotlinx.core.Kdsl
 import net.kotlinx.exception.KnownException
 import net.kotlinx.exception.toSimpleString
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
-import java.util.zip.GZIPOutputStream
+import net.kotlinx.io.input.InputResource
+import net.kotlinx.io.output.OutputResource
 
 
 /**
@@ -26,6 +23,7 @@ import java.util.zip.GZIPOutputStream
  * 클라우드 환경에서 쓰이는거만 남김
  * 중요!! 코루틴을 지원하며 싱글 스래드로 작동함!! -> 람다에서 최소 비용 & 싱글스래드로 청크단위로 합쳐서 코루틴 처리할것!
  *
+ * 내부적으로 순서를 유지함 -> 대신 청크 안에서 병렬 처리를 할것 (ㄱ
  * 중단된 파일 이어쓰는 기능을 하려고 했으나.. 압축이나 헤더 문제 때문에 힘듬 => 그냥 분리 & 청크처리 하는게 훨씬 좋음!
  *  */
 class CsvReadWriteTools : SuspendRunnable {
@@ -37,10 +35,10 @@ class CsvReadWriteTools : SuspendRunnable {
 
     override suspend fun run() {
         try {
-            readerFactory().openAsync(readerInputStream) {
-                when (writerOutputStream) {
+            readerFactory().openAsync(inputResource.inputStream) {
+                when (outputResource) {
                     null -> doProcess(null)
-                    else -> writerFactory().openAsync(writerOutputStream!!) {
+                    else -> writerFactory().openAsync(outputResource!!.outputStream) {
                         try {
                             doProcess(this)
                         } catch (e: KnownException.ItemSkipException) {
@@ -102,15 +100,8 @@ class CsvReadWriteTools : SuspendRunnable {
      *  */
     var readerFactory: () -> CsvReader = { csvReader() }
 
-    /** 입력 스트림 */
-    lateinit var readerInputStream: InputStream
-
-    /** 입력 파일 -> 스트림 */
-    var readerFile: File? = null
-        set(value) {
-            readerInputStream = value!!.inputStream()
-            field = value
-        }
+    /** 입력 */
+    lateinit var inputResource: InputResource
 
     //==================================================== OUT (선택) ======================================================
 
@@ -120,23 +111,8 @@ class CsvReadWriteTools : SuspendRunnable {
      *  */
     var writerFactory: () -> CsvWriter = { csvWriter() }
 
-    /** 출력 스트림 */
-    val writerOutputStream: OutputStream?
-        get() = when {
-
-            writerFile != null -> {
-                val fileOut = FileOutputStream(writerFile)
-                if (writerGzip) GZIPOutputStream(fileOut) else fileOut
-            }
-
-            else -> null
-        }
-
-    /** 파일로 쓸 경우 압축 여부 */
-    var writerGzip: Boolean = false
-
-    /** 결과파일 -> 스트림 */
-    var writerFile: File? = null
+    /** 출력 */
+    var outputResource: OutputResource? = null
 
 
     companion object {

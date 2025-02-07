@@ -51,6 +51,7 @@ class CdkCodeBuild : CdkInterface {
     /**
      * 그래들 명령어 간단등록
      * ex)  :service:batch:deployBatch
+     * 경고!! gradleVersion 수정후 이거 호출할것!!
      *  */
     fun gradleCmds(vararg cmds: String) {
         gradleCmds = cmds.map {

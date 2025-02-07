@@ -85,31 +85,35 @@ object OpenAiModels {
 
         val HOST = OpenAIHost("https://api.perplexity.ai")
 
-        val SONAR_SMALL: AiModel = AiModel {
-            id = "llama-3.1-sonar-small-128k-online"
-            name = "퍼플렉시티-small"
-            costOfRequest = 5.0 / 1000
-            costOfInputToken = 0.2 / 1000
-            costOfOutputToken = 0.2 / 1000
-        }
-
-        val SONAR_LARGE: AiModel = AiModel {
-            id = "llama-3.1-sonar-large-128k-online"
-            name = "퍼플렉시티-large"
+        val SONAR01: AiModel = AiModel {
+            id = "sonar"
+            name = "퍼플렉시티01"
             costOfRequest = 5.0 / 1000
             costOfInputToken = 1.0 / 1000
             costOfOutputToken = 1.0 / 1000
         }
+        val SONAR02: AiModel = AiModel {
+            id = "sonar-reasoning"
+            name = "퍼플렉시티02"
+            costOfRequest = 5.0 / 1000
+            costOfInputToken = 1.0 / 1000
+            costOfOutputToken = 5.0 / 1000
+        }
+        val SONAR03: AiModel = AiModel {
+            id = "sonar-reasoning-pro"
+            name = "퍼플렉시티03"
+            costOfRequest = 5.0 / 1000
+            costOfInputToken = 2.0 / 1000
+            costOfOutputToken = 8.0 / 1000
+        }
+        val SONAR04: AiModel = AiModel {
+            id = "sonar-pro"
+            name = "퍼플렉시티04"
+            costOfRequest = 5.0 / 1000
+            costOfInputToken = 3.0 / 1000
+            costOfOutputToken = 15.0 / 1000
+        }
 
-
-        /** 토큰 1M당 5$ */
-        const val SONAR_HUGE: String = "llama-3.1-sonar-huge-128k-online"
-
-        const val CHAT_SMALL: String = "llama-3.1-sonar-small-128k-chat"
-
-        const val CHAT_LARGE: String = "llama-3.1-sonar-large-128k-chat"
-
-        const val OPEN_LARGE: String = "llama-3.1-70b-instruct"
 
     }
 

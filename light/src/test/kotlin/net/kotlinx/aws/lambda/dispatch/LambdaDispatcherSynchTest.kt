@@ -24,7 +24,7 @@ class LambdaDispatcherSynchTest : BeSpecHeavy() {
             DemoJob.cnt.get() shouldBe 0
 
             val input = DemoJob().createEmptyJob()
-            Then("잡 실행됨") {
+            xThen("잡 실행됨 -> DDB 테이블은 있어야 작동함") {
                 dispatcher.handleRequest(input)
                 DemoJob.cnt.get() shouldBe 1
             }

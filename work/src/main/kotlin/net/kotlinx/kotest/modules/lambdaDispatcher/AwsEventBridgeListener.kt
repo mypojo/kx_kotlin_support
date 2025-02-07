@@ -56,13 +56,29 @@ class AwsEventBridgeListener {
     }
 
     @Subscribe
-    fun onEvent(event: EventBridgeUnknown) {
+    fun onEvent(event: EventBridgeS3) {
         log.debug { " -> 메시지 전송.. $event" }
         //코드커밋 라이브러리 없어서 못보냄..
         SlackMessageSenders.Alert.send {
-            workDiv = EventBridgeUnknown::class.name()
+            workDiv = EventBridgeS3::class.name()
+            descriptions = listOf(
+                event.bucket,
+                event.key,
+                event.reason
+            )
+            body = emptyList()
+            exception = null
+        }
+    }
+
+    @Subscribe
+    fun onEvent(event: EventBridgeJson) {
+        log.debug { " -> 메시지 전송.. $event" }
+        //코드커밋 라이브러리 없어서 못보냄..
+        SlackMessageSenders.Alert.send {
+            workDiv = EventBridgeJson::class.name()
             descriptions = listOf("알 수 없는 이벤트브릿지 전달입니다. 파싱해주세요")
-            body = listOf(event.data.toPreety()) //알수 없는 메세지는 요약하지 않음
+            body = listOf(event.body.toPreety()) //알수 없는 메세지는 요약하지 않음
         }
     }
 

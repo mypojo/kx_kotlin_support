@@ -27,6 +27,9 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
         else -> empty()
     }
 
+    /**
+     * 간단 더하기 기능
+     *  */
     operator fun plus(data: GsonData): GsonData = when (delegate) {
 
         is JsonObject -> {

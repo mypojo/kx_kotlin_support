@@ -14,6 +14,7 @@ import net.kotlinx.reflect.newInstance
 /**
  * resume 샘플
  * */
+@Deprecated("기본 resmue 활용할것")
 suspend fun JobLocalExecutor.resume(event: EventBridgeSfnStatus, onEventSfnStatusAlert: (EventBridgeSfnStatus) -> Unit = {}) {
 
     val log = KotlinLogging.logger {}

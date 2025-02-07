@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicLong
  * 주의!!!  JSON 과는 다르게 뎁스에 스키마가 있다. 즉 트리구조가 아닌 플랫 구조이다
  *
  * 단순 계산이라면 delegate.computeIfPresent 를 사용해도 됨
+ * @see MutableMap.compute 비슷한 개념
  */
 class MapTree<T>(
     /** 주의!! 편의상 key 가 String 임!! */

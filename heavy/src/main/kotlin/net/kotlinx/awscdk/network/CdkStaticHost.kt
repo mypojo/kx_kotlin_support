@@ -55,7 +55,7 @@ class CdkStaticHost {
 
     var s3Build: BucketProps.Builder.() -> Unit = {}
 
-    var cloudBuild: DistributionProps.Builder.() -> Unit = {}
+    var cloudFrontBuild: DistributionProps.Builder.() -> Unit = {}
 
     //==================================================== 결과 ======================================================
 
@@ -78,7 +78,7 @@ class CdkStaticHost {
             domain = hostDomain
             origin = CdkCloudFront.forWebsite(origon.iBucket)
             iCertificate = Certificate.fromCertificateArn(stack, "hosting-${hostDomain}", certArn)
-            create(stack, cloudBuild)
+            create(stack, cloudFrontBuild)
         }
         Route53Util.arecord(stack, hostedZone, hostDomain, cloudFront.distribution.toRecordTarget())
 

@@ -83,8 +83,30 @@ class JobLocalExecutor(val profile: String? = null) {
         return job.toKeyString()
     }
 
-    //==================================================== SFN 콜백 ======================================================
 
+    /**
+     * 외부 이벤트 등으로 잡을 완료시킴
+     * @param block job에 대한 전처리
+     *  */
+    suspend fun resume(jobPk: String, jobSk: String, block: suspend (Job) -> Unit = {}) {
+        val job = jobRepository.getItem(Job(jobPk, jobSk))!!
+        block(job)
+        val jobService = JobDefinitionRepository.findById(job.pk).jobClass.newInstance()
+        try {
+            jobService.onProcessComplete(job)
+            this.resumeSuccess(job)
+        } catch (e: Exception) {
+            log.warn { "onProcessComplete 처리중 예외! -> ${e.toSimpleString()}" }
+            e.printStackTrace()
+            this.resumeFail(job, "onProcessComplete 처리중 예외! -> ${e.toSimpleString()}")
+        }
+
+    }
+
+
+    //==================================================== 콜백 ======================================================
+
+    /** resume 내 성공처리 */
     suspend fun resumeSuccess(job: Job): String {
         job.jobStatus = JobStatus.SUCCEEDED
         job.endTime = LocalDateTime.now()
@@ -94,6 +116,13 @@ class JobLocalExecutor(val profile: String? = null) {
         return job.toKeyString()
     }
 
+    suspend fun resumeFail(jobPk: String, jobSk: String, jobErrMsg: String, block: suspend (Job) -> Unit = {}): String {
+        val job = jobRepository.getItem(Job(jobPk, jobSk))!!
+        block(job)
+        return resumeFail(job, jobErrMsg)
+    }
+
+    /** resume 내 실패처리 */
     suspend fun resumeFail(job: Job, jobErrMsg: String): String {
         job.jobStatus = JobStatus.FAILED
         job.endTime = LocalDateTime.now()

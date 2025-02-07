@@ -65,21 +65,39 @@ class AiModelLocalSet {
         }
     }
 
-    val perplexitySmall by lazy {
+    val perplexity01 by lazy {
         OpenAiClient {
             apiKey = aws.ssmStore[KEY_PERPLEXITY]
             host = OpenAiModels.Perplexity.HOST
-            model = OpenAiModels.Perplexity.SONAR_SMALL
+            model = OpenAiModels.Perplexity.SONAR01
             systemMessage = this@AiModelLocalSet.systemPrompt!!  //아직 어시스턴스 없이 채팅만 지원함. 이거 해도 안되는거 많음..
             responseFormat = ChatResponseFormat.Text //단순 JSON 지원 안함.  스키마가 있어가 해야하는듯?
         }
     }
 
-    val perplexityLarge by lazy {
+    val perplexity02 by lazy {
         OpenAiClient {
             apiKey = aws.ssmStore[KEY_PERPLEXITY]
             host = OpenAiModels.Perplexity.HOST
-            model = OpenAiModels.Perplexity.SONAR_LARGE
+            model = OpenAiModels.Perplexity.SONAR02
+            systemMessage = this@AiModelLocalSet.systemPrompt!!  //아직 어시스턴스 없이 채팅만 지원함. 이거 해도 안되는거 많음..
+            responseFormat = ChatResponseFormat.Text //단순 JSON 지원 안함.  스키마가 있어가 해야하는듯?
+        }
+    }
+    val perplexity03 by lazy {
+        OpenAiClient {
+            apiKey = aws.ssmStore[KEY_PERPLEXITY]
+            host = OpenAiModels.Perplexity.HOST
+            model = OpenAiModels.Perplexity.SONAR03
+            systemMessage = this@AiModelLocalSet.systemPrompt!!  //아직 어시스턴스 없이 채팅만 지원함. 이거 해도 안되는거 많음..
+            responseFormat = ChatResponseFormat.Text //단순 JSON 지원 안함.  스키마가 있어가 해야하는듯?
+        }
+    }
+    val perplexity04 by lazy {
+        OpenAiClient {
+            apiKey = aws.ssmStore[KEY_PERPLEXITY]
+            host = OpenAiModels.Perplexity.HOST
+            model = OpenAiModels.Perplexity.SONAR04
             systemMessage = this@AiModelLocalSet.systemPrompt!!  //아직 어시스턴스 없이 채팅만 지원함. 이거 해도 안되는거 많음..
             responseFormat = ChatResponseFormat.Text //단순 JSON 지원 안함.  스키마가 있어가 해야하는듯?
         }

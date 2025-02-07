@@ -27,6 +27,7 @@ fun File.readCsvLines(charset: Charset = CharSets.UTF_8): List<List<String>> {
 /**
  * 간단하게 스트림으로 읽음
  * @see forEachLine -> csv 아니고, 일반 라인 읽기
+ * @see toFlow 가능하면 이거사용
  *  */
 fun File.readCsvLines(charset: Charset = CharSets.UTF_8, callback: (List<String>) -> Unit) {
     val reader = csvReader { this.charset = charset.toString() }
@@ -44,6 +45,7 @@ fun File.readCsvLines(charset: Charset = CharSets.UTF_8, callback: (List<String>
  * @param callback 헤더와 청크 단위의 데이터를 처리하는 콜백 함수
  *
  * 간단한거에만 쓸것!.
+ * @see net.kotlinx.csv.chunkTools.CsvReadWriteTools
  */
 fun File.readCsvLinesWithHeaderAndChunk(
     reader: CsvReader = csvReader(),
@@ -75,7 +77,11 @@ fun File.readCsvLinesWithHeaderAndChunk(
 }
 
 
-/** 라인 카운트 리턴 */
+/**
+ * 라인 카운트 리턴
+ * @see toFlow
+ * */
+@Deprecated("xx")
 fun File.readCsvLinesCnt(charset: Charset = CharSets.UTF_8): Long {
     var count = 0L
     this.readCsvLines(charset) { row ->

@@ -2,6 +2,7 @@ package net.kotlinx.awscdk.channel
 
 import net.kotlinx.awscdk.CdkInterface
 import net.kotlinx.awscdk.basic.TagUtil
+import net.kotlinx.awscdk.iam.IamPolicyResourceUtil
 import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.events.*
@@ -23,6 +24,9 @@ class CdkEventBus : CdkInterface {
     /** 이벤트버스 명 */
     lateinit var eventBusName: String
 
+    /** 이 이벤트버스에 put할 수 있는 계정들. 자주 사용해서 여기 넣음 */
+    var putAccounts: List<String> = emptyList()
+
     /** 결과 */
     lateinit var iEventBus: IEventBus
 
@@ -30,6 +34,18 @@ class CdkEventBus : CdkInterface {
         val stackId = "${projectName}-ev_${logicalName}"
         iEventBus = EventBus(stack, stackId, EventBusProps.builder().eventBusName(logicalName).build())
         TagUtil.tag(iEventBus, deploymentType)
+
+        //경고!! 아래 간단 구문이 작동하지 않는다.. diff해도 반응이 없음. 그래서 수동 적용
+        //iEventBus.grantPutEventsTo(AccountPrincipal(it))
+        if (putAccounts.isNotEmpty()) {
+            val policy = IamPolicyResourceUtil.forAccount(
+                putAccounts,
+                listOf(this.iEventBus.eventBusArn),
+                listOf("events:PutEvents")
+            )
+            policy.sid = "account_policy-" + this.logicalName
+            (iEventBus as EventBus).addToResourcePolicy(policy)
+        }
     }
 
     /**

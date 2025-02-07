@@ -36,7 +36,7 @@ object ApiAiModule : KoinModule {
             OpenAiClient {
                 apiKey = "${ProtocolPrefix.SSM}/api/${OpenAiModels.Perplexity::class.name()}/demo/key"
                 host = OpenAiModels.Perplexity.HOST
-                model = OpenAiModels.Perplexity.SONAR_SMALL
+                model = OpenAiModels.Perplexity.SONAR01
                 //modelId = OpenAiModels.Perplexity.SONAR_HUGE
                 systemMessage = systemMsgs.joinToString("\n")  //아직 어시스턴스 없이 채팅만 지원함. 이거 해도 안되는거 많음..
                 responseFormat = ChatResponseFormat.Text //단순 JSON 지원 안함.  스키마가 있어가 해야하는듯?

@@ -1,22 +1,29 @@
-package net.kotlinx.csv.flow
+package net.kotlinx.csv
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.chunked
+import kotlinx.coroutines.flow.count
 import net.kotlinx.aws.AwsClient
+import net.kotlinx.counter.EventCountChecker
 import net.kotlinx.file.slash
-import net.kotlinx.koin.Koins.koin
-import net.kotlinx.koin.Koins.koinLazy
+import net.kotlinx.io.input.toInputResource
+import net.kotlinx.koin.Koins
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.logback.infos
+import net.kotlinx.number.padStart
 import net.kotlinx.reflect.name
 import net.kotlinx.system.ResourceHolder
 import okhttp3.OkHttpClient
 
+
 class CsvFlowTest : BeSpecLight() {
 
-    private val aws by lazy { koin<AwsClient>(findProfile97) }
+    private val aws by lazy { Koins.koin<AwsClient>(findProfile97) }
 
-    private val httpClient by koinLazy<OkHttpClient>()
+    private val httpClient by Koins.koinLazy<OkHttpClient>()
 
     init {
         initTest(KotestUtil.IGNORE)
@@ -40,17 +47,29 @@ class CsvFlowTest : BeSpecLight() {
                     }
                 }
             }
-            Then("간단 읽기") {
 
-                val asd = CsvFlow {
-                    readerFile = file1
+            When("간단플로우") {
+                val flow = file1.toInputResource().toFlow()
+                Then("간단 읽기 - 헤더미포함") {
+                    flow.chunked(10).collect {
+                        log.info { "[${Thread.currentThread().name}] ${it}" }
+                    }
                 }
 
-                asd.collect {
-                    println(it)
+                Then("간단 읽기 - 카운트") {
+                    log.infos { "카운트 : ${flow.count()}" }
                 }
 
+                Then("파일 분할 저장") {
+                    CsvSplitCollector {
+                        fileFactory = { workRoot.slash("split").slash("${it.padStart(3)}.csv") }
+                        counter = EventCountChecker(10)
+                    }.use {
+                        flow.buffer(3).chunked(3).collect(it)
+                    }
+                }
             }
+
         }
 
     }
