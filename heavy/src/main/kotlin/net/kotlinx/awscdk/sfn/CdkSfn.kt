@@ -71,7 +71,7 @@ class CdkSfn : CdkInterface {
                 .role(iRole)
                 .build()
         )
-        TagUtil.tag(stateMachine, deploymentType)
+        TagUtil.tagDefault(stateMachine)
     }
 
     /**
@@ -100,7 +100,7 @@ class CdkSfn : CdkInterface {
                 )
                 .build()
         )
-        TagUtil.tag(rule, deploymentType)
+        TagUtil.tagDefault(rule)
     }
 
 

@@ -23,23 +23,30 @@ abstract class BeSpecKoin(modules: List<Module>) : BeSpecLog() {
         }
     }
 
-    /** sk */
-    val findProfile28 by lazy { findProfile("28") }
-
-    /** nd */
-    val findProfile46 by lazy { findProfile("46", "80") }
-
-    /** ct */
-    val findProfile48 by lazy { findProfile("48") }
+    //==================================================== main ======================================================
 
     /** ap */
     val findProfile97 by lazy { findProfile("97", "71") }
 
+    /** at */
+    val findProfile33 by lazy { findProfile("33") }
+
+
+    //==================================================== sub ======================================================
+
     /** nb */
     val findProfile99 by lazy { findProfile("99") }
 
-    /** sm */
-    val findProfile9780 by lazy { findProfile("97", "80") }
+    /** ct */
+    val findProfile48 by lazy { findProfile("48") }
+
+    /** nd (삭제예정) */
+    val findProfile46 by lazy { findProfile("46", "80") }
+
+    /** sk */
+    @Deprecated("xx")
+    val findProfile28 by lazy { findProfile("28") }
+
 
     //==================================================== 자주 사용 ======================================================
 

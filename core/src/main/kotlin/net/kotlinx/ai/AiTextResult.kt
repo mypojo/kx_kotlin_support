@@ -1,5 +1,6 @@
 package net.kotlinx.ai
 
+import net.kotlinx.exception.KnownException
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.gson.ResultGsonData
@@ -39,11 +40,19 @@ data class AiTextResult(
     /** 예외 */
     var exception: Exception? = null
 
+    //==================================================== 편의기능 ======================================================
+
     /**
      * 금액($)
      *  @see printSimple  참고
      * */
     fun cost(): Double = model.cost(inputTokens, outputTokens)
+
+    /** 이상이 있는경우 리트라이를 위한 예외를 던짐 */
+    fun checkOrThrow(): AiTextResult {
+        if (!output.ok) throw KnownException.ItemRetryException("결과 비정상.. => ${output.data}")
+        return this
+    }
 
     companion object {
 

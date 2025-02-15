@@ -50,7 +50,7 @@ class CdkAthena : CdkInterface {
                 )
                 .build()
         )
-        TagUtil.tag(database, deploymentType)
+        TagUtil.tagDefault(database)
 
         val workgroupName = "workgroup-$depName"
         workGroup = CfnWorkGroup(
@@ -68,7 +68,7 @@ class CdkAthena : CdkInterface {
                 )
                 .build()
         )
-        TagUtil.tag(workGroup, deploymentType)
+        TagUtil.tagDefault(workGroup)
     }
 
     companion object {

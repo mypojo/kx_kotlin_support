@@ -115,7 +115,7 @@ class CdkBatchJobDefinition(
             .build()
 
         jobDef = CfnJobDefinition(stack, "batchJobDefinition-${logicalName}", props)
-        TagUtil.tag(jobDef, deploymentType)
+        TagUtil.tagDefault(jobDef)
         return this
     }
 

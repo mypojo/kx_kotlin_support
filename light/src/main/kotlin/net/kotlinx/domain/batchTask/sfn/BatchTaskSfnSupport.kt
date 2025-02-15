@@ -6,6 +6,7 @@ import net.kotlinx.domain.batchStep.BatchStepExecutor
 import net.kotlinx.domain.batchTask.BatchTaskExecutor
 import net.kotlinx.domain.batchTask.BatchTaskOptionUtil
 import net.kotlinx.domain.job.JobRepository
+import net.kotlinx.domain.job.JobStatus
 import net.kotlinx.domain.job.JobUpdateSet
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.koin.Koins.koin
@@ -19,6 +20,8 @@ import net.kotlinx.string.padNumIncrease
 suspend fun BatchStepExecutor.startExecution(op: BatchTaskSfn) {
 
     val log = KotlinLogging.logger {}
+
+    op.job.jobStatus = JobStatus.PROCESSING
 
     //명시적으로 DDB 입력값을 기준으로 리트라이 인지 아닌지를 구분함
     if (op.job.sfnId == null) {

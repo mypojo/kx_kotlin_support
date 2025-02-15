@@ -36,7 +36,7 @@ object PeeringUtil {
         val logicalName = "${name}-${deploymentType.name.lowercase()}"
         val peer = CfnVPCPeeringConnection(stack, "vpc_peering-${logicalName}", CfnVPCPeeringConnectionProps.builder().apply(block).build())
         TagUtil.name(peer, logicalName)
-        TagUtil.tag(peer, deploymentType)
+        TagUtil.tagDefault(peer)
     }
 
     fun peering(stack: Stack, name: String, vpcId: String) {

@@ -40,7 +40,7 @@ class CdkSecurityGroup(
         val props = SecurityGroupProps.builder().vpc(iVpc).allowAllOutbound(allowAllOutbound).apply(block).build()
         iSecurityGroup = SecurityGroup(stack, logicalName, props)
         TagUtil.name(iSecurityGroup, logicalName)
-        TagUtil.tag(iSecurityGroup, deploymentType)
+        TagUtil.tagDefault(iSecurityGroup)
         param.put(stack, iSecurityGroup.securityGroupId)
         return this
     }

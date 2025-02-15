@@ -47,7 +47,7 @@ class CdkAthenaWorkGroup : CdkInterface {
                 )
                 .build()
         )
-        TagUtil.tag(workGroup, deploymentType)
+        TagUtil.tagDefault(workGroup)
     }
 
     companion object {

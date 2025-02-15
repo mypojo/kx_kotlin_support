@@ -53,7 +53,7 @@ class CdkSchedulerGroup : CdkInterface {
 
     fun create(): CdkSchedulerGroup {
         scheduleGroup = CfnScheduleGroup(stack, logicalName, CfnScheduleGroupProps.builder().name(logicalName).build())
-        TagUtil.tag(scheduleGroup, deploymentType)
+        TagUtil.tagDefault(scheduleGroup)
         return this
     }
 

@@ -118,7 +118,7 @@ class CdkCodePipeline : CdkInterface {
                 .apply(block)
                 .build()
         )
-        TagUtil.tag(pipeline, deploymentType)
+        TagUtil.tagDefault(pipeline)
 
         //성공 실패 등의 알람 추가. 이 알람은 이벤트브릿지 트리거가 아니고 , SNS를 다이렉트로 트리거한다.
         val snsName = "${projectName}-sns_${name}-${suff}"

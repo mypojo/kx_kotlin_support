@@ -73,7 +73,7 @@ class CdkDynamoDb : CdkInterface {
                 .apply(block)
                 .build()
         )
-        TagUtil.tag(iTable, deploymentType)
+        TagUtil.tagDefault(iTable)
         return this
     }
 

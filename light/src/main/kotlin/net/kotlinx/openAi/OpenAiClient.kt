@@ -175,7 +175,7 @@ class OpenAiClient : AiTextClient {
         }
 
         val duration = System.currentTimeMillis() - start
-        val result = if (gson.isObject) ResultGsonData(true, gson) else ResultGsonData(false, gson)
+        val result = if (gson.isObject || gson.isArray) ResultGsonData(true, gson) else ResultGsonData(false, gson)
         return AiTextResult(model, inputs, result, usage.promptTokens!!, usage.completionTokens!!, duration)
     }
 

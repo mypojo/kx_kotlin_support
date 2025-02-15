@@ -8,9 +8,7 @@ import java.io.*
  * @desc 엑셀2002 이상 버전의 poi 어뎁터
  * 네이밍이 너무 구려서 확장으로 하지 않고 래퍼로 만듬
  */
-class Excel(
-    val wb: XSSFWorkbook = XSSFWorkbook()
-) {
+class Excel(val wb: XSSFWorkbook = XSSFWorkbook()) {
 
     /** 기본 폰트 */
     val font = ExcellFont(this)

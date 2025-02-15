@@ -103,7 +103,7 @@ class CdkBastion : CdkInterface {
                 }
                 .apply(block).build()
         )
-        TagUtil.tag(instance, deploymentType)
+        TagUtil.tagDefault(instance)
         return this
     }
 

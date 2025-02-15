@@ -35,6 +35,10 @@ class AiModel_이미지_랜딩확인 : BeSpecHeavy() {
 
         Given("LLM 이미지 모델 비교") {
 
+            Then("xx") {
+                println("xx")
+            }
+
             val set = AiModelLocalSet {
                 aws = aws97
                 this.systemPrompt = LandingPageInspectionUtil.SYSTEM_PROMPT_CD

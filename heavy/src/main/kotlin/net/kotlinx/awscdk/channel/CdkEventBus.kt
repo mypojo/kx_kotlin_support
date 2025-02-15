@@ -33,7 +33,7 @@ class CdkEventBus : CdkInterface {
     fun create(stack: Stack) {
         val stackId = "${projectName}-ev_${logicalName}"
         iEventBus = EventBus(stack, stackId, EventBusProps.builder().eventBusName(logicalName).build())
-        TagUtil.tag(iEventBus, deploymentType)
+        TagUtil.tagDefault(iEventBus)
 
         //경고!! 아래 간단 구문이 작동하지 않는다.. diff해도 반응이 없음. 그래서 수동 적용
         //iEventBus.grantPutEventsTo(AccountPrincipal(it))
@@ -64,7 +64,7 @@ class CdkEventBus : CdkInterface {
                 .eventPattern(eventPattern)
                 .build()
         )
-        TagUtil.tag(eventDisRule, deploymentType)
+        TagUtil.tagDefault(eventDisRule)
     }
 
     /**
@@ -90,7 +90,7 @@ class CdkEventBus : CdkInterface {
                 .apply(block)
                 .build(),
         )
-        TagUtil.tag(eventDisRule, deploymentType)
+        TagUtil.tagDefault(eventDisRule)
     }
 
     //커스텀 정책이 피요할때 (외부 이벤트 주입 등.)
@@ -108,7 +108,7 @@ class CdkEventBus : CdkInterface {
 //     crossAccount: false,
 //     description: discoverName,
 // });
-// TagUtil.deploymentType(discoverer, deploymentType);
+// TagUtil.deploymentType(discoverer);
 
 // //아카이브 - 특정 기간의 이벤트 리플레이용. 불필요하면 생성하지 않음
 // const archiveName = `${THE.projectName}-eventbus_archive-${deploymentType}`
@@ -120,7 +120,7 @@ class CdkEventBus : CdkInterface {
 //     archiveName: archiveName,
 //     retention: Duration.days(7 * 2),
 // });
-// TagUtil.deploymentType(archive, deploymentType);
+// TagUtil.deploymentType(archive);
 
 
 }

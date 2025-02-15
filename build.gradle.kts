@@ -48,10 +48,10 @@ allprojects {
     group = providers["group"]
     version = providers["version"]
 
-    repositories {
-        mavenCentral()
-        maven { url = uri("https://jitpack.io") }
-    }
+//    repositories {
+//        mavenCentral()
+//        maven { url = uri("https://jitpack.io") }
+//    }
 
     tasks.test {
         useJUnitPlatform {
@@ -90,7 +90,7 @@ allprojects {
      * https://docs.aws.amazon.com/ko_kr/lambda/latest/dg/packaging-layers.html
      * buildSrc로 옮기면 gradle 확장이 없어서 에러남
      * */
-    tasks.create("allDependencies", Zip::class) {
+    tasks.register("allDependencies", Zip::class) {
         group = "build"
         description = "AWS 람다 레이어용 전체 의존성 압축파일 생성"
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE

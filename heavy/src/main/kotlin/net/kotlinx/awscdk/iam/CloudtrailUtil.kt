@@ -1,6 +1,6 @@
 package net.kotlinx.awscdk.iam
 
-import net.kotlinx.awscdk.basic.TagUtil
+import net.kotlinx.awscdk.basic.TagSet
 import net.kotlinx.system.DeploymentType
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.cloudtrail.ReadWriteType
@@ -23,7 +23,7 @@ object CloudtrailUtil {
                 .build()
         )
         //trail.addEventSelector() 1개는 공짜임으로 필터링 일단 무시..
-        TagUtil.tag(trail, DeploymentType.PROD) //실서버로 간주
+        TagSet.DeploymentType.tag(trail, DeploymentType.PROD) //실서버로 간주
     }
 
 

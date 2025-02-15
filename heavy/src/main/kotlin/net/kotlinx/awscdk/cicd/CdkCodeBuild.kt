@@ -171,7 +171,7 @@ class CdkCodeBuild : CdkInterface {
                 .build()
         )
 
-        TagUtil.tag(codeBuild, deploymentType)
+        TagUtil.tagDefault(codeBuild)
         return this
     }
 

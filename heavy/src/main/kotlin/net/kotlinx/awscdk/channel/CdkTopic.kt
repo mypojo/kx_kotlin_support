@@ -27,7 +27,7 @@ class CdkTopic(val topicName: String) : CdkEnum {
 
     fun create(stack: Stack, block: TopicProps.Builder.() -> Unit = {}): CdkTopic {
         iTopic = Topic(stack, logicalName, TopicProps.builder().topicName(logicalName).apply(block).build())
-        TagUtil.tag(iTopic, deploymentType)
+        TagUtil.tagDefault(iTopic)
 
         //중요!! 정책을 정확하게 줘야 작동함!!
         //기본 정책. AWS 소유자 전체 오픈

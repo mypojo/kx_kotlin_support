@@ -66,6 +66,6 @@ class CdkGlueDatabase : CdkInterface {
                 )
                 .build()
         )
-        TagUtil.tag(database, CdkInterface.DEPLOYMENT_TYPE)
+        TagUtil.tagDefault(database)
     }
 }

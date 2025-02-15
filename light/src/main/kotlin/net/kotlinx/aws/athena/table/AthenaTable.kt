@@ -5,7 +5,6 @@ import net.kotlinx.collection.toQueryString
 import net.kotlinx.core.Kdsl
 import net.kotlinx.string.toLocalDate
 import net.kotlinx.time.toYmd
-import kotlin.time.Duration.Companion.days
 
 
 /**
@@ -203,15 +202,7 @@ class AthenaTable {
         //==================================================== 포맷정보 ======================================================
         val formatText = athenaTableFormat.toRowFormat(this).joinToString("\n")
         when (athenaTableFormat) {
-            is AthenaTableFormat.Iceberg -> {
-                props = props + mapOf(
-                    //https://docs.aws.amazon.com/ko_kr/athena/latest/ug/querying-iceberg-creating-tables.html
-                    "table_type" to "ICEBERG",
-                    "optimize_rewrite_delete_file_threshold" to "5", //임계값보다 적으면 파일이 재작성되지 않음
-                    "vacuum_max_snapshot_age_seconds" to "${14.days.inWholeSeconds}", //vacuum 명령으로 몇일치 삭제데이터의 마커만 남기고 다 삭제할지? 기본값은 5일 -> 2주로 수정
-                    //이하 설정은 일단 기본값 사용함.
-                )
-            }
+            is AthenaTableFormat.Iceberg -> props = props + AthenaTableFormat.Iceberg.defaultOption
 
             else -> {} //아무것도 안함
         }

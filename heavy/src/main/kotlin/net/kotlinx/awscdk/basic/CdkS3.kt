@@ -87,7 +87,7 @@ class CdkS3 : CdkEnum {
 
         val id = "${logicalName}${if (domain) "-bucket" else ""}" //혹시나 도메인 그대로 쓰면 겹칠까봐 변경해줌
         iBucket = Bucket(stack, id, bucketProps)
-        TagUtil.tag(iBucket, deploymentType)
+        TagUtil.tagDefault(iBucket)
         return this
     }
 

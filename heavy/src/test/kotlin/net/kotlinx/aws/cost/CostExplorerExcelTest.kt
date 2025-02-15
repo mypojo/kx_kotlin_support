@@ -30,7 +30,7 @@ fun main() {
     val dataFile = File(workspace, "AWS비용캐시_.${LocalDate.now().toYmdF01()}.json")
 
     /** 태그별로 비용을 보고싶은경우 */
-    val tagRequired = setOf("catson")
+    val tagRequired = setOf("catson", "adpriv")
 
     if (!dataFile.exists()) {
         log.info { "cost 데이터를 로드합니다.." }

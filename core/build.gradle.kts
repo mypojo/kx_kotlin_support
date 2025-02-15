@@ -14,9 +14,11 @@ dependencies {
     api("jakarta.validation:jakarta.validation-api:_")
 
     //==================================================== jetbrain ======================================================
+    val kotlinVersion: String by project
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:_") //코투틴 기본으로 적용
     api("org.jetbrains.kotlinx:kotlinx-serialization-json:_") //자주 쓰니까 일단 넣음
     //api("org.jetbrains.kotlinx:kotlinx-datetime:_") //LocalDatetime 등 serial & 멀티플랫폼 위해서 kotlin datetime 사용 -> 사용법 너무 틀려서 금지
+    runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}") //명시 안하면 1.6 이런거막 씀.. 코틀린 버전이랑 맞춰주기
 
     //==================================================== 코틀린 기본 ======================================================
     api("com.lectra:koson:_") // 코틀린 json DSL

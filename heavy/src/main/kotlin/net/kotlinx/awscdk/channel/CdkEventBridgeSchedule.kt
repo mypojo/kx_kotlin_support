@@ -44,7 +44,7 @@ class CdkEventBridgeSchedule(
                 .build()
         )
         rule.addTarget(this.ruleTarget)
-        TagUtil.tag(rule, deploymentType)
+        TagUtil.tagDefault(rule)
         return rule
     }
 

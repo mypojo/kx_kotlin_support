@@ -145,7 +145,7 @@ class CdkLambdaImage : CdkEnum {
                 }
                 .build()
         )
-        TagUtil.tag(defaultFun, deploymentType)
+        TagUtil.tagDefault(defaultFun)
 
         aliasName?.let {
             aliasFun = Alias.Builder.create(stack, "lambda-alias-${aliasName}-${suff}")

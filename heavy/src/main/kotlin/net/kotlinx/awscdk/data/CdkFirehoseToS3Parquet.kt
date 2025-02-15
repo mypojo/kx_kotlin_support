@@ -149,7 +149,7 @@ class CdkFirehoseToS3Parquet : CdkInterface {
                 )
                 .build()
         )
-        TagUtil.tag(deliveryStream, deploymentType)
+        TagUtil.tagDefault(deliveryStream)
     }
 
     companion object {

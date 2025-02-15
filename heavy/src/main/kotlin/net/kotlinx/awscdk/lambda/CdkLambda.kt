@@ -148,7 +148,7 @@ class CdkLambda : CdkEnum {
                 .build()
         )
 
-        TagUtil.tag(defaultFun, deploymentType)
+        TagUtil.tagDefault(defaultFun)
 
         if (snapstart) {
             //스냅스타트 온

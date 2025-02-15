@@ -127,7 +127,7 @@ class CdkEcsWeb : CdkInterface {
                 .enableFargateCapacityProviders(true) //파게이트 용량공급 설정 가능하게 온
                 .build()
         )
-        TagUtil.tag(cluster, deploymentType)
+        TagUtil.tagDefault(cluster)
     }
 
     lateinit var taskDef: TaskDefinition
@@ -153,7 +153,7 @@ class CdkEcsWeb : CdkInterface {
                 .executionRole(executionRole)
                 .build()
         )
-        TagUtil.tag(taskDef, deploymentType)
+        TagUtil.tagDefault(taskDef)
 
         val containerName = "${projectName}-${name}_container-${suff}"
         container = taskDef.addContainer(
@@ -216,7 +216,7 @@ class CdkEcsWeb : CdkInterface {
                 )
                 .build()
         )
-        TagUtil.tag(alb, deploymentType)
+        TagUtil.tagDefault(alb)
     }
 
     /**
@@ -281,7 +281,7 @@ class CdkEcsWeb : CdkInterface {
                 .apply(block)
                 .build()
         )
-        TagUtil.tag(service, deploymentType)
+        TagUtil.tagDefault(service)
         val autoScale = service.autoScaleTaskCount(
             EnableScalingProps.builder()
                 .maxCapacity(config.maxCapacity)
@@ -319,7 +319,7 @@ class CdkEcsWeb : CdkInterface {
                     .healthCheck(healthCheck)
                     .build()
             )
-            TagUtil.tag(targetGroup, deploymentType)
+            TagUtil.tagDefault(targetGroup)
             return targetGroup
         }
 

@@ -10,6 +10,7 @@ class AthenaTableTest : BeSpecLight() {
         initTest(KotestUtil.IGNORE)
 
         Given("데모 테이블") {
+
             Then("demo") {
                 val table = AthenaTable {
                     icebugTable()
