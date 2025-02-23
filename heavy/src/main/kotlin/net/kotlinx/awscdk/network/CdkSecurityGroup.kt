@@ -2,6 +2,7 @@ package net.kotlinx.awscdk.network
 
 import net.kotlinx.awscdk.CdkEnum
 import net.kotlinx.awscdk.basic.CdkParameter
+import net.kotlinx.awscdk.basic.TagSet
 import net.kotlinx.awscdk.basic.TagUtil
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.ec2.*
@@ -39,7 +40,7 @@ class CdkSecurityGroup(
     fun create(stack: Stack, block: SecurityGroupProps.Builder.() -> Unit = {}): CdkSecurityGroup {
         val props = SecurityGroupProps.builder().vpc(iVpc).allowAllOutbound(allowAllOutbound).apply(block).build()
         iSecurityGroup = SecurityGroup(stack, logicalName, props)
-        TagUtil.name(iSecurityGroup, logicalName)
+        TagSet.Name.tag(iSecurityGroup, logicalName)
         TagUtil.tagDefault(iSecurityGroup)
         param.put(stack, iSecurityGroup.securityGroupId)
         return this

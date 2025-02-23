@@ -1,6 +1,7 @@
 package net.kotlinx.awscdk.network
 
 import net.kotlinx.aws.AwsConfig
+import net.kotlinx.awscdk.basic.TagSet
 import net.kotlinx.awscdk.basic.TagUtil
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.system.DeploymentType
@@ -35,7 +36,7 @@ object PeeringUtil {
         val deploymentType = koin<DeploymentType>()
         val logicalName = "${name}-${deploymentType.name.lowercase()}"
         val peer = CfnVPCPeeringConnection(stack, "vpc_peering-${logicalName}", CfnVPCPeeringConnectionProps.builder().apply(block).build())
-        TagUtil.name(peer, logicalName)
+        TagSet.Name.tag(peer, logicalName)
         TagUtil.tagDefault(peer)
     }
 

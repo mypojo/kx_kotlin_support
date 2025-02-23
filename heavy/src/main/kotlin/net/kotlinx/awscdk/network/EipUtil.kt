@@ -1,6 +1,7 @@
 package net.kotlinx.awscdk.network
 
 import net.kotlinx.awscdk.basic.CdkParameter
+import net.kotlinx.awscdk.basic.TagSet
 import net.kotlinx.awscdk.basic.TagUtil
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.system.DeploymentType
@@ -22,7 +23,8 @@ object EipUtil {
         val eip = CfnEIP(stack, logicalName)
         ip?.put(stack, eip.attrPublicIp)
         id?.put(stack, eip.attrAllocationId)
-        TagUtil.name(eip, logicalName)
+        TagUtil.tagDefault(eip)
+        TagSet.Name.tag(eip, logicalName)
         return eip
     }
 

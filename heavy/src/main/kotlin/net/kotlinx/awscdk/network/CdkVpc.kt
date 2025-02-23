@@ -2,6 +2,7 @@ package net.kotlinx.awscdk.network
 
 import net.kotlinx.awscdk.CdkInterface
 import net.kotlinx.awscdk.basic.CdkParameter
+import net.kotlinx.awscdk.basic.TagSet
 import net.kotlinx.awscdk.basic.TagUtil
 import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.Stack
@@ -73,6 +74,7 @@ class CdkVpc : CdkInterface {
         VPC_ID.put(stack, iVpc.vpcId)
         subnetRename() //간단으로 만든건 이름 이상하게 나옴.
         gatewayVpcEndpoint()
+        TagUtil.tagDefault(iVpc) //이거 하나 달면 전체?
     }
 
 
@@ -89,7 +91,7 @@ class CdkVpc : CdkInterface {
             val subnetName = "${projectName}_subnet_$type/${zoneName}-${suff}"
             val subnet = PrivateSubnet.Builder.create(stack, subnetName)
                 .vpcId(iVpc.vpcId).availabilityZone(az).cidrBlock("${block}.${subnetCnt++}.0/${cidrMask}").build()
-            TagUtil.name(subnet, subnetName)
+            TagSet.Name.tag(subnet, subnetName)
             subnet
         }
 
@@ -98,7 +100,7 @@ class CdkVpc : CdkInterface {
             SubnetSelection.builder().subnets(subnets).build()
         ).build()
         entrys.forEach { nacl.addEntry("${naclName}_${it.key}", it.value) }
-        TagUtil.name(nacl, naclName)
+        TagSet.Name.tag(nacl, naclName)
     }
 
     /** 서브넷 설정으로 변환 */
@@ -115,7 +117,7 @@ class CdkVpc : CdkInterface {
             subnets.forEach { subnet ->
                 val zoneName = subnet.availabilityZone.substring(subnet.availabilityZone.length - 1)
                 val name = subnet.toString().substringAfterLast("/").substringBefore("_") //toString 해야 name 이 나온다
-                TagUtil.name(subnet, "${name}_subnet_${subnetSuffix}/${zoneName}_${suff}")
+                TagSet.Name.tag(subnet, "${name}_subnet_${subnetSuffix}/${zoneName}_${suff}")
             }
         }
     }
@@ -155,7 +157,7 @@ class CdkVpc : CdkInterface {
                     .apply(block)
                     .build()
             )
-            TagUtil.name(endpoint, endpointName) //지금 버그로 태그 입력 안됨 (2022.01)
+            TagSet.Name.tag(endpoint, endpointName) //지금 버그로 태그 입력 안됨 (2022.01)
         }
     }
 
@@ -169,7 +171,7 @@ class CdkVpc : CdkInterface {
             SubnetSelection.builder().subnetType(subnetType).build()
         ).build()
         entrys.forEach { nacl.addEntry("${naclId}_${it.key}", it.value) }
-        TagUtil.name(nacl, naclId)
+        TagSet.Name.tag(nacl, naclId)
     }
 
     companion object {

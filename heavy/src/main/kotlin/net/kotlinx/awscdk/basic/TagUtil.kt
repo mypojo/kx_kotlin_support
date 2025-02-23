@@ -22,10 +22,4 @@ object TagUtil {
         Tags.of(target).add(deploymentType::class.java.simpleName, deploymentType.name)
     }
 
-    /** 네이밍 태그. AWS 콘솔에서 이름으료 표시된다. */
-    @Deprecated("enum 쓰세요")
-    fun name(target: IConstruct, name: String) {
-        Tags.of(target).add("Name", name)
-    }
-
 }

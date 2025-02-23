@@ -1,6 +1,7 @@
 package net.kotlinx.awscdk.ecs
 
 import net.kotlinx.awscdk.CdkEnum
+import net.kotlinx.awscdk.basic.TagUtil
 import net.kotlinx.system.DeploymentType
 import software.amazon.awscdk.Duration
 import software.amazon.awscdk.Stack
@@ -49,6 +50,7 @@ class CdkEcr(
                     .build()
             )
         }
+        TagUtil.tagDefault(iRepository)
         return this
     }
 
