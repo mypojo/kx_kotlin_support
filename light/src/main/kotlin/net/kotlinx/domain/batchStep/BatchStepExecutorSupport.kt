@@ -7,6 +7,7 @@ import net.kotlinx.domain.job.Job
 import net.kotlinx.domain.job.JobRepository
 import net.kotlinx.domain.job.define.JobDefinitionRepository
 import net.kotlinx.domain.job.trigger.JobLocalExecutor
+import net.kotlinx.exception.KnownException
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.reflect.newInstance
@@ -45,6 +46,8 @@ suspend fun JobLocalExecutor.resume(event: EventBridgeSfnStatus, onEventSfnStatu
             try {
                 jobService.onProcessComplete(job)
                 this.resumeSuccess(job)
+            } catch (e: KnownException.ItemSkipException) {
+                log.warn { "onProcessComplete 처리중 스킵! -> ${e.toSimpleString()}" }
             } catch (e: Exception) {
                 log.warn { "onProcessComplete 처리중 예외! -> ${e.toSimpleString()}" }
                 e.printStackTrace()

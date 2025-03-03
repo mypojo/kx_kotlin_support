@@ -15,7 +15,6 @@ import net.kotlinx.json.gson.GsonSet
 val AwsClient.kinesis: KinesisClient
     get() = getOrCreateClient { KinesisClient { awsConfig.build(this) }.regist(awsConfig) }
 
-
 /** 객체(data class) 입력 샘플 */
 suspend fun <T : Identity<out Any>> KinesisClient.putRecord(streamName: String, data: T, gson: Gson = GsonSet.TABLE_UTC_WITH_ZONE): PutRecordResponse = this.putRecord {
     this.streamName = streamName

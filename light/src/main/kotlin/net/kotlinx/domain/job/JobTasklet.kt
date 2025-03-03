@@ -3,6 +3,7 @@ package net.kotlinx.domain.job
 import com.lectra.koson.ObjectType
 import com.lectra.koson.obj
 import net.kotlinx.aws.AwsNaming
+import net.kotlinx.exception.KnownException
 import net.kotlinx.reflect.name
 
 
@@ -18,6 +19,7 @@ interface JobTasklet {
      * 비동기 찹 처리시 사용됨
      * ex) SFN에서 크롤링한 데이터를 가지고 리포트 작성
      *  */
+    @Throws(KnownException.ItemSkipException::class)
     suspend fun onProcessComplete(job: Job) {
         //기본적으로 아무것도 하지않음
     }

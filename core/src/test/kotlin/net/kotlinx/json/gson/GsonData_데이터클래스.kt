@@ -1,10 +1,13 @@
 package net.kotlinx.json.gson
 
+import com.lectra.koson.arr
 import com.lectra.koson.obj
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.serialization.Serializable
+import net.kotlinx.aws.lambda.dispatch.asynch.EventBridgeJson
+import net.kotlinx.aws.lambda.dispatch.asynch.EventBridgeS3
 import net.kotlinx.json.koson.KosonTest.Companion.DEMO_KOSON
 import net.kotlinx.json.koson.toGsonData
 import net.kotlinx.json.serial.SerialJsonSet
@@ -39,6 +42,37 @@ internal class GsonData_데이터클래스 : BeSpecLog() {
 
     init {
         initTest(KotestUtil.FAST)
+
+        Given("외부 테스트") {
+
+
+            Then("투스트링 테스트") {
+
+                val s3Event = obj {
+                    "account" to "123"
+                    "detailType" to "11"
+                    "region" to "11"
+                    "time" to "11"
+                    "source" to "11"
+                    "resources" to arr["abc"]
+                    "detail" to obj {
+                        "bucket" to obj {
+                            "name" to "name"
+                        }
+                        "object" to obj {
+                            "key" to "key"
+                        }
+                        "reason" to "업로드"
+                    }
+                }.toGsonData()
+
+                val eventBridgeJson = EventBridgeJson(s3Event)
+                val s3 = EventBridgeS3(eventBridgeJson)
+                println(s3)
+            }
+
+
+        }
 
         Given("파싱 테스트") {
 

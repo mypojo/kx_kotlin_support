@@ -12,10 +12,7 @@ import software.amazon.awscdk.services.kinesisfirehose.CfnDeliveryStreamProps
 import software.amazon.awscdk.services.s3.IBucket
 
 /**
- * 경고!!
- * 아직 한국리전에 아이스버그가 추가되지 않았음.  https://docs.aws.amazon.com/firehose/latest/dev/create-destination.html#create-destination-iceberg
- * 이때문에 임시로 S3 계속 사용 (2024년 1월 기준)
- * 바닐라로 적상히 쓰다가 아이스버그로 넘어갈것!
+ * 아이스버그 버전이 더 좋은데, 이벤트브릿지의 이벤트는 직접  라우팅하는게 불가능. 이때문에 이거도 수요가 있긴함
  *
  * #1 레이크포메이션 사용하는경우 IAM 말고 레이크포메이션 콘솔에서 role에 권한 줘야함 (Data lake administrators 지정 등등)
  * #2 바닐라 파케이라서 , 따로 파티셔닝을 잡아줘야함 (귀찮음!!)
@@ -23,6 +20,7 @@ import software.amazon.awscdk.services.s3.IBucket
  * 파이어호스 사용법
  * #1 직접 put 하기 -> Athena 테이블 샘플은 HttpLogTable 참고
  * #2 이벤트 브릿지로 쏜 다음, 리스너 걸어서 연결하기 -> Athena 테이블 샘플은 EventBridgeTable 참고
+ * @see CdkFirehoseToIceberg
  *  */
 class CdkFirehoseToS3Parquet : CdkInterface {
 

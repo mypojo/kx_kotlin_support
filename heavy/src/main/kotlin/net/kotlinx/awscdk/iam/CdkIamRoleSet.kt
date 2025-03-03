@@ -60,6 +60,48 @@ object CdkIamRoleSet {
     }
 
     /**
+     * 아이브버그 입력용 샘플
+     * https://docs.aws.amazon.com/firehose/latest/dev/controlling-access.html#using-iam-iceberg
+     * 소스는 편의상 다 오픈함
+     *
+     * 레이크 포메이션을 쓰는경우 태그에 대해서 아래 Role에  grant 해줘야함 (ADMIN 설정 안됨!)
+     * https://ap-northeast-2.console.aws.amazon.com/lakeformation/home?region=ap-northeast-2#permissions-list
+     *  => 설정이라기 보다는 관리에 가까워서 CDK가 아닌 API 로 해줄것!
+     *  ex) aws.lake.grantPermissions("app-firehose_iceberg", listOf(tag), ResourceType.Table)
+     * */
+    val FIREHOSE_ICEBERG: CdkIamRole = CdkIamRole {
+        roleName = "app-firehose_iceberg"
+        services = listOf("firehose.amazonaws.com")
+        actions = listOf(
+            "glue:GetTable",
+            "glue:GetDatabase",
+            "glue:UpdateTable",
+
+            "s3:AbortMultipartUpload",
+            "s3:GetBucketLocation",
+            "s3:GetObject",
+            "s3:ListBucket",
+            "s3:ListBucketMultipartUploads",
+            "s3:PutObject",
+            "s3:DeleteObject",
+
+            "kinesis:DescribeStream",
+            "kinesis:GetShardIterator",
+            "kinesis:GetRecords",
+            "kinesis:ListShards",
+
+            "kms:Decrypt",
+            "kms:GenerateDataKey",
+
+            "logs:PutLogEvents",
+
+            "lambda:InvokeFunction",
+            "lambda:GetFunctionConfiguration",
+        )
+    }
+
+
+    /**
      * 이벤트브릿지 종합 역할
      * ex) 필터 걸어서 파이어호스 호출
      * DQL 설정했더라도 SQS 권한은 안줘도 됨..

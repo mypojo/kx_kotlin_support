@@ -4,6 +4,7 @@ import net.kotlinx.aws.lambda.dispatch.AwsLambdaEvent
 import net.kotlinx.json.gson.GsonData
 
 interface EventBridge : AwsLambdaEvent {
+
     val body: GsonData
     val detailType: String
     val account: String
@@ -12,4 +13,5 @@ interface EventBridge : AwsLambdaEvent {
     val source: String
     val resources: List<String>
     val detail: GsonData
+
 }

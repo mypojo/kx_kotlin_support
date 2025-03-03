@@ -34,7 +34,8 @@ class UtcConverter {
     companion object {
 
         /**
-         * kinesis에 사용
+         * athena timestamp에서 사용
+         * ex) kinesis로 athena 아이스버그 테이블 입력
          * */
         val ISO_INSTANT = UtcConverter {
             //기본세팅 사용

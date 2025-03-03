@@ -2,6 +2,10 @@ package net.kotlinx.aws.athena.table
 
 import kotlin.time.Duration.Companion.days
 
+sealed interface AthenaTableFormatIcebug {
+    val defaultOption: Map<String, String>
+}
+
 sealed interface AthenaTableFormat {
 
     fun toRowFormat(table: AthenaTable): List<String>
@@ -96,20 +100,11 @@ sealed interface AthenaTableFormat {
     /**
      * 아이스버그!! 트랜잭션 필요하면 이거
      * https://docs.aws.amazon.com/ko_kr/athena/latest/ug/querying-iceberg-creating-tables.html
+     * athena 는 기본적으로 v2 버전의 아이스버그 테이블을 생성한다 (따로 명시 x)
      * */
-    data object Iceberg : AthenaTableFormat {
+    data object Iceberg : AthenaTableFormat, AthenaTableFormatIcebug {
         override fun toRowFormat(table: AthenaTable): List<String> = emptyList() /*별도 필요 없으음*/
-        val defaultOption = ICEBUG_DEFAULT_FORMAT
-    }
-
-    /**
-     * V2 버전
-     * */
-    data object Iceberg2 : AthenaTableFormat {
-        override fun toRowFormat(table: AthenaTable): List<String> = emptyList() /*별도 필요 없으음*/
-        val defaultOption = ICEBUG_DEFAULT_FORMAT + mapOf(
-            "format_version" to "2",
-        )
+        override val defaultOption = ICEBUG_DEFAULT_FORMAT
     }
 
     //==================================================== 벤더 지정 ======================================================

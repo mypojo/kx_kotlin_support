@@ -101,11 +101,11 @@ class CsvReadWriteToolTest : BeSpecLight() {
             Then("다운로드 -> 파일처리 -> CSV 변환") {
 
                 val isHeader = Latch()
-                val req = OkHttpReq {
-                    url = host
-                }
-                val resp = httpClient.fetchInner(req)
-                resp.body.use {
+                httpClient.fetchInner(
+                    OkHttpReq {
+                        url = host
+                    }
+                ).body.use {
                     CsvReadWriteTool {
                         readerInputStream = it.byteStream()
                         readerFactory = {

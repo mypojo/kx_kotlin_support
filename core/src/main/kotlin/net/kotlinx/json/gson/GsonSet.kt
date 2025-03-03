@@ -65,7 +65,7 @@ object GsonSet {
      * bean(카멜) 을 athena table 데이터 등으로 바로 쓸때 사용
      * 대부분 athena 로 읽으면 대소문자 구분을 안하는 경우가 많아서 UNDERSCORES로 하는게 편함
      * timestamp 가 UTC만 지원하는겨웅 이걸 써야함
-     *  -> athena의 timestamp 가  UTC 지원하긴 한데??? 해보고 문서 수정!
+     * ex) athena 의 timestamp는 UTC만 지원함.   서울 13시 -> UTC 04시로 입력해야 정상 작동
      *  */
     val TABLE_UTC: Gson by lazy {
         GsonBuilder().apply {

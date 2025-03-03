@@ -51,5 +51,7 @@ dependencies {
     //==================================================== 배치 관련 ======================================================
     implementation("com.opencsv:opencsv:_")//의존성 문제 보고됨
 
+    implementation("jakarta.batch:jakarta.batch-api:2.1.1") //??
+
 
 }

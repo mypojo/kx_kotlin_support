@@ -12,14 +12,11 @@ import net.kotlinx.number.padStart
 import net.kotlinx.system.ResourceHolder
 import java.io.File
 import java.lang.AutoCloseable
-import kotlin.Int
-import kotlin.String
-import kotlin.Unit
-import kotlin.apply
 
 
 /**
-
+ * flow 를 사용해서 CSV를 분할 쓰기 해주는 콜렉터
+ * 기존의 스프링 배치 모듈을 대체함
  *  */
 class CsvSplitCollector : FlowCollector<List<List<String>>>, AutoCloseable {
 
@@ -38,7 +35,7 @@ class CsvSplitCollector : FlowCollector<List<List<String>>>, AutoCloseable {
 
     //==================================================== 내부사용 ======================================================
 
-    /** 쓰기 */
+    /** current 쓰기 객체 */
     var writer: CsvFileWriter? = null
 
     var writerFactory: () -> CsvWriter = { csvWriter() }

@@ -194,15 +194,16 @@ class AthenaTable {
              * 아이스버그의 경우 일반 컬럼에 파티션 데이터가 있어야 한다.
              * https://docs.aws.amazon.com/ko_kr/athena/latest/ug/querying-iceberg-creating-tables.html
              * */
-            AthenaTableFormat.Iceberg -> if (partitions.isEmpty()) "" else "PARTITIONED BY (${partitions.joinToString(",")})"
+            is AthenaTableFormatIcebug -> if (partitions.isEmpty()) "" else "PARTITIONED BY (${partitions.joinToString(",")})"
 
             else -> if (partitions.isEmpty()) "" else "PARTITIONED BY (${partitions.joinToString(",") { "$it ${schema[it]!!.type}" }})"
         }
 
         //==================================================== 포맷정보 ======================================================
+        val tableFormat = athenaTableFormat //스마트 캐스팅을 위해서 변경
         val formatText = athenaTableFormat.toRowFormat(this).joinToString("\n")
-        when (athenaTableFormat) {
-            is AthenaTableFormat.Iceberg -> props = props + AthenaTableFormat.Iceberg.defaultOption
+        when (tableFormat) {
+            is AthenaTableFormatIcebug -> props = props + tableFormat.defaultOption
 
             else -> {} //아무것도 안함
         }
@@ -295,7 +296,6 @@ class AthenaTable {
         athenaTableType = AthenaTableType.INTERNAL
         athenaTablePartitionType = AthenaTablePartitionType.INDEX
     }
-
 
     //==================================================== athena type 입력용 (하드코딩 방지) ======================================================
     //데이터 형식은 다음 참고 -> https://docs.aws.amazon.com/ko_kr/athena/latest/ug/data-types.html

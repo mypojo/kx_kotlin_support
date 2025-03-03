@@ -8,7 +8,7 @@ import net.kotlinx.json.gson.GsonData
  * 이를 기반으로 각 객체는 핵심 설정 내용을 코딩해준다
  * 잘 아렬지지 않은경우 이거 그대로 리턴
  *  */
-class EventBridgeJson(override val body: GsonData) : EventBridge {
+data class EventBridgeJson(override val body: GsonData) : EventBridge {
 
     override val detailType = body[AwsNaming.EventBridge.DETAIL_TYPE].str ?: body[AwsNaming.EventBridge.DETAIL_TYPE_SNS].str!!
 

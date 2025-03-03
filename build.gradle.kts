@@ -113,6 +113,17 @@ allprojects {
         }
     }
 
+    /**
+     * 전부 청소해줌
+     * 가끔 컴파일 에러날때 root에서 이걸 해주면 된다
+     *  */
+    tasks.named("clean") {
+        // "build" 디렉토리는 기본적으로 삭제되므로, 추가로 "out" 디렉토리 삭제를 설정
+        doLast {
+            projectDir.resolve("out").deleteRecursively()
+        }
+    }
+
 }
 
 /**

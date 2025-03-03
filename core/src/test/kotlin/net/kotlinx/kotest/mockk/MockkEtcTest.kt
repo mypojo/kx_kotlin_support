@@ -28,7 +28,7 @@ class MockkEtcTest : BeSpecLog() {
 
         Given("기본 모킹 테스트") {
 
-            When("java static 모킹 필요") {
+            When("java static (외부라이브러리) 모킹") {
 
                 Then("LocalDateTime.now() 호출시 모킹 날짜 리턴") {
                     mockkStatic(LocalDateTime::class) //클래스로 모킹 정의

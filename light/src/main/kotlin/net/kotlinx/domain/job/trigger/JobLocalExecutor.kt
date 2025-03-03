@@ -5,6 +5,7 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsInstanceMetadata
 import net.kotlinx.domain.job.*
 import net.kotlinx.domain.job.define.JobDefinitionRepository
+import net.kotlinx.exception.KnownException
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.reflect.newInstance
@@ -95,6 +96,8 @@ class JobLocalExecutor(val profile: String? = null) {
         try {
             jobService.onProcessComplete(job)
             this.resumeSuccess(job)
+        } catch (e: KnownException.ItemSkipException) {
+            log.warn { "onProcessComplete 처리중 스킵! -> ${e.toSimpleString()}" }
         } catch (e: Exception) {
             log.warn { "onProcessComplete 처리중 예외! -> ${e.toSimpleString()}" }
             e.printStackTrace()

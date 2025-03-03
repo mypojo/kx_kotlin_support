@@ -114,7 +114,11 @@ class CdkEcsWeb : CdkInterface {
 
     //==================================================== 결과들 ======================================================
 
+    /** 클러스터 결과물 */
     lateinit var cluster: Cluster
+
+    /** 각종 추가 설정을 달아준다 */
+    lateinit var cdkLogGroup: CdkLogGroup
 
     /** ECS - CLUSTER */
     fun createCluster(stack: Stack) {
@@ -165,13 +169,13 @@ class CdkEcsWeb : CdkInterface {
                 .logging(
                     run {
                         //일단은 AWS 로그만 지원.  댕댕이 등을 붙일시 추가
-                        val logGroup = CdkLogGroup {
+                        cdkLogGroup = CdkLogGroup {
                             serviceName = logGroupName
                             create(stack)
                         }
                         LogDriver.awsLogs(
                             AwsLogDriverProps.builder()
-                                .logGroup(logGroup.logGroup)
+                                .logGroup(cdkLogGroup.logGroup)
                                 .streamPrefix("web")
                                 .build()
                         )
