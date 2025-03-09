@@ -15,6 +15,9 @@ import software.amazon.awscdk.services.s3.IBucket
  * 입력/수정/삭제가 되는 아이스버그 공통 스트림 -> 라우터 설정해서 각 테이블 입력/수정/삭제 가능
  * 레이크포메이션 사용하는경우 IAM 외 추라고 레이크포메이션 콘솔에서 role에 태그 권한 지정 해줘야함
  * IcebergRouter 참고
+ *
+ * 생성후 최적화 설정도 잡아줘야함
+ * @see aws.sdk.kotlin.services.glue.GlueClient createTableOptimizerByDefault
  *  */
 class CdkFirehoseToIceberg : CdkInterface {
 

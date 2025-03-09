@@ -25,7 +25,11 @@ fun OkHttpClient.fetchInner(req: OkHttpReq): Response {
 @Kdsl
 fun OkHttpClient.fetch(block: OkHttpReq.() -> Unit): OkHttpResp = this.fetch(OkHttpReq().apply(block))
 
-/** 동기화 다운로드 */
+/**
+ * 동기화 다운로드
+ * 레거시 때문에 코드 수정하지 않음!!
+ * 이거 쓰지말고 비동기 코드로 작업할것
+ *  */
 fun OkHttpClient.download(file: File, block: OkHttpReq.() -> Unit): OkHttpResp {
     val req = OkHttpReq().apply {
         mediaType = OkHttpMediaType.IMAGE  //기본 미디어타입 변경해줌
@@ -36,7 +40,7 @@ fun OkHttpClient.download(file: File, block: OkHttpReq.() -> Unit): OkHttpResp {
         //파일 다운로드
         if (response.code == 200) {
             response.body.let {
-                it.byteStream().apply {
+                it!!.byteStream().apply {
                     file.outputStream().use<FileOutputStream, Unit> { fileOut ->
                         copyTo(fileOut, OkHttpUtil.BUFFER_SIZE)
                     }

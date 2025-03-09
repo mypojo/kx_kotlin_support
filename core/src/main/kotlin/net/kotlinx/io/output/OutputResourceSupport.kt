@@ -10,5 +10,5 @@ import java.io.OutputStream
 fun OutputStream.toOutputResource(): OutputDefaultResource = OutputDefaultResource(this)
 
 /** 간단변환 */
-fun File.toOutputResource(): OutputFileResource = OutputFileResource(this)
+fun File.toOutputResource(writerGzip: Boolean = false): OutputFileResource = OutputFileResource(this, writerGzip)
 

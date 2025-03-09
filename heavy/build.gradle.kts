@@ -81,6 +81,6 @@ dependencies {
     api("com.jcraft:jsch:_") //SFTP 모듈
     api("org.apache.poi:poi-ooxml:_") //엑셀
 
-    implementation("commons-codec:commons-codec:_") //구글 OTP 모듈
+    //implementation("commons-codec:commons-codec:_") //구글 OTP 모듈 <-- 뭔지 기억이 안남.. 일단 삭제
 
 }

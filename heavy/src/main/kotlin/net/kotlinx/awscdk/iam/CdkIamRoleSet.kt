@@ -116,4 +116,27 @@ object CdkIamRoleSet {
         )
     }
 
+    /**
+     * 글루 옵티마이저 등에서 사용되는 롤
+     * 데이터레이크에서도 여기에 권한을 줘야함 (SDK 사용할것)
+     * ex) 테이블 컴팩션
+     * */
+    val GLUE: CdkIamRole = CdkIamRole {
+        roleName = "app-glue"
+        services = listOf("glue.amazonaws.com")
+        actions = listOf(
+            "glue:GetTable",
+            "glue:GetDatabase",
+            "glue:UpdateTable",
+
+            "s3:AbortMultipartUpload",
+            "s3:GetBucketLocation",
+            "s3:GetObject",
+            "s3:ListBucket",
+            "s3:ListBucketMultipartUploads",
+            "s3:PutObject",
+            "s3:DeleteObject",
+        )
+    }
+
 }

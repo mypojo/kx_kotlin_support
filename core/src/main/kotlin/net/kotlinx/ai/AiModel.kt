@@ -13,6 +13,9 @@ class AiModel {
         apply(block)
     }
 
+    /** 제공하는 벤더 */
+    lateinit var group: String
+
     lateinit var id: String
 
     /** 간단 한글 이름 */

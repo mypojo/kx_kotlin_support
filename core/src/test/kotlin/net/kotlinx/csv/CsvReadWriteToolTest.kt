@@ -107,7 +107,7 @@ class CsvReadWriteToolTest : BeSpecLight() {
                     }
                 ).body.use {
                     CsvReadWriteTool {
-                        readerInputStream = it.byteStream()
+                        readerInputStream = it!!.byteStream()
                         readerFactory = {
                             csvReader {
                                 delimiter = '\t' //탭으로 구분 (TSV)

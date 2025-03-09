@@ -123,6 +123,13 @@ data class AwsConfig(
 
     //==================================================== 제품별 설정  ======================================================
 
+
+    /**
+     * 단단 ARN 생성기
+     * @param name role/app-glue
+     *  */
+    fun arn(service: String, name: String): String = "arn:aws:${service}::${awsId}:${name}"
+
     /** SFN 설정 */
     val sfnConfig: SfnConfig by lazy { SfnConfig(this) }
 

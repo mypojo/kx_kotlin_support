@@ -28,8 +28,8 @@ object OpenAiModels {
         val CHAT: AiModel = AiModel {
             id = "deepseek-chat"
             name = "딥시크"
-            costOfInputToken = 0.14 / 1000
-            costOfOutputToken = 0.28 / 1000
+            costOfInputToken = 0.27 / 1000  //할인 끝나서 재조정
+            costOfOutputToken = 1.10 / 1000
         }
 
     }

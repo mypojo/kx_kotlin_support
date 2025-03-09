@@ -109,7 +109,7 @@ class CsvReadWriteToolsTest : BeSpecLight() {
                 val resp = httpClient.fetchInner(req)
                 resp.body.use {
                     CsvReadWriteTool {
-                        readerInputStream = it.byteStream()
+                        readerInputStream = it!!.byteStream()
                         readerFactory = {
                             csvReader {
                                 delimiter = '\t' //탭으로 구분 (TSV)

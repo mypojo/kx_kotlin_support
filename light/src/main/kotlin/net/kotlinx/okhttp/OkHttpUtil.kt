@@ -1,9 +1,7 @@
 package net.kotlinx.okhttp
 
-import net.kotlinx.regex.RegexSet
 import okhttp3.OkHttpClient
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
@@ -28,17 +26,6 @@ object OkHttpUtil : KoinComponent {
         "user-agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
         "upgrade-insecure-requests" to "1",
     )
-
-
-    /** 아웃바운드 IP를 간단히 리턴해준다.  */
-    fun findOutboundIp(): String {
-        val client: OkHttpClient by inject()
-        val resp: String = client.fetch {
-            url = "https://www.findip.kr/"
-        }.respText
-
-        return RegexSet.extract("(IP Address): ", "</h2>").toRegex().find(resp)!!.value
-    }
 
     /** 일반적으로 사용되는 클라이언트 간단 생성 */
     fun client(timeout: Duration = 10.seconds, callTimeout: Duration = 60.seconds): OkHttpClient {

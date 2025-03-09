@@ -1,5 +1,11 @@
 package net.kotlinx.collection
 
+
+/**
+ * 기존 slice의 vararg 버전
+ * */
+fun <T> List<T>.slices(vararg range: Int): List<T> = this.slice(range.toList())
+
 /**
  * split 등에 사용함
  *  */

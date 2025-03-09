@@ -14,6 +14,12 @@ class OkHttpSamplesTest : BeSpecHeavy() {
 
         Given("OkHttpSamples") {
 
+            Then("이미지 용량확인") {
+
+
+
+            }
+
 
             Then("단건 테스트") {
                 println(OkHttpSamples.dollarWonFetch())

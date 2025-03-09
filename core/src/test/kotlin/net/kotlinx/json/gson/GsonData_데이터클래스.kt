@@ -46,6 +46,11 @@ internal class GsonData_데이터클래스 : BeSpecLog() {
         Given("외부 테스트") {
 
 
+            Then("map 변환") {
+
+            }
+
+
             Then("투스트링 테스트") {
 
                 val s3Event = obj {

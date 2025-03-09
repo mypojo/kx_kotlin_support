@@ -1,7 +1,6 @@
 package net.kotlinx.concurrent
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlin.time.Duration
@@ -63,18 +62,18 @@ fun List<suspend () -> Unit>.coroutineExecute(maxConcurrency: Int = Int.MAX_VALU
     }
 }
 
-/**
- * Flow를 한번에 다 실행해서  결과를 반환한다. 주의해서 사용!!
- * ex) paging 설정에서 모든 페이지 로드
- * */
-suspend fun <T, R> Flow<T>.collectToList(block: (T) -> R): List<R> {
-    val list = mutableListOf<R>()
-    this.collect {
-        val r = block(it)
-        list += r
-    }
-    return list
-}
+///**
+// * Flow를 한번에 다 실행해서  결과를 반환한다. 주의해서 사용!!
+// * ex) paging 설정에서 모든 페이지 로드
+// * */
+//suspend fun <T, R> Flow<T>.collectToList(block: (T) -> R): List<R> {
+//    val list = mutableListOf<R>()
+//    this.collect {
+//        val r = block(it)
+//        list += r
+//    }
+//    return list
+//}
 
 /** 간단 delay. */
 suspend fun Duration.delay() {

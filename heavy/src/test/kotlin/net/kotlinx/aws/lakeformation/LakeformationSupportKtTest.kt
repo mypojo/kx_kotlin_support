@@ -43,8 +43,11 @@ class LakeformationSupportKtTest : BeSpecHeavy() {
             Then("역할에 태그권한 부여") {
                 aws.lake.grantPermissions("app-admin", listOf(tag), ResourceType.Database)
             }
-            Then("역할에 태그권한 부여 - 테이블만") {
+            Then("역할에 태그권한 부여 - firehose_iceberg") {
                 aws.lake.grantPermissions("app-firehose_iceberg", listOf(tag), ResourceType.Table)
+            }
+            Then("역할에 태그권한 부여 - glue") {
+                aws.lake.grantPermissions("app-glue", listOf(tag), ResourceType.Table)
             }
         }
 
