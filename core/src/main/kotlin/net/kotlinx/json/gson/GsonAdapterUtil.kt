@@ -13,7 +13,6 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
-import kotlin.Throws
 
 /**
  * GSON 코드 샘플 모음

@@ -35,7 +35,7 @@ pluginManagement {
         //코틀린 버전과 맞춰야 해서 리프레시 버전 사용하지 않음. -> kotlin 버전과 접미어를 맞춰줘야함.   https://github.com/google/ksp/releases
         //2025-02 k2 컴파일러 에러나서 일단 중단.. 향후 버전 2.1로 올려서 사용해보자.  https://github.com/google/ksp/blob/main/docs/ksp2.md
         val kotlinKspVersion: String by settings
-        id("com.google.devtools.ksp") version "${kotlinKspVersion}"
+        id("com.google.devtools.ksp") version kotlinKspVersion
     }
 
 }

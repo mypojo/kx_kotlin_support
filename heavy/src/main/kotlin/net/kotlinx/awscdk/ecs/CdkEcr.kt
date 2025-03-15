@@ -24,10 +24,16 @@ class CdkEcr(
 
     lateinit var iRepository: IRepository
 
+    /** 정의하지 않으면 로지컬 이름으로 대체됨 */
+    var repositoryName: String? = null
+
+    private val _repositoryName: String
+        get() = repositoryName ?: logicalName
+
     fun create(stack: Stack): CdkEcr {
         iRepository = Repository(
             stack, "ecr-$logicalName", RepositoryProps.builder()
-                .repositoryName(logicalName)
+                .repositoryName(_repositoryName)
                 .imageTagMutability(imageTagMutability)
                 .imageScanOnPush(true) //디폴트로 스캔 온
                 .build()
@@ -56,7 +62,7 @@ class CdkEcr(
 
     fun load(stack: Stack): CdkEcr {
         try {
-            iRepository = Repository.fromRepositoryName(stack, "ecr-$logicalName", logicalName)
+            iRepository = Repository.fromRepositoryName(stack, "ecr-$logicalName", _repositoryName)
         } catch (e: Exception) {
             println(" -> [${stack.stackName}] object already loaded -> $logicalName")
         }

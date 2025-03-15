@@ -1,7 +1,6 @@
 package net.kotlinx.aws.lambda.dispatch.synch.s3Logic
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import net.kotlinx.json.serial.SerialJsonSet
 import net.kotlinx.json.serial.SerialParseJson
 import net.kotlinx.json.serial.SerialToJson

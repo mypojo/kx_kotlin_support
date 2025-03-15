@@ -68,7 +68,7 @@ class CsvReadWriteTools : SuspendRunnable {
 
         // 청크 단위로 데이터 처리
         val chunkDatas = mutableListOf<List<String>>()
-        var index: Int = 0
+        var index = 0
         while (iterator.hasNext()) {
             chunkDatas.add(iterator.next())
             if (chunkDatas.size == chunkSize) {

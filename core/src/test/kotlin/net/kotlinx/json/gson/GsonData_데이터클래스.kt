@@ -8,6 +8,7 @@ import io.kotest.matchers.shouldNotBe
 import kotlinx.serialization.Serializable
 import net.kotlinx.aws.lambda.dispatch.asynch.EventBridgeJson
 import net.kotlinx.aws.lambda.dispatch.asynch.EventBridgeS3
+import net.kotlinx.collection.mapOf
 import net.kotlinx.json.koson.KosonTest.Companion.DEMO_KOSON
 import net.kotlinx.json.koson.toGsonData
 import net.kotlinx.json.serial.SerialJsonSet
@@ -45,31 +46,51 @@ internal class GsonData_데이터클래스 : BeSpecLog() {
 
         Given("외부 테스트") {
 
+            val s3Event = obj {
+                "account" to "123"
+                "detailType" to "11"
+                "region" to "11"
+                "time" to "11"
+                "source" to "11"
+                "resources" to arr["abc"]
+                "detail" to obj {
+                    "bucket" to obj {
+                        "name" to "name"
+                    }
+                    "object" to obj {
+                        "key" to "key"
+                    }
+                    "reason" to "업로드"
+                }
+            }.toGsonData()
 
-            Then("map 변환") {
 
-            }
-
-
-            Then("투스트링 테스트") {
-
-                val s3Event = obj {
+            Then("json 을 map 변환") {
+                val s3EventMap = mapOf {
                     "account" to "123"
                     "detailType" to "11"
                     "region" to "11"
                     "time" to "11"
                     "source" to "11"
-                    "resources" to arr["abc"]
-                    "detail" to obj {
-                        "bucket" to obj {
+                    "resources" to listOf("abc")
+                    "detail" to mapOf {
+                        "bucket" to mapOf {
                             "name" to "name"
                         }
-                        "object" to obj {
+                        "object" to mapOf {
                             "key" to "key"
                         }
                         "reason" to "업로드"
                     }
-                }.toGsonData()
+                }
+                val orgJson = s3Event.toPreety()
+                val mapJson = GsonData.fromObj(s3EventMap).toPreety()
+                orgJson shouldBe mapJson
+            }
+
+
+            Then("투스트링 테스트") {
+
 
                 val eventBridgeJson = EventBridgeJson(s3Event)
                 val s3 = EventBridgeS3(eventBridgeJson)

@@ -104,6 +104,7 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 
     /**
      * 편의용 메소드
+     * 1뎁스만 지원한다.
      * */
     fun toMap(): Map<String, String?> = when (delegate) {
         is JsonObject -> entryMap().map { it.key to it.value.str }.toMap()

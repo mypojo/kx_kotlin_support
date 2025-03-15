@@ -3,7 +3,6 @@ package net.kotlinx.domain.batchStep.stepDefault
 import aws.sdk.kotlin.services.s3.listObjectsV2
 import com.lectra.koson.obj
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsNaming

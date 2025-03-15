@@ -22,7 +22,7 @@ object AwsInstanceTypeUtil {
         }
         if (IS_LOCAL) return AwsInstanceType.LOCAL
 
-        throw IllegalStateException("AWS job 작동환경을 알 수 없습니다. ${System.getenv()}")
+        throw IllegalStateException("AWS env 작동환경을 알 수 없습니다.  env -> ${System.getenv()}")
     }
 
     /** instanceType 을 가져온다 */

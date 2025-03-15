@@ -1,7 +1,6 @@
 package net.kotlinx.domain.batchStep
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import net.kotlinx.core.Kdsl
 import net.kotlinx.json.serial.SerialJsonSet
 import net.kotlinx.json.serial.SerialParseJson

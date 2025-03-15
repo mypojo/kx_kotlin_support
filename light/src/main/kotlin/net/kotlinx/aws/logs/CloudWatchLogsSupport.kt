@@ -70,7 +70,7 @@ suspend fun CloudWatchLogsClient.download(logGroupName: String, logStreamName: S
     }
 }
 
-suspend fun CloudWatchLogsClient.getLogAnomaly() {
+fun CloudWatchLogsClient.getLogAnomaly() {
     //아직 지원하지 않는거 같음
 }
 
