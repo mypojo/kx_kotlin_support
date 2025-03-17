@@ -94,12 +94,12 @@ class CdkCodeBuild : CdkInterface {
     /**
      * 컨테이너 환경변수
      *  */
-    var environment: Map<String, BuildEnvironmentVariable> = mapOf(
-        DeploymentType::class.simpleName!! to BuildEnvironmentVariable.builder().type(BuildEnvironmentVariableType.PLAINTEXT).value(deploymentType.name).build(), //필수
-        "BRANCH_NAME" to BuildEnvironmentVariable.builder().type(BuildEnvironmentVariableType.PLAINTEXT).value(branchName).build(), //이건 참고용
-    )
+    var environment: Map<String, BuildEnvironmentVariable?> = mapOf {
+        DeploymentType::class.simpleName!! to BuildEnvironmentVariable.builder().type(BuildEnvironmentVariableType.PLAINTEXT).value(deploymentType.name).build() //필수
+        "BRANCH_NAME" to BuildEnvironmentVariable.builder().type(BuildEnvironmentVariableType.PLAINTEXT).value(branchName).build() //이건 참고용
+    }
 
-    /** 
+    /**
      * S3 캐시 파일은 주기적으로 삭제 해줘야 한다 (S3 라이프사이클 달아도 되는데 혹시 메이븐 고장날수 있어서 추천하지는 않음)
      * ex) AWS 버전을 2.3 -> 2.4로 올리면 모든버전 파일이 다 있음으로 크기가 두배가 된다..
      * 일반 프로젝트의 경우 1.5G 정도 됨. 캐시결과 업로드에는 2.6분 정도 걸리는듯
