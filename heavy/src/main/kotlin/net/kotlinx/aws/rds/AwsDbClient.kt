@@ -49,12 +49,14 @@ class AwsDbClient {
      * 쿼리, 업데이트 등등 이거 하나로 다 같이 사용
      * 트랜잭션은 별도임
      * */
-    suspend fun executeStatement(sql: String, param: Map<String, Any>): ExecuteStatementResponse {
+    suspend fun executeStatement(sql: String, param: Map<String, *> = emptyMap<String, Any>()): ExecuteStatementResponse {
         return aws.rdsData.executeStatement {
             this.secretArn = this@AwsDbClient.secretArn
             this.sql = sql
             this.database = databaseName
             this.resourceArn = this@AwsDbClient.resourceArn
+            this.includeResultMetadata = false //디폴트로 메타데이터 안줌
+            //formatRecordsAs =RecordsFormatType.Json
             this.parameters = param.map {
                 SqlParameter {
                     name = it.key

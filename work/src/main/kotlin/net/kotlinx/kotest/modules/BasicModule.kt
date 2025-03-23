@@ -4,9 +4,12 @@ import com.google.common.eventbus.DeadEvent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.google.common.eventbus.SubscriberExceptionHandler
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.api.ecos.EcosClient
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.s3.S3Data
+import net.kotlinx.aws.ssm.ssmStore
 import net.kotlinx.file.slash
 import net.kotlinx.google.GoogleSecret
 import net.kotlinx.google.GoogleService
@@ -14,6 +17,7 @@ import net.kotlinx.google.calendar.GoogleCalendar
 import net.kotlinx.id.IdGenerator
 import net.kotlinx.json.gson.GsonSet
 import net.kotlinx.koin.KoinModule
+import net.kotlinx.koin.Koins.koin
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.MyEnv
 import net.kotlinx.kotest.modules.job.JobEvenListener
@@ -22,7 +26,6 @@ import net.kotlinx.kotest.modules.lambdaDispatcher.AwsEventListener
 import net.kotlinx.kotest.modules.lambdaDispatcher.AwsSnsListener
 import net.kotlinx.kotest.modules.lambdaDispatcher.LambdaDispatcherDefaultListener
 import net.kotlinx.lazyLoad.lazyLoad
-import net.kotlinx.lazyLoad.lazyLoadSsm
 import net.kotlinx.lazyLoad.lazyLoadStringSsm
 import net.kotlinx.notion.NotionDatabaseClient
 import net.kotlinx.notion.NotionPageBlockClient
@@ -51,7 +54,8 @@ object BasicModule : KoinModule {
             SlackApp(token)
         }
         single { GsonSet.GSON }
-        /** 이벤트버스 구독은 리플렉션 하지말고 개별 모듈에서 명시적으로 등록하자. */
+
+        /** 이벤트버스 구독은 개별 모듈에서 명시적으로 등록하자. */
         single {
 
             class DeadEventListener {
@@ -104,7 +108,7 @@ object BasicModule : KoinModule {
         }
 
         /** 한국은행 API */
-        single {
+        single<EcosClient> {
             val apikey by lazyLoadStringSsm("/api/ecos/key")
             EcosClient(apikey)
         }
@@ -116,10 +120,11 @@ object BasicModule : KoinModule {
             val secretValue by lazyLoadStringSsm("/notion/key")
             NotionPageBlockClient(secretValue)
         }
-        single {
-            log.info { "구글 서비스가 로드됩니다" }
+        single<GoogleService> {
+            val client = koin<AwsClient>()
             val secret = GoogleSecret {
-                secretClientFile.lazyLoadSsm("/google/app-access/oauth2_client")
+                //시크릿값을 스토어에 넣은다음 로드해서 사용
+                secretClientFile.writeText(runBlocking { client.ssmStore["/google/app-access/oauth2_client"] })
                 secretDir.slash(GoogleSecret.SECRET_STORED_FILE_NAME).lazyLoad(S3Data("kotlinx", "store/secret/google/app-access/StoredCredential")).load()
             }
             secret.createService()

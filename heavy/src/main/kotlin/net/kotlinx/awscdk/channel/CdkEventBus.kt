@@ -93,6 +93,26 @@ class CdkEventBus : CdkInterface {
         TagUtil.tagDefault(eventDisRule)
     }
 
+    /**
+     * GB당 0.1$ 정도 나옴
+     * 아래 링크 참고
+     * https://aws.amazon.com/ko/eventbridge/pricing/
+     *
+     * ex) 10일 오후 3~4시에 입력된 이벤트를 다시 보고싶음 -> 리플레이 만들어서 로깅 rule 적용 -> 클라우드와치로 로깅됨
+     *
+     * 로깅 rule 관련은 아래 링크 참고. "replay-name" 이라는 추가 필드로 필터링 가능
+     * https://aws.amazon.com/ko/blogs/compute/archiving-and-replaying-events-with-amazon-eventbridge/
+     * */
+    fun archive(stack: Stack, retentionDays: Int = 30) {
+        val logicalName = "${projectName}-${eventBusName}_archive-${suff}"
+        val archive = CfnArchive.Builder.create(stack, logicalName)
+            .archiveName(logicalName)
+            .sourceArn(iEventBus.eventBusArn)
+            .retentionDays(retentionDays) // 보존 기간 설정 (30일)
+            .build()
+        TagUtil.tagDefault(archive)
+    }
+
     //커스텀 정책이 피요할때 (외부 이벤트 주입 등.)
 // new CfnEventBusPolicy(stack, eventBusName+'-policy', {
 //     statementId: eventBusName+'-sid',
@@ -109,18 +129,6 @@ class CdkEventBus : CdkInterface {
 //     description: discoverName,
 // });
 // TagUtil.deploymentType(discoverer);
-
-// //아카이브 - 특정 기간의 이벤트 리플레이용. 불필요하면 생성하지 않음
-// const archiveName = `${THE.projectName}-eventbus_archive-${deploymentType}`
-// const archive = new Archive(stack, archiveName, {
-//     eventPattern: {
-//         source: allEventSources,
-//     },
-//     sourceEventBus: eventBus,
-//     archiveName: archiveName,
-//     retention: Duration.days(7 * 2),
-// });
-// TagUtil.deploymentType(archive);
 
 
 }

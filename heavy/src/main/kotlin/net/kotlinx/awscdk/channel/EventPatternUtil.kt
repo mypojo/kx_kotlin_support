@@ -1,9 +1,20 @@
 package net.kotlinx.awscdk.channel
 
 import software.amazon.awscdk.services.events.EventPattern
+import software.amazon.awscdk.services.events.Match
 
 
+/**
+ * CDK 에서는 루트 매핑이 안된다.. 좀 심한거 아닌가?
+ * ex) 리플레이를 제외한 전부
+ * */
 object EventPatternUtil {
+
+    /**
+     * AWS 전체
+     * ex) 전체 로깅
+     *  */
+    val AWS_ALL = EventPattern.builder().source(Match.prefix("aws.")).build()
 
     /** AWS에서 관심있게 봐야할 이벤트들 */
     val AWS_CORE = EventPattern.builder()

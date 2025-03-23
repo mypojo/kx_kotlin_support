@@ -49,8 +49,9 @@ dependencies {
 //        implementation("com.fasterxml.jackson.core:jackson-annotations:2.10.0")
 
     //==================================================== AWS JAVA V2 RDS IAM ======================================================
-    implementation("software.amazon.awssdk:rds:_") //AWS SDK2 버전의 IAM 데이터소스 (코틀린 버전 없음)
-    implementation("software.amazon.awssdk:sts:_") //IAM 토큰 발행시 필요
+    val awsJavaV2Version: String by project
+    implementation("software.amazon.awssdk:rds:$awsJavaV2Version") //AWS SDK2 버전의 IAM 데이터소스 (코틀린 버전 없음)
+    implementation("software.amazon.awssdk:sts:$awsJavaV2Version") //IAM 토큰 발행시 필요
 
     //==================================================== AWS CDK  ======================================================
     api("software.amazon.awscdk:aws-cdk-lib:_")   //https://mvnrepository.com/artifact/software.amazon.awscdk/aws-cdk-lib

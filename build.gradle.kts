@@ -1,4 +1,3 @@
-
 import net.kotlinx.gradle.get
 import net.kotlinx.number.halfUp
 import net.kotlinx.number.toSiText
@@ -151,7 +150,7 @@ publishing {
         maven {
             //repsy 서버가 불안정해서 서브로 github을 추가했다.
             // -> github의 패키지 서비스는 퍼블릭 리파지토리도 토큰을 넣어야 하고, 매우 느려서 서브로만 사용
-            val host = "repsy" to "https://repo.repsy.io/mvn/mypojo/kotlin_support"
+            val host = "repsy" to "https://repo.repsy.io/mvn/mypojo/kotlin_support"  //id=사용자명,pass=사이트의 비밀번호.
             //val host = "github" to "https://maven.pkg.github.com/mypojo/kx_kotlin_support"
             url = uri(host.second)
             credentials {

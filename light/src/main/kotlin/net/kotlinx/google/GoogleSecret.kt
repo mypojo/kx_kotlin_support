@@ -52,16 +52,15 @@ class GoogleSecret {
     /**
      * 시크릿을 저장할 디렉터리
      * 디폴트로 자주 사용되는 디렉토리 지정
-     * ex) C:\Users\userName\.google
+     * ex) C:\Users\${userName}\.google
      *  */
     var secretDir: File = ResourceHolder.USER_ROOT.slash(".google")
 
 
     /** SSM 등에서 데이터를 가져와서 여기에 파일로 만들것 */
-    var secretClientFile: File = File(secretDir, SECRET_CLIENT_FILE_NAME)
+    var secretClientFile: File = secretDir.slash(SECRET_CLIENT_FILE_NAME)
 
-    /** 최종 크리덴셜 */
-    val credential: Credential
+    //==================================================== 내부 사용 ======================================================
 
     /** 같이 사용 */
     val transport = GoogleNetHttpTransport.newTrustedTransport()!!
@@ -69,14 +68,15 @@ class GoogleSecret {
     /** 걍 JSON 파싱하는애  */
     val jsonFactory: JsonFactory = JacksonFactory.getDefaultInstance()
 
-    init {
+    /** 최종 크리덴셜 */
+    val credential: Credential by lazy {
         val secret = InputStreamReader(FileInputStream(secretClientFile))
         val clientSecrets = GoogleClientSecrets.load(jsonFactory, secret)
         val flow =
             GoogleAuthorizationCodeFlow.Builder(transport, jsonFactory, clientSecrets, scopes)
                 .setDataStoreFactory(FileDataStoreFactory(secretDir)).setAccessType("offline").build()
         val receiver: LocalServerReceiver = LocalServerReceiver.Builder().setPort(TEMP_PORT).build()
-        credential = AuthorizationCodeInstalledApp(flow, receiver).authorize("user")
+        AuthorizationCodeInstalledApp(flow, receiver).authorize("user")
     }
 
     /** API KEY 방식인 경우 샘플 (사용 안함) */

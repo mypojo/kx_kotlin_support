@@ -19,7 +19,10 @@ import net.kotlinx.system.DeploymentType
  *  */
 interface CdkInterface {
 
-    /** CDK에 사용할 논리적 이름을 리턴한다. 동적으로 변경 가능 */
+    /**
+     * CDK에 사용할 논리적 이름을 리턴한다. 동적으로 변경 가능
+     * 커스텀 이름 지정가능 -> displayName
+     *  */
     val logicalName: String
 
     //==================================================== 편의용 단축 도구 ======================================================
@@ -71,3 +74,23 @@ interface CdkInterface {
  * ex) S3,IAM,등등..
  * */
 interface CdkEnum : CdkInterface
+
+/**
+ * 사용자 정의 네이밍 지원
+ * displayName 을 logicalName과 다르게 세팅하고싶을때만 사용
+ *
+ * logicalName 이 다수 등록되어야 하는 경우라면 logicalName 생성에 name 을 필수로 지정해야함!
+ * */
+interface CdkCdkInterfaceName : CdkInterface {
+
+    /** 커스텀하게 설정하는 이름 */
+    var configuredName: String?
+
+    /**
+     * 실제 UI등에 보이는 디스플레이 이름
+     * 설정이 없으면 logicalName 을 사용함
+     *  */
+    val displayName: String
+        get() = configuredName ?: logicalName
+
+}

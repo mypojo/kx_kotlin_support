@@ -40,6 +40,12 @@ class CdkBatchJobDefinition(
     lateinit var logGroupPath: String
 
     /**
+     * publicIp가 필요한지?
+     * 퍼블릭망에서는 보통 공개 IP를 할당받음 -> 이래야 ECR 등의 인터넷망에 접근됨
+     *  */
+    var publicIp: Boolean = false
+
+    /**
      * args 로 사용할 인자값 매핑
      * job submit 할때의 파라메터와 일치해아함
      * */
@@ -77,6 +83,7 @@ class CdkBatchJobDefinition(
             .type("Container")
             //.retryStrategy(RetryStrategyProperty.builder().attempts(1).build()) //자체 재시도 하지 않음. 최소 1~10 까지 지정
             .timeout(CfnJobDefinition.TimeoutProperty.builder().attemptDurationSeconds(attemptDurationSeconds).build())
+
             .containerProperties(
                 CfnJobDefinition.ContainerPropertiesProperty.builder()
                     .fargatePlatformConfiguration(CfnJobDefinition.FargatePlatformConfigurationProperty.builder().platformVersion("1.4.0").build())
@@ -109,6 +116,11 @@ class CdkBatchJobDefinition(
                             )
                             .build()
                     )
+                    .apply {
+                        if (publicIp) {
+                            networkConfiguration(CfnJobDefinition.NetworkConfigurationProperty.builder().assignPublicIp("ENABLED").build())
+                        }
+                    }
                     .build()
             )
             .apply(block)

@@ -1,6 +1,7 @@
 package net.kotlinx.aws.rds
 
 import net.kotlinx.aws.AwsClient
+import net.kotlinx.collection.mapOf
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -23,7 +24,10 @@ class AwsDbClientTest : BeSpecHeavy() {
             }
 
             Then("단순 조회 테스트") {
-                val res = db.executeStatement("select * from media_report limit 3", emptyMap<String, Any>())
+                val param = mapOf {
+                    "id" to 1
+                }
+                val res = db.executeStatement("select * from media_report where 1 = :id limit 10", param)
                 res.records!!.forEach { t ->
                     log.debug { t.joinToString("\t") }
                 }

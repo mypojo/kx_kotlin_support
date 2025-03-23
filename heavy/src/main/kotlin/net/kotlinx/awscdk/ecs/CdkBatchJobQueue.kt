@@ -16,7 +16,9 @@ class CdkBatchJobQueue : CdkInterface {
         apply(block)
     }
 
+    /** 네이밍 지정 */
     lateinit var name: String
+
     var priority: Int = 10
 
     /** 리소스 생성 이후에 주입 되어야 한다 */

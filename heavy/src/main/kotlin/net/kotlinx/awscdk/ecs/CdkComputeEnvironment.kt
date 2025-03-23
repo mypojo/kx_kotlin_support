@@ -6,13 +6,6 @@ import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.batch.CfnComputeEnvironment
 import software.amazon.awscdk.services.batch.CfnComputeEnvironment.ComputeResourcesProperty
 import software.amazon.awscdk.services.batch.CfnComputeEnvironmentProps
-import software.amazon.awscdk.services.ec2.IVpc
-
-enum class ComputeEnvironmentType(val resourceType: String) {
-    NORMAL("FARGATE"),
-    SPOT("FARGATE_SPOT"),
-    ;
-}
 
 class CdkComputeEnvironment : CdkInterface {
 
@@ -23,16 +16,24 @@ class CdkComputeEnvironment : CdkInterface {
 
     lateinit var type: ComputeEnvironmentType
 
+    /** 이름 */
+    var name: String = "compenv"
+
     /** VPC 이름 */
     override val logicalName: String
-        get() = "${projectName}_compenv_${type.name.lowercase()}-${suff}"
-
-    lateinit var iVpc: IVpc
-
-    lateinit var securityGroupIds: List<String>
+        get() = "${projectName}_${name}_${type.name.lowercase()}-${suff}"
 
     /** 결과 */
     lateinit var compEnv: CfnComputeEnvironment
+
+    /**
+     * VPC는 필수
+     * ex) iVpc.privateSubnets.map { it.subnetId }
+     *  */
+    lateinit var subnets: List<String>
+
+    /** SG */
+    lateinit var securityGroupIds: List<String>
 
     //ECS 클러스터 이름 수정이 안됨..
     fun create(stack: Stack, block: CfnComputeEnvironmentProps.Builder.() -> Unit = {}): CdkComputeEnvironment {
@@ -45,7 +46,7 @@ class CdkComputeEnvironment : CdkInterface {
                     ComputeResourcesProperty.builder()
                         .maxvCpus(100)
                         .type(type.resourceType)
-                        .subnets(iVpc.privateSubnets.map { it.subnetId })
+                        .subnets(subnets)
                         .securityGroupIds(securityGroupIds)
                         .build()
                 )
@@ -54,5 +55,6 @@ class CdkComputeEnvironment : CdkInterface {
         )
         return this
     }
+
 
 }
