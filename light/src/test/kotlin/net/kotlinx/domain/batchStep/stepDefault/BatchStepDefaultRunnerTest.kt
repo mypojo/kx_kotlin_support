@@ -30,11 +30,10 @@ class BatchStepDefaultRunnerTest : BeSpecHeavy() {
                         jobSk = "aaa"
                         sfnId = "7dde7369-4d9f-4dd9-a8f2-756d3cfd28ee"
                         listOption = BatchStepListOption {
-                            waitSeconds = 12
+                            waitSeconds02 = 12
                         }
                         mode = BatchStepMode.MAP_INLINE
                     }
-
                 }
 
                 val result = runner.postOrSkip(input.toJson().toGsonData(), null)!!
@@ -50,7 +49,7 @@ class BatchStepDefaultRunnerTest : BeSpecHeavy() {
                         jobSk = "aaa"
                         sfnId = "7dde7369-4d9f-4dd9-a8f2-756d3cfd28ee"
                         listOption = BatchStepListOption {
-                            waitSeconds = 12
+                            waitSeconds02 = 12
                         }
                     }
                 }

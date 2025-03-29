@@ -10,6 +10,9 @@ import software.amazon.awscdk.services.iam.IRole
 /**
  * 비스천 호스트 설정.
  * 2022.12 기준 아직 DB 포워딩을 다이렉트로 해주지 않는다
+ *
+ * https://ap-northeast-2.console.aws.amazon.com/systems-manager/session-manager/preferences?region=ap-northeast-2
+ * 최초 세팅시 Idle 타임아웃 기본 20분인데 60으로 늘려주자
  * */
 class CdkBastion : CdkInterface {
 

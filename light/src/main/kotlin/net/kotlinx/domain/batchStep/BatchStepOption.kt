@@ -76,11 +76,18 @@ class BatchStepListOption {
     var maxConcurrency: Int = 100
 
     /**
+     * 요청 후 처음 1회의 대기시간 입력
+     * 이시간 이후부터 상태 체크를 수행한다
+     * ex) API 호출하면 최소 1시간 후 완료 가능
+     *  */
+    var waitSeconds01: Int = 60
+
+    /**
      * 대기시간 (초). 정수로 입력해야한다.
      * 로컬에서 4초 -> 15초 정도 설정해도 랜덤하게 돌리다보면 5초 까지도 떨어짐. 2배 잡으면 될듯.
      * 주의!! 타임아웃 난다고 길게 줄 필요 없음. WAF를 회피할 정도로 입력하면 됨
      *  */
-    var waitSeconds: Int = 6
+    var waitSeconds02: Int = 6
 
 
 }

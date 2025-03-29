@@ -4,6 +4,7 @@ import net.kotlinx.aws.AwsConfig
 import net.kotlinx.json.gson.GsonSet
 import net.kotlinx.string.ResultText
 import java.io.File
+import kotlin.time.Duration.Companion.minutes
 
 /**
  * 람다 유틸들
@@ -13,6 +14,9 @@ import java.io.File
  *
  * */
 object LambdaUtil {
+
+    /** 람다 기본 타임아웃 */
+    val DEAFULT_TIMEOUT = 15.minutes
 
     /** 람다의 로컬디렉토리 디폴트 경로. 여기부터 512mb가 할당된다.  */
     val ROOT = File("/tmp")

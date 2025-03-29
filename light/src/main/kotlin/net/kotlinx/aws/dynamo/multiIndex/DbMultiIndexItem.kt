@@ -10,6 +10,7 @@ import net.kotlinx.json.gson.GsonData
  * GSI 는 최대 20개 지원
  *
  * 고성능 기반이 아님으로 사용에 주의할것!!
+ * 자잘한 데이터를 서버리스에서 저장/조회할 목적으로 개발되었다
  */
 class DbMultiIndexItem(override val pk: String, override val sk: String) : DbItem {
 

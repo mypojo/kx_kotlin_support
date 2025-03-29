@@ -1,6 +1,7 @@
 package net.kotlinx.aws.iam
 
 import net.kotlinx.aws.AwsClient
+import net.kotlinx.koin.Koins.koin
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -12,12 +13,17 @@ class IamSecretUpdateModuleTest : BeSpecHeavy() {
     init {
         initTest(KotestUtil.IGNORE)
 
-        xGiven("iamSecretUpdateModule") {
+        Given("iamSecretUpdateModule") {
             log.warn { "시크릿 파일이 변경될 수 있음!! 주의!!" }
+            val aws by koinLazy<AwsClient>()
+
+            Then("억세스 체크") {
+                println(aws.awsConfig.callerIdentity.arn)
+                println(koin<AwsClient>(findProfile97).awsConfig.callerIdentity.arn)
+            }
+
             Then("시크릿키 갱신") {
-                val aws by koinLazy<AwsClient>()
-                val userName = System.getenv("AWS_ID")
-                aws.iamSecretUpdateModule.checkAndUpdate(userName, Duration.ofDays(19))
+                IamSecretUpdateModule().checkAndUpdate(Duration.ofDays(30))
             }
         }
     }

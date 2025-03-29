@@ -9,6 +9,9 @@ import net.kotlinx.string.toLocalDateTime
 import net.kotlinx.time.TimeFormat
 
 
+/**
+ * GSI를 사용하지 않는다.. DbMultiIndex로 안해도 되었을듯..
+ * */
 class ErrorLogConverter : DbMultiIndexEachConverter<DbMultiIndexItem, ErrorLog> {
 
     companion object {

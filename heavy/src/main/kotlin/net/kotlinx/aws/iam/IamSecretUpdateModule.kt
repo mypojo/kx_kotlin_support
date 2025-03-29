@@ -1,10 +1,14 @@
 package net.kotlinx.aws.iam
 
-import aws.sdk.kotlin.services.iam.*
+import aws.sdk.kotlin.services.iam.createAccessKey
+import aws.sdk.kotlin.services.iam.deleteAccessKey
+import aws.sdk.kotlin.services.iam.listAccessKeys
 import aws.sdk.kotlin.services.iam.model.AccessKeyMetadata
 import aws.sdk.kotlin.services.iam.model.StatusType
+import aws.sdk.kotlin.services.iam.updateAccessKey
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import net.kotlinx.aws.AwsLocal
 import net.kotlinx.aws.toLocalDateTime
 import net.kotlinx.number.maxWith
 import net.kotlinx.string.toTextGrid
@@ -16,10 +20,9 @@ import java.time.Duration
 /**
  * 일반적인 보안규정상 영구키값은 주기적으로(약3개월) 교체 해야한다. 이것을 자동으로 해주는 도구
  * 윈도우 전용임!
+ * 로컬에서 사용하며, 프로파일 없이 빈 client를 만들어서 호출하면됨
  *  */
-class IamSecretUpdateModule(
-    private val iamClient: IamClient,
-) {
+class IamSecretUpdateModule() {
 
     private val log = KotlinLogging.logger {}
 
@@ -34,14 +37,16 @@ class IamSecretUpdateModule(
         val overTime: Long = (afterTime - limit.toMillis()).maxWith(0)
     }
 
+    val client = AwsLocal.CLIENT
+    val awsUserName = AwsLocal.AWS_USER_NAME
+
     /**
-     * @param userName 환경변수 등으로 설정할것.
      * @param limit Active key age 가 limit 이내가 아니라면 교체
      * */
-    fun checkAndUpdate(userName: String, limit: Duration) = runBlocking {
+    fun checkAndUpdate(limit: Duration) = runBlocking {
 
-        val allKeys = iamClient.listAccessKeys { this.userName = userName }.accessKeyMetadata.map { AwsIamKey(it, limit) }
-        log.info { "현재 키값 정보를 출력합니다" }
+        val allKeys = client.iam.listAccessKeys { this.userName = awsUserName }.accessKeyMetadata.map { AwsIamKey(it, limit) }
+        log.info { "현재 local awsUserName(${awsUserName}) 키값 정보를 출력합니다" }
         listOf("키 ID (아직 교체 전)", "상태", "생성시간", "생성시간 비고", "오버시간").toTextGrid(
             allKeys.map {
                 arrayOf(it.key.accessKeyId, it.key.status, it.createTime.toKr01(), "${it.afterTime.toTimeString()} 전 생성됨", it.overTime.toTimeString())
@@ -58,7 +63,7 @@ class IamSecretUpdateModule(
 
         allKeys.find { it != invalidKey }?.let {
             log.debug { " -> 가장 오래된 키 ${it.key.accessKeyId} (${it.key.status}) 를 삭제합니다. (키는 2개만 유지 가능)" }
-            iamClient.deleteAccessKey {
+            client.iam.deleteAccessKey {
                 this.userName = userName
                 this.accessKeyId = it.key.accessKeyId
             }
@@ -69,12 +74,12 @@ class IamSecretUpdateModule(
 
         check(invalidKey.key.accessKeyId == oldKey.first) { "저장된 키와 invalid 키가 동일해야 합니다." }
 
-        val newKey = iamClient.createAccessKey { this.userName = userName }.let { it.accessKey!!.accessKeyId to it.accessKey!!.secretAccessKey }
+        val newKey = client.iam.createAccessKey { this.userName = userName }.let { it.accessKey!!.accessKeyId to it.accessKey!!.secretAccessKey }
         log.info { " -> 키가 교체되어 저장됩니다. ${oldKey.first} => ${newKey.first} / 확인 :  ${credential.secretPath}" }
         credential.replaceKey(newKey)
 
         log.info { " -> invalid 키 ${oldKey.first} 를 비활성화 시킵니다." }
-        iamClient.updateAccessKey {
+        client.iam.updateAccessKey {
             this.userName = userName
             this.accessKeyId = oldKey.first
             this.status = StatusType.Inactive

@@ -3,6 +3,7 @@ package net.kotlinx.aws
 import aws.sdk.kotlin.runtime.auth.credentials.DefaultChainCredentialsProvider
 import aws.sdk.kotlin.runtime.auth.credentials.StsAssumeRoleCredentialsProvider
 import aws.sdk.kotlin.runtime.client.AwsSdkClientConfig
+import aws.sdk.kotlin.services.sts.model.GetCallerIdentityResponse
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProviderConfig
 import aws.smithy.kotlin.runtime.http.config.HttpEngineConfig
@@ -12,7 +13,6 @@ import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.aws.sfn.SfnConfig
 import net.kotlinx.aws.sts.sts
-import net.kotlinx.koin.Koins.koin
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -65,18 +65,28 @@ data class AwsConfig(
         this.connectionIdleTimeout = this@AwsConfig.connectionIdleTimeout
     }
 
+    /** 내부 클라이언트 */
+    val client: AwsClient = AwsClient(this)
+
+    /**
+     * 일단 STS 의존을 추가한다. 이건 대부분 기본으로 깔고가자
+     * AWS 계정의 리턴한다.
+     * callerIdentity.arn =>
+     * #1. 다이렉트로 호출한 경우 IAM 사용자 리턴 ex) arn:aws:iam::xx:user/sin
+     * #2. profile 호출한 경우 해당 ROLE 리턴  ex) arn:aws:sts::xxx:assumed-role/DEV/aws-sdk-kotlin-yyy
+     *  */
+    val callerIdentity: GetCallerIdentityResponse by lazy {
+        runBlocking { client.sts.getCallerIdentity() }.also {
+            log.debug { " => STS를 통해서 caller 정보가 로드됨 -> ${it.account}" }
+        }
+    }
+
+
     /**
      * AWS ID
      * 최초 입력시 누락되었다면 늦은 로딩한다.
      *  */
-    val awsId: String by lazy {
-        inputAwsId ?: run {
-            val aws = koin<AwsClient>(profileName)
-            val identity = runBlocking { aws.sts.getCallerIdentity() }
-            log.debug { "[$profileName] AWS ID가 입력되지 않아서 STS를 통해서 로드됨 -> ${identity.account}" }
-            identity.account!!
-        }
-    }
+    val awsId: String by lazy { inputAwsId ?: callerIdentity.account!! }
 
     /**
      * 체인 기본순서 : 환경변수 -> 프로파일

@@ -26,9 +26,9 @@ class SmStore(
                 runBlocking {
                     sm.getSecretValue {
                         this.secretId = key
-                    }.secretString
+                    }.secretString!!
                 }
-            }
+            }!!
         }
     }
 

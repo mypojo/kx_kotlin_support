@@ -57,7 +57,7 @@ class StepList : LambdaDispatchLogic {
                 this.prefix = prefix
             }.contents?.map { it.key!! } ?: emptyList()
         }
-        log.trace { " -> ${config.workUploadBuket}/$prefix -> S3 list ${maxS3List.size}건 로드.. (1회 API 호출)" }
+        log.trace { " -> ${config.workUploadBuket}/$prefix -> S3 1회 호출로 list ${maxS3List.size}건 로드(max 1천개)" }
 
         val contents = maxS3List.shuffled().take(listOption.maxConcurrency)
         contents.map {

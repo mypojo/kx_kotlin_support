@@ -221,7 +221,7 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
                         val text = obj.toString()
                         try {
                             GsonData(JsonParser.parseString(text)) //koson 등등 다 해당
-                        } catch (e: JsonSyntaxException) {
+                        } catch (_: JsonSyntaxException) {
                             GsonData(JsonPrimitive(text)) //json 형식이 아니면 프리미티브로 입력
                         }
                     }
@@ -233,7 +233,7 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
         }
 
         /** 객체로 파싱할때 */
-        fun fromObj(obj: Any, gson: Gson = GsonSet.GSON): GsonData = parse(gson.toJson(obj))
+        fun <T> fromObj(obj: T, gson: Gson = GsonSet.GSON): GsonData = parse(gson.toJson(obj))
 
     }
 

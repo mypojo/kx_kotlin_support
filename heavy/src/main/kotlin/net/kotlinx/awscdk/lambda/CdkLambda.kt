@@ -53,7 +53,11 @@ class CdkLambda : CdkEnum {
     /** 런타임 */
     var runtime: Runtime = Runtime.JAVA_21!!
 
-    /** 스냅스타트를 사용할것인지 */
+    /**
+     * 스냅스타트를 사용할것인지
+     * 이미지를 다르게 세팅해야하는 docker형 람다와는 다르게, jar형은 아키텍쳐를 맘대로 바꿔도됨 (람다에 CPU의존적인걸 할리 없으니..)
+     * snapstart 안쓰면 ARM_64 로 고정
+     *  */
     var snapstart: Boolean = false
 
     /** 있으면 네이밍 추가 */
