@@ -123,6 +123,11 @@ dependencies {
     api("io.ktor:ktor-server-host-common-jvm:_")
     api("io.ktor:ktor-server-status-pages-jvm:_")
 
+    //==================================================== retrofit2 (rest API) ======================================================
+    api("com.squareup.retrofit2:retrofit:_")
+    api("com.squareup.retrofit2:converter-gson:_")
+    api("com.squareup.okhttp3:logging-interceptor:_")
+
     //==================================================== 크롤릭 ======================================================
     api("com.microsoft.playwright:playwright:_")
 

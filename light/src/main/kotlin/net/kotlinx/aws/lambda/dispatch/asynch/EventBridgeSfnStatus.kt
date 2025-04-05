@@ -11,5 +11,4 @@ data class EventBridgeSfnStatus(private val event: EventBridgeJson) : EventBridg
     val input = detail["input"].str ?: "-"
     val output = detail["output"].str ?: "-"
     val cause = detail["cause"].str ?: "-"
-
 }
