@@ -2,6 +2,9 @@ package net.kotlinx.json.gson
 
 import com.google.gson.*
 import mu.KotlinLogging
+import net.kotlinx.json.path.JsonPathUtil
+import net.kotlinx.json.path.parse
+import net.kotlinx.json.path.path
 import net.kotlinx.json.serial.SerialToJson
 import net.kotlinx.string.lett
 
@@ -11,14 +14,27 @@ import net.kotlinx.string.lett
  *
  * kotlin의 엄격한 객체 정의와 어울리지 않음으로 로직에 가급적 사용 금지
  * 모든 이상은 예외 대신 null을 리턴함
+ *
+ *
+ * json path 의존성도 추가됨 (저용량이라 따로 안뺌)
  */
 data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
+
+    /** json path용 객체 */
+    val pathObj by lazy { JsonPathUtil.DEFAULT_CONFIGURATION.parse(delegate) }
 
     //==================================================== operator ======================================================
 
     /** GsonVo 리턴. null을 리턴하지 않기 때문에 get().get() 식의 체인이 가능하다.  */
     operator fun get(key: String): GsonData = when (delegate) {
-        is JsonObject -> GsonData(delegate[key] ?: JsonNull.INSTANCE)
+        is JsonObject -> {
+            if (key.startsWith("$.")) {
+                GsonData((pathObj.path(key) as JsonElement?) ?: JsonNull.INSTANCE)
+            } else {
+                GsonData(delegate[key] ?: JsonNull.INSTANCE)
+            }
+        }
+
         else -> empty()
     }
 
@@ -55,7 +71,6 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 
     /** 키밸류 전부 추가 */
     fun putAll(data: GsonData) {
-        if (data == null) return
         if (delegate !is JsonObject) return
         if (data.delegate !is JsonObject) return
         data.delegate.asJsonObject.entrySet().forEach { e ->
@@ -186,7 +201,6 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
         val value = get(key).long ?: 0L
         put(key, value + num)
     }
-
 
     companion object {
 

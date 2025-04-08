@@ -77,6 +77,8 @@ suspend fun <T> doUntilMax(resultMax: Int, maxTimes: Int = 100, action: suspend 
  * 단축 메소드.
  * 최초 이후 토큰이 null일때까지
  * ex) 중단 토큰을 주는 AWS API
+ * 경고!!! Flow 지원되는거에는 안써도 됩니다!! Flow 쓰세요
+ * ex) S3Client.listAllDirs
  * */
 suspend fun <T> doUntilTokenNull(firstToken: Any? = null, maxTimes: Int = 100, action: suspend (Int, Any?) -> Pair<List<T>, Any?>): List<List<T>> {
     var token: Any? = firstToken

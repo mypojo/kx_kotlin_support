@@ -1,7 +1,10 @@
 package net.kotlinx.json.gson
 
+import com.lectra.koson.arr
+import com.lectra.koson.obj
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import net.kotlinx.json.koson.toGsonData
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -9,12 +12,39 @@ import net.kotlinx.time.toKr01
 import net.kotlinx.time.truncatedMills
 import java.time.LocalDateTime
 
+
 class GsonSetTest : BeSpecLight() {
 
     init {
         initTest(KotestUtil.FAST)
 
         Given("GsonSet") {
+
+            val jsonObject = obj {
+                "a" to obj {
+                    "b" to arr[
+                        obj { "c" to "값1" },
+                        obj { "c" to "값2" },
+                        obj { "c" to "값3" },
+                    ]
+                }
+            }
+
+            When("직접 읽기") {
+
+                val gson = jsonObject.toGsonData()
+
+                Then("경로매핑 & 일반 단일 get 비교") {
+                    gson["a"].toString() shouldBe """{"b":[{"c":"값1"},{"c":"값2"},{"c":"값3"}]}"""
+                    gson["$.a"].toString() shouldBe """{"b":[{"c":"값1"},{"c":"값2"},{"c":"값3"}]}"""
+                }
+
+                Then("경로매핑 단일값") {
+                    gson["$.a.b[2].a"].str shouldBe null  //없으면 널 리턴
+                    gson["$.a.b[2].c"].str shouldBe "값3"
+                }
+
+            }
 
             When("날짜변환 테스트 - ZONE") {
 

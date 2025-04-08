@@ -2,6 +2,9 @@ package net.kotlinx.aws.s3
 
 import aws.sdk.kotlin.services.s3.*
 import aws.sdk.kotlin.services.s3.model.ObjectIdentifier
+import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.regist
 import net.kotlinx.concurrent.coroutineExecute
@@ -49,6 +52,7 @@ suspend fun S3Client.moveFile(fromFile: S3Data, toFile: S3Data) {
 
 /**
  * 디렉토리를 가져온다.
+ * 경고!! AWS는 S3 리스팅에 desc를 지원하지 않는다. 따라서 디렉토링을 잘 할것!
  * @param prefix  디렉토리 표시인 /로 끝나면 디렉토리로 인싱한다  ex) main/data/
  * */
 suspend inline fun S3Client.listDirs(bucket: String, prefix: String): List<S3Data> = this.listObjectsV2 {
@@ -56,6 +60,17 @@ suspend inline fun S3Client.listDirs(bucket: String, prefix: String): List<S3Dat
     delimiter = "/"
     this.prefix = prefix
 }.commonPrefixes?.map { S3Data(bucket, it.prefix!!) } ?: emptyList() //파일이 있더라도 디렉토리가 없다면 빈값이 올 수 있음
+
+/**
+ * 디렉토리 전체 가져옴
+ * */
+suspend inline fun S3Client.listAllDirs(bucket: String, prefix: String): List<S3Data> = this.listObjectsV2Paginated {
+    this.bucket = bucket
+    delimiter = "/"
+    this.prefix = prefix
+}.map {
+    it.commonPrefixes?.map { S3Data(bucket, it.prefix!!) } ?: emptyList()
+}.toList().flatten()
 
 /**
  * 파일(객체)들을 가져온다.
