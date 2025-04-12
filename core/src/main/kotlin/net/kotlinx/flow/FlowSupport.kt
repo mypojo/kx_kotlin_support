@@ -1,9 +1,18 @@
 package net.kotlinx.flow
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 
+/**
+ * 병렬 처리를 위한 단축 메소드
+ * 자주 까먹어서 마킹용으로 기록함
+ *
+ * flow 파이프라인은 SFN 처럼 병렬 / 순차 처리를 유연하게 조합 가능함으로 코루틴 직접사용보다 권장되나, 약간의 오버헤드가 있음
+ *
+ * 에러가 나면 즉시 전체가 중단됨.
+ *  #1 에러가 안나게 catch로 무조건 감싸던가 -> 에러나면 실패 emit()
+ *  #2 .catch {} 를 달아서 emit() 후  collect 에서 마지막 메세지를 처리하던가 (이건 쓸일 없을듯..)
+ * */
+suspend fun <T, R> Flow<T>.execute(concurrency: Int = DEFAULT_CONCURRENCY, transform: suspend (T) -> Flow<R>): List<R> = this.flatMapMerge(concurrency, transform).toList()
 
 /** collect 의 편의버전 */
 suspend fun <T> Flow<T>.collectIt(block: () -> FlowCollector<T>) = this.collect(block())

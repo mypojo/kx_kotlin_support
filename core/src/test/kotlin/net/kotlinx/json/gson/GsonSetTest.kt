@@ -28,22 +28,26 @@ class GsonSetTest : BeSpecLight() {
                         obj { "c" to "값3" },
                     ]
                 }
+                "콘텐츠" to obj {
+                    "섬네일" to arr[
+                        "섬1",
+                        "섬2",
+                        "섬3",
+                    ]
+                }
             }
 
-            When("직접 읽기") {
-
+            When("json path 읽기") {
                 val gson = jsonObject.toGsonData()
-
                 Then("경로매핑 & 일반 단일 get 비교") {
                     gson["a"].toString() shouldBe """{"b":[{"c":"값1"},{"c":"값2"},{"c":"값3"}]}"""
                     gson["$.a"].toString() shouldBe """{"b":[{"c":"값1"},{"c":"값2"},{"c":"값3"}]}"""
                 }
-
                 Then("경로매핑 단일값") {
                     gson["$.a.b[2].a"].str shouldBe null  //없으면 널 리턴
                     gson["$.a.b[2].c"].str shouldBe "값3"
+                    gson["$.콘텐츠.섬네일[2]"].str shouldBe "섬3" //한글 path도 가능
                 }
-
             }
 
             When("날짜변환 테스트 - ZONE") {

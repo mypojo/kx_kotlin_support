@@ -1,12 +1,13 @@
 # 소개
-kotlin용 각종 도구 모음입니다.
-- 간단한 도우미 유틸들
-- AWS Client 확장
-- AWS CDK DSL 제공
-- 구글 / 노션 등의 API 샘플
-- Spring / Hibernate 샘플
+- 🛠 유틸리티 도구 모음
+- ☁️ AWS 서비스 클라이언트 확장
+- 🏗 AWS CDK DSL 지원
+- 🔌 외부 API 연동 (Google, Notion 등)
+- 🍃 Spring & Hibernate 활용 예제
+
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/license/mit-0/)
+
 
 ## AWS client 샘플
 

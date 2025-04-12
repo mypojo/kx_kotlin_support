@@ -14,7 +14,7 @@ object EventPatternUtil {
      * AWS 전체
      * ex) 전체 로깅
      *  */
-    val AWS_ALL = EventPattern.builder().source(Match.prefix("aws.")).build()
+    val AWS_ALL = EventPattern.builder().source(Match.prefix("aws.")).build()!!
 
     /** AWS에서 관심있게 봐야할 이벤트들 */
     val AWS_CORE = EventPattern.builder()
