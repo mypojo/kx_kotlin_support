@@ -1,7 +1,11 @@
 package net.kotlinx.lazyLoad
 
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.s3.S3Data
+import net.kotlinx.aws.s3.getObjectText
+import net.kotlinx.aws.s3.s3
 import net.kotlinx.aws.ssm.ssmStore
 import net.kotlinx.core.ProtocolPrefix
 import net.kotlinx.exception.toSimpleString
@@ -35,7 +39,7 @@ class LazyLoadStringProperty(
                 val aws = Koins.koin<AwsClient>(profile)
                 resultValue = when {
 
-                    /** 요건 표준 AWS 접미어 */
+                    /** SSM에서 로드 */
                     initValue!!.startsWith(ProtocolPrefix.SSM) -> {
                         val ssmUrl = initValue!!.removePrefix(ProtocolPrefix.SSM)
                         try {
@@ -45,8 +49,15 @@ class LazyLoadStringProperty(
                         }
                     }
 
+                    /** S3에서 로드 */
+                    initValue!!.startsWith(ProtocolPrefix.S3) -> {
+                        val s3Data = S3Data.parse(initValue!!)
+                        runBlocking { aws.s3.getObjectText(s3Data) }
+                    }
+
                     else -> initValue
                 }
+
             }
             return resultValue!!
         }

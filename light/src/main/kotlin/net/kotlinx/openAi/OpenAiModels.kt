@@ -41,7 +41,7 @@ object OpenAiModels {
      * #2. 채팅은 어시스턴트, 파일업로드 등 지원안함
      *
      * 가격표 & 최종학습일
-     * https://openai.com/api/pricing/
+     * https://platform.openai.com/docs/pricing
      * */
     object Gpt {
 

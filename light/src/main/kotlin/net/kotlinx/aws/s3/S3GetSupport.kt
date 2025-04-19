@@ -22,13 +22,13 @@ import java.nio.charset.Charset
  * 간단 다운로드. 스트리밍 처리시 다운받아서 하세여 (inputStream 제공이 없는거 같음.)
  * 메타데이터 체크를 통과해야 다운로드 한다
  * */
-suspend inline fun S3Client.getObjectDownload(bucket: String, key: String, file: File, crossinline block: (Map<String, String>?) -> Boolean = { true }) = this.getObject(
+suspend inline fun S3Client.getObjectDownload(bucket: String, key: String, file: File, crossinline shouldDownload: (Map<String, String>?) -> Boolean = { true }) = this.getObject(
     GetObjectRequest {
         this.bucket = bucket
         this.key = key
     }
 ) {
-    val doDownload = block(it.metadata)
+    val doDownload = shouldDownload(it.metadata)
     if (doDownload) {
         it.body?.writeToFile(file)
     }
@@ -54,7 +54,6 @@ suspend inline fun S3Client.getObjectSize(data: S3Data) {
  * 간단 쓰기는 없음 (스트리핑 put은 안됨) -> 먼저 파일로 쓴 다음 업로드 할것!!
  * @param charset  지정하지 않으면 기본디코딩
  *  */
-@Deprecated("lazyLoad 쓰세요")
 suspend inline fun S3Client.getObjectLines(bucket: String, key: String, charset: Charset? = null): List<List<String>>? {
     return try {
         this.getObject(
@@ -71,7 +70,7 @@ suspend inline fun S3Client.getObjectLines(bucket: String, key: String, charset:
                 }
             }
         }
-    } catch (e: NoSuchKey) {
+    } catch (_: NoSuchKey) {
         null
     }
 }

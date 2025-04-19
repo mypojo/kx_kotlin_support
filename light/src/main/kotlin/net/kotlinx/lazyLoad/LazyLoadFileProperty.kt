@@ -21,6 +21,7 @@ import kotlin.reflect.KProperty
 
 /**
  * 각종 리소스에서 늦은 로드를 해주는 프로퍼티
+ * 대용량 데이터에 사용한다.
  *  */
 class LazyLoadFileProperty(val inputFile: File) {
 
