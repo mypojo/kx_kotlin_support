@@ -4,7 +4,6 @@ import aws.sdk.kotlin.services.s3.deleteObject
 import aws.smithy.kotlin.runtime.http.request.HttpRequest
 import com.github.doyaaaaaken.kotlincsv.client.CsvReader
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.merge
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceTypeUtil
@@ -77,7 +76,7 @@ class S3DirApi {
      * 전체 리스트 데이터를 Flow로 리턴함
      * 안정성때문에 일단 다운받은 후 스트림 처리함
      *  */
-    suspend fun readAllDirCsvLines(): Flow<List<String>> {
+    suspend fun readAllDirCsvLines(): List<Flow<List<String>>> {
         val dir = AwsInstanceTypeUtil.INSTANCE_TYPE.tmpDir(this::class.name())
         list().map {
             suspend {
@@ -86,7 +85,7 @@ class S3DirApi {
             }
         }.coroutineExecute()
         log.debug { " => [${dir.absolutePath}] : S3 download complete. ${dir.listFiles().size} files" }
-        return dir.listFiles().toList().map { it.toInputResource().toFlow(csvReader) }.merge()
+        return dir.listFiles().toList().map { it.toInputResource().toFlow(csvReader) }
     }
 
     companion object {
