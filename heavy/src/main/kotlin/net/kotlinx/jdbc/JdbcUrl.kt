@@ -42,6 +42,11 @@ class JdbcUrl {
         "prepStmtCacheSqlLimit" to "2048",
         /** 서버측 PreparedStatement 사용  */
         "useServerPrepStmts" to "true",
+        //이하 인증관련 옵션.. 필요 없는듯
+//        "allowPublicKeyRetrieval" to "true",
+//        "useSSL" to "true",
+//        "sslMode" to "REQUIRED",
+//        "authenticationPlugins" to "com.mysql.cj.protocol.a.authentication.MysqlClearPasswordPlugin",
     )
 
     /** 배스천 호스트 고려한 jdbcUrl  */

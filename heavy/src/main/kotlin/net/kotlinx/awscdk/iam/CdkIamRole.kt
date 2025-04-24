@@ -23,8 +23,18 @@ class CdkIamRole {
     /**
      * 신뢰할 수 있는 assume 서비스명
      * ex) ecs-tasks.amazonaws.com
+     * 여기 데이터가 있으면 자동으로 assumedBy 로 변경해줌
+     *
+     * 제거하고 싶은데, 많이 쓰고있어서 일단 그냥둠
      * */
-    lateinit var services: List<String>
+    var services: List<String> = emptyList()
+
+    /**
+     * STS 가능한 Principal
+     * 서비스 or IAM 계정 등등
+     * ex) listOf(ArnPrincipal("arn:aws:iam::aaaa:root")
+     *  */
+    var assumedBy: List<IPrincipal> = emptyList()
 
     /** 인라인 액션들. ADMIN 역할이 아니라면 다 지정할것 */
     var actions: List<String> = emptyList()
@@ -57,7 +67,11 @@ class CdkIamRole {
      * 권한 생성
      *  */
     fun create(stack: Stack): CdkIamRole {
-        check(services.isNotEmpty())
+
+        if (services.isNotEmpty()) {
+            assumedBy += services.map { ServicePrincipal(it) }
+        }
+
         val inlinePolicies = run {
             if (actions.isEmpty()) {
                 emptyMap()
@@ -82,11 +96,7 @@ class CdkIamRole {
         iRole = Role(
             stack, this.roleName, RoleProps.builder()
                 .roleName(roleName)
-                .assumedBy(
-                    CompositePrincipal(
-                        *services.map { ServicePrincipal(it) }.toTypedArray()
-                    )
-                )
+                .assumedBy(CompositePrincipal(*assumedBy.toTypedArray()))
                 .managedPolicies(managedPolicy) //관리형 추가
                 .inlinePolicies(inlinePolicies) //인라인 추가
                 .build()

@@ -6,6 +6,8 @@ import java.nio.charset.Charset
 /**
  * 파일을 패스 형식으로 나타낼때
  * ex) ResourceHolder.WORKSPACE.slash("work").slash("kotlin.html")
+ * 이미 비슷한게 있긴하다. 그냥씀
+ * @see File.resolve
  *  */
 fun File.slash(name: String): File {
     this.mkdirs()

@@ -1,6 +1,9 @@
 package net.kotlinx.aws.s3
 
+import aws.sdk.kotlin.services.s3.model.Object
+import net.kotlinx.aws.toLocalDateTime
 import net.kotlinx.string.encodeUrl
+import java.time.LocalDateTime
 
 /**
  * S3 패스가 다양하게 사용됨. 이를 명시적으로 합쳐서 다루기 위한 객체.
@@ -49,6 +52,19 @@ data class S3Data(
         val path = if (isDirectory) this.key else "${this.key}/"
         return S3Data(this.bucket, "${path}${append}")
     }
+
+    //==================================================== 실객체 래핑 ======================================================
+
+    /** 실제 객체 매핑 */
+    var obj: Object? = null
+
+    /** 파일 최종 수정일 */
+    val lastModified: LocalDateTime?
+        get() = obj?.lastModified?.toLocalDateTime()
+
+    /** 파일 크기 */
+    val size: Long?
+        get() = obj?.size
 
     companion object {
 

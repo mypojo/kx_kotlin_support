@@ -135,15 +135,16 @@ class CdkAthenaUser : CdkInterface {
                 val policy = CdkIamPolicy {
                     policyName = "app_${groupName}_athena"
 
-                    val tableBuckets = tables.map { it.bucket }.distinct().map { "arn:aws:s3:::${it}" }
-                    val tablePaths = tables.map { "arn:aws:s3:::${it.bucket}/${it.s3Key}*" } //전체(*)를 지정해야함
-                    val customStates = listOf(
-                        CdkPolicyStatementSetS3.s3Read(tableBuckets + tablePaths), //테이블에 읽기 권한 부여
-                        CdkPolicyStatementSetS3.s3ReadWrite(listOf("arn:aws:s3:::${outputDir}/*")), //쿼리 결과 저장소에 쓰기 권한 부여
-                        createAthenaTablesStatement(),
-                    )
-                    statements = defaultStatements + customStates
-                    create(stack)
+                    //나중에 필요할때 다시 만들것
+//                    val tableBuckets = tables.map { it.bucket }.distinct().map { "arn:aws:s3:::${it}" }
+//                    val tablePaths = tables.map { "arn:aws:s3:::${it.bucket}/${it.s3Key}*" } //전체(*)를 지정해야함
+//                    val customStates = listOf(
+//                        CdkPolicyStatementSetS3.s3Read(tableBuckets + tablePaths), //테이블에 읽기 권한 부여
+//                        CdkPolicyStatementSetS3.s3Write(listOf("arn:aws:s3:::${outputDir}/*")), //쿼리 결과 저장소에 쓰기 권한 부여
+//                        createAthenaTablesStatement(),
+//                    )
+//                    statements = defaultStatements + customStates
+//                    create(stack)
                 }
 
                 CdkIamUserGroup {

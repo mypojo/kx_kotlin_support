@@ -2,6 +2,7 @@ package net.kotlinx.aws.lakeformation
 
 import aws.sdk.kotlin.services.lakeformation.model.InvalidInputException
 import aws.sdk.kotlin.services.lakeformation.model.LfTag
+import aws.sdk.kotlin.services.lakeformation.model.Permission
 import aws.sdk.kotlin.services.lakeformation.model.ResourceType
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.core.Kdsl
@@ -56,6 +57,14 @@ class LakeformationTagManager {
     suspend fun grantPermissions() {
         aws.lake.grantPermissions(roleName, tags, ResourceType.Database)
         aws.lake.grantPermissions(roleName, tags, ResourceType.Table)
+    }
+
+    /**
+     * 읽기 전용으로 권한 할당
+     * */
+    suspend fun grantPermissionsReadonly() {
+        aws.lake.grantPermissions(roleName, tags, ResourceType.Database, listOf(Permission.Describe))
+        aws.lake.grantPermissions(roleName, tags, ResourceType.Table, listOf(Permission.Select, Permission.Describe))
     }
 
     /**

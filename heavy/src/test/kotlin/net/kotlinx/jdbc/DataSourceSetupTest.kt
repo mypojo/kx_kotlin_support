@@ -4,23 +4,28 @@ import com.vladsch.kotlin.jdbc.session
 import com.vladsch.kotlin.jdbc.sqlQuery
 import com.vladsch.kotlin.jdbc.using
 import com.zaxxer.hikari.HikariDataSource
-import net.kotlinx.kotest.BeSpecLog
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.sm.smStore
+import net.kotlinx.json.gson.toGsonData
+import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
+import net.kotlinx.kotest.modules.BeSpecHeavy
+import net.kotlinx.lazyLoad.lazyLoadStringSsm
 import net.kotlinx.string.toTextGrid
 
-class DataSourceSetupTest : BeSpecLog() {
+
+class DataSourceSetupTest : BeSpecHeavy() {
 
 
     init {
         initTest(KotestUtil.IGNORE)
 
-        xGiven("DataSourceSetup") {
+        Given("DataSourceSetup") {
 
-            val projectName = "sin"
+            val projectName = findProfile97
 
             fun doTest(dataSource: HikariDataSource) {
-
                 using(session(dataSource)) { session ->
                     val query = sqlQuery("select member_id,member_name,last_login_time from member limit ?", 3000)
                     val queryResult = session.listAny(query)
@@ -32,34 +37,37 @@ class DataSourceSetupTest : BeSpecLog() {
                 val setup = DataSourceSetup {
                     dataSourceSetupType = DataSourceSetupType.IAM
                     profile = projectName
-                    username = "${profile}_dev"
+                    username = "${profile}_prod"
                     jdbcUrl = JdbcUrl {
-                        host = "${profile}-dev.cluster-yy.ap-northeast-2.rds.amazonaws.com"
+                        host = "main-prod.cluster-cfs4usogashn.ap-northeast-2.rds.amazonaws.com"
                         connectPort = 33061
                         direct = false
                         database = username
                     }
                 }
+                log.info { "JDBC URL : ${setup.jdbcUrl.url}" }
                 val dataSource = setup.createDataSource {
                     minimumIdle = 1
                 }
-
                 doTest(dataSource)
             }
 
-            Then("ID PASS 접속 - 터널링") {
+            Then("ID PASS 접속 - 터널링 (DB admin)") {
+                val client = koin<AwsClient>(projectName)
+                val secret = client.smStore["main-prod"].toGsonData()
                 val setup = DataSourceSetup {
                     dataSourceSetupType = DataSourceSetupType.ID_PASS
                     profile = projectName
                     username = "admin"
-                    password = "xxxxxx "
+                    password = secret["password"].str!!
                     jdbcUrl = JdbcUrl {
-                        host = "${profile}-dev.cluster-yy.ap-northeast-2.rds.amazonaws.com"
+                        host = "main-prod.cluster-cfs4usogashn.ap-northeast-2.rds.amazonaws.com"
                         connectPort = 33061
                         direct = false
-                        database = "${profile}_dev"
+                        database = "${profile}_prod"
                     }
                 }
+
                 val dataSource = setup.createDataSource {
                     minimumIdle = 1
                 }
@@ -67,11 +75,12 @@ class DataSourceSetupTest : BeSpecLog() {
                 doTest(dataSource)
             }
 
-            Then("ID PASS 접속 - 직접접속") {
+            Then("ID PASS 접속 - 직접접속 (공용 테스트서버)") {
+                val pwd by lazyLoadStringSsm("/rds/secret/dev", projectName)
                 val setup = DataSourceSetup {
                     dataSourceSetupType = DataSourceSetupType.ID_PASS
-                    username = "${projectName}_test"
-                    password = "11h11m123!"
+                    username = "${projectName}"
+                    password = pwd
                     jdbcUrl = JdbcUrl {
                         host = "mysql.dev.11h11m.net"
                         database = username
@@ -85,7 +94,6 @@ class DataSourceSetupTest : BeSpecLog() {
                     val query = sqlQuery("select member_id,member_name,last_login_time from member limit ?", 3000)
                     val queryResult = session.listAny(query)
                     queryResult.header.toTextGrid(queryResult.results.map { it.toTypedArray() }).print()
-
                 }
             }
         }

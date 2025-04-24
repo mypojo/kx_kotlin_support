@@ -1,10 +1,9 @@
 package net.kotlinx.jdbc
 
 import com.zaxxer.hikari.HikariDataSource
-import net.kotlinx.aws.javaSdkv2.HikariIamDataSource
+import net.kotlinx.aws.rds.HikariIamDataSource
 import net.kotlinx.core.Kdsl
 import net.kotlinx.lazyLoad.lazyLoadString
-import net.kotlinx.system.DeploymentType
 import org.koin.core.component.KoinComponent
 
 class DataSourceSetup : KoinComponent {
@@ -15,9 +14,6 @@ class DataSourceSetup : KoinComponent {
     }
 
     //==================================================== 환경정보 ======================================================
-
-    /** 환경 */
-    lateinit var deploymentType: DeploymentType
 
     /** 타입 */
     lateinit var dataSourceSetupType: DataSourceSetupType

@@ -40,7 +40,6 @@ dependencies {
 
 //    api("aws.sdk.kotlin:pricing:$awsVersion") //제품의 비용(고정) 확인용
 //    api("aws.sdk.kotlin:xray:$awsVersion")
-//    api("aws.sdk.kotlin:auth:$awsVersion")
 //    api("aws.sdk.kotlin:regions:$awsVersion")
 
     //==================================================== AWS 이벤트 스키마 바인딩에 필요 (안씀.. 너무 구림) ======================================================
@@ -48,10 +47,11 @@ dependencies {
 //        implementation("com.fasterxml.jackson.core:jackson-databind:2.10.0")
 //        implementation("com.fasterxml.jackson.core:jackson-annotations:2.10.0")
 
-    //==================================================== AWS JAVA V2 RDS IAM ======================================================
-    val awsJavaV2Version: String by project
-    implementation("software.amazon.awssdk:rds:$awsJavaV2Version") //AWS SDK2 버전의 IAM 데이터소스 (코틀린 버전 없음)
-    implementation("software.amazon.awssdk:sts:$awsJavaV2Version") //IAM 토큰 발행시 필요
+    //JAVA V2 RDS 는 kotlin 대체품이 나와서 의존성 제거
+//    //==================================================== AWS JAVA V2 RDS IAM ======================================================
+//    val awsJavaV2Version: String by project
+//    implementation("software.amazon.awssdk:rds:$awsJavaV2Version") //AWS SDK2 버전의 IAM 데이터소스 (코틀린 버전 없음)
+//    implementation("software.amazon.awssdk:sts:$awsJavaV2Version") //IAM 토큰 발행시 필요
 
     //==================================================== AWS CDK  ======================================================
     api("software.amazon.awscdk:aws-cdk-lib:_")   //https://mvnrepository.com/artifact/software.amazon.awscdk/aws-cdk-lib
@@ -62,10 +62,10 @@ dependencies {
     api("org.jetbrains.kotlinx:dataframe:_") //주피터 노트북 코틀린버전.  리프레시 버전 적용
 
     //==================================================== RDB ======================================================
-    //implementation("software.aws.rds:aws-mysql-jdbc:1.1.8") //aws 장애조치기능이 담긴 mysql 드라이버 & 모든 mysql과 호환가능. https://github.com/awslabs/aws-mysql-jdbc <-- 클러스터 설정등이 필요
-    //implementation("org.mariadb.jdbc:mariadb-java-client:3.1.4") //일반 접속용 마리아 DB. intellij에서 오로라 연결시 이게 디폴트인듯.
+    //implementation("software.amazon.jdbc:aws-advanced-jdbc-wrapper:_") //https://github.com/aws/aws-advanced-jdbc-wrapper/  공식 드라이버 래퍼. (토큰관리 등등 내장)
     implementation("com.mysql:mysql-connector-j:_") //이걸로 해야 IAM JDBC 연결됨.. 마리아로 하면 안됨. 뭐 추가옵션이 있는듯. (왜??)
-    api("com.zaxxer:HikariCP:_")
+    api("com.zaxxer:HikariCP:_")  //최신버전 쓰면 Access denied 발생함.  5.1.0 으로 고정
+    //api("com.zaxxer:HikariCP:6.3.0")
 
     //==================================================== RDB 도구 ======================================================
     //implementation("io.zeko:zeko-sql-builder:1.4.0") //스키마 정의 없는 SQL 빌더 (비정형 쿼리용 or 간단 람다 API 쿼리)

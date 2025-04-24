@@ -1,7 +1,9 @@
 package net.kotlinx.aws
 
+import net.kotlinx.file.slash
 import net.kotlinx.system.ResourceHolder
 import java.io.File
+import java.util.*
 
 /**
  *
@@ -37,4 +39,10 @@ enum class AwsInstanceType(val root: File) {
     /** 로그 링크에 시간 입력이 필요한것들 */
     fun isLogLinkWithTime(): Boolean = this in setOf(LAMBDA, ECS)
 
+    /**
+     * 임시 디렉토리 생성
+     * 이 경로로 통일하자.
+     * ex) tmpDir(this::class.name())
+     *  */
+    fun tmpDir(name: String): File = root.slash("tmp").slash(name).slash(UUID.randomUUID().toString())
 }

@@ -19,7 +19,6 @@ class LakeformationTagManagerTest : BeSpecHeavy() {
             val profile = findProfile97
 
             Then("일반") {
-
                 val manager = LakeformationTagManager {
                     aws = awsClient
                     tags = listOf(
@@ -41,6 +40,28 @@ class LakeformationTagManagerTest : BeSpecHeavy() {
                 manager.createLfTag()
                 manager.grantPermissions()
                 manager.addLfTagsToResource()
+            }
+
+            Then("읽기권한") {
+                val manager = LakeformationTagManager {
+                    aws = awsClient
+                    tags = listOf(
+                        LfTag {
+                            this.tagKey = "lake_$profile"
+                            this.tagValues = listOf("common")
+                        }
+                    )
+                    roleName = "app-hyper_team"
+                    databaseNames = listOf(
+                        "d1",
+                        "d2",
+                        "d3",
+                        "p1",
+                        "p2",
+                        "p3",
+                    )
+                }
+                manager.grantPermissionsReadonly()
             }
         }
     }

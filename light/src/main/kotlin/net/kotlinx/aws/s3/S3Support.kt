@@ -3,6 +3,8 @@ package net.kotlinx.aws.s3
 import aws.sdk.kotlin.services.s3.*
 import aws.sdk.kotlin.services.s3.model.ObjectIdentifier
 import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
+import aws.smithy.kotlin.runtime.client.config.RequestHttpChecksumConfig
+import aws.smithy.kotlin.runtime.client.config.ResponseHttpChecksumConfig
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import net.kotlinx.aws.AwsClient
@@ -13,7 +15,13 @@ import net.kotlinx.concurrent.coroutineExecute
 const val LIMIT_PER_REQ = 1000
 
 val AwsClient.s3: S3Client
-    get() = getOrCreateClient { S3Client { awsConfig.build(this) }.regist(awsConfig) }
+    get() = getOrCreateClient {
+        S3Client {
+            awsConfig.build(this)
+            requestChecksumCalculation = RequestHttpChecksumConfig.WHEN_SUPPORTED
+            responseChecksumValidation = ResponseHttpChecksumConfig.WHEN_SUPPORTED
+        }.regist(awsConfig)
+    }
 
 //==================================================== move ======================================================
 /**
@@ -55,7 +63,7 @@ suspend fun S3Client.moveFile(fromFile: S3Data, toFile: S3Data) {
  * 경고!! AWS는 S3 리스팅에 desc를 지원하지 않는다. 따라서 디렉토링을 잘 할것!
  * @param prefix  디렉토리 표시인 /로 끝나면 디렉토리로 인싱한다  ex) main/data/
  * */
-suspend inline fun S3Client.listDirs(bucket: String, prefix: String): List<S3Data> = this.listObjectsV2 {
+suspend fun S3Client.listDirs(bucket: String, prefix: String): List<S3Data> = this.listObjectsV2 {
     this.bucket = bucket
     delimiter = "/"
     this.prefix = prefix
@@ -64,7 +72,7 @@ suspend inline fun S3Client.listDirs(bucket: String, prefix: String): List<S3Dat
 /**
  * 디렉토리 전체 가져옴
  * */
-suspend inline fun S3Client.listAllDirs(bucket: String, prefix: String): List<S3Data> = this.listObjectsV2Paginated {
+suspend fun S3Client.listAllDirs(bucket: String, prefix: String): List<S3Data> = this.listObjectsV2Paginated {
     this.bucket = bucket
     delimiter = "/"
     this.prefix = prefix
@@ -72,26 +80,30 @@ suspend inline fun S3Client.listAllDirs(bucket: String, prefix: String): List<S3
     it.commonPrefixes?.map { S3Data(bucket, it.prefix!!) } ?: emptyList()
 }.toList().flatten()
 
-/**
- * 파일(객체)들을 가져온다.
- * 최대 1천개 가져오니 주의!!
- * 페이징은 별도로 구현할것
- *  */
-suspend inline fun S3Client.listObjects(bucket: String, prefix: String): List<S3Data> = this.listObjectsV2 {
+/** 파일(객체)들을 가져온다. */
+suspend fun S3Client.listObjects(bucket: String, prefix: String): List<S3Data> = this.listObjectsV2 {
     this.bucket = bucket
     this.prefix = prefix
-}.contents?.map { S3Data(bucket, it.key!!) } ?: emptyList()
+}.contents?.map { S3Data(bucket, it.key!!).apply { this.obj = it } } ?: emptyList()
+
+/** 파일(객체)들을 가져온다. */
+suspend fun S3Client.listAllObjects(bucket: String, prefix: String): List<S3Data> = this.listObjectsV2Paginated {
+    this.bucket = bucket
+    this.prefix = prefix
+}.map {
+    it.contents?.map { S3Data(bucket, it.key!!).apply { this.obj = it } } ?: emptyList()
+}.toList().flatten()
 
 /** 간단 메소드 */
-suspend inline fun S3Client.listObjects(s3data: S3Data): List<S3Data> = this.listObjects(s3data.bucket, s3data.key)
+suspend fun S3Client.listObjects(s3data: S3Data): List<S3Data> = this.listObjects(s3data.bucket, s3data.key)
 
 //==================================================== 삭제 ======================================================
 
 /** 자주 사용하는거라 등록함 */
-suspend inline fun S3Client.deleteDir(bucket: String, prefix: String): Int = this.listObjects(bucket, prefix).also { deleteAll(it) }.size
+suspend fun S3Client.deleteDir(bucket: String, prefix: String): Int = this.listObjects(bucket, prefix).also { deleteAll(it) }.size
 
 /**  버킷 단위로 벌크 삭제한다. 대부분 페이징해서 호출할테니 별도의 사이즈 제한은 없음  */
-inline fun S3Client.deleteAll(datas: Collection<S3Data>) {
+fun S3Client.deleteAll(datas: Collection<S3Data>) {
     val groupByBucket = datas.groupBy { it.bucket } //버킷별로 호출
     groupByBucket.entries.map { (bucket, list) ->
         suspend {

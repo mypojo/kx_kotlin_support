@@ -27,4 +27,21 @@ object CdkPolicyStatementSetAthena {
             "athena:BatchGetNamedQuery",
         )
     }
+
+    val ATHENA_READONLY = CdkPolicyStatement {
+        actions = listOf(
+            "athena:StartQueryExecution",
+            "athena:Get*",
+            "athena:BatchGet*",
+            "athena:List*",
+        )
+    }
+
+    val GLUE_READONLY = CdkPolicyStatement {
+        actions = listOf(
+            "glue:Get*",
+            "glue:BatchGet*"
+        )
+    }
+
 }

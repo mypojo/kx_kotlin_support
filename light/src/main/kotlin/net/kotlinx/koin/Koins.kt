@@ -33,6 +33,7 @@ object Koins {
 
     /**
      * 자동 import 되도록 단순한 단어 사용
+     * inline 구문이라 최초 초기화도미으로 qualifier가 가변적인경우 일반 lazy를 써야함
      *  */
     inline fun <reified T : Any> koinLazy(qualifier: String? = null, noinline parameters: ParametersDefinition? = null): Lazy<T> =
         lazy(KoinPlatformTools.defaultLazyMode()) { koin<T>(qualifier, parameters) }

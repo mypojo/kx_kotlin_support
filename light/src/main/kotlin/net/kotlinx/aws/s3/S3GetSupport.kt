@@ -22,7 +22,12 @@ import java.nio.charset.Charset
  * 간단 다운로드. 스트리밍 처리시 다운받아서 하세여 (inputStream 제공이 없는거 같음.)
  * 메타데이터 체크를 통과해야 다운로드 한다
  * */
-suspend inline fun S3Client.getObjectDownload(bucket: String, key: String, file: File, crossinline shouldDownload: (Map<String, String>?) -> Boolean = { true }) = this.getObject(
+suspend fun S3Client.getObjectDownload(
+    bucket: String,
+    key: String,
+    file: File,
+    shouldDownload: (Map<String, String>?) -> Boolean = { true }
+) = this.getObject(
     GetObjectRequest {
         this.bucket = bucket
         this.key = key
@@ -37,7 +42,7 @@ suspend inline fun S3Client.getObjectDownload(bucket: String, key: String, file:
 //==================================================== 속성만 읽기 ======================================================
 
 /** 파일 크기만 읽고싶을때 */
-suspend inline fun S3Client.getObjectSize(data: S3Data) {
+suspend fun S3Client.getObjectSize(data: S3Data) {
     this.getObjectAttributes {
         this.bucket = data.bucket
         this.key = data.key
@@ -53,8 +58,10 @@ suspend inline fun S3Client.getObjectSize(data: S3Data) {
  * AWS kotlin에서 아직 스트림 읽기는 안되는거 같음. ByteStream 을 일반 스트림으로 어케 바꾸지?? -> 일단 java SDK2를 사용할것
  * 간단 쓰기는 없음 (스트리핑 put은 안됨) -> 먼저 파일로 쓴 다음 업로드 할것!!
  * @param charset  지정하지 않으면 기본디코딩
+ *
+ * => CSV 등을 스트림으로 읽고싶다면 하지말것!! 안전성을 위해서 다운받은 후 읽어라.
  *  */
-suspend inline fun S3Client.getObjectLines(bucket: String, key: String, charset: Charset? = null): List<List<String>>? {
+suspend fun S3Client.getObjectLines(bucket: String, key: String, charset: Charset? = null): List<List<String>>? {
     return try {
         this.getObject(
             GetObjectRequest {
@@ -75,15 +82,16 @@ suspend inline fun S3Client.getObjectLines(bucket: String, key: String, charset:
     }
 }
 
+
 /** 단축 */
-suspend inline fun S3Client.getObjectText(s3data: S3Data): String? = getObjectText(s3data.bucket, s3data.key)
+suspend fun S3Client.getObjectText(s3data: S3Data): String? = getObjectText(s3data.bucket, s3data.key)
 
 /**
  * 없으면 null을 리턴한다
  * 데이터를 가져오는 시간은 양이 적을경우 2자리 밀리초 걸림
  * 동시 100건 코루틴 처리도 문제없음(타임아웃 정도만 조심)
  *  */
-suspend inline fun S3Client.getObjectText(bucket: String, key: String): String? {
+suspend fun S3Client.getObjectText(bucket: String, key: String): String? {
     return try {
         this.getObject(
             GetObjectRequest {
@@ -106,7 +114,7 @@ suspend inline fun S3Client.getObjectText(bucket: String, key: String): String? 
  *
  * getObject 를 사용해서 body를 읽지 않는거하고 동일한 로직인듯
  * */
-suspend inline fun S3Client.getObjectMetadata(bucket: String, key: String): Map<String, String>? {
+suspend fun S3Client.getObjectMetadata(bucket: String, key: String): Map<String, String>? {
     return try {
         val resp = this.headObject {
             this.bucket = bucket
