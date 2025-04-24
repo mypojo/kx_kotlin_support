@@ -4,6 +4,8 @@ import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.toList
+import net.kotlinx.aws.AwsClient
+import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -17,7 +19,7 @@ class S3DirApiTest : BeSpecLight() {
         Given("S3Data") {
 
             val dirApi = S3DirApi {
-                profile = findProfile97
+                client = koin<AwsClient>(profile)
                 bucket = "adpriv-work-dev"
                 dirPath = "upload/jobInputFile/"
                 csvReader = csvReader()
@@ -35,7 +37,7 @@ class S3DirApiTest : BeSpecLight() {
 
             Then("디렉터토리 전체 파일 스트리밍 처리 - 일반읽기") {
                 val lines = dirApi.readAllDirCsvLines().merge().toList()
-                lines.forEachIndexed { i,it->
+                lines.forEachIndexed { i, it ->
                     log.info { " -> 전체 데이터 $i ${it}" }
                 }
             }
@@ -48,7 +50,7 @@ class S3DirApiTest : BeSpecLight() {
                 }.merge().collect {
                     unique += it[0] //첫 로우를 누적
                 }
-                unique.forEachIndexed { i,it->
+                unique.forEachIndexed { i, it ->
                     log.info { " -> 전체 데이터 $i ${it}" }
                 }
             }

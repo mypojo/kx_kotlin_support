@@ -13,7 +13,6 @@ import net.kotlinx.csv.CsvUtil
 import net.kotlinx.csv.toFlow
 import net.kotlinx.file.slash
 import net.kotlinx.io.input.toInputResource
-import net.kotlinx.koin.Koins.koin
 import net.kotlinx.reflect.name
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -31,6 +30,9 @@ class S3DirApi {
 
     //==================================================== 설정들 ======================================================
 
+    /** AWS 클라이언트 */
+    lateinit var client: AwsClient
+
     /** 버킷 */
     lateinit var bucket: String
 
@@ -45,10 +47,6 @@ class S3DirApi {
 
     /** 기본적으로 UTF-8 읽기 */
     var csvReader: CsvReader = CsvUtil.ms949Reader()
-
-    //==================================================== 내부사용 ======================================================
-
-    private val client by lazy { koin<AwsClient>(profile) }
 
     //==================================================== 함수들 ======================================================
 
