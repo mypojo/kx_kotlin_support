@@ -11,8 +11,8 @@ import net.kotlinx.koin.Koins.koinLazy
 /**
  * 코틀린용 IAM 데이터소스
  * https://sdk.amazonaws.com/kotlin/api/latest/rds/aws.sdk.kotlin.services.rds/-rds-auth-token-generator/index.html
- *
  * MYSQL 드라이버 / 마리아 드라이버 둘다 가능함.
+ *
  * AWS 공식 JDBC 래퍼 드라이버에서 토큰 관리도 해준다는데.. 뭔가 설정을 좀 해야하는듯? 난 잘 안됨
  * https://github.com/aws/aws-advanced-jdbc-wrapper/tree/main?tab=readme-ov-file
  *
