@@ -5,6 +5,9 @@ import aws.sdk.kotlin.services.s3.listBuckets
 import ch.qos.logback.classic.Level
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.takeWhile
+import kotlinx.coroutines.flow.toList
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.file.slash
 import net.kotlinx.koin.Koins.koin
@@ -25,6 +28,24 @@ internal class S3SupportKtTest : BeSpecHeavy() {
         Given("S3SupportKt") {
 
             val profile = findProfile97
+
+            Then("대용량 CSV 스트리밍 읽기") {
+                val aws2 by lazy { koin<AwsClient>(findProfile48) }
+                aws2.s3.getObjectLinesStream("nak-real-work", "config/nak/ssg/ep/ssg_metaEp.csv") { flow ->
+                    flow.take(10 + 1).toList().print()
+                }
+            }
+
+            Then("대용량 CSV 스트리밍 읽기 - 조건문 사용") {
+                val aws2 by lazy { koin<AwsClient>(findProfile48) }
+                aws2.s3.getObjectLinesStream("nak-real-work", "config/nak/ssg/ep/ssg_metaEp.csv") { flow ->
+                    var cnt = 0
+                    flow.takeWhile {
+                        ++cnt < 6
+                    }.toList().print()
+
+                }
+            }
 
             Then("버킷 리스팅") {
                 val buckets = aws.s3.listBuckets {}.buckets!!
@@ -61,7 +82,7 @@ internal class S3SupportKtTest : BeSpecHeavy() {
                 Then("메타데이터 읽기 - key는 소문자로 저장된다") {
                     val metadata = aws.s3.getObjectMetadata(s3Data.bucket, s3Data.key)!!
                     metadata["fileName"] shouldBe null
-                    metadata["filename"] shouldBe  "영감님ab12만세"
+                    metadata["filename"] shouldBe "영감님ab12만세"
                 }
                 Then("데이터 정리") {
                     aws.s3.deleteObject {

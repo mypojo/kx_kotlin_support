@@ -14,6 +14,7 @@ import net.kotlinx.csv.toFlow
 import net.kotlinx.file.slash
 import net.kotlinx.io.input.toInputResource
 import net.kotlinx.reflect.name
+import java.util.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
@@ -75,7 +76,7 @@ class S3DirApi {
      * 안정성때문에 일단 다운받은 후 스트림 처리함
      *  */
     suspend fun readAllDirCsvLines(): List<Flow<List<String>>> {
-        val dir = AwsInstanceTypeUtil.INSTANCE_TYPE.tmpDir(this::class.name())
+        val dir = AwsInstanceTypeUtil.INSTANCE_TYPE.tmpDir().slash(this::class.name()).slash(UUID.randomUUID().toString())
         list().map {
             suspend {
                 val file = dir.slash(it.fileName)

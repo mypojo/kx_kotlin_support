@@ -3,7 +3,6 @@ package net.kotlinx.aws
 import net.kotlinx.file.slash
 import net.kotlinx.system.ResourceHolder
 import java.io.File
-import java.util.*
 
 /**
  *
@@ -42,7 +41,8 @@ enum class AwsInstanceType(val root: File) {
     /**
      * 임시 디렉토리 생성
      * 이 경로로 통일하자.
-     * ex) tmpDir(this::class.name())
+     * ex) tmpDir()
+     * ECS나 람다를 사용하면 어차피 임시 디렉토리라서 UUID로 디렉토리 안만들어도 됨
      *  */
-    fun tmpDir(name: String): File = root.slash("tmp").slash(name).slash(UUID.randomUUID().toString())
+    fun tmpDir(): File = root.slash("tmp")
 }

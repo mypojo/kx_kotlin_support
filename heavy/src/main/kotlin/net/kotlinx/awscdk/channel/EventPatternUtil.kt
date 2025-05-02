@@ -42,6 +42,20 @@ object EventPatternUtil {
         )
         .build()!!
 
+    /** BATCH 스팟 중단 */
+    val BATCH_SPOT_FAIL = EventPattern.builder()
+        .source(listOf("aws.batch"))
+        .detailType(listOf("Batch Job State Change"))
+        .detail(
+            mapOf(
+                "status" to listOf("FAILED"),
+                "statusReason" to mapOf(
+                    "prefix" to listOf("Your Spot Task was interrupted")
+                ),
+            )
+        )
+        .build()!!
+
 
     /**
      * ECS 스팟 중단돤경우.

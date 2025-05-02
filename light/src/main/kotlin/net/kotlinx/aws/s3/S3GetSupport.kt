@@ -9,9 +9,15 @@ import aws.sdk.kotlin.services.s3.model.NotFound
 import aws.sdk.kotlin.services.s3.model.ObjectAttributes
 import aws.smithy.kotlin.runtime.content.decodeToString
 import aws.smithy.kotlin.runtime.content.toByteArray
+import aws.smithy.kotlin.runtime.content.toInputStream
 import aws.smithy.kotlin.runtime.content.writeToFile
 import aws.smithy.kotlin.runtime.text.encoding.decodeBase64
+import com.github.doyaaaaaken.kotlincsv.client.CsvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.takeWhile
+import net.kotlinx.csv.toFlow
+import net.kotlinx.io.input.toInputResource
 import java.io.File
 import java.nio.charset.Charset
 
@@ -59,7 +65,7 @@ suspend fun S3Client.getObjectSize(data: S3Data) {
  * 간단 쓰기는 없음 (스트리핑 put은 안됨) -> 먼저 파일로 쓴 다음 업로드 할것!!
  * @param charset  지정하지 않으면 기본디코딩
  *
- * => CSV 등을 스트림으로 읽고싶다면 하지말것!! 안전성을 위해서 다운받은 후 읽어라.
+ * => CSV 등을 스트림으로 읽고싶다면? -> 안하는게 좋음.  안전성을 위해서 다운받은 후 읽어라.
  *  */
 suspend fun S3Client.getObjectLines(bucket: String, key: String, charset: Charset? = null): List<List<String>>? {
     return try {
@@ -80,6 +86,28 @@ suspend fun S3Client.getObjectLines(bucket: String, key: String, charset: Charse
     } catch (_: NoSuchKey) {
         null
     }
+}
+
+/**
+ * 스트리밍 CSV 읽기
+ * ex) 대용량 파일의 앞에 100개만 읽기
+ * 안정성 떨어짐 주의!
+ * @see takeWhile
+ * 짧게 읽고 끊으면 , 읽음 만큼만 과금됨
+ * */
+suspend fun S3Client.getObjectLinesStream(
+    bucket: String,
+    key: String,
+    reader: CsvReader = csvReader(),
+    action: suspend (Flow<List<String>>) -> Unit
+) = this.getObject(
+    GetObjectRequest {
+        this.bucket = bucket
+        this.key = key
+    }
+) {
+    val flow = it.body?.toInputStream()!!.toInputResource().toFlow(reader)
+    action(flow)
 }
 
 

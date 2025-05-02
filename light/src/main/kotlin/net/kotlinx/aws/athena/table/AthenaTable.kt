@@ -39,6 +39,12 @@ class AthenaTable {
     lateinit var bucket: String
 
     /**
+     * 테이블 코멘트
+     * 데이터 카탈로그에 보여짐으로 가능하면 상세하게
+     *  */
+    var tableComment: String = ""
+
+    /**
      * 테이블 시작점의 S3 key
      * 폴더형식 이여야 한다 ( / 로 끝나야함)
      * ex) collect/${테이블명}/
@@ -217,6 +223,7 @@ class AthenaTable {
             "CREATE ${athenaTableType.schema} TABLE ${tableNameWithDatabase}(",
             schemaText,
             ")",
+            "COMMENT '${tableComment}'", //확인필요
             partitionText,
             formatText,
             "LOCATION  '${location}'",

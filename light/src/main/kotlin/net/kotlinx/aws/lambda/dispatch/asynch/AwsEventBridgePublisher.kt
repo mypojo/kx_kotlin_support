@@ -51,8 +51,14 @@ class AwsEventBridgePublisher : LambdaDispatch {
 
             "aws.ecs" -> {
                 when (detailType) {
-                    /** ECS 상태변경 알림 */
                     "ECS Task State Change" -> bus.postEvent { EventBridgeEcsTaskStateChange(body) }
+                    else -> bus.postEvent { body }
+                }
+            }
+
+            "aws.batch" -> {
+                when (detailType) {
+                    "Batch Job State Change" -> bus.postEvent { EventBridgeAwsBatchStateChange(body) }
                     else -> bus.postEvent { body }
                 }
             }

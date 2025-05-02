@@ -1,5 +1,7 @@
 package net.kotlinx.domain.job
 
+import net.kotlinx.domain.job.define.JobDefinition
+import net.kotlinx.domain.job.define.JobDefinitionRepository
 import net.kotlinx.string.abbr
 import net.kotlinx.string.toTextGridPrint
 
@@ -12,3 +14,6 @@ fun List<Job>.printSimple() {
         }
     }
 }
+
+/** 잡으로 JobDef 찾기 */
+fun Job.toJobDefinition(): JobDefinition = JobDefinitionRepository.findById(pk) ?: throw IllegalStateException("job ${pk} -> JobDefinition is not found")
