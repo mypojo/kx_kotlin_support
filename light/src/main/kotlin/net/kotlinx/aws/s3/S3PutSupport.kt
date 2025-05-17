@@ -69,7 +69,7 @@ suspend inline fun S3Client.putObjectMultipart(bucket: String, key: String, file
     val partSize = splitMb * 1024L * 1024L
     val numParts = ((fileSize + partSize - 1) / partSize).toInt()
 
-    log.info { "s3 MultipartUpload (${file}) ${fileSize.toSiText()} / ${partSize.toSiText()} -> ${numParts}분할 업로드 시작.." }
+    log.info { "  ==> s3 MultipartUpload (${file}) ${fileSize.toSiText()} / ${partSize.toSiText()} -> ${numParts}분할 업로드 시작.." }
 
     val partETags = (0 until numParts).map { i ->
         val startPos = i * partSize

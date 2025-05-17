@@ -2,6 +2,10 @@ package net.kotlinx.csv.chunkTools
 
 import com.github.doyaaaaaken.kotlincsv.client.ICsvFileWriter
 
+
+/**
+ * header 가 꼭 필요하지 않다면 flow를 사용해주세요
+ * */
 data class CsvChunk(
 
     /** 0부터 시작 */

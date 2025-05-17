@@ -11,7 +11,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 /**
- * 한국국은행 공개 API
+ * 한국은행 공개 API
  * https://ecos.bok.or.kr/api/#/
  * */
 class EcosClient(private val secret: String, private val client: OkHttpClient = koin<OkHttpClient>()) {

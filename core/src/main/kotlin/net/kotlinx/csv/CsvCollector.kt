@@ -24,6 +24,9 @@ class CsvCollector : FlowCollector<List<List<String>>>, AutoCloseable {
     /** 파일 제공자 */
     lateinit var outputResource: OutputResource
 
+    /** 헤더 */
+    var header: List<String>? = null
+
     /** 쓰기 객체 */
     var writer: CsvWriter = csvWriter()
 
@@ -34,6 +37,7 @@ class CsvCollector : FlowCollector<List<List<String>>>, AutoCloseable {
     override suspend fun emit(lines: List<List<String>>) {
         if (rawWriter == null) {
             rawWriter = writer.openAndGetRawWriter(outputResource.outputStream)
+            header?.let { rawWriter!!.writeRow(it) }
         }
         lines.forEach { rawWriter!!.writeRow(it) }
     }

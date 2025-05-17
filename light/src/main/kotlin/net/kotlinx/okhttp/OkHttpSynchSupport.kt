@@ -1,6 +1,8 @@
 package net.kotlinx.okhttp
 
 import net.kotlinx.core.Kdsl
+import net.kotlinx.csv.CsvReadWriteTool
+import net.kotlinx.csv.CsvUtil
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import java.io.File
@@ -48,5 +50,20 @@ fun OkHttpClient.download(file: File, block: OkHttpReq.() -> Unit): OkHttpResp {
             }
         }
         OkHttpResp(req, response)
+    }
+}
+
+
+/**
+ * 업계에서 자주 쓰이는 짭퉁 TSV를 CSV로 변환해서 MS949로 다운로드 해준다
+ * 일반적인 업무로직에서는 일단 원본 다운로드 후 처리하는방법을 권장.
+ * 이 방법은 다운로드 시점에서 꼭 변환이 필요한 경우에 사용
+ * */
+suspend fun OkHttpClient.downloadTsvToCsv(url: String, file: File): OkHttpResp = this.download(url) {
+    CsvReadWriteTool {
+        readerInputStream = it
+        readerFactory = { CsvUtil.TSV_UNOFFICIAL }
+        writerFile = file
+        writerFactory = { CsvUtil.ms949Writer() }
     }
 }

@@ -34,7 +34,9 @@ class MenuList {
         _roots.add(menu)
     }
 
-    /** 모든 자식들 리턴. ex) securityConfig */
+    /**
+     * isLeaf인 모든 자식들 리턴. ex) securityConfig
+     * */
     fun allChildren(): List<Menu> = _roots.fold<Menu, List<Menu>>(listOf()) { t, v -> t + v.allChildren() }.filter { it.isLeaf }
 
     /**

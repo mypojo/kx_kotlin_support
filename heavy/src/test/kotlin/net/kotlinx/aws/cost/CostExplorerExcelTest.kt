@@ -68,17 +68,6 @@ fun main() {
 
     val lines = GsonSet.GSON.fromJsonList<CostExplorerLine>(dataFile.readText())
 
-//    val wonDoller = runBlocking {
-//        val secret by lazyLoadStringSsm("/api/koreaexim/key")
-//        try {
-//            val client = KoreaeximClient(secret)
-//            client.dollarWon()
-//        } catch (e: Exception) {
-//            log.warn { "달러원 오류!! -> 강제 매핑  ${e.toSimpleString()}" }
-//            1380
-//        }
-//    }
-
     CostExplorerExcel {
         won = runBlocking { EcosClientUtil.dollarWon().toInt() }
         costDatas = lines

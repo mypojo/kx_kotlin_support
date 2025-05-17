@@ -1,12 +1,11 @@
-package net.kotlinx.aws.firehose
+package net.kotlinx.aws.firehose.logData
 
 import net.kotlinx.aws.athena.table.AthenaTable
 
-@Deprecated("LogData 사용하세요")
-object HttpLogTable {
+object LogDataTable {
 
     /** 결과 파일 저장 샘플 - 아이스버그v2 */
-    val HTTP_ICEBUG = AthenaTable {
+    val LOG_DATA = AthenaTable {
         icebugTable()
         tableName = "http_log"
         schema = mapOf(

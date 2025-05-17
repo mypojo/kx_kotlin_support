@@ -1,4 +1,4 @@
-package net.kotlinx.domain.event
+package net.kotlinx.domain.logData
 
 import mu.KotlinLogging
 import net.kotlinx.exception.toSimpleString

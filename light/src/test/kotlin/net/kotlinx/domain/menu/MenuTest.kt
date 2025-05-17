@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import net.kotlinx.delegate.MapAttributeDelegate
 import net.kotlinx.domain.developer.DeveloperData
+import net.kotlinx.json.gson.GsonData
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -46,6 +47,7 @@ internal class MenuTest : BeSpecLog() {
                 child("make02", "메뉴B") {
                     authors = setOf(DeveloperData("sin"))
                 }
+                MARKET = this
             }
             menu("member", "회원") {
                 child("login", "로그인") {
@@ -57,20 +59,31 @@ internal class MenuTest : BeSpecLog() {
         }
         lateinit var LOGIN: Menu
         lateinit var BUY2: Menu
+        lateinit var MARKET: Menu
     }
 
 
     init {
         initTest(KotestUtil.FAST)
 
-
-
         Given("MenuList") {
+
             Then("메뉴 리스팅") {
-                listOf("paht", "name", "icon").toTextGridPrint {
+                listOf("path", "name", "icon").toTextGridPrint {
                     MENUS.allChildren().map { v ->
                         arrayOf(v.path, v.trees.joinToString(" -> ") { it.name }, v.icon)
                     }
+                }
+            }
+
+            When("메뉴 권한 to JSON") {
+                Then("전체가 리턴됨"){
+                    val menus = MARKET.toMenuDatas { it.show && Role.A in it.configRoles }
+                    println(GsonData.fromObj(menus).toPreety())
+                }
+                Then("권한 있는거먄 리턴됨"){
+                    val menus = MARKET.toMenuDatas { it.show && Role.C in it.configRoles }
+                    println(GsonData.fromObj(menus).toPreety())
                 }
             }
 

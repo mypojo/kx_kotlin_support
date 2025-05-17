@@ -5,6 +5,7 @@ import aws.sdk.kotlin.services.s3.listBuckets
 import ch.qos.logback.classic.Level
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.flow.chunked
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.flow.toList
@@ -43,9 +44,22 @@ internal class S3SupportKtTest : BeSpecHeavy() {
                     flow.takeWhile {
                         ++cnt < 6
                     }.toList().print()
-
                 }
             }
+
+            Then("대용량 CSV 스트리밍 읽기 - 조건문 사용 & 청크 읽기") {
+                val aws2 by lazy { koin<AwsClient>(findProfile48) }
+                aws2.s3.getObjectLinesStream("nak-real-work", "config/nak/ssg/ep/ssg_metaEp.csv") { flow ->
+                    var cnt = 0
+                    flow.takeWhile {
+                        ++cnt < 6
+                    }.chunked(4) .collect {
+                        println(it)
+                    }
+                }
+            }
+
+
 
             Then("버킷 리스팅") {
                 val buckets = aws.s3.listBuckets {}.buckets!!

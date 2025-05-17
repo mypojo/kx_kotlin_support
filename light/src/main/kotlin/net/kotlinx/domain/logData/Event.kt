@@ -1,4 +1,4 @@
-package net.kotlinx.domain.event
+package net.kotlinx.domain.logData
 
 
 import net.kotlinx.aws.AwsInstanceType

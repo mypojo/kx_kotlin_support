@@ -5,7 +5,8 @@ import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicLong
 
 /**
- * 단일 JVM에서 진행상황을 대략적으로 로깅을 하려고 할때 사용됨
+ * 단일 JVM에서 진행상황을 대략적으로 로깅을 하려고 할때 사용
+ * ProgressData 를 내부적으로 사용함
  */
 class ProgressInlineChecker(
     /** 전체 수  */

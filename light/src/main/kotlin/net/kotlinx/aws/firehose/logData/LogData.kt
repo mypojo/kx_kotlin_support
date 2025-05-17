@@ -1,15 +1,14 @@
-package net.kotlinx.aws.firehose
+package net.kotlinx.aws.firehose.logData
 
 import java.time.LocalDateTime
 
 /**
- * http 샘플 로깅 객체
- * 파티션 설계에 따라 매우 달라질 수 있음
- * 이 로그는 너무 많기때문에 이벤트 로그와 같이 보여주는것은 힘들듯함
- * 보통 eventId 혹은 respBody 를 파싱해서 조회
+ * 통합로깅 객체
+ * ex) API 서버에서 트랜잭션 로그, 민감데이터 접속로그, 로그인 로그 등등..
+ * ex) 모든곳에서 특정 엔드포인트 호출 기록
+ * ex) 잡 결과 기록후 리포트 작성
  * */
-@Deprecated("LogData 사용하세요")
-data class HttpLog(
+data class LogData(
     /** 파티션용 날짜 */
     val basicDate: String,
     /** 파티션용 구분 이름 */

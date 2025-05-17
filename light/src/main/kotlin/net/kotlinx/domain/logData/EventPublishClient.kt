@@ -1,4 +1,4 @@
-package net.kotlinx.domain.event
+package net.kotlinx.domain.logData
 
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
