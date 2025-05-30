@@ -31,7 +31,7 @@ dependencies {
 
 
     //==================================================== 벨리데이션  ======================================================
-    api("io.konform:konform-jvm:_") //코틀린 필드 벨리데이션 -> 써보려고 했는데 다시 java 표준 벨리데이션으로 넘어감.. 생각보다 별로임
+    //api("io.konform:konform-jvm:_") //코틀린 필드 벨리데이션 -> 써보려고 했는데 다시 java 표준 벨리데이션으로 넘어감.. 생각보다 별로라서 중단
     runtimeOnly("com.linecorp.conditional:conditional:_") //라인의 컨디셔널 (합쳐서 100kb)
     api("com.linecorp.conditional:conditional-kotlin:_") //요구사항에 and 와 or이 포함되어있을경우 이걸로 예쁘게 포매팅
 

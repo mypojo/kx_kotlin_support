@@ -37,6 +37,7 @@ class SimpleAuthenticationToken(
         //==================================================== static ======================================================
         /**
          * 컨텍스트의 레퍼런스만 리셋한다. 이렇게 해야 확정적으로 더티체킹이 되는 경우가 있음
+         * JWT는 이게 필요없음
          * */
         fun authReset() {
             val existAuth = SecurityContextHolder.getContext().authentication as SimpleAuthenticationToken

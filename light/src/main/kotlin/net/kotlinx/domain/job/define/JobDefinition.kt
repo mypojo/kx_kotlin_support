@@ -33,9 +33,6 @@ class JobDefinition {
     /** 이름(한글) */
     lateinit var name: String
 
-    /** 스케줄링 주가. */
-    var jobScheduleType: JobScheduleType = JobScheduleType.NONE
-
     /** 설정된 기본 잡 실행 설정 (설정과 다르게 실행할수도 있음!) */
     var jobTriggerMethod: JobTriggerMethod = JobTriggerMethod.LOCAL
 

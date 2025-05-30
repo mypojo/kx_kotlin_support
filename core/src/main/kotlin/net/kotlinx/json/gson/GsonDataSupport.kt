@@ -1,5 +1,9 @@
 package net.kotlinx.json.gson
 
+import com.lectra.koson.Koson
+import com.lectra.koson.obj
+import net.kotlinx.json.koson.toGsonData
+
 /** 간단 변환. 없으면 빈거 리턴 */
 fun String?.toGsonDataOrEmpty(): GsonData {
     if (this.isNullOrBlank()) return GsonData.empty()
@@ -39,3 +43,10 @@ fun List<List<String>>.toGsonDataWithHeader(): List<GsonData> {
     val lines = this.drop(1)
     return lines.toGsonDataWithHeader(header)
 }
+
+
+/**
+ * koson 형태를 유지하면서, 결과를 GsonData로 리턴해준다
+ * 객체가 제일 자주 사용되니 이름은 이걸로 지정
+ * */
+fun json(block: Koson.() -> Unit): GsonData = obj(block).toGsonData()

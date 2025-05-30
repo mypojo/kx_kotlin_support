@@ -1,6 +1,9 @@
 package net.kotlinx.aws.lambda.dispatch.asynch
 
 
+/**
+ * 람다 페이로드는 detail 로 넘어옴
+ * */
 data class EventBridgeSchedulerEvent(private val event: EventBridgeJson) : EventBridge by event {
 
     /** 스케쥴 그룹명 */

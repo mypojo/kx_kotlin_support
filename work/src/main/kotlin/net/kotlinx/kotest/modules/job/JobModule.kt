@@ -5,7 +5,6 @@ import net.kotlinx.domain.job.Job
 import net.kotlinx.domain.job.JobRepository
 import net.kotlinx.domain.job.JobTableUtil
 import net.kotlinx.domain.job.define.JobExecuteType
-import net.kotlinx.domain.job.define.JobScheduleType
 import net.kotlinx.domain.job.define.registJob
 import net.kotlinx.domain.job.trigger.JobLocalExecutor
 import net.kotlinx.domain.job.trigger.JobSerializer
@@ -50,7 +49,6 @@ object JobModule : KoinModule {
                 "월비용 =  80원",
             )
             jobExecuteType = JobExecuteType.NOLOG
-            jobScheduleType = JobScheduleType.MINUTES
         }
 
 

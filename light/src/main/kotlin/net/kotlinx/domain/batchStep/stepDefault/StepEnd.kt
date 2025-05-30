@@ -3,7 +3,6 @@ package net.kotlinx.domain.batchStep.stepDefault
 import com.lectra.koson.ObjectType
 import com.lectra.koson.obj
 import mu.KotlinLogging
-import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.athena.AthenaModule
 import net.kotlinx.aws.lambda.LambdaUtil
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatchLogic
@@ -29,7 +28,6 @@ class StepEnd : LambdaDispatchLogic {
 
     private val log = KotlinLogging.logger {}
 
-    private val aws: AwsClient by koinLazy()
     private val config: BatchStepConfig by koinLazy()
     private val athenaModule: AthenaModule by koinLazy()
     private val jobRepository: JobRepository by koinLazy()

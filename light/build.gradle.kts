@@ -49,6 +49,7 @@ dependencies {
     api("aws.sdk.kotlin:eventbridge:$awsVersion") //2m 밖에 안함
     api("aws.sdk.kotlin:ses:$awsVersion") //2m 밖에 안함
     api("aws.sdk.kotlin:codecommit:$awsVersion") //3m.. 그래도 넣자
+    api("aws.sdk.kotlin:scheduler:${awsVersion}")  //새로운 이벤트브릿지 스케쥴 0.8mb
 
     api("aws.sdk.kotlin:bedrock:$awsVersion") //배드록. 약 2mb  시리즈 전체 -> https://central.sonatype.com/search?q=g%3Aaws.sdk.kotlin+bedrock&smo=true
     api("aws.sdk.kotlin:bedrockruntime:$awsVersion") //배드록 런다임. 약 1m 실제 모델 호출에 사용

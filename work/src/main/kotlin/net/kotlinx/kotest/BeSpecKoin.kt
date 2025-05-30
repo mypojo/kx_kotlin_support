@@ -31,6 +31,9 @@ abstract class BeSpecKoin(modules: List<Module>) : BeSpecLog() {
     /** at */
     val findProfile33 by lazy { findProfile("33") }
 
+    /** dp */
+    val findProfile49 by lazy { findProfile("49") }
+
 
     //==================================================== sub ======================================================
 
@@ -55,6 +58,16 @@ abstract class BeSpecKoin(modules: List<Module>) : BeSpecLog() {
     val athenaModule97 by lazy {
         AthenaModule {
             aws = aws97
+            workGroup = "workgroup-dev"
+            database = "d1"
+        }
+    }
+
+    val aws49 by koinLazy<AwsClient>(findProfile49)
+
+    val athenaModule49 by lazy {
+        AthenaModule {
+            aws = aws49
             workGroup = "workgroup-dev"
             database = "d1"
         }

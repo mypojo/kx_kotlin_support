@@ -12,14 +12,16 @@ object CdkPolicyStatementSetAthena {
     val ATHENA_EXE_ALL = CdkPolicyStatement {
         actions = listOf(
             "athena:BatchGetQueryExecution",
-            "athena:CancelQueryExecution",
             "athena:GetQueryExecution",
             "athena:GetQueryExecutions",
             "athena:GetQueryResults",
             "athena:GetQueryResultsStream",
+
             "athena:StartQueryExecution",
             "athena:StopQueryExecution",
-            "athena:RunQuery",
+            "athena:CancelQueryExecution",
+
+            "athena:RunQuery", //레거시에서 쓰던 권한. StartQueryExecution으로 대체되었음
             "athena:ListQueryExecutions",
             //아테나 네임드쿼리
             "athena:ListNamedQueries",
@@ -31,6 +33,7 @@ object CdkPolicyStatementSetAthena {
     val ATHENA_READONLY = CdkPolicyStatement {
         actions = listOf(
             "athena:StartQueryExecution",
+            "athena:StopQueryExecution",
             "athena:Get*",
             "athena:BatchGet*",
             "athena:List*",

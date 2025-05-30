@@ -1,8 +1,7 @@
-package net.kotlinx.domain.jpa.event
+package net.kotlinx.domain.jpa.logData
 
 import com.google.common.collect.Sets
-import net.kotlinx.domain.event.EventDataHolder.addData
-import net.kotlinx.domain.event.EventUtil
+import net.kotlinx.aws.firehose.logData.LogDataHolder
 import net.kotlinx.hibernate.config.AbstractJpaPostListener
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.gson.GsonSet
@@ -14,8 +13,7 @@ import org.hibernate.event.spi.PostUpdateEvent
 /**
  * 모든 이벤트는 예외 발생하지 않게 래핑
  */
-@Deprecated("logData 사용하세요")
-class EventDataJpaListener : AbstractJpaPostListener() {
+class LogDataJpaListener : AbstractJpaPostListener() {
 
     /**
      * 엔티티에 적용할 gson
@@ -23,13 +21,14 @@ class EventDataJpaListener : AbstractJpaPostListener() {
      *  */
     var gson = GsonSet.TABLE_UTC_WITH_ZONE
 
-    private fun doOnPostUpdate(event: PostUpdateEvent) {
-        addData {
-            from = FROM_NAME
-            id = event.id.toString()
-            g1 = event.persister.entityName
-            g2 = DIV_UPDATE
-            x = GsonData.obj().apply {
+    /** 데이터 수정 */
+    override fun onPostUpdate(event: PostUpdateEvent) {
+        LogDataHolder.addData {
+            g1 = FROM_NAME
+            g2 = event.persister.entityName
+            g3 = DIV_UPDATE
+            keyword = event.id.toString()
+            x = GsonData.obj {
                 val properties = event.persister.propertyNames
                 val oldState = event.oldState
                 val state = event.state
@@ -41,9 +40,9 @@ class EventDataJpaListener : AbstractJpaPostListener() {
                     val newValue = state[dirtyProperty]
 
                     //엔티티 확인
-                    put(fieldName, GsonData.obj().apply {
-                        put("a", EventDataJpaUtil.entityDataToSimpleString(oldValue))
-                        put("b", EventDataJpaUtil.entityDataToSimpleString(newValue))
+                    put(fieldName, GsonData.obj {
+                        put("a", LogDataJpaUtil.entityDataToSimpleString(oldValue))
+                        put("b", LogDataJpaUtil.entityDataToSimpleString(newValue))
                     })
                 }
             }
@@ -51,41 +50,28 @@ class EventDataJpaListener : AbstractJpaPostListener() {
         }
     }
 
-    private fun doOnPostInsert(event: PostInsertEvent) {
-        addData {
-            from = FROM_NAME
-            id = event.id.toString()
-            g1 = event.persister.entityName
-            g2 = DIV_INSERT
+    /** 데이터 입력  */
+    override fun onPostInsert(event: PostInsertEvent) {
+        LogDataHolder.addData {
+            g1 = FROM_NAME
+            g2 = event.persister.entityName
+            g3 = DIV_INSERT
+            keyword = event.id.toString()
             x = GsonData.empty()
             y = GsonData.fromObj(event.entity, gson)
         }
     }
 
-    private fun doOnPostDelete(event: PostDeleteEvent) {
-        addData {
-            from = FROM_NAME
-            id = event.id.toString()
-            g1 = event.persister.entityName
-            g2 = DIV_DELETE
+    /** 데이터 삭제  */
+    override fun onPostDelete(event: PostDeleteEvent) {
+        LogDataHolder.addData {
+            g1 = FROM_NAME
+            g2 = event.persister.entityName
+            g3 = DIV_DELETE
+            keyword = event.id.toString()
             x = GsonData.empty()
             y = GsonData.empty()
         }
-    }
-
-    /** 데이터 수정 */
-    override fun onPostUpdate(event: PostUpdateEvent) {
-        EventUtil.doWithoutException { doOnPostUpdate(event) }
-    }
-
-    /** 데이터 입력  */
-    override fun onPostInsert(event: PostInsertEvent) {
-        EventUtil.doWithoutException { doOnPostInsert(event) }
-    }
-
-    /** 데이터 삭제  */
-    override fun onPostDelete(event: PostDeleteEvent) {
-        EventUtil.doWithoutException { doOnPostDelete(event) }
     }
 
 

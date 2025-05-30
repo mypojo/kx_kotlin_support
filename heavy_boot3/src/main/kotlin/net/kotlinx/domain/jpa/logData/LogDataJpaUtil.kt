@@ -1,10 +1,10 @@
-package net.kotlinx.domain.jpa.event
+package net.kotlinx.domain.jpa.logData
 
 import org.hibernate.proxy.HibernateProxy
 import org.springframework.data.domain.Persistable
 
-@Deprecated("logData 사용하세요")
-object EventDataJpaUtil {
+
+object LogDataJpaUtil {
 
     /**
      * 프록시 객체를 벗겨서 문자열로 제공 (사람이 UI로 보는용)

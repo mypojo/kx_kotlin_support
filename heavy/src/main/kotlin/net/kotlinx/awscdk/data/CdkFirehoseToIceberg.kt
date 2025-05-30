@@ -18,6 +18,8 @@ import software.amazon.awscdk.services.s3.IBucket
  *
  * 생성후 최적화 설정도 잡아줘야함
  * @see aws.sdk.kotlin.services.glue.GlueClient createTableOptimizerByDefault
+ *
+ * 경고!! S3 버킷 테이블로의 직접 입력은 아직 지원하지 않는다 (2025-03)
  *  */
 class CdkFirehoseToIceberg : CdkInterface {
 

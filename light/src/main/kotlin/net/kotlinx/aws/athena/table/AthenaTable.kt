@@ -23,6 +23,9 @@ class AthenaTable {
         apply(block)
     }
 
+    /** 데이터 저장소 */
+    var tableStorage: AthenaTableStorage = AthenaTableStorage.S3
+
     /** 파티션 타입 */
     var athenaTablePartitionType: AthenaTablePartitionType = AthenaTablePartitionType.NONE
 
@@ -153,7 +156,25 @@ class AthenaTable {
     fun dropForce(): String = "DROP TABLE IF EXISTS ${tableNameWithDatabase};"
 
     fun create(): String {
+        return when (tableStorage) {
 
+            AthenaTableStorage.S3 -> createForS3()
+
+            /** 임시조치 */
+            AthenaTableStorage.S3BUCKETTABLE -> {
+                """
+                    CREATE TABLE ${tableNameWithDatabase}(
+                        ${schema.entries.joinToString(",\n") { "`${it.key}` ${it.value}" }}
+                     )
+                     PARTITIONED BY (${partitions.joinToString(",")})
+                     TBLPROPERTIES ('table_type' = 'iceberg')
+                """.trimIndent()
+            }
+
+        }
+    }
+
+    private fun createForS3(): String {
         val location = "s3://${bucket}/${s3Key}"
 
         if (skipHeader) {

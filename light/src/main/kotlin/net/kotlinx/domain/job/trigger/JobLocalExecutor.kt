@@ -28,7 +28,7 @@ class JobLocalExecutor(val profile: String? = null) {
      * */
     suspend fun execute(job: Job): String {
         val jobDef = JobDefinitionRepository.findById(job.pk)
-        val jobService = jobDef.jobClass.newInstance()
+        val jobTasklet = jobDef.jobClass.newInstance()
         job.instanceMetadata = instanceMetadata
 
         log.debug { "job run (${job.toKeyString()})" }
@@ -46,7 +46,7 @@ class JobLocalExecutor(val profile: String? = null) {
             jobRepository.updateItem(job, JobUpdateSet.START)
 
             //==============  실행  ===================
-            jobService.execute(job)
+            jobTasklet.execute(job)
 
             //==============  결과 마킹 ===================
             when (job.jobStatus) {
