@@ -38,6 +38,12 @@ fun List<GetScheduleResponse>.printSimple() {
     }
 }
 
+/** 스케쥴 삭제 */
+suspend fun SchedulerClient.deleteSchedule(groupName: String, name: String) = this.deleteSchedule {
+    this.groupName
+    this.name
+}
+
 /** 스케쥴 수정 or 생성 */
 suspend fun SchedulerClient.updateOrCreateSchedule(schedule: SchedulerLambda) {
     try {

@@ -1,13 +1,13 @@
 package net.kotlinx.domain.ddb.errorLog
 
 import io.kotest.matchers.shouldBe
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.dynamo.DynamoUtil
-import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndexItemRepository
-import net.kotlinx.aws.dynamo.multiIndex.DdbBasicRepository
 import net.kotlinx.domain.item.errorLog.ErrorLog
-import net.kotlinx.domain.item.errorLog.ErrorLogConverter
+import net.kotlinx.domain.item.errorLog.ErrorLogRepository
 import net.kotlinx.domain.item.errorLog.errorLogQueryLink
 import net.kotlinx.domain.job.Job
+import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -16,89 +16,56 @@ import net.kotlinx.string.print
 import net.kotlinx.time.truncatedMills
 import java.time.LocalDateTime
 import java.util.*
-import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.minutes
 
 class ErrorLogRepositoryTest : BeSpecLight() {
-
-    /** 프로파일 때문에 DI 안함 */
-    private val repository by lazy {
-        DdbBasicRepository(
-            DbMultiIndexItemRepository(findProfile97),
-            ErrorLogConverter(),
-        )
-    }
 
     init {
         initTest(KotestUtil.PROJECT)
 
         Given("ErrorLog") {
 
-            val job = Job("kwdDemoListJob", "59110001")
+            val repository = ErrorLogRepository().apply {
+                aws = koin<AwsClient>(findProfile97)
+            }
 
+            val job = Job("kwdDemoListJob", "59110001")
             Then("에러 로그 링크") {
                 log.info { "에러로그링크 -> ${job.errorLogQueryLink}" }
             }
 
-            When("카운팅 하기") {
-
-                val root = ErrorLog {
-                    group = "job"
-                    div = "kwdDemoListJob"
-                    divId = "59110001"
-                }
-
-                Then("에러 카운팅 조회") {
-                    val cnt = repository.findCntBySkPrefix(root)
-                    log.info { "로그 [${root.div}] : ${cnt}" }
-                }
-            }
 
             When("단건 테스트") {
 
-                val root = ErrorLog {
-                    group = "job"
-                    div = job.pk
-                    divId = job.sk
+                val errorLog = ErrorLog(
+                    group = "job",
+                    div = "kwdDemoListJob",
+                    divId = "59110001",
+                    id = UUID.randomUUID().toString(),
+                    time = LocalDateTime.now().truncatedMills(),
+                    cause = "테스트 예외 발생",
+                    stackTrace = RandomStringUtil.getRandomSring(10),
+                    ttl = DynamoUtil.ttlFromNow(10.minutes),
+                )
+
+                Then("카운팅") {
+                    val exist = repository.findCnt(errorLog.group, errorLog.div)
+                    repository.putItem(errorLog)
+                    val now = repository.findCnt(errorLog.group, errorLog.div)
+                    log.debug { " 에러로그 카운팅 ${exist} -> ${now}" }
+                    now shouldBe exist + 1
                 }
 
                 Then("입력 & 조회") {
-                    val errorLog = createLog(root)
                     repository.putItem(errorLog)
+                    val logs = repository.findAll(errorLog.group, errorLog.div)
+                    logs.print()
 
-                    val param = ErrorLog {
-                        group = root.group
-                        div = root.div
-                        divId = root.divId
-                        id = errorLog.id
-                    }
-                    val ddbItem = repository.getItem(param)!!
-
-                    log.debug { "데이터 입력됨. id = ${ddbItem.id}" }
-                    ddbItem.time shouldBe errorLog.time
-                    ddbItem.stackTrace shouldBe errorLog.stackTrace
+                    logs.first { it.id == errorLog.id }.cause shouldBe errorLog.cause
 
                     repository.deleteItem(errorLog)
                 }
 
-                Then("대량입력 & 리스팅 & 삭제") {
-
-                    val times = 5
-                    repeat(times) {
-                        val errorLog = createLog(root)
-                        repository.putItem(errorLog)
-                    }
-
-                    val param = ErrorLog {
-                        group = root.group
-                        div = root.div
-                        divId = root.divId
-                    }
-                    val items = repository.findAllBySkPrefix(param).sortedBy { it.time }
-                    items.print()
-                    items.size shouldBe times
-
-                    items.forEach { repository.deleteItem(it) }
-                }
             }
 
         }
@@ -106,15 +73,5 @@ class ErrorLogRepositoryTest : BeSpecLight() {
 
     }
 
-    private fun createLog(root: ErrorLog): ErrorLog = ErrorLog {
-        group = root.group
-        div = root.div
-        divId = root.divId
-        id = UUID.randomUUID().toString()
-        time = LocalDateTime.now().truncatedMills()
-        cause = "테스트 예외 발생"
-        stackTrace = RandomStringUtil.getRandomSring(10)
-        ttl = DynamoUtil.ttlFromNow(1.days)
-    }
 
 }

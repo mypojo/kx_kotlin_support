@@ -2,35 +2,32 @@ package net.kotlinx.domain.item.tempData
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.aws.dynamo.enhanced.DbConverter
-import net.kotlinx.aws.dynamo.enhanced.DbItem
 import net.kotlinx.aws.dynamo.enhanced.DbTable
 import net.kotlinx.aws.dynamo.findOrThrow
-import net.kotlinx.time.toIso
+import net.kotlinx.aws.dynamo.put
 
-class TempDataConverter(private val table: DbTable) : DbConverter {
+class TempDataConverter(private val table: DbTable) : DbConverter<TempData> {
 
-    override fun <T : DbItem> toAttribute(data: T): Map<String, AttributeValue> {
-        val item = data as TempData
+    override fun toAttribute(item: TempData): Map<String, AttributeValue> {
         return buildMap {
-            put(table.pkName, AttributeValue.S(item.pk))
-            put(table.skName, AttributeValue.S(item.sk))
-
-            //==================================================== 최초 생성시 필수 입력값 ======================================================
-            put(TempData::reqTime.name, AttributeValue.S(item.reqTime.toIso()))
-            put(TempData::body.name, AttributeValue.S(item.body))
-            put(TempData::ttl.name, AttributeValue.N(item.ttl.toString()))
+            put(table.pkName, item.pk)
+            put(table.skName, item.sk)
+            put(TempData::status.name, item.status)
+            put(TempData::reqTime.name, item.reqTime)
+            put(TempData::body.name, item.body)
+            put(TempData::ttl.name, item.ttl)
         }
     }
 
-    override fun <T : DbItem> fromAttributeMap(map: Map<String, AttributeValue>): T {
+    override fun fromAttributeMap(map: Map<String, AttributeValue>): TempData {
         return TempData(
-            map[table.pkName]!!.asS(), map[table.skName]!!.asS()
-        ).apply {
-            //==================================================== 최초 생성시 필수 입력값 ======================================================
-            reqTime = map.findOrThrow(TempData::reqTime)
-            body = map.findOrThrow(TempData::body)
-            ttl = map.findOrThrow(TempData::ttl)
-        } as T
+            pk = map[table.pkName]!!.asS(),
+            sk = map[table.skName]!!.asS(),
+            status = map.findOrThrow(TempData::status),
+            body = map.findOrThrow(TempData::body),
+            reqTime = map.findOrThrow(TempData::reqTime),
+            ttl = map.findOrThrow(TempData::ttl),
+        )
     }
 
 

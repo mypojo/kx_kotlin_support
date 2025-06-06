@@ -1,19 +1,19 @@
 package net.kotlinx.aws.dynamo.enhanced
 
-import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.dynamo.dynamo
 import net.kotlinx.aws.dynamo.enhancedExp.DbExpressionSet
 import net.kotlinx.aws.dynamo.enhancedExp.scan
 import net.kotlinx.aws.dynamo.enhancedExp.scanAll
+import net.kotlinx.aws.lazyAwsClient
 import net.kotlinx.domain.job.Job
-import net.kotlinx.koin.Koins.koinLazy
 
 /**
  * DDB 간단접근용 헬퍼
+ * 실제 필요한 나머지 쿼리는 개별 코딩할것
  */
-abstract class DbRepository<T : DbItem>(val profile: String? = null) {
+abstract class DbRepository<T : DbItem>() {
 
-    protected val aws by koinLazy<AwsClient>(profile)
+    var aws by lazyAwsClient()
 
     protected abstract val dbTable: DbTable
 
@@ -24,6 +24,8 @@ abstract class DbRepository<T : DbItem>(val profile: String? = null) {
     suspend fun updateItem(item: T, updateKeys: Collection<String>) = aws.dynamo.update(item, updateKeys)
 
     suspend fun getItem(item: T): T? = aws.dynamo.get(item)
+
+    suspend fun getItem(pk: String, sk: String): T? = aws.dynamo.get(dbTable, pk, sk)
 
     suspend fun deleteItem(item: T): Unit = aws.dynamo.delete(item)
 

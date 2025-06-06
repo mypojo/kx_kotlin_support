@@ -1,6 +1,6 @@
-package net.kotlinx.validation.bg
+package net.kotlinx.validation.repeated
 
-enum class BgValidationType {
+enum class RepeatedValidationType {
 
     /** 지금기준 = 전체 = 실시간 */
     RUNTIME,

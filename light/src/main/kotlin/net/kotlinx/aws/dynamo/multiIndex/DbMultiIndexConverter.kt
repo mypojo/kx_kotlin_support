@@ -3,7 +3,6 @@ package net.kotlinx.aws.dynamo.multiIndex
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.aws.dynamo.add
 import net.kotlinx.aws.dynamo.enhanced.DbConverter
-import net.kotlinx.aws.dynamo.enhanced.DbItem
 import net.kotlinx.aws.dynamo.enhanced.DbTable
 import net.kotlinx.aws.dynamo.find
 import net.kotlinx.aws.dynamo.findOrThrow
@@ -13,10 +12,9 @@ import net.kotlinx.domain.job.Job
  * DDB에 입력되는 메타데이터
  * https://www.notion.so/mypojo/Job-Module-serverless-docker-57e773b5f0494fb59dcbff5d9a8eb8f5
  */
-class DbMultiIndexConverter(private val table: DbTable) : DbConverter {
+class DbMultiIndexConverter(private val table: DbTable) : DbConverter<DbMultiIndexItem> {
 
-    override fun <T : DbItem> toAttribute(data: T): Map<String, AttributeValue> {
-        val item = data as DbMultiIndexItem
+    override fun toAttribute(item: DbMultiIndexItem): Map<String, AttributeValue> {
         return buildMap {
             this += DbTable.PK_NAME to AttributeValue.S(item.pk)
             this += DbTable.SK_NAME to AttributeValue.S(item.sk)
@@ -33,7 +31,7 @@ class DbMultiIndexConverter(private val table: DbTable) : DbConverter {
         }
     }
 
-    override fun <T : DbItem> fromAttributeMap(map: Map<String, AttributeValue>): T {
+    override fun fromAttributeMap(map: Map<String, AttributeValue>): DbMultiIndexItem {
         return DbMultiIndexItem(
             map[table.pkName]!!.asS(), map[table.skName]!!.asS()
         ).apply {
@@ -46,7 +44,7 @@ class DbMultiIndexConverter(private val table: DbTable) : DbConverter {
             gsi02 = map.findPair(DbMultiIndex.GSI02)
             gsi03 = map.findPair(DbMultiIndex.GSI03)
             gsi04 = map.findPair(DbMultiIndex.GSI04)
-        } as T
+        }
     }
 
 

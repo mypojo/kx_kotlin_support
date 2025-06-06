@@ -2,8 +2,10 @@ package net.kotlinx.domain.item.tempData
 
 import com.lectra.koson.obj
 import io.kotest.matchers.shouldBe
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.dynamo.DynamoUtil
 import net.kotlinx.json.gson.GsonData
+import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -18,14 +20,17 @@ class TempDataTest : BeSpecLight() {
 
         Given("TempData") {
 
-            val tempData = TempData("xxJob", "59110001").apply {
+            val tempData = TempData(
+                "xxJob", "59110001",
                 body = obj {
                     "kwd" to "청바지"
-                }.toString()
+                }.toString(),
                 ttl = DynamoUtil.ttlFromNow(5.minutes)
-            }
+            )
 
-            val rep = TempDataRepository(findProfile97)
+            val rep = TempDataRepository().apply {
+                aws = koin<AwsClient>(findProfile97)
+            }
 
             Then("데이터 체크") {
                 rep.getItem(tempData) shouldBe null
@@ -42,11 +47,7 @@ class TempDataTest : BeSpecLight() {
                 rep.deleteItem(tempData)
                 rep.getItem(tempData) shouldBe null
             }
-
         }
-
-
     }
-
 
 }

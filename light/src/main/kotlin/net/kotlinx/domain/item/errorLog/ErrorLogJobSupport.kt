@@ -7,14 +7,6 @@ import net.kotlinx.domain.job.Job
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.reflect.name
 
-/** 에러 로그 파라메터로 변환 */
-val Job.toErrorLogParam: ErrorLog
-    get() = ErrorLog {
-        group = Job::class.name()
-        div = pk
-        divId = sk
-    }
-
 
 /** 에러 로그를 쿼리하는 DDB 링크 */
 val Job.errorLogQueryLink: String

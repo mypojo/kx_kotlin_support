@@ -10,7 +10,6 @@ import net.kotlinx.domain.job.trigger.JobLocalExecutor
 import net.kotlinx.domain.job.trigger.JobSerializer
 import net.kotlinx.koin.KoinModule
 import net.kotlinx.kotest.MyEnv
-import net.kotlinx.kotest.modules.AwsModule.IAM_PROFILES
 import net.kotlinx.reflect.name
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
@@ -33,13 +32,6 @@ object JobModule : KoinModule {
         single { JobRepository() }
         single { JobSerializer() }
         single { JobLocalExecutor() }
-
-        IAM_PROFILES.profiles.forEach { pair ->
-            val profileName = pair.first
-            single(named(profileName)) { JobRepository(profileName) }
-            single(named(profileName)) { JobSerializer(profileName) }
-            single(named(profileName)) { JobLocalExecutor(profileName) }
-        }
 
         registJob {
             jobClass = DemoJob::class

@@ -16,7 +16,7 @@ import net.kotlinx.reflect.name
  * 기존코드 실사용은 일단 안함
  */
 
-class ResourceItemRepository(profile: String? = null) : DbRepository<ResourceItem>(profile) {
+class ResourceItemRepository : DbRepository<ResourceItem>() {
 
     /** 여기서는 안씀 */
     override val dbTable by koinLazy<DbTable>(ResourceItem::class.name())

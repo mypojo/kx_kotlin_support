@@ -4,8 +4,8 @@ import net.kotlinx.aws.dynamo.DynamoMap
 import net.kotlinx.aws.dynamo.enhancedExp.DbExpression
 
 
-/** 기본 저장소 */
-class DdbBasicRepository<T>(
+/** 제너릭이 적용된 멀티 인덱스용 기본 저장소 */
+class DbMultiindexItemGenericRepository<T>(
     private val repository: DbMultiIndexItemRepository,
     private val eachConverter: DbMultiIndexEachConverter<DbMultiIndexItem, T>,
 ) {

@@ -6,6 +6,7 @@ import net.kotlinx.json.gson.GsonData
 /**
  * 반복되는 작업을 람다에서 빠르게 조회하기 위한 테이블
  */
+@Deprecated("AWS 스케쥴러로 대체")
 class RepeatTask {
 
     @Kdsl

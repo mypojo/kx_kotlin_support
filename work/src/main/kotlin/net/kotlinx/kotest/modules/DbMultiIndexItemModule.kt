@@ -4,9 +4,7 @@ import mu.KotlinLogging
 import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndexItem
 import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndexItemRepository
 import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndexItemUtil
-import net.kotlinx.aws.dynamo.multiIndex.DdbBasicRepository
-import net.kotlinx.domain.item.errorLog.ErrorLog
-import net.kotlinx.domain.item.errorLog.ErrorLogConverter
+import net.kotlinx.aws.dynamo.multiIndex.DbMultiindexItemGenericRepository
 import net.kotlinx.domain.item.repeatTask.RepeatTask
 import net.kotlinx.domain.item.repeatTask.RepeatTaskConverter
 import net.kotlinx.koin.KoinModule
@@ -32,19 +30,12 @@ object DbMultiIndexItemModule : KoinModule {
             }
         }
 
-        single { DbMultiIndexItemRepository(null) }
+        single { DbMultiIndexItemRepository() }
 
         //==================================================== 개별 객체 ======================================================
 
-        single(named(ErrorLog::class.name())) {
-            DdbBasicRepository(
-                koin<DbMultiIndexItemRepository>(),
-                ErrorLogConverter(),
-            )
-        }
-
         single(named(RepeatTask::class.name())) {
-            DdbBasicRepository(
+            DbMultiindexItemGenericRepository(
                 koin<DbMultiIndexItemRepository>(),
                 RepeatTaskConverter(),
             )

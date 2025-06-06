@@ -4,7 +4,7 @@ import com.google.common.eventbus.Subscribe
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.aws.dynamo.DynamoUtil
-import net.kotlinx.aws.dynamo.multiIndex.DdbBasicRepository
+import net.kotlinx.aws.dynamo.multiIndex.DbMultiindexItemGenericRepository
 import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.S3LogicFailEvent
 import net.kotlinx.core.Kdsl
 import net.kotlinx.exception.toSimpleString
@@ -24,7 +24,7 @@ class S3LogicFailEventDefaultListener {
 
     private val log = KotlinLogging.logger {}
 
-    private val repository by koinLazy<DdbBasicRepository<ErrorLog>>(ErrorLog::class.name())
+    private val repository by koinLazy<DbMultiindexItemGenericRepository<ErrorLog>>(ErrorLog::class.name())
 
     @Kdsl
     constructor(block: S3LogicFailEventDefaultListener.() -> Unit = {}) {
@@ -46,19 +46,18 @@ class S3LogicFailEventDefaultListener {
         //ex) path =  upload/sfnBatchModuleInput/batchTaskExecutor-job.kwdDemoMapJob.49610001/00000.txt
         //ex) pathId = batchTaskExecutor-job.kwdDemoMapJob.49610001
         val sfnId = event.path.pathId
-        val paths = sfnId.substringAfter("-").split(".")
-        check(paths.size == 3)
+        val (group, div, divId) = sfnId.substringAfter("-").split(".")
 
-        val errorLog = ErrorLog {
-            group = paths[0]
-            div = paths[1]
-            divId = paths[2]
-            id = UUID.randomUUID().toString()
-            time = LocalDateTime.now().truncatedMills()
-            cause = event.e.toSimpleString()
-            stackTrace = event.e.stackTraceToString()
-            ttl = DynamoUtil.ttlFromNow(ttlDuraton)
-        }
+        val errorLog = ErrorLog(
+            group = group,  //job
+            div = div,  //kwdDemoMapJob
+            divId = divId, //49610001
+            id = UUID.randomUUID().toString(),
+            ttl = DynamoUtil.ttlFromNow(ttlDuraton),
+            time = LocalDateTime.now().truncatedMills(),
+            cause = event.e.toSimpleString(),
+            stackTrace = event.e.stackTraceToString(),
+        )
         runBlocking { repository.putItem(errorLog) }
 
     }

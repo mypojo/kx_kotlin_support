@@ -44,7 +44,7 @@ class ValidatorSupportKtTest : BeSpecLight() {
     init {
         initTest(KotestUtil.FAST)
 
-        Given("사용자 입력 검증 프로세스") {
+        Given("사용자 입력 검증 프로세스 (전체 3단계)") {
 
             suspend fun validationLogic(req: UserReq) {
                 log.trace { "step01 사용자 입력값에 대한 필드 수준의 bean 벨리데이션" }

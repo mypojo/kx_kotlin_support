@@ -1,5 +1,6 @@
 package net.kotlinx.aws.dynamo.enhanced
 
+import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.core.Kdsl
 
@@ -18,7 +19,10 @@ class DbTable {
     lateinit var tableName: String
 
     /** 객체 변환기 */
-    lateinit var converter: DbConverter
+    lateinit var converter: DbConverter<*>
+
+    /** 제너릭용 함수 */
+    fun <T : DbItem> conv(): DbConverter<T> = converter as DbConverter<T>
 
     //==================================================== 후크 ======================================================
 
@@ -38,6 +42,12 @@ class DbTable {
 
     /** DDB가 있는 리전  */
     var region: String = AwsConfig.REGION_KR
+
+    /** 표준 API용 키 변환 */
+    fun toKeyMap(pk: String, sk: String): Map<String, AttributeValue> = mapOf(
+        pkName to AttributeValue.S(pk),
+        skName to AttributeValue.S(sk),
+    )
 
 
     companion object {

@@ -12,7 +12,7 @@ import net.kotlinx.reflect.name
 /**
  * DDB 간단접근용 헬퍼
  */
-class JobRepository(profile: String? = null) : DbRepository<Job>(profile) {
+class JobRepository : DbRepository<Job>() {
 
     override val dbTable by koinLazy<DbTable>(Job::class.name())
 

@@ -2,6 +2,7 @@ package net.kotlinx.kotest.modules
 
 import com.lectra.koson.obj
 import mu.KotlinLogging
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.javaSdkv2.dynamoLock.DynamoLockManager
 import net.kotlinx.collection.toPair
 import net.kotlinx.json.koson.toGsonData
@@ -37,7 +38,9 @@ object ResourceLockModule : KoinModule {
             single(named(profile)) {
                 ResourceLockManager {
                     lockManager = koin<DynamoLockManager>(profile)
-                    repository = ResourceItemRepository(profile)
+                    repository = ResourceItemRepository().apply {
+                        aws = koin<AwsClient>(profile)
+                    }
                     factory = object : ResourceItemFactory {
                         override suspend fun createResource(req: ResourceLockReq, cnt: Int): List<ResourceItem> {
                             val (logic, adv) = req.resourcePk.split("#").toPair()

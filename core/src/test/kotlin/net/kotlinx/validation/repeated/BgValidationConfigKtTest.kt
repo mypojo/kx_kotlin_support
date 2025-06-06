@@ -1,4 +1,4 @@
-package net.kotlinx.validation.bg
+package net.kotlinx.validation.repeated
 
 import io.kotest.matchers.shouldBe
 import net.kotlinx.kotest.BeSpecLog

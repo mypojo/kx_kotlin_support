@@ -8,7 +8,7 @@ import net.kotlinx.reflect.name
 /**
  * DDB 간단접근용 헬퍼
  */
-class TempDataRepository(profile: String? = null) : DbRepository<TempData>(profile) {
+class TempDataRepository() : DbRepository<TempData>() {
 
     override val dbTable by koinLazy<DbTable>(TempData::class.name())
 

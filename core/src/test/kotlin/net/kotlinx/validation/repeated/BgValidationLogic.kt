@@ -1,4 +1,4 @@
-package net.kotlinx.validation.bg
+package net.kotlinx.validation.repeated
 
 import mu.KotlinLogging
 import net.kotlinx.domain.developer.DeveloperData
@@ -10,12 +10,12 @@ object BgValidationLogic {
     const val GROUP = "logic"
 }
 
-fun BgValidationList.configDemo01() {
+fun RepeatedValidationRepository.configDemo01() {
     regist {
         group = BgValidationLogic.GROUP
         code = "rpt01"
         desc = listOf("합계 검증", "D-4 아테나 & kinesis")
-        range = BgValidationType.DAY
+        range = RepeatedValidationType.DAY
         authors = listOf(DeveloperData(id = "kim"))
         validator = {
             log.debug { "thread 1 : ${Thread.currentThread().name}" }
@@ -29,7 +29,7 @@ fun BgValidationList.configDemo01() {
         group = BgValidationLogic.GROUP
         code = "rpt_system"
         desc = listOf("전체 시스템 모니터링 & 이상감지", "API & RDS 비교")
-        range = BgValidationType.DAY
+        range = RepeatedValidationType.DAY
         authors = listOf(DeveloperData(id = "lee"))
         validator = {
             log.debug { "thread 1 : ${Thread.currentThread().name}" }

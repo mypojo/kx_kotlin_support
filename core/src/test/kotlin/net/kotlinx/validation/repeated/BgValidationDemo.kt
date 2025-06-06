@@ -1,4 +1,4 @@
-package net.kotlinx.validation.bg
+package net.kotlinx.validation.repeated
 
 import mu.KotlinLogging
 import net.kotlinx.concurrent.delay
@@ -11,13 +11,13 @@ object BgValidationDemo {
 
     private val log = KotlinLogging.logger {}
 
-    val VALIDATION_LIST = BgValidationList {
+    val VALIDATION_LIST = RepeatedValidationRepository {
 
         regist {
             group = GROUP
             code = "demo01"
             desc = listOf("샘플 실행 테스트 - 성공")
-            range = BgValidationType.DAY
+            range = RepeatedValidationType.DAY
             authors = listOf(DeveloperData(id = "kim"))
             validator = {
                 200.milliseconds.delay()
@@ -29,7 +29,7 @@ object BgValidationDemo {
             group = GROUP
             code = "demo02"
             desc = listOf("샘플 실행 테스트 - 실패")
-            range = BgValidationType.DAY
+            range = RepeatedValidationType.DAY
             authors = listOf(DeveloperData(id = "kim"))
             validator = {
                 150.milliseconds.delay()

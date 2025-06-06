@@ -10,16 +10,20 @@ import java.time.LocalDateTime
  * ex) 람다 실행시, 반복실행을 막기위한 임시 마커
  * ex) 24시간만 유지되는 장바구니.
  */
-data class TempData(override val pk: String, override val sk: String) : DbItem {
+data class TempData(
+    override val pk: String,
+    override val sk: String,
 
-    /** 등록 시간  */
-    var reqTime: LocalDateTime = LocalDateTime.now()
+    /** 간단한 상태  */
+    var status: String,
 
     /** 본문  */
-    var body: String = ""
+    var body: String,
+
+    /** 등록 시간  */
+    var reqTime: LocalDateTime = LocalDateTime.now(),
 
     /** TTL. */
-    var ttl: Long = DynamoUtil.ttlFromNow(LambdaUtil.DEAFULT_TIMEOUT)
+    var ttl: Long = DynamoUtil.ttlFromNow(LambdaUtil.DEAFULT_TIMEOUT),
 
-
-}
+    ) : DbItem

@@ -1,12 +1,14 @@
 package net.kotlinx.domain.ddb.repeatTask
 
 import io.kotest.matchers.shouldBe
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndex
 import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndexItemRepository
-import net.kotlinx.aws.dynamo.multiIndex.DdbBasicRepository
+import net.kotlinx.aws.dynamo.multiIndex.DbMultiindexItemGenericRepository
 import net.kotlinx.domain.item.repeatTask.RepeatTask
 import net.kotlinx.domain.item.repeatTask.RepeatTaskConverter
 import net.kotlinx.json.gson.GsonData
+import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -17,8 +19,10 @@ import java.util.*
 class RepeatTaskRepositoryTest : BeSpecLight() {
 
     private val repository by lazy {
-        DdbBasicRepository(
-            DbMultiIndexItemRepository(findProfile97),
+        DbMultiindexItemGenericRepository(
+            DbMultiIndexItemRepository().apply {
+                aws = koin<AwsClient>(findProfile97)
+            },
             RepeatTaskConverter(),
         )
     }

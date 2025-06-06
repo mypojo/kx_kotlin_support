@@ -1,62 +1,52 @@
 package net.kotlinx.domain.item.errorLog
 
+import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.aws.dynamo.ddbJoin
 import net.kotlinx.aws.dynamo.ddbSplit
-import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndexEachConverter
-import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndexItem
-import net.kotlinx.json.gson.GsonData
-import net.kotlinx.string.toLocalDateTime
-import net.kotlinx.time.TimeFormat
-
+import net.kotlinx.aws.dynamo.enhanced.DbConverter
+import net.kotlinx.aws.dynamo.enhanced.DbTable
+import net.kotlinx.aws.dynamo.findOrThrow
+import net.kotlinx.aws.dynamo.put
 
 /**
- * GSI를 사용하지 않는다.. DbMultiIndex로 안해도 되었을듯..
- * */
-class ErrorLogConverter : DbMultiIndexEachConverter<DbMultiIndexItem, ErrorLog> {
+ * DDB에 입력되는 메타데이터
+ */
+class ErrorLogConverter(private val table: DbTable) : DbConverter<ErrorLog> {
 
     companion object {
         const val PK_PREFIX: String = "errorLog"
         const val SK_PREFIX: String = "id"
+
+        fun toPk(group: String, div: String): String = arrayOf(PK_PREFIX, group, div).ddbJoin()
+        fun toSk(divId: String?, id: String? = null): String = arrayOf(SK_PREFIX, divId, id).ddbJoin(3)
+
     }
 
-    override val pkPrefix: String = PK_PREFIX
+    override fun toAttribute(item: ErrorLog): Map<String, AttributeValue> {
+        return buildMap {
+            put(table.pkName, item.pk)
+            put(table.skName, item.sk)
+            put(ErrorLog::ttl.name, item.ttl)
+            put(ErrorLog::time.name, item.time)
+            put(ErrorLog::cause.name, item.cause)
+            put(ErrorLog::stackTrace.name, item.stackTrace)
 
-    override val skPrefix: String = SK_PREFIX
-
-    override fun convertTo(ddb: DbMultiIndexItem): ErrorLog = ErrorLog().apply {
-        //==================================================== PK ======================================================
-        val pks = ddb.pk.ddbSplit()
-        check(pks.size == 3)
-        group = pks[1]
-        div = pks[2]
-
-        val sks = ddb.sk.ddbSplit()
-        check(sks.size == 3)
-        divId = sks[1]
-        id = sks[2]
-
-        //==================================================== 기본값 ======================================================
-        ttl = ddb.ttl
-        time = ddb.body.remove(this::time.name)!!.str!!.toLocalDateTime()
-        cause = ddb.body.remove(this::cause.name)!!.str
-        stackTrace = ddb.body.remove(this::stackTrace.name)!!.str
-    }
-
-    override fun convertFrom(item: ErrorLog): DbMultiIndexItem {
-        return DbMultiIndexItem(
-            pk = arrayOf(pkPrefix, item.group, item.div).ddbJoin(),
-            sk = arrayOf(skPrefix, item.divId, item.id).ddbJoin(3),
-        ).apply {
-
-            //==================================================== 기본값 ======================================================
-            ttl = item.ttl
-            body = GsonData.obj().apply {
-                put(ErrorLog::time.name, item.time?.let { TimeFormat.YMDHMS[it] })
-                put(ErrorLog::cause.name, item.cause)
-                put(ErrorLog::stackTrace.name, item.stackTrace)
-            }
         }
+    }
 
+    override fun fromAttributeMap(map: Map<String, AttributeValue>): ErrorLog {
+        val (_, group, div) = map[table.pkName]!!.asS().ddbSplit()
+        val (_, divId, id) = map[table.skName]!!.asS().ddbSplit()
+        return ErrorLog(
+            group = group,
+            div = div,
+            divId = divId,
+            id = id,
+            ttl = map.findOrThrow(ErrorLog::ttl),
+            time = map.findOrThrow(ErrorLog::time),
+            cause = map.findOrThrow(ErrorLog::cause),
+            stackTrace = map.findOrThrow(ErrorLog::stackTrace),
+        )
     }
 
 

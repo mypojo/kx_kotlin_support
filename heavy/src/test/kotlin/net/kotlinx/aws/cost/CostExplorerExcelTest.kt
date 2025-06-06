@@ -6,7 +6,6 @@ import mu.KotlinLogging
 import net.kotlinx.api.ecos.EcosClientUtil
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.aws.iam.IamCredential
-import net.kotlinx.aws.toAwsClient
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.file.slashDir
 import net.kotlinx.guava.fromJsonList
@@ -38,7 +37,7 @@ fun main() {
             val profileNames = IamCredential().profileDatas.map { it.profileName }.filter { it !in setOf("sin", "default") } - listOf("kx")
             log.info { " -> 로드된 프로파일 : $profileNames" }
             val datas = profileNames.flatMap { profileName ->
-                val client = AwsConfig(profileName = profileName).toAwsClient()
+                val client = AwsConfig(profileName = profileName).client
                 val byService = try {
                     client.cost.monthService().onEach { it.projectName = profileName }
                 } catch (e: CostExplorerException) {

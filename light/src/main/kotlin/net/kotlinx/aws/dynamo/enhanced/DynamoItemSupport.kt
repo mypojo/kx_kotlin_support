@@ -16,9 +16,10 @@ suspend fun <T : DbItem> DynamoDbClient.put(item: T) {
     if (!table.persist(item)) return
     this.putItem {
         this.tableName = table.tableName
-        this.item = table.converter.toAttribute(item)
+        this.item = table.conv<T>().toAttribute(item)
     }
 }
+
 
 /** 수정 */
 suspend fun <T : DbItem> DynamoDbClient.update(item: T, updateKeys: Collection<String>) {
@@ -28,20 +29,25 @@ suspend fun <T : DbItem> DynamoDbClient.update(item: T, updateKeys: Collection<S
         this.tableName = table.tableName
         this.key = item.toKeyMap()
         this.updateExpression = "SET ${updateKeys.joinToString(",") { "$it = :${it}" }}"
-        this.expressionAttributeValues = table.converter.toAttribute(item).filterKeys { it in updateKeys }.mapKeys { ":${it.key}" }
+        this.expressionAttributeValues = table.conv<T>().toAttribute(item).filterKeys { it in updateKeys }.mapKeys { ":${it.key}" }
         this.returnValues = ReturnValue.AllNew
     }
 }
 
-/** 조회 */
+/** 조회.. 실제 T가 존재해야 해서 좀 어색함 */
 suspend fun <T : DbItem> DynamoDbClient.get(item: T): T? {
     val table = item.table()
+    return get(table, item.pk, item.sk)
+}
+
+/** 실제 T 없는버전 */
+suspend fun <T : DbItem> DynamoDbClient.get(table: DbTable, pk: String, sk: String): T? {
     val map: Map<String, AttributeValue> = this.getItem {
         this.tableName = table.tableName
         this.consistentRead = false
-        this.key = item.toKeyMap()
+        this.key = table.toKeyMap(pk, sk)
     }.item ?: return null
-    return table.converter.fromAttributeMap(map)
+    return table.conv<T>().fromAttributeMap(map)
 }
 
 

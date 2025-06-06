@@ -14,13 +14,8 @@ interface DbItem {
 
     //==================================================== 기본 메소드들 ======================================================
 
-    /** PK로 사용됨 */
-    fun toKeyMap(): Map<String, AttributeValue> {
-        return mapOf(
-            DbTable.PK_NAME to AttributeValue.S(this.pk),
-            DbTable.SK_NAME to AttributeValue.S(this.sk),
-        )
-    }
+    /** API용 PK구현 map */
+    fun toKeyMap(): Map<String, AttributeValue> = table().toKeyMap(pk, sk)
 
     /** 간단 PK 확인용 ex) 로깅 */
     fun toKeyString(): String = "${pk}:${sk}"
@@ -34,6 +29,7 @@ interface DbItem {
     /**
      * 테이블 정보.
      * 성능에 문제 없겠지?? 있으면 늦은 초기화
+     * 일반적으로 koin은 리플렉션보다 빠르다고 함
      * */
     fun table(): DbTable = koin<DbTable>(this::class.name())
 

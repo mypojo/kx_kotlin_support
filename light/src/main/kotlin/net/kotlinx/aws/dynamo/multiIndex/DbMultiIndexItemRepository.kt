@@ -9,7 +9,7 @@ import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.reflect.name
 
 
-class DbMultiIndexItemRepository(profile: String? = null) : DbRepository<DbMultiIndexItem>(profile) {
+class DbMultiIndexItemRepository : DbRepository<DbMultiIndexItem>() {
 
     override val dbTable by koinLazy<DbTable>(DbMultiIndexItem::class.name())
 

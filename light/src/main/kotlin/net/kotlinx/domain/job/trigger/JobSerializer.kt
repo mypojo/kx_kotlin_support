@@ -19,12 +19,12 @@ import java.time.LocalDateTime
 /**
  * 원격으로 잡을 실행하기 위한 잡 설정(json) <-> job 객체 변환
  */
-class JobSerializer(val profile: String? = null) {
+class JobSerializer() {
 
     private val log = KotlinLogging.logger {}
 
     private val idGenerator by koinLazy<IdGenerator>()
-    private val jobRepository by koinLazy<JobRepository>(profile)
+    private val jobRepository by koinLazy<JobRepository>()
 
     /**
      * 필요시 오버라이드
@@ -49,7 +49,7 @@ class JobSerializer(val profile: String? = null) {
             jobStatus = input.enum<JobStatus>(Job::jobStatus.name) ?: JobStatus.STARTING
 
             //옵션에 있으면 오버라이드 하는값 (아래  toJson() 하고 1:1 매핑)
-            input[Job::jobOption.name].str?.let { jobOption = it.toGsonData()}
+            input[Job::jobOption.name].str?.let { jobOption = it.toGsonData() }
             input[Job::memberId.name].str?.let { memberId = it }
 
             //특수한 경우 예외 처리해줌

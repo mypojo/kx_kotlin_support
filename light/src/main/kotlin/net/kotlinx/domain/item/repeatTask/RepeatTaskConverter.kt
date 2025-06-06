@@ -6,7 +6,7 @@ import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndexEachConverter
 import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndexItem
 import net.kotlinx.json.gson.GsonData
 
-
+@Deprecated("AWS 스케쥴러로 대체")
 class RepeatTaskConverter : DbMultiIndexEachConverter<DbMultiIndexItem, RepeatTask> {
 
     override val pkPrefix: String = "repeat"

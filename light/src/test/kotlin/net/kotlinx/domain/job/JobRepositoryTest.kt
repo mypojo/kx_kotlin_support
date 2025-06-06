@@ -2,9 +2,10 @@ package net.kotlinx.domain.job
 
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
+import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.dynamo.DynamoUtil
 import net.kotlinx.domain.job.define.JobDefinition
-import net.kotlinx.koin.Koins.koinLazy
+import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -14,7 +15,11 @@ import kotlin.time.Duration.Companion.hours
 
 class JobRepositoryTest : BeSpecLight() {
 
-    private val jobRepository by koinLazy<JobRepository>(findProfile97)
+    private val jobRepository by lazy {
+        JobRepository().apply {
+            aws = koin<AwsClient>(findProfile97)
+        }
+    }
 
     class NplKwdReg01Job : JobTasklet {
         override suspend fun execute(job: Job) {}

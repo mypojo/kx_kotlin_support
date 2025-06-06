@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="@ 비용" type="JetRunConfigurationType">
+    <option name="MAIN_CLASS_NAME" value="net.kotlinx.aws.cost.CostExplorerExcelTestKt" />
+    <module name="kx_kotlin_support.heavy.test" />
+    <shortenClasspath name="ARGS_FILE" />
+    <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
+      <option name="credential" />
+      <option name="region" />
+      <option name="useCurrentConnection" value="false" />
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -2,17 +2,16 @@ package net.kotlinx.lock
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.aws.dynamo.enhanced.DbConverter
-import net.kotlinx.aws.dynamo.enhanced.DbItem
 import net.kotlinx.aws.dynamo.enhanced.DbTable
 import net.kotlinx.aws.dynamo.findOrThrow
 
 /**
  * DDB에 입력되는 메타데이터
+ * 주의!! 향후 신규 작업시 ErrorLogConverter 참고해서 코드 리팩토링 하기!
  */
-class ResourceItemConverter(private val table: DbTable) : DbConverter {
+class ResourceItemConverter(private val table: DbTable) : DbConverter<ResourceItem> {
 
-    override fun <T : DbItem> toAttribute(data: T): Map<String, AttributeValue> {
-        val item = data as ResourceItem
+    override fun toAttribute(item: ResourceItem): Map<String, AttributeValue> {
         return buildMap {
             put(table.pkName, AttributeValue.S(item.pk))
             put(table.skName, AttributeValue.S(item.sk))
@@ -25,7 +24,7 @@ class ResourceItemConverter(private val table: DbTable) : DbConverter {
         }
     }
 
-    override fun <T : DbItem> fromAttributeMap(map: Map<String, AttributeValue>): T {
+    override fun fromAttributeMap(map: Map<String, AttributeValue>): ResourceItem {
         return ResourceItem(
             map[table.pkName]!!.asS(), map[table.skName]!!.asS()
         ).apply {
@@ -34,7 +33,7 @@ class ResourceItemConverter(private val table: DbTable) : DbConverter {
             body = map.findOrThrow(ResourceItem::body)
             div = map.findOrThrow(ResourceItem::div)
             cause = map.findOrThrow(ResourceItem::cause)
-        } as T
+        }
     }
 
 

@@ -15,13 +15,13 @@ import java.time.LocalDateTime
  * 실제 실행서버의 로컬 머신 기준으로 job을 실행한다.
  * 여기에서는 개발 환경을 구분하지 않는다.
  */
-class JobLocalExecutor(val profile: String? = null) {
+class JobLocalExecutor() {
 
     private val log = KotlinLogging.logger {}
 
     private val eventBus: EventBus by koinLazy()
-    private val jobRepository by koinLazy<JobRepository>(profile)
-    private val instanceMetadata by koinLazy<AwsInstanceMetadata>(profile)
+    private val jobRepository by koinLazy<JobRepository>()
+    private val instanceMetadata by koinLazy<AwsInstanceMetadata>()
 
     /**
      * @return pk 확인용 키 문자욜

@@ -2,7 +2,6 @@ package net.kotlinx.domain.job
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import net.kotlinx.aws.dynamo.enhanced.DbConverter
-import net.kotlinx.aws.dynamo.enhanced.DbItem
 import net.kotlinx.aws.dynamo.enhanced.DbTable
 import net.kotlinx.aws.dynamo.find
 import net.kotlinx.aws.dynamo.findJson
@@ -13,11 +12,12 @@ import net.kotlinx.time.toIso
 /**
  * DDB에 입력되는 메타데이터
  * https://www.notion.so/mypojo/Job-Module-serverless-docker-57e773b5f0494fb59dcbff5d9a8eb8f5
+ *
+ * 주의!! 향후 신규 작업시 ErrorLogConverter 참고해서 코드 리팩토링 하기!
  */
-class JobConverter(private val table: DbTable) : DbConverter {
+class JobConverter(private val table: DbTable) : DbConverter<Job> {
 
-    override fun <T : DbItem> toAttribute(data: T): Map<String, AttributeValue> {
-        val item = data as Job
+    override fun toAttribute(item: Job): Map<String, AttributeValue> {
         return buildMap {
             put(table.pkName, AttributeValue.S(item.pk))
             put(table.skName, AttributeValue.S(item.sk))
@@ -31,6 +31,7 @@ class JobConverter(private val table: DbTable) : DbConverter {
             put(Job::jobExeFrom.name, AttributeValue.S(item.jobExeFrom.name))
             put(Job::jobContext.name, AttributeValue.S(item.jobContext.toString()))
             put(Job::jobOption.name, AttributeValue.S(item.jobOption.toString()))
+
             //==================================================== 공통 시스템 자동(필수) 입력값 ======================================================
             item.startTime?.let { put(Job::startTime.name, AttributeValue.S(it.toIso())) }
             item.updateTime?.let { put(Job::updateTime.name, AttributeValue.S(it.toIso())) }
@@ -45,8 +46,7 @@ class JobConverter(private val table: DbTable) : DbConverter {
         }
     }
 
-
-    override fun <T : DbItem> fromAttributeMap(map: Map<String, AttributeValue>): T {
+    override fun fromAttributeMap(map: Map<String, AttributeValue>): Job {
         return Job(
             map[table.pkName]!!.asS(), map[table.skName]!!.asS()
         ) {
@@ -69,7 +69,7 @@ class JobConverter(private val table: DbTable) : DbConverter {
             sfnId = map.find(Job::sfnId)
             lastSfnId = map.find(Job::lastSfnId)
             jobEnv = map.find(Job::jobEnv)
-        } as T
+        }
     }
 
 
