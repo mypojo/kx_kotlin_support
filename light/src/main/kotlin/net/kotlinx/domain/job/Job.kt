@@ -56,8 +56,12 @@ class Job(override val pk: String, override val sk: String) : DbItem {
     /** 작업 환경 확인용 이름  ex) vcpu2,4G..  */
     var jobEnv: String? = null
 
-    /** JOB context (json형식). 중단 인덱스, 블락수 등의 컨텍스트 입력 . 강제 업데이트 함으로 null 아님  */
-    var jobContext: GsonData = GsonData.empty()
+    /**
+     * JOB context (json형식). 중단 인덱스,
+     * 블락수 등의 컨텍스트 입력 .
+     * 강제 업데이트 함으로 null 아님
+     * */
+    var jobContext: GsonData = GsonData.obj()
 
     //==================================================== 시스템 자동 입력값 ======================================================
     /** 사용자가 자신이 요청한 job를 찾는용도. (인덱싱) -> {memberId}#{요청시간 밀리초}  */

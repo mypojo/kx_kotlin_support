@@ -42,7 +42,7 @@ class DoorayMsgClient {
      * 직접 전송. 라인분리 안됨!!!
      * 대량전송이 안되기때문에 fetch 사용함
      *  */
-    fun sendDirect(message: String) {
+    fun sendDirect(message: String, roomUri: String = this.roomUri) {
 
         val resp = client.fetch {
             url = roomUri

@@ -5,6 +5,7 @@ import net.kotlinx.awscdk.CdkInterface
 import net.kotlinx.awscdk.basic.TagUtil
 import net.kotlinx.awscdk.channel.EventSets
 import net.kotlinx.core.Kdsl
+import software.amazon.awscdk.SecretValue
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.codebuild.BuildEnvironmentVariable
 import software.amazon.awscdk.services.codebuild.BuildEnvironmentVariableType
@@ -45,9 +46,6 @@ class CdkCodePipeline : CdkInterface {
     /** 코드빌드 */
     lateinit var codeBuild: Project
 
-    /** 코드커밋 저장소 */
-    lateinit var codeRepository: IRepository
-
     /** 내부에서 테스트 등을 수행할 수 있음으로 프로그램 가동용 역할 넣으면됨 */
     lateinit var role: IRole
 
@@ -66,10 +64,70 @@ class CdkCodePipeline : CdkInterface {
      *  */
     var events: List<String> = listOf(EventSets.CodekPipeline.FAILED)
 
+    /** 실행할 액션 */
+    var actions: List<IAction> = emptyList()
+
+    /** 코드커밋으로 액션 설정 */
+    fun byCodecommit(codeRepository: IRepository) {
+        actions = listOf(
+            CodeCommitSourceAction(
+                CodeCommitSourceActionProps.builder()
+                    .actionName("Load-Codecommit")
+                    .role(role)
+                    .repository(codeRepository)
+                    .branch(branchName) //트리거 시킬 브랜치
+                    .trigger(CodeCommitTrigger.EVENTS)
+                    .output(srcArtifact)
+                    .variablesNamespace(VARIABLES_NAMESPACE) //이 변수에 커밋ID 등을 담아줌
+                    .build()
+            )
+        )
+    }
+
+    /**
+     * 깃헙으로 액션 설정
+     * 토큰방식은 추천하지 않음
+     * */
+    fun byGithubToken(owner: String, repo: String, secret: SecretValue) {
+        actions = listOf(
+            GitHubSourceAction(
+                GitHubSourceActionProps.builder()
+                    .actionName("Load-GitHub")
+                    .owner(owner)
+                    .repo(repo)
+                    .branch(branchName)
+                    .oauthToken(secret)
+                    .output(srcArtifact)
+                    .trigger(GitHubTrigger.WEBHOOK)
+                    .variablesNamespace(VARIABLES_NAMESPACE)
+                    .build()
+            )
+        )
+    }
+
+    /**
+     * 깃헙으로 연동
+     * 미리 커넥션 만들어 놔야함
+     * https://ap-northeast-2.console.aws.amazon.com/codesuite/settings/connections?region=ap-northeast-2
+     * */
+    fun byGithub(owner: String, repo: String, connectionArn: String) {
+        actions = listOf(
+            CodeStarConnectionsSourceAction.Builder.create()
+                .actionName("Load-GitHub")
+                .owner(owner)
+                .repo(repo)
+                .branch(branchName)
+                .connectionArn(connectionArn)
+                .output(srcArtifact)
+                .triggerOnPush(true)
+                .variablesNamespace(VARIABLES_NAMESPACE)
+                .build()
+        )
+    }
+
+    private val srcArtifact = Artifact.artifact("src-art-${logicalName}")
 
     fun create(stack: Stack, block: PipelineProps.Builder.() -> Unit = {}): CdkCodePipeline {
-
-        val srcArtifact = Artifact.artifact("src-art-${logicalName}")
         pipeline = Pipeline(
             stack, logicalName, PipelineProps.builder()
                 .role(role)
@@ -79,21 +137,7 @@ class CdkCodePipeline : CdkInterface {
                 //.artifactBucket()  ECR에서 가져옴으로 artifactBucket은 필요없음
                 .stages(
                     listOf(
-                        StageProps.builder().stageName("load-source").actions(
-                            listOf(
-                                CodeCommitSourceAction(
-                                    CodeCommitSourceActionProps.builder()
-                                        .actionName("Load-Codecommit")
-                                        .role(role)
-                                        .repository(codeRepository)
-                                        .branch(branchName) //트리거 시킬 브랜치
-                                        .trigger(CodeCommitTrigger.EVENTS)
-                                        .output(srcArtifact)
-                                        .variablesNamespace(VARIABLES_NAMESPACE) //이 변수에 커밋ID 등을 담아줌
-                                        .build()
-                                )
-                            )
-                        ).build(),
+                        StageProps.builder().stageName("load-source").actions(actions).build(),
                         StageProps.builder().stageName("build").actions(
                             listOf(
                                 CodeBuildAction(
@@ -104,7 +148,8 @@ class CdkCodePipeline : CdkInterface {
                                         .type(CodeBuildActionType.BUILD)
                                         .environmentVariables(
                                             mapOf(
-                                                AwsNaming.COMMIT_ID to BuildEnvironmentVariable.builder().type(BuildEnvironmentVariableType.PLAINTEXT)
+                                                AwsNaming.COMMIT_ID to BuildEnvironmentVariable.builder()
+                                                    .type(BuildEnvironmentVariableType.PLAINTEXT)
                                                     .value("#{$VARIABLES_NAMESPACE.CommitId}").build()
                                             )
                                         )
@@ -137,7 +182,9 @@ class CdkCodePipeline : CdkInterface {
 
     companion object {
 
-        /** 코드커밋 변수 네임스페이스 */
+        /**
+         * 변수 네임스페이스 접두어
+         *  */
         const val VARIABLES_NAMESPACE: String = "SourceVariables"
 
     }

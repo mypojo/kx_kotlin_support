@@ -5,10 +5,7 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceType
 import net.kotlinx.aws.AwsInstanceTypeUtil
-import net.kotlinx.aws.batch.BatchUtil
-import net.kotlinx.aws.batch.batch
-import net.kotlinx.aws.batch.submitJob
-import net.kotlinx.aws.batch.submitJobAndWaitStarting
+import net.kotlinx.aws.batch.*
 import net.kotlinx.aws.lambda.invokeAsynch
 import net.kotlinx.aws.lambda.invokeSynch
 import net.kotlinx.aws.lambda.lambda
@@ -162,6 +159,8 @@ class JobTriggerBatch(
     val jobDefinitionName: String,
     /** 잡 큐 이름 (온디벤드/스팟 등의 설정)  */
     val jobQueueName: String,
+    /** 배치 오버라이드  */
+    val batchOverride: BatchOverride?,
 ) : JobTriggerMethod {
 
     private val log = KotlinLogging.logger {}
@@ -185,11 +184,11 @@ class JobTriggerBatch(
 
         val findJob = Job(op.jobPk, op.jobSk!!)
         if (op.synch) {
-            val jobDetail = aws.batch.submitJobAndWaitStarting(jobQueueName, jobDefinitionName, jobParam)
+            val jobDetail = aws.batch.submitJobAndWaitStarting(jobQueueName, jobDefinitionName, jobParam, batchOverride)
             log.debug { "잡 UI 링크 -> ${BatchUtil.toBatchUiLink(jobDetail.jobId!!)}" }
             log.debug { "잡 DDB 링크 -> ${findJob.dynamoItemLink}" }
         } else {
-            val jobId = aws.batch.submitJob(jobQueueName, jobDefinitionName, jobParam)
+            val jobId = aws.batch.submitJob(jobQueueName, jobDefinitionName, jobParam, batchOverride)
             log.debug { "잡 UI 링크 -> ${BatchUtil.toBatchUiLink(jobId)}" }
             log.debug { "잡 DDB 링크 -> ${findJob.dynamoItemLink}" }
         }

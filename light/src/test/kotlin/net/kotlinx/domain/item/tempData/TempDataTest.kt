@@ -21,7 +21,8 @@ class TempDataTest : BeSpecLight() {
         Given("TempData") {
 
             val tempData = TempData(
-                "xxJob", "59110001",
+                pk = "xxJob", sk = "59110001",
+                status = "non",
                 body = obj {
                     "kwd" to "청바지"
                 }.toString(),

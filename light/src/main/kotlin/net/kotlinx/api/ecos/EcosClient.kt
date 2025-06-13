@@ -24,20 +24,22 @@ class EcosClient(private val secret: String, private val client: OkHttpClient = 
     /**
      * 실시간 달러 원 환율 리턴
      * 원래 API는 기간을 입력해 벌크로 리턴받음.
-     * 오늘이나 휴일을 입력하면 데이터가 없다고 나올 수 잇음 -> 안전하게 7일전으로 구함
+     * 오늘이나 휴일을 입력하면 데이터가 없다고 나올 수 잇음 -> 안전하게 x일간 비교
+     * https://ecos.bok.or.kr/api/#/DevGuide/DevSpeciflcation/OA-1010
      *  */
-    suspend fun dollarWon(date: String = LocalDate.now().minusDays(7).toYmd()): BigDecimal {
+    suspend fun dollarWon(start: String = LocalDate.now().minusDays(11).toYmd(), end: String = LocalDate.now().minusDays(1).toYmd()): BigDecimal {
         val resp = client.await {
-            url("$HOST/$secret/json/kr/1/1/731Y001/D/$date/$date/0000001")
+            url("$HOST/$secret/json/kr/1/10/731Y001/D/$start/$end/0000001")
         }
         val result = GsonData.parse(resp.respText)
         check(!result.empty) { "${resp.response.code} ${resp.respText}" }
 
         try {
-            val item = result["StatisticSearch"]["row"][0]
+            val rows = result["StatisticSearch"]["row"]
+            val item = rows[rows.size - 1] //가장 최근 데이터를 구한다
             return item["DATA_VALUE"].str!!.toBigDecimal2()
         } catch (e: Exception) {
-            log.error { "[$date] 데이터 이상!! 날짜를 변경해보세요  \n${result.toPreety()}" }
+            log.error { "[$start~$end] 데이터 이상!! 날짜를 변경해보세요  \n${result.toPreety()}" }
             throw e
         }
     }

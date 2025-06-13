@@ -4,12 +4,10 @@ import com.google.common.eventbus.Subscribe
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.aws.dynamo.DynamoUtil
-import net.kotlinx.aws.dynamo.multiIndex.DbMultiindexItemGenericRepository
 import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.S3LogicFailEvent
 import net.kotlinx.core.Kdsl
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.koin.Koins.koinLazy
-import net.kotlinx.reflect.name
 import net.kotlinx.time.truncatedMills
 import java.time.LocalDateTime
 import java.util.*
@@ -24,7 +22,7 @@ class S3LogicFailEventDefaultListener {
 
     private val log = KotlinLogging.logger {}
 
-    private val repository by koinLazy<DbMultiindexItemGenericRepository<ErrorLog>>(ErrorLog::class.name())
+    private val errorLogRepository by koinLazy<ErrorLogRepository>()
 
     @Kdsl
     constructor(block: S3LogicFailEventDefaultListener.() -> Unit = {}) {
@@ -58,7 +56,7 @@ class S3LogicFailEventDefaultListener {
             cause = event.e.toSimpleString(),
             stackTrace = event.e.stackTraceToString(),
         )
-        runBlocking { repository.putItem(errorLog) }
+        runBlocking { errorLogRepository.putItem(errorLog) }
 
     }
 

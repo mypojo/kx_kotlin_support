@@ -43,23 +43,39 @@ class CdkFirehoseToIceberg : CdkInterface {
     /**
      * 라우터 정보 매핑 설정
      * 순서대로 DB, 테이블, 오퍼레이터
-     *  */
-    var routerQuery: Triple<String, String, String> = Triple(".route.db", ".route.table", ".route.op")
+     */
+    data class RouterQuery(
+        val db: String = ".route.db", 
+        val table: String = ".route.table", 
+        val op: String = ".route.op"
+    )
+
+    var routerQuery: RouterQuery = RouterQuery()
+
 
     /**
      * 라우터를 쿼리로.  주의!! json처럼 생겼지만 아님!
      * ex) {basic_date:.basic_date,name:.name}
      * */
     private val routerQueryText: String
-        get() = "{destinationDatabaseName:${routerQuery.first},destinationTableName:${routerQuery.second},operation:${routerQuery.third}}"
+        get() = "{destinationDatabaseName:${routerQuery.db},destinationTableName:${routerQuery.table},operation:${routerQuery.op}}"
+
+    /** 테이블 구성 정보 */
+    data class TableConfig(
+        /** 데이터베이스 이름 */
+        val databaseName: String,
+        /** 테이블 이름 */
+        val tableName: String,
+        /** 유니크 키 목록 */
+        val uniqueKeys: List<String>
+    )
 
     /**
      * 이 스트림에서 사용할 모든 테이블 나열
-     * 순서대로 DB,테이블, 유니크키
      * 주의!!! 이거는 한번 설정하면 변경 못함.
      * 수정시 삭제 후 재생성 해야함
-     *  */
-    lateinit var tableConfigs: List<Triple<String, String, List<String>>>
+     */
+    lateinit var tableConfigs: List<TableConfig>
 
     /**
      * 실서버는 10분에 한번 로깅.
@@ -91,9 +107,9 @@ class CdkFirehoseToIceberg : CdkInterface {
                         /** 여기서 등록될 수 있는 모든 테이블 명시 */
                         .destinationTableConfigurationList(tableConfigs.map {
                             DestinationTableConfigurationProperty.builder()
-                                .destinationDatabaseName(it.first)
-                                .destinationTableName(it.second)
-                                .uniqueKeys(it.third)
+                                .destinationDatabaseName(it.databaseName)
+                                .destinationTableName(it.tableName)
+                                .uniqueKeys(it.uniqueKeys)
                                 .s3ErrorOutputPrefix("error")
                                 .build()
                         })

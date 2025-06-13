@@ -78,7 +78,7 @@ class CdkEventBus : CdkInterface {
      *
      * 주의!! Role을 안넣어도 됨. 이경우 기본 Role이 자동으로 생성되서 입력됨
      * */
-    fun substribe(stack: Stack, name: String, block: RuleProps.Builder.() -> Unit) {
+    fun subscribe(stack: Stack, name: String, block: RuleProps.Builder.() -> Unit) {
         val ruleName = "${name}-${suff}"
         val eventDisRule = Rule(
             stack, ruleName,
@@ -111,6 +111,25 @@ class CdkEventBus : CdkInterface {
             .retentionDays(retentionDays) // 보존 기간 설정 (30일)
             .build()
         TagUtil.tagDefault(archive)
+    }
+
+    companion object {
+
+        /**
+         * 디폴트 이벤트버스를 구독할때 사용함 (이벤트버스를 따로 지정하지 않음)
+         * */
+        fun subscribe(stack: Stack, ruleName: String, block: RuleProps.Builder.() -> Unit) {
+            val eventDisRule = Rule(
+                stack, ruleName,
+                RuleProps.builder()
+                    .enabled(true)
+                    .ruleName(ruleName)
+                    .apply(block)
+                    .build(),
+            )
+            TagUtil.tagDefault(eventDisRule)
+        }
+
     }
 
     //커스텀 정책이 피요할때 (외부 이벤트 주입 등.)

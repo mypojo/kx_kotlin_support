@@ -145,7 +145,7 @@ class CdkEcsWeb : CdkInterface {
             stack, taskDefName, TaskDefinitionProps.builder()
                 .family(taskDefName)
                 .compatibility(Compatibility.FARGATE)
-                .cpu((1024 * config.vcpuNum).toString())
+                .cpu((config.vcpuNum).toString())
                 .memoryMiB((1024 * config.memoryGb).toString())
                 .runtimePlatform(
                     RuntimePlatform.builder()

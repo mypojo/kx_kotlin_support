@@ -56,7 +56,12 @@ class CdkRdsAuroraServerlessV2 : CdkInterface {
      * athena 등을 활용할 수 있어서 트랜잭션만 필요한경우 = mysql
      * 트랜잭션 & 리포트 등 select 쿼리 최적화가 필요한경우 = postgresql
      * */
-    val clusterEngine = DatabaseClusterEngine.auroraMysql(AuroraMysqlClusterEngineProps.builder().version(AuroraMysqlEngineVersion.VER_3_07_1).build())
+    var clusterEngine = MYSQL
+
+    companion object {
+        val MYSQL = DatabaseClusterEngine.auroraMysql(AuroraMysqlClusterEngineProps.builder().version(AuroraMysqlEngineVersion.VER_3_07_1).build())
+        val POSTGRESQL = DatabaseClusterEngine.auroraPostgres(AuroraPostgresClusterEngineProps.builder().version(AuroraPostgresEngineVersion.VER_17_4).build())
+    }
 
     fun create(stack: Stack, block: DatabaseClusterProps.Builder.() -> Unit = {}) {
 

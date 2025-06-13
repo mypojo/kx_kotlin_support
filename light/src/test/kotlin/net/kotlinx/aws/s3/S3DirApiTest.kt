@@ -1,10 +1,11 @@
 package net.kotlinx.aws.s3
 
-import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.toList
 import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.lazyAwsClient
+import net.kotlinx.csv.CsvUtil
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -16,13 +17,23 @@ class S3DirApiTest : BeSpecLight() {
     init {
         initTest(KotestUtil.PROJECT)
 
+        Given("test") {
+
+            Then("그리드 리스팅") {
+                val asd by lazyAwsClient()
+                val files = dirApi.list()
+                files.printSimples()
+            }
+
+        }
+
         Given("S3Data") {
 
             val dirApi = S3DirApi {
-                client = koin<AwsClient>(profile)
-                bucket = "adpriv-work-dev"
-                dirPath = "upload/jobInputFile/"
-                csvReader = csvReader()
+                client = koin<AwsClient>()
+                bucket = "demo.kotlinx.net"
+                dirPath = "S3DirApi/"
+                csvReader = CsvUtil.ms949Reader()
             }
 
             Then("그리드 리스팅") {
@@ -31,7 +42,7 @@ class S3DirApiTest : BeSpecLight() {
             }
 
             Then("파일 다운로드") {
-                val link = dirApi.downloadLink("upload/jobInputFile/hpBestAIReviewJobTest.csv")
+                val link = dirApi.downloadLink("S3DirApi/kwd_N001.csv")
                 log.info { "링크: $link" }
             }
 

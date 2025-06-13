@@ -68,7 +68,7 @@ class CdkDynamoDb : CdkInterface {
                 .partitionKey(pk)
                 .sortKey(sk)
                 .timeToLiveAttribute(ttl)
-                .pointInTimeRecovery(pointInTimeRecovery)
+                .pointInTimeRecoverySpecification(PointInTimeRecoverySpecification.builder().pointInTimeRecoveryEnabled(pointInTimeRecovery).build())
                 .deletionProtection(deletionProtection)
                 .apply(block)
                 .build()

@@ -23,7 +23,7 @@ class LazyLoadFilePropertyTest : BeSpecHeavy() {
 
             When("간단한 설정으로 외부 리소스를 로컬 File로 가져온다") {
 
-                Then("S3 파일 늦은로드 (프로파일 입력버전)") {
+                xThen("S3 파일 늦은로드 (프로파일 입력버전) - 프로파일 수정필요") {
 
                     val profileName by lazy { findProfile28 }
                     val localFile = workspace.slash("s3.json")

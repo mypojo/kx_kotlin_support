@@ -43,13 +43,13 @@ dependencies {
     //==================================================== 벨리데이션 ======================================================
     implementation("org.hibernate.validator:hibernate-validator") //버전표기 X. 약 1mb
 
-    //==================================================== JWT 관련 ======================================================
+    //==================================================== JWT 관련 (runtimeOnly로 선언된 의존성도 런타임에는 자동으로 전파됨) ======================================================
     api("io.jsonwebtoken:jjwt-api:_")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:_")
     runtimeOnly("io.jsonwebtoken:jjwt-gson:_")  // jackson -> gson 으로 변경
 
     //==================================================== 배치 관련 ======================================================
-    implementation("com.opencsv:opencsv:_")//의존성 문제 보고됨
+    implementation("com.opencsv:opencsv:_")//java 버전의 CSV 유틸. 하위호환성을 위해서 일단 남겨놨다. kotlin용을 대신해서 쓸것!
 
     implementation("jakarta.batch:jakarta.batch-api:2.1.1") //??
 

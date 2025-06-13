@@ -69,8 +69,10 @@ dependencies {
     //==================================================== RDB 도구 ======================================================
     //implementation("io.zeko:zeko-sql-builder:1.4.0") //스키마 정의 없는 SQL 빌더 (비정형 쿼리용 or 간단 람다 API 쿼리)
     api("com.vladsch.kotlin-jdbc:kotlin-jdbc:_") //깃에서 주워옴. JDBC 간단래퍼
-    implementation("com.linecorp.kotlin-jdsl:jpql-dsl:_")  //라인에서 만든 코틀린 JPQL
-    implementation("com.linecorp.kotlin-jdsl:jpql-render:_")  //JPQL 쿼리를 문자열로 렌더링
+
+    api("com.linecorp.kotlin-jdsl:jpql-dsl:_")  //라인에서 만든 코틀린 JPQL
+    api("com.linecorp.kotlin-jdsl:jpql-render:_")  //JPQL 쿼리를 문자열로 렌더링
+    api("com.linecorp.kotlin-jdsl:spring-data-jpa-support:_")
 
 
     //==================================================== 기타 ======================================================

@@ -29,9 +29,6 @@ class CdkCodeBuild : CdkInterface {
     override val logicalName: String
         get() = "${projectName}-${branchName}-${suff}"
 
-    /** 코드커밋 저장소 */
-    lateinit var codeRepository: IRepository
-
     /** 브랜치 명 */
     var branchName: String = deploymentType.name.lowercase()
 
@@ -116,6 +113,25 @@ class CdkCodeBuild : CdkInterface {
         "/opt/gradle/**/*",
     )
 
+    /** 소스코드 */
+    lateinit var source: ISource
+
+    /** 코드커밋 사용 */
+    fun byCodeCommit(codeRepository: IRepository) {
+        source = Source.codeCommit(CodeCommitSourceProps.builder().repository(codeRepository).branchOrRef(branchName).build())
+    }
+
+    /** 깃헙 사용 (토큰방식, 커넥트방식 둘다 지원) */
+    fun byGithub(owner: String, repo: String) {
+        source = Source.gitHub(
+            GitHubSourceProps.builder()
+                .branchOrRef(branchName)
+                .owner(owner)
+                .repo(repo)
+                .build()
+        )
+    }
+
     /** 결과 */
     lateinit var codeBuild: Project
 
@@ -128,7 +144,7 @@ class CdkCodeBuild : CdkInterface {
                 .vpc(vpc)
                 .subnetSelection(SubnetSelection.builder().subnetType(SubnetType.PRIVATE_WITH_EGRESS).build())
                 .securityGroups(securityGroups)
-                .source(Source.codeCommit(CodeCommitSourceProps.builder().repository(codeRepository).branchOrRef(branchName).build()))
+                .source(source)
                 .description("push -> build -> deploy")
                 .concurrentBuildLimit(concurrentBuildLimit)
                 .environment(

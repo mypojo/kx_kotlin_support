@@ -184,6 +184,11 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
         else -> false
     }
 
+    val isNull: Boolean = when (delegate) {
+        is JsonNull -> true
+        else -> false
+    }
+
     /**
      * 간단버전
      * fromJsonList 의 경우 TypeTokenUtil 참고
@@ -218,7 +223,10 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
         /** array 생성. koson 사용해도 무방 */
         fun array(block: GsonData.() -> Unit = {}): GsonData = GsonData(JsonArray()).apply(block)
 
-        /** 빈값 리턴 */
+        /** 
+         * 빈값 리턴
+         * 실제 객체 생성해도 비용 크지 않으니 객체 초기화 시에는 사용하지 마세요
+         *  */
         fun empty(): GsonData = GsonData(JsonNull.INSTANCE)
 
         /** json을 파싱할때 */

@@ -52,7 +52,8 @@ class CdkSchedulerGroup : CdkInterface {
     var retryCnt: Int = 0
 
     fun create(): CdkSchedulerGroup {
-        scheduleGroup = CfnScheduleGroup(stack, logicalName, CfnScheduleGroupProps.builder().name(logicalName).build())
+
+        scheduleGroup = CfnScheduleGroup(stack, "scheduler_group-${logicalName}", CfnScheduleGroupProps.builder().name(logicalName).build())
         TagUtil.tagDefault(scheduleGroup)
         return this
     }
