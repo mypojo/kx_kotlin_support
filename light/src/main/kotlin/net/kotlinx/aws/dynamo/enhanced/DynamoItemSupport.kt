@@ -2,6 +2,7 @@ package net.kotlinx.aws.dynamo.enhanced
 
 import aws.sdk.kotlin.services.dynamodb.*
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
+import aws.sdk.kotlin.services.dynamodb.model.DeleteItemResponse
 import aws.sdk.kotlin.services.dynamodb.model.KeysAndAttributes
 import aws.sdk.kotlin.services.dynamodb.model.ReturnValue
 import net.kotlinx.aws.dynamo.enhancedExp.DbExpression
@@ -52,14 +53,24 @@ suspend fun <T : DbItem> DynamoDbClient.get(table: DbTable, pk: String, sk: Stri
 
 
 /** 삭제 */
-suspend fun <T : DbItem> DynamoDbClient.delete(item: T, returnValue: ReturnValue = ReturnValue.None) {
+suspend fun <T : DbItem> DynamoDbClient.delete(item: T, returnValue: ReturnValue = ReturnValue.None): DeleteItemResponse {
     val table = item.table()
-    this.deleteItem {
+    return this.deleteItem {
         this.tableName = table.tableName
         this.key = item.toKeyMap()
         this.returnValues = returnValue
     }
 }
+
+/** 실제 T 없는버전 삭제 */
+suspend fun DynamoDbClient.delete(table: DbTable, pk: String, sk: String, returnValue: ReturnValue = ReturnValue.None): DeleteItemResponse {
+    return this.deleteItem {
+        this.tableName = table.tableName
+        this.key = table.toKeyMap(pk, sk)
+        this.returnValues = returnValue
+    }
+}
+
 
 //==================================================== 커스텀 ======================================================
 
@@ -101,4 +112,3 @@ suspend fun DynamoDbClient.getBatch(table: DbTable, params: List<Map<String, Att
     val groupBySk = results.associateBy { it[table.skName]!! }
     return orders.map { sk -> groupBySk[sk]!! }
 }
-

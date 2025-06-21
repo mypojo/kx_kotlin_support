@@ -1,16 +1,20 @@
-package net.kotlinx.aws.rds
+package net.kotlinx.aws.rdsdata
 
 import aws.sdk.kotlin.services.rdsdata.executeStatement
 import aws.sdk.kotlin.services.rdsdata.model.ExecuteStatementResponse
 import aws.sdk.kotlin.services.rdsdata.model.Field
 import aws.sdk.kotlin.services.rdsdata.model.SqlParameter
 import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.LazyAwsClientProperty
 import net.kotlinx.core.Kdsl
 
 /**
  *
  * 아래 깃 참고
  * https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/kotlin/usecases/serverless_rds
+ *
+ * RDS Data API 가 반드시 ON 으로 되어있어야 한다.
+ * 2024/06 기준 T 인스턴스에는 지원이 안됨 (서버리스는 지원됨)
  * */
 class AwsDbClient {
 
@@ -19,7 +23,8 @@ class AwsDbClient {
         apply(block)
     }
 
-    lateinit var aws: AwsClient
+    var aws: AwsClient by LazyAwsClientProperty()
+
 
     /**
      * DB 리소스 명

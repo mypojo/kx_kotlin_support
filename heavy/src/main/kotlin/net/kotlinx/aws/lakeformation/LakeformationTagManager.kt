@@ -5,6 +5,7 @@ import aws.sdk.kotlin.services.lakeformation.model.LfTag
 import aws.sdk.kotlin.services.lakeformation.model.Permission
 import aws.sdk.kotlin.services.lakeformation.model.ResourceType
 import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.LazyAwsClientProperty
 import net.kotlinx.core.Kdsl
 
 
@@ -12,7 +13,7 @@ import net.kotlinx.core.Kdsl
  * 레이크 포메이션의 경우 IAM 과는 별도로 내부 권한을 설정해야 한다
  * LF 태그 위주로 작업 할것!!
  *
- * 다수를 만든 후 조합해서 사용할것
+ * 기본 태그를 벌크로 처리하기는 좋지만 상세 설정은 UI애서 할것!!
  * */
 class LakeformationTagManager {
 
@@ -22,7 +23,7 @@ class LakeformationTagManager {
     }
 
     /** AWS 클라이언트 */
-    lateinit var aws: AwsClient
+    var aws: AwsClient by LazyAwsClientProperty()
 
     /** LF 태그들 */
     lateinit var tags: List<LfTag>
@@ -36,6 +37,7 @@ class LakeformationTagManager {
     /**
      * LF 태그를 할당할 데이터베이스들
      * */
+    @Deprecated("카탈로그 ID 추가해야함")
     lateinit var databaseNames: List<String>
 
     //==================================================== 실행 ======================================================
@@ -70,6 +72,7 @@ class LakeformationTagManager {
     /**
      * 각 데이터베이스에 태그 할당 (테이블은 상속됨)
      *  */
+    @Deprecated("카탈로그 ID 추가해야함")
     suspend fun addLfTagsToResource() {
         databaseNames.forEach {
             aws.lake.addLfTagsToResource(it, tags)

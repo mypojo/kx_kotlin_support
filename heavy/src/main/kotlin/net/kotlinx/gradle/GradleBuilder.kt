@@ -208,7 +208,6 @@ class GradleBuilder {
             awsRetry.withRetry {
                 log.info { "###### lambda[${functionName}] step2 code update from ${jarFile.absolutePath} (${jarFile.length() / 1024 / 1024}mb)" }
                 aws.lambda.updateFunctionCode(functionName, jarFile)
-
             }
 
             log.trace { "latest 람다를 직접 사용한다면 여기까지만 하면 됨" }

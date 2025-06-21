@@ -1,11 +1,9 @@
 package net.kotlinx.aws.dynamo.enhanced
 
+import aws.sdk.kotlin.services.dynamodb.model.DeleteItemResponse
 import net.kotlinx.aws.dynamo.dynamo
-import net.kotlinx.aws.dynamo.enhancedExp.DbExpressionSet
-import net.kotlinx.aws.dynamo.enhancedExp.scan
-import net.kotlinx.aws.dynamo.enhancedExp.scanAll
+import net.kotlinx.aws.dynamo.enhancedExp.*
 import net.kotlinx.aws.lazyAwsClient
-import net.kotlinx.domain.job.Job
 
 /**
  * DDB 간단접근용 헬퍼
@@ -27,18 +25,37 @@ abstract class DbRepository<T : DbItem>() {
 
     suspend fun getItem(pk: String, sk: String): T? = aws.dynamo.get(dbTable, pk, sk)
 
-    suspend fun deleteItem(item: T): Unit = aws.dynamo.delete(item)
+    suspend fun deleteItem(item: T): DeleteItemResponse = aws.dynamo.delete(item)
+
+    suspend fun deleteItem(pk: String, sk: String) = aws.dynamo.delete(dbTable, pk, sk)
 
     //==================================================== 벌크처리 ======================================================
 
     suspend fun getItemBatch(items: List<T>): List<T> = aws.dynamo.getBatch(items)
 
+    //==================================================== 기본 쿼리 ======================================================
+
+    /** 일반 조회 */
+    suspend fun findPkSkEq(pk: String, sk: String? = null, block: DbExpression.() -> Unit = {}): DbResult = aws.dynamo.query { findPkSkEqInner(pk, sk, block) }
+
+    /** 전체 조회 */
+    suspend fun findPkSkEqAll(pk: String, sk: String? = null, block: DbExpression.() -> Unit = {}): List<T> =
+        aws.dynamo.queryAll { findPkSkEqInner(pk, sk, block) }
+
+    /** 내부 템플릿 */
+    private fun findPkSkEqInner(pk: String, sk: String? = null, block: DbExpression.() -> Unit): DbExpressionSet.PkSkEq = DbExpressionSet.PkSkEq {
+        table = dbTable
+        this.pk = pk
+        this.sk = sk
+        block(this)
+    }
+
     //==================================================== 기본 스캔  ======================================================
 
     /** 페이징 X */
-    suspend fun scan(): List<Job> = aws.dynamo.scan(DbExpressionSet.None { this.table = dbTable }).datas()
+    suspend fun scan(): List<T> = aws.dynamo.scan(DbExpressionSet.None { this.table = dbTable }).datas()
 
     /** 사용시 주의!! */
-    suspend fun scanAll(): List<Job> = aws.dynamo.scanAll(DbExpressionSet.None { table = dbTable })
+    suspend fun scanAll(): List<T> = aws.dynamo.scanAll(DbExpressionSet.None { table = dbTable })
 
 }

@@ -1,6 +1,7 @@
 package net.kotlinx.aws.athena.table
 
 import net.kotlinx.aws.firehose.HttpLogTable
+import net.kotlinx.domain.batchStep.BatchStepTable
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -11,6 +12,15 @@ class AthenaTableTest : BeSpecLight() {
         initTest(KotestUtil.IGNORE)
 
         Given("데모 테이블") {
+
+            Then("스키마 확인 - BATCH_STEP") {
+                val table = BatchStepTable.BATCH_STEP.apply {
+                    database = "dc"
+                    bucket = "${findProfile49}-work-dev"
+                    icebugTable()
+                }
+                println(table.create())
+            }
 
             Then("스키마 확인") {
                 val table = HttpLogTable.HTTP_ICEBUG.apply {

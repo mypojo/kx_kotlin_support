@@ -1,5 +1,7 @@
 package net.kotlinx.aws
 
 
-/** AWS 파라메터 스토어로부터 로드 */
+/**
+ * 늦은 로딩 .. 이정도면 함수 삭제하고 그냥 써도 될듯
+ *  */
 fun lazyAwsClient(): LazyAwsClientProperty = LazyAwsClientProperty()

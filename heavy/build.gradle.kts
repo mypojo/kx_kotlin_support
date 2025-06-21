@@ -22,7 +22,6 @@ dependencies {
     val awsVersion: String by project
     api("aws.sdk.kotlin:iam:$awsVersion") //용량 큼
     api("aws.sdk.kotlin:rds:$awsVersion")
-    api("aws.sdk.kotlin:rdsdata:$awsVersion") // 오로라 서버리스 v2 API 호출  https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/kotlin/usecases/serverless_rds
     api("aws.sdk.kotlin:codedeploy:$awsVersion")
     api("aws.sdk.kotlin:secretsmanager:$awsVersion")
     api("aws.sdk.kotlin:ec2:$awsVersion") //용량 큼. 27 mbyte

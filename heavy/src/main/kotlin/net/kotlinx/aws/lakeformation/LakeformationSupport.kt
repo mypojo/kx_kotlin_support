@@ -25,10 +25,11 @@ suspend fun LakeFormationClient.createLfTag(tag: LfTag): CreateLfTagResponse = t
 }
 
 /** 데이터베이스에 태그 할당  */
-suspend fun LakeFormationClient.addLfTagsToResource(databaseName: String, tags: List<LfTag>): AddLfTagsToResourceResponse = this.addLfTagsToResource {
+suspend fun LakeFormationClient.addLfTagsToResource(databaseName: String, tags: List<LfTag>, catalogId: String? = null): AddLfTagsToResourceResponse = this.addLfTagsToResource {
     this.resource = Resource {
         this.database = DatabaseResource {
             this.name = databaseName
+            this.catalogId = catalogId
         }
     }
     this.lfTags = tags.map {

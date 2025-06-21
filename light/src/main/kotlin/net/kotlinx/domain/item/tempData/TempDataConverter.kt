@@ -13,7 +13,7 @@ class TempDataConverter(private val table: DbTable) : DbConverter<TempData> {
             put(table.pkName, item.pk)
             put(table.skName, item.sk)
             put(TempData::status.name, item.status)
-            put(TempData::reqTime.name, item.reqTime)
+            put(TempData::regTime.name, item.regTime)
             put(TempData::body.name, item.body)
             put(TempData::ttl.name, item.ttl)
         }
@@ -25,7 +25,7 @@ class TempDataConverter(private val table: DbTable) : DbConverter<TempData> {
             sk = map[table.skName]!!.asS(),
             status = map.findOrThrow(TempData::status),
             body = map.findOrThrow(TempData::body),
-            reqTime = map.findOrThrow(TempData::reqTime),
+            regTime = map.findOrThrow(TempData::regTime),
             ttl = map.findOrThrow(TempData::ttl),
         )
     }

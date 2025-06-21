@@ -4,7 +4,6 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.toList
 import net.kotlinx.aws.AwsClient
-import net.kotlinx.aws.lazyAwsClient
 import net.kotlinx.csv.CsvUtil
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
@@ -16,16 +15,6 @@ class S3DirApiTest : BeSpecLight() {
 
     init {
         initTest(KotestUtil.PROJECT)
-
-        Given("test") {
-
-            Then("그리드 리스팅") {
-                val asd by lazyAwsClient()
-                val files = dirApi.list()
-                files.printSimples()
-            }
-
-        }
 
         Given("S3Data") {
 

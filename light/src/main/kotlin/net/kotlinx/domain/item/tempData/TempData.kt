@@ -21,7 +21,7 @@ data class TempData(
     var body: String,
 
     /** 등록 시간  */
-    var reqTime: LocalDateTime = LocalDateTime.now(),
+    var regTime: LocalDateTime = LocalDateTime.now(),
 
     /** TTL. */
     var ttl: Long = DynamoUtil.ttlFromNow(LambdaUtil.DEAFULT_TIMEOUT),
