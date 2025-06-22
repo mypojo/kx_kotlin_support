@@ -9,6 +9,8 @@ import kotlin.reflect.KProperty
 /**
  * 설정된 값이 없으면 기본 AWS 로드하는 프로퍼티
  * 스레드 세이프하지 않음
+ * 스래드 세이프 때문에 설정용인 LazyDefaultProperty 를 사용하지 않음
+ * @see LazyDefaultProperty
  * */
 class LazyAwsClientProperty {
 
