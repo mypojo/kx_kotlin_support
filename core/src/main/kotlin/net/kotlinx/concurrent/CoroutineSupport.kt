@@ -26,6 +26,7 @@ suspend fun <T> List<suspend () -> T>.coroutineExecute(scope: CoroutineScope, ma
 /**
  * 간단한 코루틴 실행기. (CoroutineScope를 새로실행)
  * 리턴받을게 있다면 async & await
+ * 참고로 리턴받을게 없다면  launch 써도됨
  * Semaphore로 인한 약간의 지연은 무시한다
  * ex) OkHttp 의 await 사용.  참고로 fetch 로 하면 적용안됨 주의!!
  * 경고!! 이거 대신 flow & merge 를 사용하세요 -> Flow<T>.execute
