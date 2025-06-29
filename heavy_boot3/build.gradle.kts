@@ -43,6 +43,9 @@ dependencies {
     //==================================================== 벨리데이션 ======================================================
     implementation("org.hibernate.validator:hibernate-validator") //버전표기 X. 약 1mb
 
+    //==================================================== 오픈 API 구현체 ======================================================
+    implementation("io.swagger.core.v3:swagger-annotations-jakarta:_")
+
     //==================================================== JWT 관련 (runtimeOnly로 선언된 의존성도 런타임에는 자동으로 전파됨) ======================================================
     api("io.jsonwebtoken:jjwt-api:_")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:_")

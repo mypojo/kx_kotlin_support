@@ -24,7 +24,8 @@ class HibernateValidationTest : BeSpecHeavy() {
                     bidCost = 113
                 }
                 val results = HibernateValidation.validate(demo)
-                results.printSimple()
+                results.printSimple() //그리드 프린팅
+
                 Then("디폴트 매핑이 사용됨") {
                     results.first { it.fieldId == "name" }.message shouldBe "이름 : 필수입력항목입니다"
                 }

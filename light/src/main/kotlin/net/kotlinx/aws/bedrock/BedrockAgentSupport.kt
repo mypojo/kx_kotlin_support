@@ -1,8 +1,7 @@
 package net.kotlinx.aws.bedrock
 
-import aws.sdk.kotlin.services.bedrockagent.BedrockAgentClient
-import aws.sdk.kotlin.services.bedrockagent.getPrompt
-import aws.sdk.kotlin.services.bedrockagent.listPrompts
+import aws.sdk.kotlin.services.bedrockagent.*
+import aws.sdk.kotlin.services.bedrockagent.model.ApiSchema
 import aws.sdk.kotlin.services.bedrockagent.model.GetPromptResponse
 import aws.sdk.kotlin.services.bedrockagent.model.PromptSummary
 import net.kotlinx.aws.AwsClient
@@ -30,4 +29,34 @@ suspend fun BedrockAgentClient.listAllPrompts(): List<PromptSummary> {
         }
         response.promptSummaries to response.nextToken
     }.flatten()
+}
+
+/**
+ * 액션 그룹의 오픈 API 스키마를 업데이트함
+ * 빌드시 사용됨
+ * */
+suspend fun BedrockAgentClient.updateAgentActionGroupSchema(agentId: String, actionGroupId: String, schema: String) {
+
+    val exist = this.getAgentActionGroup {
+        this.agentId = agentId
+        this.agentVersion = "DRAFT"  //일단 최신만
+        this.actionGroupId = actionGroupId
+    }.agentActionGroup!!
+
+    this.updateAgentActionGroup {
+        this.agentId = agentId
+        this.agentVersion = "DRAFT"
+        this.actionGroupId = actionGroupId
+
+        this.actionGroupName = exist.actionGroupName
+        this.description = exist.description
+
+        // OpenAPI 스키마 설정
+        this.apiSchema = ApiSchema.Payload(schema)
+
+        // 기존 설정 유지
+        this.actionGroupExecutor = exist.actionGroupExecutor
+        this.actionGroupState = exist.actionGroupState
+    }
+
 }

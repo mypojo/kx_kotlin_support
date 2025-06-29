@@ -1,9 +1,30 @@
 package net.kotlinx.aws.bedrock
 
+import aws.sdk.kotlin.services.bedrockagentruntime.model.InvokeAgentRequest
+import aws.sdk.kotlin.services.bedrockagentruntime.model.InvokeAgentResponse
+import aws.sdk.kotlin.services.bedrockagentruntime.model.ResponseStream
+import aws.sdk.kotlin.services.bedrockagentruntime.model.SessionState
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.string.print
+import java.util.*
+
+
+suspend fun InvokeAgentResponse.toSimpleText(): String {
+    val datas = mutableListOf<String>()
+    this.completion!!.collect { event ->
+        val append = when (event) {
+            is ResponseStream.Chunk -> event.value.bytes?.decodeToString() ?: ""
+            is ResponseStream.Trace -> event.value.toString()
+
+            else -> throw IllegalArgumentException("지원하지 않는 타입 : ${event::class.qualifiedName}")
+        }
+        datas.add(append)
+    }
+    return datas.joinToString()
+}
+
 
 class BedrockAgentSupportTest : BeSpecHeavy() {
 
@@ -12,13 +33,40 @@ class BedrockAgentSupportTest : BeSpecHeavy() {
 
         Given("베드락 에이전트") {
 
+            Then("에이전트 실행") {
+
+                val sessionId = UUID.randomUUID().toString()
+
+                val invokeRequest = InvokeAgentRequest {
+                    this.agentId = "L8YEZD07X9"
+                    this.agentAliasId = "MYEVDEKRV4"
+                    this.sessionId = sessionId
+                    this.inputText = "하루 800원 쓸건데 , 지금 남은 광고비와, 광고비 날짜별로 얼마 남을지 표로 정리해줘"
+                    this.sessionState = SessionState {
+                        this.sessionAttributes = mapOf(
+                            "JWT" to "aaa",
+                            "USER_ID" to "bbb",
+                        )
+                        this.promptSessionAttributes = mapOf(
+                            "JWT" to "aaa",
+                        )
+                    }
+                }
+
+                //event: {'messageVersion': '1.0', 'inputText': '지금 남은 광고비가 얼마지?', 'sessionAttributes': {'USER_ID': 'bbb', 'JWT': 'aaa'}, 'promptSessionAttributes': {'JWT': 'aaa'}, 'sessionId': '8e67f8f0-c1a9-485e-b434-635c63b81eda', 'agent': {'name': 'dmp-mcp-demo', 'version': '1', 'id': 'L8YEZD07X9', 'alias': 'MYEVDEKRV4'}, 'actionGroup': 'naver_api', 'httpMethod': 'GET', 'apiPath': '/bizMoney'}
+
+                val asd = aws49.brar.invokeAgent(invokeRequest) { it.toSimpleText() }
+                println(asd)
+
+            }
+
             Then("프롬프트 리스팅") {
-                val resp = aws97.bra.listAllPrompts()
+                val resp = aws49.bra.listAllPrompts()
                 resp.print()
             }
 
             Then("프롬프트 가져오기") {
-                val resp = aws97.bra.getPrompt("WCMF5L3D5Z")
+                val resp = aws49.bra.getPrompt("WCMF5L3D5Z")
                 listOf(resp).print()
             }
 

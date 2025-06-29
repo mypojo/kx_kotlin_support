@@ -80,6 +80,7 @@ class LambdaDispatcher {
         JobDispatcher(),
         KtorDispatcher(),
         S3LogicDispatcher(),
+        BedrockActionGroupDispatcher(),
     )
 
     /**

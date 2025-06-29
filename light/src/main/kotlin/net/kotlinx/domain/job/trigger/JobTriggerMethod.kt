@@ -160,7 +160,7 @@ class JobTriggerBatch(
     /** 잡 큐 이름 (온디벤드/스팟 등의 설정)  */
     val jobQueueName: String,
     /** 배치 오버라이드  */
-    val batchOverride: BatchOverride?,
+    val batchOverride: BatchOverride? = null,
 ) : JobTriggerMethod {
 
     private val log = KotlinLogging.logger {}

@@ -1,7 +1,7 @@
 package net.kotlinx.validation.bean
 
+import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.ConstraintViolation
-import net.kotlinx.core.Comment
 import net.kotlinx.reflect.annotaionAll
 import net.kotlinx.reflect.findClass
 import net.kotlinx.reflect.name
@@ -27,8 +27,12 @@ class HibernateValidationResult(val violation: ConstraintViolation<*>) {
     /** 어노테이션이 달린 필드 */
     val field = violation.rootBean::class.memberProperties.firstOrNull { it.name == fieldId }
 
-    /** 기본 필드명 */
-    val fieldName = field?.annotaionAll()?.findClass<Comment>()?.firstOrNull()?.value ?: fieldId
+    /**
+     * 기본 필드명
+     * Schema 의 title 을 사용한다!
+     * 참고로 name = 필드명 강제변경  , description = 설명문구
+     *  */
+    val fieldName = field?.annotaionAll()?.findClass<Schema>()?.firstOrNull()?.title ?: fieldId
 
     /** 거부된 값 */
     val invalidValue: Any? = violation.invalidValue
@@ -52,6 +56,8 @@ class HibernateValidationResult(val violation: ConstraintViolation<*>) {
     companion object {
         /** SpringValidatorAdapter 에서 복붙했다.. 맘에 안들어..  리플렉션 시 기본 어노테이션 인자를 제거한다.  */
         private val ANN_ATT_IGNORES = setOf("message", "groups", "payload")
+
+
     }
 
 

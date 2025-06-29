@@ -52,9 +52,11 @@ dependencies {
     api("aws.sdk.kotlin:scheduler:${awsVersion}")  //새로운 이벤트브릿지 스케쥴 0.8mb
     api("aws.sdk.kotlin:rdsdata:${awsVersion}")  // 오로라 서버리스 v2 API 호출  https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/kotlin/usecases/serverless_rds
 
-    api("aws.sdk.kotlin:bedrock:$awsVersion") //배드록. 약 2mb  시리즈 전체 -> https://central.sonatype.com/search?q=g%3Aaws.sdk.kotlin+bedrock&smo=true
+    //==================================================== AWS 배드락 ======================================================
+    api("aws.sdk.kotlin:bedrock:$awsVersion") //약 2mb  시리즈 전체 -> https://central.sonatype.com/search?q=g%3Aaws.sdk.kotlin+bedrock&smo=true
     api("aws.sdk.kotlin:bedrockruntime:$awsVersion") //배드록 런다임. 약 1m 실제 모델 호출에 사용
     api("aws.sdk.kotlin:bedrockagent:$awsVersion") //배드록 에이전트.
+    api("aws.sdk.kotlin:bedrockagentruntime:$awsVersion") //배드록 에이전트 런타임
 
     //==================================================== AWS 람다 ======================================================
     api("com.amazonaws:aws-lambda-java-core:_") //람다 핸들러 (엔드포인트 수신기) 이거만 있으도 되긴함
@@ -138,6 +140,7 @@ dependencies {
     api("gov.nist.math:jama:1.0.3") //https://mvnrepository.com/artifact/gov.nist.math/jama 회귀분석 패키지
     api("net.lingala.zip4j:zip4j:_") //zip 압축 & 암호설정 패키지. 200kb
     api("org.jsoup:jsoup:_") //크롤링  1.8.3
+    api("com.charleskorn.kaml:kaml:_") //yaml 도구
 
 }
 

@@ -3,9 +3,9 @@ package net.kotlinx.validation
 import com.linecorp.conditional.kotlin.and
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
+import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotNull
 import net.kotlinx.concurrent.delay
-import net.kotlinx.core.Comment
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -26,16 +26,16 @@ class ValidatorSupportKtTest : BeSpecLight() {
 
     private data class UserReq(
 
-        @Comment("일 예산")
+        @field:Schema(title = "일 예산")
         @field:NotNull
         @field:Range(min = 50000, max = 100000000, message = "#{fieldName} : 최소 50,000원 ~ 최대 10억원까지 설정할 수 있습니다")
         @field:ValidMultiNumber(value = 10, message = "#{fieldName} :  #{attr[value]}원 단위로 설정할 수 있습니다")
         val dailyBudget: Long? = null,
 
-        @Comment("이름")
+        @Schema(title = "이름")
         val name: String? = null,
 
-        @Comment("구매 수")
+        @Schema(title = "구매 수")
         val buyCnt: Int? = null,
 
         )
@@ -48,7 +48,10 @@ class ValidatorSupportKtTest : BeSpecLight() {
 
             suspend fun validationLogic(req: UserReq) {
                 log.trace { "step01 사용자 입력값에 대한 필드 수준의 bean 벨리데이션" }
-                HibernateValidation.validate(req).throwIfFail()
+                HibernateValidation.validate(req).let {
+                    //it.printSimple()
+                    it.throwIfFail()
+                }
 
                 log.trace { "step02 사용자 입력값에 대한 필드 수준의 커스텀 벨리데이션" }
                 valid("nameCheck", req.name == "멍멍") { "강아지만 등록 가능합니다" }
