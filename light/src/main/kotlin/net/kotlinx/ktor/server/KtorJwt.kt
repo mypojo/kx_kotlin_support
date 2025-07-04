@@ -7,6 +7,7 @@ import com.auth0.jwt.interfaces.Claim
 import net.kotlinx.core.Kdsl
 import net.kotlinx.time.toInstant
 import java.time.LocalDateTime
+import java.util.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
@@ -51,6 +52,8 @@ class KtorJwt {
 
     /** 토큰 생성 */
     fun createToken(param: Map<String, Any>): String = JWT.create()
+        .withJWTId(UUID.randomUUID().toString()) // 고유 토큰 ID 추가
+        .withNotBefore(Date()) // 토큰 활성화 시작 시간 설정
         .withAudience(*audiences.toTypedArray())
         .withIssuer(issuer)
         .withExpiresAt(LocalDateTime.now().plusSeconds(expire.inWholeSeconds).toInstant())
@@ -69,4 +72,3 @@ class KtorJwt {
         .sign(algorithm)
 
 }
-

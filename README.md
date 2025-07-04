@@ -203,7 +203,3 @@ log.info { "SFN 실행됨 $consoleLink" }
 
 ### CDK step function 결과
 ![img.png](readme/sfn.png)
-
-
-## 전체 모듈 의존관계
-![img.png](readme/dependencies.png)
