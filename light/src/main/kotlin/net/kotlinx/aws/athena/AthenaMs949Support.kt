@@ -13,6 +13,7 @@ import net.kotlinx.csv.CsvUtil
 /**
  * 쿼리 실행 -> MS949로 다운로드 -> S3 업로드 -> 프리사인URL 획득
  *  */
+@Deprecated("사용안함 -> flow를 쓰세요")
 suspend fun AthenaModule.download(block: AthenaMs949.() -> Unit): AthenaMs949 {
 
     val log = KotlinLogging.logger {}

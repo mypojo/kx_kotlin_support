@@ -10,7 +10,6 @@ import net.kotlinx.api.ecos.EcosClient
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.ssm.ssmStore
-import net.kotlinx.file.slash
 import net.kotlinx.google.GoogleSecret
 import net.kotlinx.google.GoogleService
 import net.kotlinx.google.calendar.GoogleCalendar
@@ -125,7 +124,7 @@ object BasicModule : KoinModule {
             val secret = GoogleSecret {
                 //시크릿값을 스토어에 넣은다음 로드해서 사용
                 secretClientFile.writeText(runBlocking { client.ssmStore["/google/app-access/oauth2_client"] })
-                secretDir.slash(GoogleSecret.SECRET_STORED_FILE_NAME).lazyLoad(S3Data("kotlinx", "store/secret/google/app-access/StoredCredential")).load()
+                secretFile.lazyLoad(S3Data("kotlinx", "store/secret/google/app-access/StoredCredential")).load()
             }
             secret.createService()
         }

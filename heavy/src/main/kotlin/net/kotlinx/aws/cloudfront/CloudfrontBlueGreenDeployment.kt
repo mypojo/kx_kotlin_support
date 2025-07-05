@@ -85,7 +85,6 @@ class CloudfrontBlueGreenDeployment {
                 }
             }
         }
-
         client.cloudFront.clear(distributionId, invalidationPaths)
     }
 

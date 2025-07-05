@@ -3,13 +3,13 @@ package net.kotlinx.awscdk.iam
 /**
  *  자주 사용되는 PolicyStatement 모음
  *  */
-object CdkPolicyStatementSetAthena {
+object CdkIamPolicyStatementSetAthena {
 
     /**
      * 아테나 쿼시실행 전체권한
      * 여기에 추가 접근 권한이 있어야 실제 실행 가능함
      *  */
-    val ATHENA_EXE_ALL = CdkPolicyStatement {
+    val ATHENA_EXE_ALL = CdkIamPolicyStatement {
         actions = listOf(
             "athena:BatchGetQueryExecution",
             "athena:GetQueryExecution",
@@ -30,7 +30,7 @@ object CdkPolicyStatementSetAthena {
         )
     }
 
-    val ATHENA_READONLY = CdkPolicyStatement {
+    val ATHENA_READONLY = CdkIamPolicyStatement {
         actions = listOf(
             "athena:StartQueryExecution",
             "athena:StopQueryExecution",
@@ -40,7 +40,7 @@ object CdkPolicyStatementSetAthena {
         )
     }
 
-    val GLUE_READONLY = CdkPolicyStatement {
+    val GLUE_READONLY = CdkIamPolicyStatement {
         actions = listOf(
             "glue:Get*",
             "glue:BatchGet*"

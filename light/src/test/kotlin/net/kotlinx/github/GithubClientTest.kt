@@ -10,10 +10,18 @@ internal class GithubClientTest : BeSpecHeavy() {
         initTest(KotestUtil.SLOW)
 
         Given("깃헙") {
-            Then("기본 커밋 리스트 불러오기") {
+
+            When("퍼블릭 커밋") {
                 val commits = GithubClient.DEFAULT_CLIENT.getCommits("mypojo", "kx_kotlin_support")
                 commits.printSimple()
             }
+
+            When("프라이빗 커밋") {
+                val client = GithubClient.createWithToken("xx")
+                val commits = client.getCommits("NHN-AD", "dmp")
+                commits.printSimple()
+            }
+
         }
     }
 }

@@ -9,21 +9,21 @@ object CdkIamRoleSet {
     val APP_ADMIN = CdkIamRole {
         roleName = "app-admin"
         services = CdkIamService.entries.map { it.serviceName }
-        managedPolicy(CdkManagedPolicySet.SCHEDULER)
+        managedPolicy(CdkIamPolicySet.SCHEDULER)
     }
 
     /** ECS Task 실행용 */
     val ECS_TASK = CdkIamRole {
         roleName = "app-ecs_task"
         services = listOf(CdkIamService.ECS_TASK.serviceName)
-        managedPolicy(CdkManagedPolicySet.ECS)
+        managedPolicy(CdkIamPolicySet.ECS)
     }
 
     /** 배스천용 역할 */
     val EC2_SSM = CdkIamRole {
         roleName = "app-ec2_ssm"
         services = listOf("ec2.amazonaws.com")
-        managedPolicy(CdkManagedPolicySet.SSM)
+        managedPolicy(CdkIamPolicySet.SSM)
     }
 
     /**

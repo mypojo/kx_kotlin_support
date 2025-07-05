@@ -2,10 +2,10 @@ package net.kotlinx.awscdk.iam
 
 import net.kotlinx.core.Kdsl
 
-class CdkPolicyStatementS3Data {
+class CdkIamPolicyStatementS3Data {
 
     @Kdsl
-    constructor(block: CdkPolicyStatementS3Data.() -> Unit = {}) {
+    constructor(block: CdkIamPolicyStatementS3Data.() -> Unit = {}) {
         apply(block)
     }
 

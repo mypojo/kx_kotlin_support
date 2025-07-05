@@ -57,8 +57,18 @@ class GoogleSecret {
     var secretDir: File = ResourceHolder.USER_ROOT.slash(".google")
 
 
-    /** SSM 등에서 데이터를 가져와서 여기에 파일로 만들것 */
+    /**
+     * 클라이언트 시크릿 파일.  편의상 secretDir 에 같이 쓴다.
+     * SSM 등에서 데이터를 가져와서 여기에 파일로 만들것
+     *  */
     var secretClientFile: File = secretDir.slash(SECRET_CLIENT_FILE_NAME)
+
+    /**
+     * 시크릿 파일
+     * secretDir 를 지정해주면, 구글SDK가 내부 시크릿을 읽어가는 구조임
+     * */
+    val secretFile: File
+        get() = secretDir.slash(SECRET_STORED_FILE_NAME)
 
     //==================================================== 내부 사용 ======================================================
 
@@ -70,11 +80,11 @@ class GoogleSecret {
 
     /** 최종 크리덴셜 */
     val credential: Credential by lazy {
-        val secret = InputStreamReader(FileInputStream(secretClientFile))
-        val clientSecrets = GoogleClientSecrets.load(jsonFactory, secret)
+        val clientSecrets = GoogleClientSecrets.load(jsonFactory, InputStreamReader(FileInputStream(secretClientFile)))
         val flow =
             GoogleAuthorizationCodeFlow.Builder(transport, jsonFactory, clientSecrets, scopes)
-                .setDataStoreFactory(FileDataStoreFactory(secretDir)).setAccessType("offline").build()
+                .setDataStoreFactory(FileDataStoreFactory(secretDir))  //디렉토리만 지정함.. 이렇게만 구글이 지원한다.
+                .setAccessType("offline").build()
         val receiver: LocalServerReceiver = LocalServerReceiver.Builder().setPort(TEMP_PORT).build()
         AuthorizationCodeInstalledApp(flow, receiver).authorize("user")
     }

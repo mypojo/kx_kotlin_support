@@ -45,7 +45,7 @@ class CdkAthenaUser : CdkInterface {
      * 로그인 필요시 CdkPolicyStatementSetIam.userDefault(MyEnv.AWS_ID) 등 추가
      *  */
     var defaultStatements = listOf(
-        CdkPolicyStatementSetAthena.ATHENA_EXE_ALL,
+        CdkIamPolicyStatementSetAthena.ATHENA_EXE_ALL,
     )
 
     /** 임시 비밀번호 접미어 */
@@ -68,8 +68,8 @@ class CdkAthenaUser : CdkInterface {
      * database나 table 등은 태그를 못달기 때문에 태그 베이스로 권한을 부여하지 않음
      * 태그 적용시 aws:PrincipalTag 를 사용할것
      *  */
-    private fun createAthenaTablesStatement(): CdkPolicyStatement {
-        return CdkPolicyStatement {
+    private fun createAthenaTablesStatement(): CdkIamPolicyStatement {
+        return CdkIamPolicyStatement {
             actions = listOf(
                 "glue:BatchGetPartition",
                 "glue:GetDatabase",

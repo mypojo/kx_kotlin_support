@@ -16,7 +16,7 @@ internal class EventCountCheckerTest : BeSpecLog() {
 
                 repeat(10) { cnt ->
                     counter.check {
-                        log.trace { " => $cnt -> 이벤트 $it" }
+                        log.info { " => $cnt -> 이벤트 $it" }
                         eventCnt++
                     }
                 }

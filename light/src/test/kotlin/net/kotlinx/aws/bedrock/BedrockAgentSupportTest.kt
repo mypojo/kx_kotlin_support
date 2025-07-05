@@ -1,29 +1,12 @@
 package net.kotlinx.aws.bedrock
 
 import aws.sdk.kotlin.services.bedrockagentruntime.model.InvokeAgentRequest
-import aws.sdk.kotlin.services.bedrockagentruntime.model.InvokeAgentResponse
-import aws.sdk.kotlin.services.bedrockagentruntime.model.ResponseStream
 import aws.sdk.kotlin.services.bedrockagentruntime.model.SessionState
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.string.print
 import java.util.*
-
-
-suspend fun InvokeAgentResponse.toSimpleText(): String {
-    val datas = mutableListOf<String>()
-    this.completion!!.collect { event ->
-        val append = when (event) {
-            is ResponseStream.Chunk -> event.value.bytes?.decodeToString() ?: ""
-            is ResponseStream.Trace -> event.value.toString()
-
-            else -> throw IllegalArgumentException("지원하지 않는 타입 : ${event::class.qualifiedName}")
-        }
-        datas.add(append)
-    }
-    return datas.joinToString()
-}
 
 
 class BedrockAgentSupportTest : BeSpecHeavy() {
@@ -39,7 +22,7 @@ class BedrockAgentSupportTest : BeSpecHeavy() {
 
                 val invokeRequest = InvokeAgentRequest {
                     this.agentId = "L8YEZD07X9"
-                    this.agentAliasId = "MYEVDEKRV4"
+                    this.agentAliasId = "UTGODP7YPK"
                     this.sessionId = sessionId
                     this.inputText = "하루 800원 쓸건데 , 지금 남은 광고비와, 광고비 날짜별로 얼마 남을지 표로 정리해줘"
                     this.sessionState = SessionState {

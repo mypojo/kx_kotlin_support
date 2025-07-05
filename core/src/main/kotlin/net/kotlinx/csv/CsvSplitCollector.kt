@@ -30,8 +30,8 @@ class CsvSplitCollector : FlowCollector<List<List<String>>>, AutoCloseable {
     /** 파일 제공자 */
     var fileFactory: (Int) -> File = { ResourceHolder.WORKSPACE.slash(this::class.simpleName!!).slash("${it.padStart(3)}.csv") }
 
-    /** 분할 수 */
-    var counter = EventCountChecker(10)
+    /** 분할 수. 디폴트로 엑셀 최대 크기 */
+    var counter = EventCountChecker(1000000)
 
     //==================================================== 내부사용 ======================================================
 

@@ -15,7 +15,7 @@ val AwsClient.cloudFront: CloudFrontClient
 /**
  * 클라우드 프론트 캐시 제거
  * ex) static hosting 배포 후 캐시 제거
- * "/images/\*"
+ *  @param paths "/images/\*"
  *  주의!!   "/aa/bb/\*.png" 이렇게는 작동을 안함!!  접미어만 쓸것
  * */
 suspend fun CloudFrontClient.clear(distributionId: String, paths: List<String>) {
@@ -32,8 +32,4 @@ suspend fun CloudFrontClient.clear(distributionId: String, paths: List<String>) 
 }
 
 /** 단축 메소드  */
-suspend fun CloudFrontClient.getDistribution(distributionId: String): Distribution {
-    return this.getDistribution {
-        id = distributionId
-    }.distribution!!
-}
+suspend fun CloudFrontClient.getDistribution(distributionId: String): Distribution = this.getDistribution { id = distributionId }.distribution!!

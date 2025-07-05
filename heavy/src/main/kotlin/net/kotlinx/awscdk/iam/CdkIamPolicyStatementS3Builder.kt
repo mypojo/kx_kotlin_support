@@ -11,15 +11,15 @@ import net.kotlinx.core.Kdsl
  * 데이터 레이크에 권한 부여시 별도 태그 기반의 역할부여가 필요함
  * @see LakeformationTagManager
  *  */
-class CdkPolicyStatementS3Builder {
+class CdkIamPolicyStatementS3Builder {
 
     @Kdsl
-    constructor(block: CdkPolicyStatementS3Builder.() -> Unit = {}) {
+    constructor(block: CdkIamPolicyStatementS3Builder.() -> Unit = {}) {
         apply(block)
     }
 
     /** S3 설정 */
-    var datas: List<CdkPolicyStatementS3Data> = emptyList()
+    var datas: List<CdkIamPolicyStatementS3Data> = emptyList()
 
     /**
      * KMS 복호화 키. (S3 공용) 이게 있어야 S3 읽어서 복호화 가능하다
@@ -40,7 +40,7 @@ class CdkPolicyStatementS3Builder {
     private val writePaths: List<String> by lazy { datas.flatMap { d -> d.writePath.map { "arn:aws:s3:::${d.bucketName}/${it}" } } }
 
 
-    fun build(): List<CdkPolicyStatement> {
+    fun build(): List<CdkIamPolicyStatement> {
 
         return buildList {
 
@@ -49,7 +49,7 @@ class CdkPolicyStatementS3Builder {
              * 하위 도메인에 객체 리스팅 권한을 막으려면  별도 s3:prefix 컨디선 추가 작업이 필요함
              *  */
             add(
-                CdkPolicyStatement {
+                CdkIamPolicyStatement {
                     actions = listOf(
                         "s3:List*",
                         "s3:Describe*",
@@ -61,7 +61,7 @@ class CdkPolicyStatementS3Builder {
 
             //==================================================== Object-Level Permissions ======================================================
             if (readonlyPaths.isNotEmpty()) {
-                add(CdkPolicyStatement {
+                add(CdkIamPolicyStatement {
                     actions = listOf(
                         "s3:Get*",
                         "s3-object-lambda:Get*",
@@ -71,7 +71,7 @@ class CdkPolicyStatementS3Builder {
                 })
             }
             if (writePaths.isNotEmpty()) {
-                add(CdkPolicyStatement {
+                add(CdkIamPolicyStatement {
                     actions = listOf(
                         "s3:Put*",
                     )
@@ -82,7 +82,7 @@ class CdkPolicyStatementS3Builder {
             //==================================================== 기타 ======================================================
 
             if (kmsArn != null) {
-                this += CdkPolicyStatement {
+                this += CdkIamPolicyStatement {
                     actions = listOf(
                         "kms:Decrypt",
                     )

@@ -2,39 +2,9 @@ package net.kotlinx.awscdk.iam
 
 import net.kotlinx.core.Kdsl
 import software.amazon.awscdk.Stack
-import software.amazon.awscdk.services.iam.*
-
-/**
- * PolicyStatement 간단 변환을 위한 객체
- * 보기 너무 안예뻐서 DSL용 생성
- *  */
-class CdkPolicyStatement {
-
-    @Kdsl
-    constructor(block: CdkPolicyStatement.() -> Unit = {}) {
-        apply(block)
-    }
-
-    lateinit var actions: List<String>
-    var resources: List<String> = IamPolicyAdminUtil.ALL
-
-    /** 형식은 임의로 지정했음 */
-    var conditions: Map<String, Any> = mapOf()
-
-    /** 간단 변환 */
-    fun toPolicyStatement(): PolicyStatement = PolicyStatement(PolicyStatementProps.builder().actions(actions).resources(resources).conditions(conditions).build())
-}
-
-//        "StringEquals": {
-//            "aws:ResourceTag/IamGroup": [
-//            "AAAA"
-//            ]
-//        },
-//        "ForAnyValue:StringEqualsIfExists": {
-//            "aws:ResourceTag/IamGroup": [
-//            "QQ"
-//            ]
-//        }
+import software.amazon.awscdk.services.iam.IManagedPolicy
+import software.amazon.awscdk.services.iam.ManagedPolicy
+import software.amazon.awscdk.services.iam.ManagedPolicyProps
 
 /**
  * 커스텀 정첵 설정
@@ -51,7 +21,7 @@ class CdkIamPolicy {
     lateinit var policyName: String
 
     /** statements 들 */
-    lateinit var statements: List<CdkPolicyStatement>
+    lateinit var statements: List<CdkIamPolicyStatement>
 
     /** 결과 */
     lateinit var iManagedPolicy: IManagedPolicy

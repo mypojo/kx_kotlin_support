@@ -12,6 +12,7 @@ import java.util.*
  * MS949로 다운로드 설정
  * AthenaMs949Support.kt 참고
  *  */
+@Deprecated("사용안함 -> flow를 쓰세요")
 class AthenaMs949 {
 
     @Kdsl
