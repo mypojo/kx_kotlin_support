@@ -1,7 +1,7 @@
 package net.kotlinx.csv.flow
 
 import kotlinx.coroutines.flow.*
-import net.kotlinx.concurrent.coroutineExecute
+import net.kotlinx.concurrent.coroutine
 import net.kotlinx.concurrent.delay
 import net.kotlinx.concurrent.sleep
 import net.kotlinx.kotest.KotestUtil
@@ -31,12 +31,23 @@ class Flow샘플_대량처리 : BeSpecLight() {
 
         Given("대용량 파일 처리 without spring batch") {
 
+            When("filter 하면서 리미트거는 방법!!") {
+                val list = listOf("1", "2", "3", "4", "5", "6")
+                val result = list.asSequence().filter {
+                    val ok = Random.nextBoolean()
+                    log.debug { " -> $it -> $ok" }
+                    ok
+                }.take(2).toList()
+                println(result)
+            }
+
             When("순서 유지하면서 10개씩 병렬 처리 (일반적인 니즈)") {
                 //프로세서를 굳이 클래스로 만들어 쓰겠다면  transform 을 alias로 만들것
                 val processed = flow.buffer(20).chunked(concurrency).flatMapConcat {
                     flow {
                         log.debug { " -> 데이터 ${it.size}건 입력됨 => ${it} " }
-                        it.map { suspend { delayRandom() } }.coroutineExecute() //내부에서 병렬처리
+                        it.coroutine { delayRandom() }
+                        //it.map { suspend { delayRandom() } }.coroutineExecute() //내부에서 병렬처리
                         //it.map { Callable { delayRandomForThread() } }.parallelExecute() //스래드 처리도 가능
                         emit(it)
                     }

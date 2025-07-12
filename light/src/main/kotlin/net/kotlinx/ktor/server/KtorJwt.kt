@@ -30,7 +30,7 @@ class KtorJwt {
     /** 알고리즘 */
     private val algorithm by lazy { Algorithm.HMAC512(secretKey) }
 
-    /** expire  */
+    /** 디폴트 expire  */
     var expire: Duration = 7.days
 
     /** JWT 검중기 */
@@ -51,12 +51,12 @@ class KtorJwt {
     }
 
     /** 토큰 생성 */
-    fun createToken(param: Map<String, Any>): String = JWT.create()
+    fun createToken(param: Map<String, Any>, expireAfter: Duration = expire): String = JWT.create()
         .withJWTId(UUID.randomUUID().toString()) // 고유 토큰 ID 추가
         .withNotBefore(Date()) // 토큰 활성화 시작 시간 설정
         .withAudience(*audiences.toTypedArray())
         .withIssuer(issuer)
-        .withExpiresAt(LocalDateTime.now().plusSeconds(expire.inWholeSeconds).toInstant())
+        .withExpiresAt(LocalDateTime.now().plusSeconds(expireAfter.inWholeSeconds).toInstant())
         .apply {
             param.entries.forEach { e ->
                 when (val value = e.value) {

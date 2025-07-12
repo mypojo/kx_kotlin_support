@@ -17,3 +17,13 @@ fun List<Job>.printSimple() {
 
 /** 잡으로 JobDef 찾기 */
 fun Job.toJobDefinition(): JobDefinition = JobDefinitionRepository.findById(pk) ?: throw IllegalStateException("job ${pk} -> JobDefinition is not found")
+
+/**
+ * 새로운 잡 생성해서 일부 데이터 복사
+ * ex) SQS 전송
+ *  */
+fun Job.copyNewJob(): Job = Job(this.pk, this.sk).apply {
+    jobOption = this.jobOption
+    memberId = this.memberId
+    jobEnv = this.jobEnv
+}

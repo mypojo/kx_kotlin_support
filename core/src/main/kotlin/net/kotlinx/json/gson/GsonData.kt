@@ -60,6 +60,15 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
         else -> throw IllegalArgumentException("${delegate::class.simpleName} 타입은 아직 지원하지 않습니다.")
     }
 
+    /**
+     * 스래드 세이프 하지 않음 주의!!
+     *  */
+    fun addAndGet(key: String, num: Long = 1L) {
+        check(isObject)
+        val value = get(key).long ?: 0L
+        put(key, value + num)
+    }
+
     //==================================================== 일반 ======================================================
 
 
@@ -198,14 +207,7 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 
     //==================================================== 특수 ======================================================
 
-    /**
-     * 스래드 세이프 하지 않음 주의!!
-     *  */
-    fun addAndGet(key: String, num: Long = 1L) {
-        check(isObject)
-        val value = get(key).long ?: 0L
-        put(key, value + num)
-    }
+
 
     companion object {
 

@@ -30,6 +30,7 @@ suspend fun <T> List<suspend () -> T>.coroutineExecute(scope: CoroutineScope, ma
  * Semaphore로 인한 약간의 지연은 무시한다
  * ex) OkHttp 의 await 사용.  참고로 fetch 로 하면 적용안됨 주의!!
  * 경고!! 이거 대신 flow & merge 를 사용하세요 -> Flow<T>.execute
+ * @see coroutine  <-- 이거로 쓸것!
  * */
 fun <T> List<suspend () -> T>.coroutineExecute(maxConcurrency: Int = Int.MAX_VALUE): List<T> {
     val gate = Semaphore(maxConcurrency)
@@ -48,6 +49,7 @@ fun <T> List<suspend () -> T>.coroutineExecute(maxConcurrency: Int = Int.MAX_VAL
 /**
  * 간단한 코루틴 실행기.
  * 리턴받을게 없다면 launch & join
+ * @see coroutine  <-- 이거로 쓸것!
  *  */
 fun List<suspend () -> Unit>.coroutineExecute(maxConcurrency: Int = Int.MAX_VALUE) {
     val gate = Semaphore(maxConcurrency)
@@ -63,18 +65,20 @@ fun List<suspend () -> Unit>.coroutineExecute(maxConcurrency: Int = Int.MAX_VALU
     }
 }
 
-///**
-// * Flow를 한번에 다 실행해서  결과를 반환한다. 주의해서 사용!!
-// * ex) paging 설정에서 모든 페이지 로드
-// * */
-//suspend fun <T, R> Flow<T>.collectToList(block: (T) -> R): List<R> {
-//    val list = mutableListOf<R>()
-//    this.collect {
-//        val r = block(it)
-//        list += r
-//    }
-//    return list
-//}
+
+/**
+ * 간단한 코루틴 실행기
+ * coroutineScope 를 사용해서, 예외 전파를 제한해준다
+ * 인라인 처리도 되지만 semaphore 때문에 별도로 뺐다
+ * */
+suspend fun <IN, OUT> List<IN>.coroutine(maxConcurrency: Int = Int.MAX_VALUE, block: suspend (IN) -> OUT): List<OUT> {
+    val semaphore = Semaphore(maxConcurrency)
+    val list = this
+    return coroutineScope {
+        list.map { input -> async { semaphore.withPermit { block(input) } } }.awaitAll()
+    }
+}
+
 
 /** 간단 delay. */
 suspend fun Duration.delay() {

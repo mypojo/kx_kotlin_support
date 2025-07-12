@@ -46,7 +46,7 @@ class JobSerializer() {
             reqTime = LocalDateTime.now()
             jobEnv = jobTrigger.name
             jobExeFrom = input.enum<JobExeFrom>(Job::jobExeFrom.name) ?: JobExeFrom.UNKNOWN
-            jobStatus = input.enum<JobStatus>(Job::jobStatus.name) ?: JobStatus.STARTING
+            jobStatus = input.enum<JobStatus>(Job::jobStatus.name) ?: JobStatus.STARTING //일단 "예약" 로직만을 위한 코드
 
             //옵션에 있으면 오버라이드 하는값 (아래  toJson() 하고 1:1 매핑)
             input[Job::jobOption.name].str?.let { jobOption = it.toGsonData() }

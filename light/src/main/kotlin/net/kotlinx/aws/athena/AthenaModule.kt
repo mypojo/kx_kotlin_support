@@ -135,7 +135,7 @@ class AthenaModule {
                 is AthenaDownload -> {
                     val outputLocation = currentQueryExecution!!.resultConfiguration!!.outputLocation!!
                     val s3Data = S3Data.parse(outputLocation)
-                    val writeFile = File(AwsInstanceTypeUtil.INSTANCE_TYPE.root, outputLocation.substringAfterLast("/"))
+                    val writeFile = File(AwsInstanceTypeUtil.INSTANCE_TYPE.root, outputLocation.substringAfterLast("/")) //이미 난수가 포함되어있음
                     log.debug { " -> s3 athena 결과 다운로드 : $outputLocation -> $writeFile" }
                     aws.s3.getObjectDownload(s3Data.bucket, s3Data.key, writeFile)
                     athenaQuery.file = writeFile
@@ -156,7 +156,7 @@ class AthenaModule {
     //==================================================== 간단실행 ======================================================
 
     /**
-     * 단건 처리
+     * 쿼리 결과 그대로를 다운로드 한다 (UTF-8)
      * ex) Koins.get<AthenaModule>().download(sql).renameTo(rptFile)
      *  */
     fun download(athenaQuery: String): File = runBlocking { startAndWait(AthenaDownload(athenaQuery)).file!! }

@@ -29,17 +29,26 @@ internal class S3SupportKtTest : BeSpecHeavy() {
         Given("S3SupportKt") {
 
             val profile = findProfile97
+            val aws2 by lazy { koin<AwsClient>(findProfile48) }
+
+            //==================================================== 다운로드 ======================================================
+
+//            Then("대용량 CSV 테스트 -> 너무 느림으로 일단 스킵") {
+//                val file = ResourceHolder.WORKSPACE.slash("sample.csv")
+//                aws2.s3.getObjectCsvMs949Download("nak-real-work", "config/nak/ssg/ep/ssg_metaEp.csv", file)
+//            }
+
+
+            //==================================================== 스트리밍 ======================================================
 
             Then("대용량 CSV 스트리밍 읽기") {
-                val aws2 by lazy { koin<AwsClient>(findProfile48) }
-                aws2.s3.getObjectLinesStream("nak-real-work", "config/nak/ssg/ep/ssg_metaEp.csv") { flow ->
+                aws2.s3.getObjectCsvFlow("nak-real-work", "config/nak/ssg/ep/ssg_metaEp.csv") { flow ->
                     flow.take(10 + 1).toList().print()
                 }
             }
 
             Then("대용량 CSV 스트리밍 읽기 - 조건문 사용") {
-                val aws2 by lazy { koin<AwsClient>(findProfile48) }
-                aws2.s3.getObjectLinesStream("nak-real-work", "config/nak/ssg/ep/ssg_metaEp.csv") { flow ->
+                aws2.s3.getObjectCsvFlow("nak-real-work", "config/nak/ssg/ep/ssg_metaEp.csv") { flow ->
                     var cnt = 0
                     flow.takeWhile {
                         ++cnt < 6
@@ -49,17 +58,17 @@ internal class S3SupportKtTest : BeSpecHeavy() {
 
             Then("대용량 CSV 스트리밍 읽기 - 조건문 사용 & 청크 읽기") {
                 val aws2 by lazy { koin<AwsClient>(findProfile48) }
-                aws2.s3.getObjectLinesStream("nak-real-work", "config/nak/ssg/ep/ssg_metaEp.csv") { flow ->
+                aws2.s3.getObjectCsvFlow("nak-real-work", "config/nak/ssg/ep/ssg_metaEp.csv") { flow ->
                     var cnt = 0
                     flow.takeWhile {
                         ++cnt < 6
-                    }.chunked(4) .collect {
+                    }.chunked(4).collect {
                         println(it)
                     }
                 }
             }
 
-
+            //==================================================== 리스팅 ======================================================
 
             Then("버킷 리스팅") {
                 val buckets = aws.s3.listBuckets {}.buckets!!

@@ -58,7 +58,7 @@ interface JobTriggerMethod {
             val job = jobSerializer.toJob(input.toString().toGsonData())!!
 
             if (op.jobStatus == JobStatus.RESERVED) {
-                log.info { " => [${job.toKeyString()}] 예약된 잡임으로 로컬 실행 스킵" }
+                log.info { " => [${job.toKeyString()}] 예약된 잡임으로 DDB 저장만 하고 실행은 스킵" }
                 return job.toKeyString()
             }
 
@@ -119,7 +119,7 @@ class JobTriggerLambda(
         }
 
         if (op.jobStatus == JobStatus.RESERVED) {
-            log.info { " => [$jobParam] 예약된 잡임으로 [$jobExeDiv] 실행 스킵" }
+            log.info { " => [$jobParam] 예약된 잡임으로 DDB 저장만 하고 실행은 스킵" }
             return jobParam.toString()
         }
 
@@ -178,7 +178,7 @@ class JobTriggerBatch(
         }
 
         if (op.jobStatus == JobStatus.RESERVED) {
-            log.info { " => [$jobParam] 예약된 잡임으로 [$jobExeDiv] 실행 스킵" }
+            log.info { " => [$jobParam] 예약된 잡임으로 DDB 저장만 하고 실행은 스킵" }
             return jobParam.toString()
         }
 

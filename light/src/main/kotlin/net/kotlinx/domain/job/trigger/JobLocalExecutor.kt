@@ -41,7 +41,7 @@ class JobLocalExecutor() {
             JobHolder.JOB.set(job)
 
             //==============  RUNNING 마킹 ===================
-            job.jobStatus = JobStatus.RUNNING
+            job.jobStatus = JobStatus.RUNNING //무조건 RUNNING 으로 변경됨
             job.startTime = LocalDateTime.now()
             jobRepository.updateItem(job, JobUpdateSet.START)
 

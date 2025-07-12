@@ -1,12 +1,14 @@
 package net.kotlinx.aws.athena
 
 import aws.sdk.kotlin.services.athena.model.QueryExecution
+import net.kotlinx.aws.s3.S3Data
 import java.io.File
 import java.util.*
 
 sealed interface AthenaQuery {
     /** 쿼리 */
     val query: String
+
     /**
      * 멱등 검증용 클라이언트 토큰
      * InvalidRequestException -> Idempotent parameters do not match 때문에 임시조치. 향후 기능 추가하자
@@ -23,7 +25,11 @@ data class AthenaExecute(
     override var token: String? = UUID.randomUUID().toString()
 
     /** S3 결과 저장 */
-    lateinit var outputLocation:String
+    lateinit var outputLocation: String
+
+    /** 결과 S3 경로 */
+    val queryResultPath: S3Data
+        get() = S3Data.parse(outputLocation)
 }
 
 data class AthenaReadAll(

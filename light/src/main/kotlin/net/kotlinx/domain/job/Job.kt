@@ -123,6 +123,13 @@ class Job(override val pk: String, override val sk: String) : DbItem {
 
     //==================================================== 편의 메소드 ======================================================
 
+    /**
+     * 잡 상태 리턴. 초기화가 안되어있다면 디폴트값 리턴.
+     * ex) 객세 역직렬화 할때 초기값 입력
+     *  */
+    val jobStatusOrNull: JobStatus?
+        get() = if (this::jobStatus.isInitialized) jobStatus else null
+
     /** 작동시간 밀리초 리턴 */
     val intervalMills: Long?
         get() = when {

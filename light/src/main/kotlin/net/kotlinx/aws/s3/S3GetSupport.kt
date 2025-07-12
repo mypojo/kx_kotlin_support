@@ -15,33 +15,51 @@ import aws.smithy.kotlin.runtime.text.encoding.decodeBase64
 import com.github.doyaaaaaken.kotlincsv.client.CsvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.chunked
 import kotlinx.coroutines.flow.takeWhile
+import net.kotlinx.csv.CsvCollector
+import net.kotlinx.csv.CsvUtil
 import net.kotlinx.csv.toFlow
 import net.kotlinx.io.input.toInputResource
+import net.kotlinx.io.output.toOutputResource
 import java.io.File
 import java.nio.charset.Charset
 
 
-//==================================================== 기본 읽기/쓰기 ======================================================
+//==================================================== 다운로드 ======================================================
 
 /**
  * 간단 다운로드. 스트리밍 처리시 다운받아서 하세여 (inputStream 제공이 없는거 같음.)
  * 메타데이터 체크를 통과해야 다운로드 한다
  * */
-suspend fun S3Client.getObjectDownload(
-    bucket: String,
-    key: String,
-    file: File,
-    shouldDownload: (Map<String, String>?) -> Boolean = { true }
-) = this.getObject(
-    GetObjectRequest {
-        this.bucket = bucket
-        this.key = key
+suspend fun S3Client.getObjectDownload(bucket: String, key: String, file: File, shouldDownload: (Map<String, String>?) -> Boolean = { true }) {
+    this.getObject(
+        GetObjectRequest {
+            this.bucket = bucket
+            this.key = key
+        }
+    ) {
+        val doDownload = shouldDownload(it.metadata)
+        if (doDownload) {
+            it.body?.writeToFile(file)
+        }
     }
-) {
-    val doDownload = shouldDownload(it.metadata)
-    if (doDownload) {
-        it.body?.writeToFile(file)
+}
+
+
+/**
+ * CSV ms949 형태로 변경하면서 다운로드함. -> 다운로드 받은다음 다시 변환하는 이중작업을 피하기 위함임
+ * ex) athena 결과파일을 사용자가 볼 수 있는 형태로 다운로드
+ * 샘플 코드임! 응용해서 사용할것
+ * 자주 사용해서 일단 넣었고, 거의 응용이 필요하지 않아서 별도의 옵션화는 하지 않음
+ * @see CsvSplitCollector  파일 청크단위로 분리해서 다운로드할때 사용
+ *  */
+suspend fun S3Client.getObjectCsvMs949Download(bucket: String, key: String, file: File, zip: Boolean = false) {
+    this.getObjectCsvFlow(bucket, key, csvReader()) { flow ->
+        flow.chunked(1000).collect(CsvCollector {
+            outputResource = file.toOutputResource(zip)
+            writer = CsvUtil.ms949Writer()  //ms949로 다운로드
+        })
     }
 }
 
@@ -92,15 +110,11 @@ suspend fun S3Client.getObjectLines(bucket: String, key: String, charset: Charse
  * 스트리밍 CSV 읽기
  * ex) 대용량 파일의 앞에 100개만 읽기
  * 안정성 떨어짐 주의!
- * @see takeWhile
+ * @see getObjectCsvMs949Download  -> 이런식으로 사용가능
+ * @see takeWhile -> 조건부 읽기 가능
  * 짧게 읽고 끊으면 , 읽음 만큼만 과금됨
  * */
-suspend fun S3Client.getObjectLinesStream(
-    bucket: String,
-    key: String,
-    reader: CsvReader = csvReader(),
-    action: suspend (Flow<List<String>>) -> Unit
-) = this.getObject(
+suspend fun S3Client.getObjectCsvFlow(bucket: String, key: String, reader: CsvReader = csvReader(), action: suspend (Flow<List<String>>) -> Unit) = this.getObject(
     GetObjectRequest {
         this.bucket = bucket
         this.key = key

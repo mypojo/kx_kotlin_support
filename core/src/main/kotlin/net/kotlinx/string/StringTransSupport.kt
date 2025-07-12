@@ -15,6 +15,23 @@ fun String.replaceAll(replacements: Map<String, String>): String {
     return result
 }
 
+/**
+ * SQL 형태로 치환한다
+ * */
+fun String.replaceSqlAll(replacements: Map<String, String?>): String {
+    var result = this
+    replacements.entries.forEach { e ->
+        val replaced = when (val value = e.value) {
+            null -> "NULL"
+            is Number -> value.toString()
+            is Boolean -> if (value) "TRUE" else "FALSE"
+            else -> "'${value.replace("'", "''")}'" // SQL 인젝션 방지
+        }
+        result = result.replace(e.key, replaced)
+    }
+    return result
+}
+
 /** 간단 마스킹 */
 fun String.mask(start: Int = 2, end: Int = this.length): String {
     val input = this

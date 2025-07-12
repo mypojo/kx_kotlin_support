@@ -39,6 +39,7 @@ fun <T> List<() -> T?>.findFirstNotnull(): T? {
 /**
  * 첫 조건에따라 그룹바이한다.
  * ex) 라인 파싱
+ * @param transform 첫번째 라인인경우 true
  *  */
 fun <T> List<T>.groupByFirstCondition(transform: (T) -> Boolean): List<List<T>> {
     val results: MutableList<List<T>> = mutableListOf()
