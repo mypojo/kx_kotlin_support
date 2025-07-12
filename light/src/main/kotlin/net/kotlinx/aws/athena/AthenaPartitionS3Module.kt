@@ -9,6 +9,7 @@ import net.kotlinx.core.Kdsl
  * Athena s3 - 파티션 생성 도우미
  * S3를 리스팅해서 자동으로 파티션을 생성한다.
  */
+@Deprecated("가능하면 파티션 대신 projection 이나 아이스버그를 사용하세요")
 class AthenaPartitionS3Module {
 
     private val log = KotlinLogging.logger {}
