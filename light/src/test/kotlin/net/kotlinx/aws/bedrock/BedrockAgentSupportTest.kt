@@ -21,10 +21,10 @@ class BedrockAgentSupportTest : BeSpecHeavy() {
                 val sessionId = UUID.randomUUID().toString()
 
                 val invokeRequest = InvokeAgentRequest {
-                    this.agentId = "L8YEZD07X9"
-                    this.agentAliasId = "UTGODP7YPK"
+                    this.agentId = "7V7ABTRDTY"
+                    this.agentAliasId = "86VL3UVUZM"
                     this.sessionId = sessionId
-                    this.inputText = "하루 800원 쓸건데 , 지금 남은 광고비와, 광고비 날짜별로 얼마 남을지 표로 정리해줘"
+                    this.inputText = "하루 800원 쓸건데 , 지금 남은 광고비와, 광고비 날짜별로 얼마 남을지 표로 정리해줘."
                     this.sessionState = SessionState {
                         this.sessionAttributes = mapOf(
                             "JWT" to "aaa",
@@ -38,8 +38,8 @@ class BedrockAgentSupportTest : BeSpecHeavy() {
 
                 //event: {'messageVersion': '1.0', 'inputText': '지금 남은 광고비가 얼마지?', 'sessionAttributes': {'USER_ID': 'bbb', 'JWT': 'aaa'}, 'promptSessionAttributes': {'JWT': 'aaa'}, 'sessionId': '8e67f8f0-c1a9-485e-b434-635c63b81eda', 'agent': {'name': 'dmp-mcp-demo', 'version': '1', 'id': 'L8YEZD07X9', 'alias': 'MYEVDEKRV4'}, 'actionGroup': 'naver_api', 'httpMethod': 'GET', 'apiPath': '/bizMoney'}
 
-                val asd = aws49.brar.invokeAgent(invokeRequest) { it.toSimpleText() }
-                println(asd)
+                val resultTotalText = aws49.brar.invokeAgent(invokeRequest) { it.toSimpleText() }
+                println(resultTotalText)
 
             }
 

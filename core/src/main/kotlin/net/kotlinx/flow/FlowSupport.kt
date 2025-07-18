@@ -14,8 +14,17 @@ import kotlinx.coroutines.flow.*
  * */
 suspend fun <T, R> Flow<T>.execute(concurrency: Int = DEFAULT_CONCURRENCY, transform: suspend (T) -> Flow<R>): List<R> = this.flatMapMerge(concurrency, transform).toList()
 
-/** collect 의 편의버전 */
+/**
+ * collect 의 편의버전
+ * 흠.. 필요 없으면 지우자
+ * */
 suspend fun <T> Flow<T>.collectIt(block: () -> FlowCollector<T>) = this.collect(block())
+
+/**
+ * collect 하면서 close 함
+ * ex) CSV write
+ *  */
+suspend fun <T, C> Flow<T>.collectClose(block: () -> C) where C : FlowCollector<T>, C : AutoCloseable = block().use { this.collect(it) }
 
 /**
  * Flow에서 랜덤하게 n개 항목을 추출

@@ -11,21 +11,17 @@ val AwsClient.brar: BedrockAgentRuntimeClient
     get() = getOrCreateClient { BedrockAgentRuntimeClient { awsConfig.build(this) }.regist(awsConfig) }
 
 
+/** 간단 텍스트 변환 */
+suspend fun InvokeAgentResponse.toSimpleText(): String = buildString { toSimpleText { append(it) } }
 
-/**
- * 간단 텍스트 변환
- * 수정의 여지 있음
- *  */
-suspend fun InvokeAgentResponse.toSimpleText(): String {
-    val datas = mutableListOf<String>()
+/** 간단 텍스트 변환 - 스트리밍 */
+suspend fun InvokeAgentResponse.toSimpleText(block: (String) -> Unit = {}) {
     this.completion!!.collect { event ->
         val append = when (event) {
-            is ResponseStream.Chunk -> event.value.bytes?.decodeToString() ?: ""
+            is ResponseStream.Chunk -> event.value.bytes?.decodeToString() ?: "" //일반적으로 Chunk 로 리턴됨
             is ResponseStream.Trace -> event.value.toString()
-
             else -> throw IllegalArgumentException("지원하지 않는 타입 : ${event::class.qualifiedName}")
         }
-        datas.add(append)
+        block(append)
     }
-    return datas.joinToString()
 }

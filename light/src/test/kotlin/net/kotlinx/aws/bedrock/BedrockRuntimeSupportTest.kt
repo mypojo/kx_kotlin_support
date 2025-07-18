@@ -18,8 +18,8 @@ class BedrockRuntimeSupportTest : BeSpecHeavy() {
 
             Then("로우 API - 텍스트") {
                 val resp = aws97.brr.converse {
-                    // BedrockRuntimeClient
-                    this.modelId = BedrockModels.OnDemand.CLAUDE_3_HAIKU.id
+                    //this.modelId = BedrockModels.OnDemand.CLAUDE_3_HAIKU.id
+                    this.modelId = BedrockModels.CrossRegion.CLAUDE_4_SONNET.id
                     this.system = listOf(
                         SystemContentBlock.Text("주어진 질문에 대해서 단일 json으로 응답해주세요")
                     )

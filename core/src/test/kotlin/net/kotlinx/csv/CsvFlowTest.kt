@@ -8,6 +8,7 @@ import net.kotlinx.aws.AwsClient
 import net.kotlinx.counter.EventCountChecker
 import net.kotlinx.file.slash
 import net.kotlinx.io.input.toInputResource
+import net.kotlinx.io.output.toOutputResource
 import net.kotlinx.koin.Koins
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -62,7 +63,7 @@ class CsvFlowTest : BeSpecLight() {
 
                 Then("파일 분할 저장") {
                     CsvSplitCollector {
-                        fileFactory = { workRoot.slash("split").slash("${it.padStart(3)}.csv") }
+                        outputStreamFactory = { workRoot.slash("split").slash("${it.padStart(3)}.csv").toOutputResource().outputStream }
                         counter = EventCountChecker(10)
                     }.use {
                         flow.buffer(3).chunked(3).collect(it)

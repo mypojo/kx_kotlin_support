@@ -10,5 +10,4 @@ import java.io.InputStream
 fun InputStream.toInputResource(): InputDefaultResource = InputDefaultResource(this)
 
 /** 간단변환 */
-fun File.toInputResource(): InputFileResource = InputFileResource(this)
-
+fun File.toInputResource(gzip: Boolean = false): InputFileResource = InputFileResource(this, gzip)

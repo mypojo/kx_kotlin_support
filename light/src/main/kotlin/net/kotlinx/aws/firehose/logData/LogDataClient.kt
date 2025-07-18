@@ -1,6 +1,5 @@
 package net.kotlinx.aws.firehose.logData
 
-import kotlinx.html.Entities
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceTypeUtil
@@ -101,7 +100,7 @@ class LogDataClient {
 
             if (datas.isEmpty()) return
 
-            val jsons = datas.map { jsonBuilder.build(Entities.it) }
+            val jsons = datas.map { jsonBuilder.build(it) }
             client.firehose.putRecordBatch(streamName, jsons)
 
         } catch (e: Throwable) {

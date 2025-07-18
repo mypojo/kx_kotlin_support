@@ -127,6 +127,10 @@ dependencies {
     api("io.ktor:ktor-server-host-common-jvm:_")
     api("io.ktor:ktor-server-status-pages-jvm:_")
 
+    //==================================================== AI - MCP ======================================================
+    //api("io.modelcontextprotocol:kotlin-sdk:_")  --> 일단 포기
+
+
     //==================================================== retrofit2 (rest API) ======================================================
     api("com.squareup.retrofit2:retrofit:_")
     api("com.squareup.retrofit2:converter-gson:_")
