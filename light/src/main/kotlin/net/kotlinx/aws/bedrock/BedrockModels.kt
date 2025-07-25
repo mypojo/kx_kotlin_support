@@ -33,6 +33,8 @@ object BedrockModels {
      *  */
     object CrossRegion {
 
+
+        /** 안됨.. */
         val CLAUDE_4_SONNET = AiModel {
             id = "apac.anthropic.claude-sonnet-4-20250514-v1:0"
             name = "클로드4소넷"

@@ -60,6 +60,7 @@ class CdkCodeBuild : CdkInterface {
                 "-g /opt/.gradle",  //글로벌설정 -> 그래들 루트 설정 (의존성 저장 등)
                 it,
                 "-Djib.console=plain",  //JIB 로그 제거
+                "--stacktrace", //에러나면 스택트레이스 출력 (필수)
             ).joinToString(" ")
         }
     }

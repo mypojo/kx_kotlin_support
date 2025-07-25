@@ -24,6 +24,7 @@ import net.kotlinx.file.slash
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.gson.ResultGsonData
 import net.kotlinx.json.gson.toGsonData
+import net.kotlinx.string.StringJsonUtil
 import net.kotlinx.time.TimeFormat
 import java.util.*
 import kotlin.time.Duration.Companion.minutes
@@ -78,7 +79,7 @@ class BedrockTextClient : AiTextClient {
     /**
      * AWS가 호출유형을 표준화한 호출방법
      * */
-    suspend fun converse(input: List<AiTextInput>): AiTextResult {
+    suspend fun converse(inputs: List<AiTextInput>): AiTextResult {
         val resp = client.brr.converse {
             this.modelId = model.id
             this.system = listOf(
@@ -86,14 +87,15 @@ class BedrockTextClient : AiTextClient {
             )
             this.inferenceConfig = inferenceConfig
             this.messages = listOf(
-                BedrockTextConverter.convert(input) //무조건 한개만 입력
+                BedrockTextConverter.convert(inputs) //무조건 한개만 입력
             )
         }
-        val json = GsonData.parse(resp.output!!.asMessage().content.first().asText())
+        val resultText = StringJsonUtil.cleanJsonText(resp.output!!.asMessage().content.first().asText()) //AI 모델별로 리턴이 다름
+        val json = GsonData.parse(resultText)
         val inputTokens = resp.usage!!.inputTokens
         val outputTokens = resp.usage!!.outputTokens
         val result = ResultGsonData(json.isObject, json)
-        return AiTextResult(model, input, result, inputTokens, outputTokens, resp.metrics!!.latencyMs)
+        return AiTextResult(model, inputs, result, inputTokens, outputTokens, resp.metrics!!.latencyMs)
     }
 
     /**

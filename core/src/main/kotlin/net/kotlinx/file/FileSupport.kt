@@ -37,12 +37,12 @@ fun File.listAllFiles(): List<File> {
 }
 
 /**
- * readLines 인데 앞의 특정 부분만 사용하고 싶을때
+ * readLines 인데 앞의 특정 부분만 인라인으로 사용하고 싶을때
  * @see readLines
  * */
 fun File.readLines(limit: Int, charset: Charset = Charsets.UTF_8): List<String> {
     val result = ArrayList<String>()
-    forEachLine(charset) {
+    this.forEachLine(charset) {
         if (result.size >= limit) return@forEachLine
         result.add(it)
     }
