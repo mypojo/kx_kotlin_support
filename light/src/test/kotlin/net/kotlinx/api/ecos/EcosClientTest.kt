@@ -8,12 +8,6 @@ import net.kotlinx.kotest.modules.BeSpecHeavy
 
 internal class EcosClientTest : BeSpecHeavy() {
 
-    // 데이터를 저장할 데이터 클래스 정의
-    data class ExchangeRateData(
-        val TIME: String,
-        val DATA_VALUE: String
-    )
-
     init {
         initTest(KotestUtil.SLOW)
 

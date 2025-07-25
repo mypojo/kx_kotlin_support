@@ -12,7 +12,7 @@ class GoogleCalendar(service: GoogleService) {
 
     private val log = KotlinLogging.logger {}
 
-    val calendar = service.calendar
+    private val calendar = service.calendar
 
     /**
      * 보통 스냅스타트용

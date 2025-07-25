@@ -18,7 +18,7 @@ data class IamProfiles(
         if (suff == null) it.second.startsWith(prefix)
         else it.second.startsWith(prefix) && it.second.endsWith(suff)
     }.run {
-        check(this.size == 1) { "중복된 id값 발견 -> $this" }
+        check(this.size == 1) { "값이 없거나 중복된 값 -> ${prefix}" }
         first().first
     }
 

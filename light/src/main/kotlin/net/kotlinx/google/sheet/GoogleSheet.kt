@@ -19,7 +19,7 @@ import net.kotlinx.number.StringIntUtil
  */
 class GoogleSheet(service: GoogleService, val sheetId: String, val tabName: String) {
 
-    val sheets = service.sheets
+    private val sheets = service.sheets
 
     /**
      * 간단히 전부 다 읽는다

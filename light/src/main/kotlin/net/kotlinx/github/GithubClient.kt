@@ -7,6 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * 모든 API를 합친 클라이언트
+ * retrofit2 를 사용함
  * */
 interface GithubClient : GithubApiCommits {
 
