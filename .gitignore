@@ -38,7 +38,7 @@ buildscan.log
 buildSrc/build
 
 #### 코틀린 노트북 ####
-.kotlin
+.kotlin/sessions
 
 #### 개인 관리 ####
 **/*_sin*
