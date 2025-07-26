@@ -28,7 +28,10 @@ class RetryTemplate(block: RetryTemplate.() -> Unit) : suspend (suspend () -> An
     /** 리트라이 수 */
     var retries: Int = 3
 
-    /** 리트라이 할지 체크 */
+    /**
+     * 리트라이 할지 체크
+     * 디폴트로는 IO or 리트라이 예외
+     *  */
     var predicate: (cause: Throwable) -> Boolean = { cause -> cause.causes().any { it is IOException || it is KnownException.ItemRetryException } }
 
     /** 오류시 로깅 */
