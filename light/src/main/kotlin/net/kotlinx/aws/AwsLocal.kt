@@ -4,7 +4,7 @@ package net.kotlinx.aws
 object AwsLocal {
 
     /** 프로파일 없는 로컬 전용 클라이언트 */
-    val CLIENT by lazy { AwsConfig().toAwsClient() }
+    val CLIENT by lazy { AwsConfig().client }
 
     /**
      * 로그인한 AWS ID

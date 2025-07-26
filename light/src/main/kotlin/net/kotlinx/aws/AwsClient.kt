@@ -17,22 +17,22 @@ import java.util.concurrent.ConcurrentHashMap
  *  */
 class AwsClient(val awsConfig: AwsConfig) {
 
-    /** 클라이언트 보관소 */
-    val _cache = ConcurrentHashMap<String, SdkClient>()
+    /** 클라이언트 보관소 (reified 사용하기때문에 private 불가) */
+    val cacheInner = ConcurrentHashMap<String, SdkClient>()
 
     /** 클라이언트 캐시 리턴 */
     inline fun <reified T : SdkClient> getOrCreateClient(crossinline block: () -> T): T {
-        return _cache.computeIfAbsent(T::class.name()) {
+        return cacheInner.computeIfAbsent(T::class.name()) {
             block()
         } as T
     }
 
     /** 스토어 보관소 */
-    val _store = ConcurrentHashMap<String, Any>()
+    val storeinner = ConcurrentHashMap<String, Any>()
 
     /** 스토어 캐시 리턴 */
     inline fun <reified T : Any> getOrCreateStore(crossinline block: () -> T): T {
-        return _store.computeIfAbsent(T::class.name()) {
+        return storeinner.computeIfAbsent(T::class.name()) {
             block()
         } as T
     }

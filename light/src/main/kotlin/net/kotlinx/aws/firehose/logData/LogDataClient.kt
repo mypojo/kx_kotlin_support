@@ -3,10 +3,10 @@ package net.kotlinx.aws.firehose.logData
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceTypeUtil
+import net.kotlinx.aws.LazyAwsClientProperty
 import net.kotlinx.aws.firehose.IcebergJsonBuilder
 import net.kotlinx.aws.firehose.firehose
 import net.kotlinx.aws.firehose.putRecordBatch
-import net.kotlinx.aws.lazyAwsClient
 import net.kotlinx.core.Kdsl
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.time.toYmd
@@ -30,7 +30,7 @@ class LogDataClient {
     //==================================================== 설정파일 ======================================================
 
     /** AWS 클라이언트 */
-    var client: AwsClient by lazyAwsClient()
+    var client: AwsClient by LazyAwsClientProperty()
 
     /** json 변환기 */
     lateinit var jsonBuilder: IcebergJsonBuilder

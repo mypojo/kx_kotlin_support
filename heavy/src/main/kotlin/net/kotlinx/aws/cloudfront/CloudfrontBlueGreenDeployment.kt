@@ -4,7 +4,7 @@ import aws.sdk.kotlin.services.cloudfront.getDistribution
 import aws.sdk.kotlin.services.cloudfront.updateDistribution
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
-import net.kotlinx.aws.lazyAwsClient
+import net.kotlinx.aws.LazyAwsClientProperty
 import net.kotlinx.core.Kdsl
 
 
@@ -18,7 +18,7 @@ class CloudfrontBlueGreenDeployment {
         apply(block)
     }
 
-    var client: AwsClient by lazyAwsClient()
+    var client: AwsClient by LazyAwsClientProperty()
 
 
     /** E1IB941WRI0DZN 이렇게 생김 */

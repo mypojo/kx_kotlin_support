@@ -13,5 +13,6 @@ fun <T : SdkClient> T.regist(awsConfig: AwsConfig): T {
     return this
 }
 
+/** 설정파일 접근 */
 val SdkClient.awsConfig: AwsConfig
     get() = CLIENT_CONFIG[this]!!

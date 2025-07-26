@@ -1,9 +1,9 @@
 package net.kotlinx.aws.dynamo.enhanced
 
 import aws.sdk.kotlin.services.dynamodb.model.DeleteItemResponse
+import net.kotlinx.aws.LazyAwsClientProperty
 import net.kotlinx.aws.dynamo.dynamo
 import net.kotlinx.aws.dynamo.enhancedExp.*
-import net.kotlinx.aws.lazyAwsClient
 
 /**
  * DDB 간단접근용 헬퍼
@@ -11,7 +11,7 @@ import net.kotlinx.aws.lazyAwsClient
  */
 abstract class DbRepository<T : DbItem>() {
 
-    var aws by lazyAwsClient()
+    var aws by LazyAwsClientProperty()
 
     protected abstract val dbTable: DbTable
 
