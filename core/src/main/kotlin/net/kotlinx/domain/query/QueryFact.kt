@@ -1,10 +1,18 @@
 package net.kotlinx.domain.query
 
+import net.kotlinx.core.Kdsl
+
 /**
  * 단일 테이블 대상의 비정형 쿼리를 위한 매트릭 조합
  * 가능한 테이블중 가장 위에 있는것을 선택한다.
  * */
-class QueryFact(block: QueryFact.() -> Unit = {}): QueryData {
+class QueryFact : QueryData {
+
+    @Kdsl
+    constructor(block: QueryFact.() -> Unit = {}) {
+        apply(block)
+    }
+
     /** 컬럼 명 */
     override var name: String = ""
 
@@ -17,10 +25,7 @@ class QueryFact(block: QueryFact.() -> Unit = {}): QueryData {
     /** 없으면 matric 취급 */
     var dataType: QueryFactType = QueryFactType.SUM
 
-    override val format:String
-        get()  = dataType.format(name)
+    override val format: String
+        get() = dataType.format(name)
 
-    init {
-        block(this)
-    }
 }

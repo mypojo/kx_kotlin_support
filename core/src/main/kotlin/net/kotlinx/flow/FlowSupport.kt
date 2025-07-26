@@ -18,6 +18,7 @@ suspend fun <T, R> Flow<T>.execute(concurrency: Int = DEFAULT_CONCURRENCY, trans
  * collect 의 편의버전
  * 흠.. 필요 없으면 지우자
  * */
+@Deprecated("사용안함")
 suspend fun <T> Flow<T>.collectIt(block: () -> FlowCollector<T>) = this.collect(block())
 
 /**

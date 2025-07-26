@@ -3,10 +3,10 @@ package net.kotlinx.logback
 import ch.qos.logback.classic.Level
 import kotlin.reflect.KClass
 
-/** 트레이스로 변경 */
+/** 해당 패키지의 로그 레벨을 트레이스로 변경 */
 fun KClass<*>.logTrace(depth: Int = 0): String = logLevelTo(depth, Level.TRACE)
 
-/** 디버그로 변경 */
+/** 해당 패키지의 로그 레벨을 디버그로 변경 */
 fun KClass<*>.logDebug(depth: Int = 0): String = logLevelTo(depth, Level.DEBUG)
 
 /**

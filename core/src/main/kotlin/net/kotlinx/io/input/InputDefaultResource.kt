@@ -5,7 +5,7 @@ import java.io.InputStream
 
 
 /**
- * InputResource inputStream용
+ * InputResource 의 기본 구현체
  * */
 data class InputDefaultResource(override val inputStream: InputStream) : InputResource {
 

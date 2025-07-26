@@ -23,18 +23,18 @@ class FileRandomShuffleUtil(
 
         val outDir = File(toPath)
         outDir.mkdirs()
-        val outDirLength = outDir.absolutePath.length -1
+        val outDirLength = outDir.absolutePath.length - 1
 
         Files.walk(Paths.get(workDir))
             .map { it.toFile() }
             .filter { it.isFile }
             .filter { exts.any { ext -> it.name.endsWith(ext) } }
             .forEach {
-                val endIndex = it.absolutePath.length - it.name.length -1
+                val endIndex = it.absolutePath.length - it.name.length - 1
                 val midPath = it.absolutePath.substring(outDirLength, endIndex)
                 val newFile = File(outDir, "$midPath$pathSeparator${it.name}")
                 it.renameTo(newFile)
-                log.trace("move {} => {}", it.absolutePath ,newFile.absolutePath)
+                log.trace("move {} => {}", it.absolutePath, newFile.absolutePath)
             }
 
     }

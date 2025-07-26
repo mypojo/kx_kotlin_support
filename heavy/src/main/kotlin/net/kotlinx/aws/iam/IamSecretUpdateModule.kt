@@ -9,7 +9,7 @@ import aws.sdk.kotlin.services.iam.updateAccessKey
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsLocal
-import net.kotlinx.aws.toLocalDateTime
+import net.kotlinx.aws.toKoreaDateTime
 import net.kotlinx.number.maxWith
 import net.kotlinx.string.toTextGrid
 import net.kotlinx.time.toKr01
@@ -28,7 +28,7 @@ class IamSecretUpdateModule() {
 
     private data class AwsIamKey(val key: AccessKeyMetadata, val limit: Duration) {
         /** 생성시간 */
-        val createTime = key.createDate!!.toLocalDateTime()
+        val createTime = key.createDate!!.toKoreaDateTime()
 
         /** 얼마나 지났는지 */
         val afterTime: Long = System.currentTimeMillis() - createTime.toLong()

@@ -1,4 +1,4 @@
-package net.kotlinx.flow
+package net.kotlinx.file
 
 import kotlinx.coroutines.flow.FlowCollector
 import net.kotlinx.core.Kdsl
@@ -11,10 +11,10 @@ import java.io.OutputStreamWriter
  * 문자열로 파일을 기록하는 간이도구
  * csv가 아닌 xml 등을 기록할때 사용함
  *  */
-class FileStringCollector : FlowCollector<List<String>>, AutoCloseable {
+class FileLineCollector : FlowCollector<List<String>>, AutoCloseable {
 
     @Kdsl
-    constructor(block: FileStringCollector.() -> Unit = {}) {
+    constructor(block: FileLineCollector.() -> Unit = {}) {
         apply(block)
     }
 

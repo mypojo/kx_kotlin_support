@@ -1,4 +1,6 @@
+import ch.qos.logback.classic.Level
 import net.kotlinx.gradle.get
+import net.kotlinx.logback.TempLogger
 import net.kotlinx.number.halfUp
 import net.kotlinx.number.toSiText
 import net.kotlinx.string.toTextGridPrint
@@ -103,7 +105,7 @@ allprojects {
         archiveFileName = "allDependencies.zip"
         doLast {
             val sumOf = files.sumOf { it.length() }
-            println("용량확인.. $archiveFile ->  ${sumOf.toSiText()}")
+            log.debug { "용량확인.. $archiveFile ->  ${sumOf.toSiText()}" }
             listOf("이름", "용량", "비율").toTextGridPrint {
                 files.sortedByDescending { it.length() }.take(100).map {
                     arrayOf(it.name, it.length().toSiText(), "${(it.length() * 100.0 / sumOf).toBigDecimal().halfUp(2)}%")
@@ -166,37 +168,40 @@ publishing {
  * org.gradle.configuration-cache=true 가 있어야 doLast가 병렬 실행됨
  * 일반적인 빌드는 --parallel 만 있어도 병렬 처리됨
  * */
+// TempLogger 인스턴스 생성 (기본 로그 레벨: DEBUG)
+val log = TempLogger(Level.DEBUG)
+
 tasks.register("deployAll") {
     group = "aws"
     dependsOn(":t1", ":t2", ":t3")
     doLast {
-        println("배포 3종 완료!")
+        log.debug { "배포 3종 완료!" }
     }
 }
 
 tasks.register("t1") {
     group = "aws"
     doLast {
-        println("작업1!! ${LocalDateTime.now().toKr01()}")
+        log.debug { "작업1!! ${LocalDateTime.now().toKr01()}" }
         Thread.sleep(1000 * 3)
-        println("작업1!! ${LocalDateTime.now().toKr01()}")
+        log.info { "작업1!! ${LocalDateTime.now().toKr01()}" }
     }
 }
 
 tasks.register("t2") {
     group = "aws"
     doLast {
-        println("작업2!! ${LocalDateTime.now().toKr01()}")
+        log.debug { "작업2!! ${LocalDateTime.now().toKr01()}" }
         Thread.sleep(1000 * 3)
-        println("작업2!! ${LocalDateTime.now().toKr01()}")
+        log.info { "작업2!! ${LocalDateTime.now().toKr01()}" }
     }
 }
 
 tasks.register("t3") {
     group = "aws"
     doLast {
-        println("작업3!! ${LocalDateTime.now().toKr01()}")
+        log.debug { "작업3!! ${LocalDateTime.now().toKr01()}" }
         Thread.sleep(1000 * 3)
-        println("작업3!! ${LocalDateTime.now().toKr01()}")
+        log.info { "작업3!! ${LocalDateTime.now().toKr01()}" }
     }
 }

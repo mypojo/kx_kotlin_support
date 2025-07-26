@@ -1,7 +1,7 @@
 package net.kotlinx.aws.s3
 
 import aws.sdk.kotlin.services.s3.model.Object
-import net.kotlinx.aws.toLocalDateTime
+import net.kotlinx.aws.toKoreaDateTime
 import net.kotlinx.string.encodeUrl
 import java.time.LocalDateTime
 
@@ -60,7 +60,7 @@ data class S3Data(
 
     /** 파일 최종 수정일 */
     val lastModified: LocalDateTime?
-        get() = obj?.lastModified?.toLocalDateTime()
+        get() = obj?.lastModified?.toKoreaDateTime()
 
     /** 파일 크기 */
     val size: Long?

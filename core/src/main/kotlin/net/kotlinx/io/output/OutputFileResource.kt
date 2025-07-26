@@ -13,7 +13,7 @@ data class OutputFileResource(
     /** 파일 */
     val file: File,
     /** 파일로 쓸 경우 압축 여부 */
-    var writerGzip: Boolean = false
+    val writerGzip: Boolean = false
 ) : OutputResource {
 
     override val outputStream: OutputStream

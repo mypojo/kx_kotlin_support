@@ -7,7 +7,7 @@ import aws.sdk.kotlin.services.quicksight.listDataSources
 import aws.sdk.kotlin.services.quicksight.model.*
 import net.kotlinx.aws.awsConfig
 import net.kotlinx.aws.s3.S3Data
-import net.kotlinx.aws.toLocalDateTime
+import net.kotlinx.aws.toKoreaDateTime
 import net.kotlinx.string.toTextGridPrint
 import net.kotlinx.time.toKr01
 
@@ -20,8 +20,8 @@ fun List<DataSource>.printSimple() {
                 it.type,
                 it.name,
                 it.arn,
-                it.createdTime!!.toLocalDateTime().toKr01(),
-                it.lastUpdatedTime!!.toLocalDateTime().toKr01()
+                it.createdTime!!.toKoreaDateTime().toKr01(),
+                it.lastUpdatedTime!!.toKoreaDateTime().toKr01()
             )
         }
     }

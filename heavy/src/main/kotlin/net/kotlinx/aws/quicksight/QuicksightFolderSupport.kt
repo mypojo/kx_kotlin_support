@@ -3,7 +3,7 @@ package net.kotlinx.aws.quicksight
 import aws.sdk.kotlin.services.quicksight.*
 import aws.sdk.kotlin.services.quicksight.model.*
 import net.kotlinx.aws.awsConfig
-import net.kotlinx.aws.toLocalDateTime
+import net.kotlinx.aws.toKoreaDateTime
 import net.kotlinx.collection.doUntilTokenNull
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.string.toTextGridPrint
@@ -19,8 +19,8 @@ fun List<Folder>.printSimple() {
                 it.folderPath?.joinToString("->") ?: "-",
                 it.folderType,
                 it.sharingModel,
-                it.createdTime!!.toLocalDateTime().toKr01(),
-                it.lastUpdatedTime!!.toLocalDateTime().toKr01()
+                it.createdTime!!.toKoreaDateTime().toKr01(),
+                it.lastUpdatedTime!!.toKoreaDateTime().toKr01()
             )
         }
     }

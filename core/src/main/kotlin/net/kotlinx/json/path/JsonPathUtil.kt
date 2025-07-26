@@ -7,6 +7,7 @@ import com.jayway.jsonpath.spi.mapper.GsonMappingProvider
 import net.kotlinx.json.gson.GsonSet
 
 
+/** json에서 경로를 찾는 특수 문법 제공 */
 object JsonPathUtil {
 
     val DEFAULT_CONFIGURATION: Configuration by lazy {

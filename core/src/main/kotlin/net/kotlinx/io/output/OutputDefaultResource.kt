@@ -4,6 +4,6 @@ import java.io.OutputStream
 
 
 /**
- * OutputResource OutputStream용
+ * OutputResource 의 기본 구현체
  * */
 data class OutputDefaultResource(override val outputStream: OutputStream) : OutputResource
