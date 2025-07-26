@@ -2,7 +2,6 @@ package net.kotlinx.validation.bean
 
 import jakarta.validation.Validation
 import jakarta.validation.Validator
-import net.kotlinx.string.CharSets
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator
 import org.springframework.context.support.ResourceBundleMessageSource
 import org.springframework.validation.beanvalidation.MessageSourceResourceBundleLocator
@@ -30,7 +29,7 @@ object HibernateValidation {
                     MessageSourceResourceBundleLocator(
                         ResourceBundleMessageSource().apply {
                             setBasename("ValidationMessages")
-                            setDefaultEncoding(CharSets.UTF_8.name())
+                            setDefaultEncoding(Charsets.UTF_8.name())
                         }
                     )
                 )

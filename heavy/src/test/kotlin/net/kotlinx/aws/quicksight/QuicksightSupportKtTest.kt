@@ -8,7 +8,7 @@ import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.regex.RegexSet
-import net.kotlinx.string.retainFrom
+import net.kotlinx.regex.retainFrom
 import net.kotlinx.system.DeploymentType
 
 class QuicksightSupportKtTest : BeSpecHeavy() {

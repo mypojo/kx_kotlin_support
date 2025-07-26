@@ -12,6 +12,13 @@ enum class OsType {
     LINUX,
     ;
 
+    @Deprecated("command 사용하세요")
+    fun toGradleCommand(command: String): List<String> = when (this) {
+        WINDOWS -> listOf("cmd", "/c", command)
+        LINUX -> listOf("bash", "-c", command)
+        MAC -> listOf("bash", "-c", command) // mac 은 잘 모름
+    }
+
     /**
      * os에 따른 커멘드 라인을 리턴해줌
      * ex) commandLine(build.command(command))
@@ -21,14 +28,6 @@ enum class OsType {
      * ex) npx vite build
      * ex) aws s3 sync ${project(":demo-svelte").projectDir}\dist s3://demo.kotlinx.net/
      * */
-    @Deprecated("command 사용하세요")
-    fun toGradleCommand(command: String): List<String> = when (this) {
-        WINDOWS -> listOf("cmd", "/c", command)
-        LINUX -> listOf("bash", "-c", command)
-        MAC -> listOf("bash", "-c", command) // mac 은 잘 모름
-    }
-
-    /** OS별 기본 커맨드를 리턴 */
     fun command(): List<String> = when (this) {
         WINDOWS -> listOf("cmd", "/c")
         LINUX -> listOf("bash", "-c")

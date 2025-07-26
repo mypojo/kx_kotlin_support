@@ -4,7 +4,7 @@ import com.google.gson.*
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
 import net.kotlinx.regex.RegexSet
-import net.kotlinx.string.retainFrom
+import net.kotlinx.regex.retainFrom
 import net.kotlinx.time.TimeFormat
 import net.kotlinx.time.UtcConverter
 import java.io.IOException

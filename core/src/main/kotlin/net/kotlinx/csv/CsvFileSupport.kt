@@ -3,14 +3,13 @@ package net.kotlinx.csv
 import com.github.doyaaaaaken.kotlincsv.client.CsvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
-import net.kotlinx.string.CharSets
 import java.io.File
 import java.nio.charset.Charset
 
 //==================================================== 쓰기 ======================================================
 
 /** 간단하게 인메모리로 CSV 쓰기 */
-fun File.writeCsvLines(lines: List<List<Any?>>, charset: Charset = CharSets.UTF_8) {
+fun File.writeCsvLines(lines: List<List<Any?>>, charset: Charset = Charsets.UTF_8) {
     csvWriter { this.charset = charset.toString() }.writeAll(lines, this)
 }
 
@@ -20,7 +19,7 @@ fun File.writeCsvLines(lines: List<List<Any?>>, charset: Charset = CharSets.UTF_
  * 간단하게 인메모리로 CSV 읽기
  * @see readLines
  *  */
-fun File.readCsvLines(charset: Charset = CharSets.UTF_8): List<List<String>> {
+fun File.readCsvLines(charset: Charset = Charsets.UTF_8): List<List<String>> {
     return csvReader { this.charset = charset.toString() }.readAll(this)
 }
 
@@ -29,7 +28,7 @@ fun File.readCsvLines(charset: Charset = CharSets.UTF_8): List<List<String>> {
  * @see forEachLine -> csv 아니고, 일반 라인 읽기
  * @see toFlow 가능하면 이거사용
  *  */
-fun File.readCsvLines(charset: Charset = CharSets.UTF_8, callback: (List<String>) -> Unit) {
+fun File.readCsvLines(charset: Charset = Charsets.UTF_8, callback: (List<String>) -> Unit) {
     val reader = csvReader { this.charset = charset.toString() }
     reader.open(this) {
         readAllAsSequence().forEach { row ->
@@ -50,7 +49,7 @@ fun File.readCsvLines(charset: Charset = CharSets.UTF_8, callback: (List<String>
 fun File.readCsvLinesWithHeaderAndChunk(
     reader: CsvReader = csvReader(),
     chunkSize: Int = 100,
-    callback: (header: List<String>, rows: List<List<String>>) -> Unit
+    callback: (header: List<String>, rows: List<List<String>>) -> Unit,
 ) {
     reader.open(this) {
         val iterator = readAllAsSequence().iterator()
@@ -82,7 +81,7 @@ fun File.readCsvLinesWithHeaderAndChunk(
  * @see toFlow
  * */
 @Deprecated("xx")
-fun File.readCsvLinesCnt(charset: Charset = CharSets.UTF_8): Long {
+fun File.readCsvLinesCnt(charset: Charset = Charsets.UTF_8): Long {
     var count = 0L
     this.readCsvLines(charset) { row ->
         count++

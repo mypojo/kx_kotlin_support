@@ -22,7 +22,7 @@ import net.kotlinx.json.serial.SerialJsonSet
 import net.kotlinx.json.serial.SerialToJson
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.regex.RegexSet
-import net.kotlinx.string.retainFrom
+import net.kotlinx.regex.retainFrom
 import net.kotlinx.time.TimeStart
 
 /**

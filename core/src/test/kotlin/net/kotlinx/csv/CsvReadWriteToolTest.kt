@@ -19,8 +19,8 @@ import net.kotlinx.okhttp.OkHttpReq
 import net.kotlinx.okhttp.download
 import net.kotlinx.okhttp.fetchInner
 import net.kotlinx.reflect.name
-import net.kotlinx.string.CharSets
 import net.kotlinx.string.CharUtil
+import net.kotlinx.string.MS949
 import net.kotlinx.system.ResourceHolder
 import net.kotlinx.system.SystemUtil
 import okhttp3.OkHttpClient
@@ -118,7 +118,7 @@ class CsvReadWriteToolTest : BeSpecLight() {
                         writerFile = workRoot.slash("TSV결과파일.csv")
                         writerFactory = {
                             csvWriter {
-                                charset = CharSets.MS949.name()
+                                charset = Charsets.MS949.name()
                             }
                         }
                         processor = { line ->

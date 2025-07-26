@@ -1,6 +1,7 @@
 package net.kotlinx.string
 
 import net.kotlinx.regex.RegexSet
+import net.kotlinx.regex.retainFrom
 
 /**
  * 도메인 벨리데이션 관련 코드

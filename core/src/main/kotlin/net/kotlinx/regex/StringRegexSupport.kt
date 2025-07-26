@@ -8,6 +8,7 @@ package net.kotlinx.regex
  * 2. XML or HTML 파서 -> HTML에 사용시 에러가 너무 많아서 포기.(주석, 잘못된 태그, 특수문법  등등 별게 다 에러를 유발함) 게다가 HTML뿐 아니라 JSON,핸들바,암호화된 문자열 등을 읽을 상황도 많기때문에 사용 불가능
  */
 
+//==================================================== 매칭 ======================================================
 
 /**
  * 매칭범위 찾음
@@ -25,3 +26,15 @@ fun String.extract(pair: Pair<String, String>, op: Set<RegexOption> = RegexSet.C
 /** 텍스트 값 추출 */
 fun String.extractAll(pair: Pair<String, String>, op: Set<RegexOption> = RegexSet.CRW): List<String> =
     RegexSet.extract(pair.first, pair.second).toRegex(op).findAll(this).map { it.value }.toList()
+
+//==================================================== 일반사용 ======================================================
+
+/**
+ * 해당 매칭만 남기고 제거한다.
+ *  */
+fun String.retainFrom(regex: Regex): String = regex.findAll(this).joinToString("") { it.value }
+
+/**
+ * 해당 매칭을 제거한다.
+ *  */
+fun String.removeFrom(regex: Regex): String = this.replace(regex, "")

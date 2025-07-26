@@ -2,6 +2,7 @@ package net.kotlinx.core
 
 /**
  * 패키지 네임 기록
+ * 향후 모킹할때, 특정 확장함수를 사용하기 위함
  * ex) object StringNumberSupport : PackageNameSupport
  *  */
 interface PackageNameSupport {

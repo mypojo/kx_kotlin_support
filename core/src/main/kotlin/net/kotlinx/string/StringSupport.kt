@@ -9,7 +9,7 @@ package net.kotlinx.string
  * @see ifEmpty
  * @see ifBlank
  *  */
-inline fun String?.ifEmpty(block: () -> String): String = if (this.isNullOrEmpty()) block() else this.toString()
+inline fun String?.ifEmpty(block: () -> String): String = if (this.isNullOrEmpty()) block() else this
 
 
 /**

@@ -3,6 +3,7 @@ package net.kotlinx.string
 import mu.KotlinLogging
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.number.maxWith
+import net.kotlinx.regex.removeFrom
 import net.kotlinx.time.toKr01
 import java.time.LocalDateTime
 

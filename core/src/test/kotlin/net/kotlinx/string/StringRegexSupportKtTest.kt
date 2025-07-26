@@ -5,6 +5,8 @@ import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.regex.RegexSet
+import net.kotlinx.regex.removeFrom
+import net.kotlinx.regex.retainFrom
 
 internal class StringRegexSupportKtTest : BeSpecLog() {
     init {

@@ -19,7 +19,7 @@ import net.kotlinx.json.gson.GsonData
 import net.kotlinx.koin.Koins
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.regex.RegexSet
-import net.kotlinx.string.retainFrom
+import net.kotlinx.regex.retainFrom
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 

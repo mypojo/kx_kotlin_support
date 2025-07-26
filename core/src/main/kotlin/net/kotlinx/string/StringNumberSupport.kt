@@ -4,6 +4,7 @@ import net.kotlinx.core.PackageNameSupport
 import net.kotlinx.number.halfUp
 import net.kotlinx.number.padStart
 import net.kotlinx.regex.RegexSet
+import net.kotlinx.regex.retainFrom
 import java.math.BigDecimal
 import java.math.MathContext
 

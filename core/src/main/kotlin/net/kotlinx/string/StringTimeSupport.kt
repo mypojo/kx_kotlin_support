@@ -1,6 +1,7 @@
 package net.kotlinx.string
 
 import net.kotlinx.regex.RegexSet
+import net.kotlinx.regex.retainFrom
 import net.kotlinx.time.TimeFormat
 import net.kotlinx.time.TimeUtil
 import java.time.LocalDate

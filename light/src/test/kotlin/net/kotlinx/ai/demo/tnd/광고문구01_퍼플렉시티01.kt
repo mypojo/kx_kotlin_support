@@ -13,7 +13,7 @@ import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
 import net.kotlinx.retry.RetryTemplate
-import net.kotlinx.string.CharSets
+import net.kotlinx.string.MS949
 import net.kotlinx.system.ResourceHolder
 import net.kotlinx.time.TimeFormat
 
@@ -56,13 +56,13 @@ class 광고문구01_퍼플렉시티01 : BeSpecLight() {
                 //val file = ResourceHolder.WORKSPACE.slash("AI/TND추출/검색광고_AI솔루션_T&D자동화_템플릿 예시.xlsx")
                 val file = workRoot.slash(fileName)
 
-                //val lines = file.readCsvLines(CharSets.MS949)
+                //val lines = file.readCsvLines(Charsets.MS949)
                 val lines = file.readExcellLines().values.first()
 
                 val header = lines.take(1).first()
                 val model = set.perplexity03
                 //val model = set.perplexity02
-                val results = lines.drop(1).take(10000) .map { line ->
+                val results = lines.drop(1).take(10000).map { line ->
                     suspend {
                         val query = arr[
                             line[0],
@@ -79,7 +79,7 @@ class 광고문구01_퍼플렉시티01 : BeSpecLight() {
 
                 val resultHeader = header + listOf("번호", "title", "desc", "검수")
                 val allLines = listOf(resultHeader) + results.toDemoTndLine().map { it.liens }
-                workDir.slash("${file.nameWithoutExtension}_(${model.model.name}#${TimeFormat.YMDHMS_F02.get()}).csv").writeCsvLines(allLines, CharSets.MS949)
+                workDir.slash("${file.nameWithoutExtension}_(${model.model.name}#${TimeFormat.YMDHMS_F02.get()}).csv").writeCsvLines(allLines, Charsets.MS949)
 
 
             }
