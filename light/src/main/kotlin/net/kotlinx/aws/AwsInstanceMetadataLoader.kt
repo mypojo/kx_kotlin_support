@@ -28,7 +28,7 @@ class AwsInstanceMetadataLoader {
     lateinit var ecsLogConfig: Pair<String, String>
 
     /** AWS 클라이언트 */
-    lateinit var aws: AwsClient
+    var aws: AwsClient by LazyAwsClientProperty()
 
     private val log = KotlinLogging.logger {}
 

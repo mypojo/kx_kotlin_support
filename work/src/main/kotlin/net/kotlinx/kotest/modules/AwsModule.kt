@@ -7,7 +7,6 @@ import net.kotlinx.aws.AwsInstanceMetadataLoader
 import net.kotlinx.aws.iam.IamCredential
 import net.kotlinx.aws.iam.IamProfiles
 import net.kotlinx.aws.javaSdkv2.AwsJavaSdkV2Client
-import net.kotlinx.aws.toAwsClient
 import net.kotlinx.koin.KoinModule
 import net.kotlinx.koin.Koins.koin
 import org.koin.core.module.Module
@@ -28,7 +27,7 @@ object AwsModule : KoinModule {
 
         log.trace { "디폴트 AWS Client 주입" }
         single { AwsConfig() }
-        single { koin<AwsConfig>().toAwsClient() }
+        single { koin<AwsConfig>().client }
         single {
             AwsInstanceMetadataLoader {
                 aws = koin<AwsClient>()
@@ -47,7 +46,7 @@ object AwsModule : KoinModule {
                 single(named(profile)) {
                     //thread safe 확인 필요
                     log.debug { "[${profile}] AwsClient 생성.." }
-                    koin<AwsConfig>(profile).toAwsClient()
+                    koin<AwsConfig>(profile).client
                 }
                 single(named(profile)) {
                     AwsInstanceMetadataLoader {

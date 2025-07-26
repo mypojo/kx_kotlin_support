@@ -3,6 +3,7 @@ package net.kotlinx.ai
 import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.chat.ChatResponseFormat
 import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.LazyAwsClientProperty
 import net.kotlinx.aws.bedrock.BedrockModels
 import net.kotlinx.aws.bedrock.BedrockTextClient
 import net.kotlinx.aws.s3.S3Data
@@ -25,7 +26,7 @@ class AiModelLocalSet {
 
     var systemPrompt: Any? = null
 
-    lateinit var aws: AwsClient
+    var aws: AwsClient by LazyAwsClientProperty()
 
     lateinit var clients: List<AiTextClient>
 

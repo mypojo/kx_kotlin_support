@@ -14,6 +14,7 @@ import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceTypeUtil
+import net.kotlinx.aws.LazyAwsClientProperty
 import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.aws.s3.getObjectDownload
 import net.kotlinx.aws.s3.getObjectLines
@@ -46,7 +47,7 @@ class AthenaModule {
     private val log = KotlinLogging.logger {}
 
     /** 기본 클라이언트 */
-    lateinit var aws: AwsClient
+    var aws: AwsClient by LazyAwsClientProperty()
 
     /** 데이터베이스 명 (기본스키마) */
     lateinit var database: String

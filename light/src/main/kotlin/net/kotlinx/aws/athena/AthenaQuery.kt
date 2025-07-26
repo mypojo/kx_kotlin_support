@@ -5,6 +5,9 @@ import net.kotlinx.aws.s3.S3Data
 import java.io.File
 import java.util.*
 
+/**
+ * 파일 분리하고싶은데.. 이미 많이 써서 일단 둔다
+ * */
 sealed interface AthenaQuery {
     /** 쿼리 */
     val query: String
@@ -36,7 +39,7 @@ data class AthenaReadAll(
     /** 쿼리 */
     override val query: String,
     /** CSV line 인메모리 읽기 */
-    var callback: suspend (List<List<String>>) -> Unit = {}
+    var callback: suspend (List<List<String>>) -> Unit = {},
 ) : AthenaQuery {
 
     override var token: String? = UUID.randomUUID().toString()
@@ -49,7 +52,7 @@ data class AthenaDownload(
     /** 쿼리 */
     override val query: String,
     /** 파일 다운로드 (스트림 처리용) */
-    var callback: (File) -> Unit = {}
+    var callback: (File) -> Unit = {},
 ) : AthenaQuery {
     /** 결과 */
     var file: File? = null
