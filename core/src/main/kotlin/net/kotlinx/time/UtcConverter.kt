@@ -6,7 +6,7 @@ import java.time.ZoneId
 
 
 /**
- * UTC 변환기
+ * UTC 변환 / 역변환기
  * */
 class UtcConverter {
 

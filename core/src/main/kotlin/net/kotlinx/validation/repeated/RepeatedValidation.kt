@@ -3,7 +3,6 @@ package net.kotlinx.validation.repeated
 import net.kotlinx.core.Kdsl
 import net.kotlinx.domain.developer.DeveloperData
 import net.kotlinx.string.abbr
-import net.kotlinx.validation.Validator
 
 
 /**
@@ -40,7 +39,7 @@ class RepeatedValidation {
     var authors: Collection<DeveloperData> = emptySet()
 
     /** kotin 의존성만 주입 가능하다. spring 등은 일단 고려하지 않음 */
-    lateinit var validator: Validator
+    lateinit var validator: RepeatedValidator
 
     /** 벨리데이션 실행 */
     suspend fun validate(): RepeatedValidationResult {

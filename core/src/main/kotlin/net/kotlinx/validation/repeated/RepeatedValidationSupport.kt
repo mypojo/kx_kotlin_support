@@ -7,6 +7,16 @@ import net.kotlinx.string.toTextGridPrint
 import java.util.concurrent.Callable
 
 
+/**
+ * 하나의 성공메세지 or 다수의 실패 메세지가 존재할 수 있는 벨리데이터 정의 (공용)
+ * 폼이나 로직 벨리데이션은 이미 잘 만들어진 모듈이 있음
+ * 이건 백그라운드 로직 등에서 사용할 용도임
+ *
+ * 예외발생시 리스트에 추가. -> 리스트에 하나라도 추가되면 에러로 간주. 반대로 비어있으면 성공으로 간주
+ * 리턴은 성공 메세지
+ * */
+typealias RepeatedValidator = suspend (MutableList<String>) -> String
+
 /** 설정 확인용 */
 fun List<RepeatedValidation>.print() {
     listOf("그룹", "코드", "설명", "담당자", "검사범위").toTextGridPrint { this.map { it.toGridArray() } }
