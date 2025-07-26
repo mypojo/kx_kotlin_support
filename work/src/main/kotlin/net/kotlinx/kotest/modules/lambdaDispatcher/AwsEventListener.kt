@@ -3,7 +3,7 @@ package net.kotlinx.kotest.modules.lambdaDispatcher
 import com.google.common.eventbus.Subscribe
 import mu.KotlinLogging
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatcherDeadEvent
-import net.kotlinx.aws.lambda.dispatch.asynch.CodeDeployHookEvent
+import net.kotlinx.aws.lambda.dispatch.asynch.AwsCodeDeployHookEvent
 import net.kotlinx.aws.lambda.dispatch.asynch.SqsEvent
 import net.kotlinx.reflect.name
 import net.kotlinx.slack.SlackMessageSenders
@@ -20,7 +20,7 @@ class AwsEventListener {
 
 
     @Subscribe
-    fun onEvent(event: CodeDeployHookEvent) {
+    fun onEvent(event: AwsCodeDeployHookEvent) {
         SlackMessageSenders.Alert.send {
             workDiv = LambdaDispatcherDeadEvent::class.name()
             descriptions = listOf("CodeDeployHookEvent 해주세요!!!")

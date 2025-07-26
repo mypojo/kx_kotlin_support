@@ -3,21 +3,17 @@ package net.kotlinx.aws.lambda.dispatch.asynch
 import com.amazonaws.services.lambda.runtime.Context
 import com.google.common.eventbus.EventBus
 import mu.KotlinLogging
-import net.kotlinx.aws.lambda.dispatch.AwsLambdaEvent
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatch
 import net.kotlinx.guava.postEvent
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.koin.Koins.koinLazy
 
 
-data class CodeDeployHookEvent(val lifecycleEventHookExecutionId: String, val deploymentId: String) : AwsLambdaEvent
-
-
 /**
  * 코드 드플로이 훅
  * 이벤트브릿지 형식이 아님
  */
-class AwsCustomCodeDeployHookPublisher : LambdaDispatch {
+class AwsCodeDeployHookPublisher : LambdaDispatch {
 
     private val log = KotlinLogging.logger {}
 
@@ -39,7 +35,7 @@ class AwsCustomCodeDeployHookPublisher : LambdaDispatch {
 
         //여기 실서버 8080용 단위테스트가 들어가야 함
         log.info("코드디플로이 빌드 후크 수신 : $deploymentId $lifecycleEventHookExecutionId")
-        return bus.postEvent { CodeDeployHookEvent(lifecycleEventHookExecutionId, deploymentId) }
+        return bus.postEvent { AwsCodeDeployHookEvent(lifecycleEventHookExecutionId, deploymentId) }
     }
 
 }

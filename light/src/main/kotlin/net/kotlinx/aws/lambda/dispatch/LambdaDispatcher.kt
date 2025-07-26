@@ -5,7 +5,7 @@ import com.google.common.eventbus.EventBus
 import com.lectra.koson.ObjectType
 import mu.KotlinLogging
 import net.kotlinx.aws.lambda.LambdaHandlerUtil
-import net.kotlinx.aws.lambda.dispatch.asynch.AwsCustomCodeDeployHookPublisher
+import net.kotlinx.aws.lambda.dispatch.asynch.AwsCodeDeployHookPublisher
 import net.kotlinx.aws.lambda.dispatch.asynch.AwsEventBridgePublisher
 import net.kotlinx.aws.lambda.dispatch.asynch.AwsSnsPublisher
 import net.kotlinx.aws.lambda.dispatch.asynch.AwsSqsPublisher
@@ -45,7 +45,7 @@ class LambdaDispatcher {
      * */
     var logics: List<LambdaDispatch> = listOf(
         //==================================================== asynch (guava eventbus 호출) ======================================================
-        AwsCustomCodeDeployHookPublisher(),
+        AwsCodeDeployHookPublisher(),
         AwsEventBridgePublisher(),
         AwsSnsPublisher(),
         AwsSqsPublisher(),

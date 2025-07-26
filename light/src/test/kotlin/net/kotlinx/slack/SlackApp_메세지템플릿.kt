@@ -1,7 +1,7 @@
 package net.kotlinx.slack
 
 import aws.sdk.kotlin.services.codedeploy.model.LifecycleEventStatus
-import net.kotlinx.aws.lambda.dispatch.asynch.CodeDeployHookEvent
+import net.kotlinx.aws.lambda.dispatch.asynch.AwsCodeDeployHookEvent
 import net.kotlinx.domain.developer.DeveloperData
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
@@ -19,7 +19,7 @@ class SlackApp_메세지템플릿 : BeSpecHeavy() {
 
         Given("SlackSimpleAlert") {
 
-            val hookEvent = CodeDeployHookEvent("aaa", "bbb")
+            val hookEvent = AwsCodeDeployHookEvent("aaa", "bbb")
 
             xThen("코드디플로이 훅 승인메세지 데모") {
                 val host = "https://naver.com"
@@ -33,8 +33,8 @@ class SlackApp_메세지템플릿 : BeSpecHeavy() {
                 )
                 val buttonLink = pairs.joinToString(" / ") {
                     val link = hostApiPath.toHttpUrl().build {
-                        addQueryParameter(CodeDeployHookEvent::deploymentId.name, hookEvent.deploymentId)
-                        addQueryParameter(CodeDeployHookEvent::lifecycleEventHookExecutionId.name, hookEvent.lifecycleEventHookExecutionId)
+                        addQueryParameter(AwsCodeDeployHookEvent::deploymentId.name, hookEvent.deploymentId)
+                        addQueryParameter(AwsCodeDeployHookEvent::lifecycleEventHookExecutionId.name, hookEvent.lifecycleEventHookExecutionId)
                         addQueryParameter(LifecycleEventStatus::class.name(), it.second.value)
                     }
                     it.first.slackLink(link)
