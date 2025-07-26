@@ -5,6 +5,7 @@ import net.kotlinx.aws.athena.table.AthenaTableFormat
 import net.kotlinx.aws.athena.table.AthenaTablePartitionType
 
 
+@Deprecated("키네시스 데이터 파이어호스를 쓰세요")
 object EventBridgeTable {
 
     /** 이벤트브릿지 로그 */

@@ -20,29 +20,6 @@ import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.okhttp.OkHttpMediaType
 
 
-/** 람다 실행 설정 */
-interface LambdaDispatch {
-
-    /**
-     * 체크 후 처리 가능 -> 이벤트 post 후  null이 아닌 객체를 리턴
-     * @return  Map<String, Any> 으로 최종 변환되어서 람다 응답됨.
-     * */
-    suspend fun postOrSkip(input: GsonData, context: Context?): Any?
-}
-
-/** 람다로 작동하는 동작들 */
-interface LambdaDispatchLogic {
-
-    suspend fun execute(input: GsonData): Any
-
-}
-
-/** 실패 이벤트 */
-data class LambdaDispatcherFailEvent(val gsonData: GsonData, val e: Throwable) : AwsLambdaEvent
-
-/** 매칭 결과가 하나도 없을때 이벤트 */
-data class LambdaDispatcherDeadEvent(val gsonData: GsonData) : AwsLambdaEvent
-
 /**
  * 모든 요청을 한곳에서 디스패치함
  *

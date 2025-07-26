@@ -7,13 +7,6 @@ import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.json.serial.SerialToJson
 
-/** 람다결과(map) 형식 지원하는 객체 */
-interface LambdaMapResult {
-
-    fun toLambdaMap(): Map<String, Any>
-
-}
-
 
 object LambdaHandlerUtil {
 

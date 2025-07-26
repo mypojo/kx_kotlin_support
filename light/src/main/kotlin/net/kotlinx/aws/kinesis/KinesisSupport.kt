@@ -22,7 +22,11 @@ suspend fun <T : Identity<out Any>> KinesisClient.putRecord(streamName: String, 
     this.data = gson.toJson(data)!!.toByteArray()
 }
 
-/** 다수의 객체(data class) 입력 샘플 */
+/**
+ * 다수의 객체(data class) 입력 샘플
+ * @see KinesisWriter
+ * */
+@Deprecated("사용안함 KinesisWriter 쓰세요")
 suspend fun <T : Identity<out Any>> KinesisClient.putRecords(streamName: String, datas: List<T>, gson: Gson = GsonSet.TABLE_UTC_WITH_ZONE): PutRecordsResponse = this.putRecords {
     this.streamName = streamName
     this.records = datas.map { data ->

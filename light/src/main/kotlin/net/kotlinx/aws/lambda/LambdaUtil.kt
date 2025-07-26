@@ -1,8 +1,6 @@
 package net.kotlinx.aws.lambda
 
 import net.kotlinx.aws.AwsConfig
-import net.kotlinx.json.gson.GsonSet
-import net.kotlinx.string.ResultText
 import java.io.File
 import kotlin.time.Duration.Companion.minutes
 
@@ -54,22 +52,3 @@ object LambdaUtil {
 
 }
 
-/** 람다 호출 실패시 json 컨버팅 가능한 객체 */
-data class LambdaFail(
-    val errorType: String,
-    val errorMessage: String,
-    val stackTrace: List<String>,
-    val cause: LambdaFail?
-) {
-
-    companion object {
-        fun from(resultText: ResultText) = GsonSet.GSON.fromJson(resultText.result, LambdaFail::class.java)!!
-    }
-
-}
-
-//val lambdaFail = GsonSet.GSON.fromJson(resp.result, LambdaFail::class.java)
-//log.warn { "실패(람다호출) : ${lambdaFail.errorType} => ${lambdaFail.errorMessage}" }
-//if (log.isDebugEnabled) {
-//    lambdaFail.stackTrace.forEach { log.debug { " -> $it" } }
-//}

@@ -14,7 +14,6 @@ val AwsClient.dynamo: DynamoDbClient
 /** 자주 사용되는 값 */
 typealias DynamoMap = Map<String, AttributeValue>
 
-
 /**
  * PartiQL 로 데이터 가져오기
  * PartiQL로는 단건 삭제가 안됨 -> 이걸로 읽은 후 삭제 해주면 됨

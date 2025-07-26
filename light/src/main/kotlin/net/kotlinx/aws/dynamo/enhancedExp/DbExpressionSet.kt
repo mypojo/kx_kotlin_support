@@ -7,6 +7,7 @@ import net.kotlinx.string.lett
 
 /**
  * 자주 사용되는 쿼리 표현식 샘플
+ * 사실 DDB 에서 이거 이상으로 더 나올게 없긴 함
  * */
 object DbExpressionSet {
 

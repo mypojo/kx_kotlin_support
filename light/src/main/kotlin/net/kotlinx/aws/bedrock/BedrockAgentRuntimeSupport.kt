@@ -11,7 +11,7 @@ val AwsClient.brar: BedrockAgentRuntimeClient
     get() = getOrCreateClient { BedrockAgentRuntimeClient { awsConfig.build(this) }.regist(awsConfig) }
 
 
-/** 간단 텍스트 변환 */
+/** 간단 텍스트 변환 -> 스트리밍 전체 인메모리로 */
 suspend fun InvokeAgentResponse.toSimpleText(): String = buildString { toSimpleText { append(it) } }
 
 /** 간단 텍스트 변환 - 스트리밍 */
