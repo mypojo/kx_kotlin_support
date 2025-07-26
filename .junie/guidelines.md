@@ -7,8 +7,10 @@
 
 ## gradle 멀티프로젝트 구조
 구조는 의존성의 크기과 관계가 있음
-core : 최소한의 의존성을 가짐
-light : AWS Lambda 를 위한 의존성을 가짐
+1. core : 최소한의 의존성을 가짐
+2. light : AWS Lambda 를 위한 의존성을 가짐
+3. heavy : 웹서버 및 RDS를 위한 의존성을 가짐
+4. heavy_boot3 : 스프링부트3에 관련된 의존성을 가짐
 
 ## 로깅
 로그 설정시 아래처럼 companion object /  KotlinLogging 으로 설정해줘
