@@ -26,6 +26,8 @@ import java.util.concurrent.TimeUnit
  * 경고!  락 조회는 kotlin 버전으로 하면됨 (지금 누가 리소스를 선점하고있는지 보고싶을때)
  *
  * 주의!!! 스래드로 실행하세요!! 코루틴 ㄴㄴ
+ *
+ * => 코틀린으로 다시 짤라고 햇더니 AI 가 하지말래..
  */
 class DynamoLockManager {
 
