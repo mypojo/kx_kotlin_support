@@ -11,7 +11,7 @@ val AwsClient.budget: BudgetsClient
 
 /**
  * 예산 삭제후 새로만듬
- * 일반적인 월단이 예산 알림의 경우 굳이 수정할 필요성을 못느끼겟다.
+ * 일반적인 월단위 예산 알림의 경우 굳이 수정할 필요성을 못느끼겟다.
  * */
 suspend fun BudgetsClient.deleteAndCreateBudget(budget: BudgetTemplate) {
     try {

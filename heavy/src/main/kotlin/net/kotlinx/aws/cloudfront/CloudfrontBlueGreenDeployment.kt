@@ -88,6 +88,33 @@ class CloudfrontBlueGreenDeployment {
         client.cloudFront.clear(distributionId, invalidationPaths)
     }
 
+    /**
+     * 현재 배포 상태를 확인하고, 배포해야 할 대체 오리진을 반환함
+     * 현재 A 오리진을 사용 중이면 B 오리진을 반환하고, B 오리진을 사용 중이면 A 오리진을 반환함
+     * @return 배포해야 할 대체 오리진 (id, domainName)
+     */
+    suspend fun getTargetOrigin(): Pair<String, String> {
+        val existConfig = client.cloudFront.getDistribution {
+            id = distributionId
+        }.distribution!!.distributionConfig!!
+
+        return existConfig.origins!!.items!!.let { origins ->
+            check(origins.size == 1) { "오리진이 여러 개 존재합니다. 현재 오리진 개수: ${origins.size}" }
+            val origin = origins.first()
+            when (val originId = origin.id) {
+                blue.first -> {
+                    log.info { "현재 블루 오리진(${blue.first})을 사용 중입니다. 그린 오리진(${green.first})으로 배포해야 합니다." }
+                    green
+                }
+                green.first -> {
+                    log.info { "현재 그린 오리진(${green.first})을 사용 중입니다. 블루 오리진(${blue.first})으로 배포해야 합니다." }
+                    blue
+                }
+                else -> throw IllegalStateException("origin id(${originId})가 blueGreen의 id(${blue.first}, ${green.first})과 일치하지 않음")
+            }
+        }
+    }
+
     companion object {
         private val log = KotlinLogging.logger {}
     }
