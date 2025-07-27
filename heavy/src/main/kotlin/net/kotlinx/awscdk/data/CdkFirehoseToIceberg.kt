@@ -45,9 +45,9 @@ class CdkFirehoseToIceberg : CdkInterface {
      * 순서대로 DB, 테이블, 오퍼레이터
      */
     data class RouterQuery(
-        val db: String = ".route.db", 
-        val table: String = ".route.table", 
-        val op: String = ".route.op"
+        val db: String = ".route.db",
+        val table: String = ".route.table",
+        val op: String = ".route.op",
     )
 
     var routerQuery: RouterQuery = RouterQuery()
@@ -67,7 +67,7 @@ class CdkFirehoseToIceberg : CdkInterface {
         /** 테이블 이름 */
         val tableName: String,
         /** 유니크 키 목록 */
-        val uniqueKeys: List<String>
+        val uniqueKeys: List<String>,
     )
 
     /**

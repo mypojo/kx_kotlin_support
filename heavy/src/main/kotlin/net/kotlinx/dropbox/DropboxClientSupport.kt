@@ -2,7 +2,6 @@ package net.kotlinx.dropbox
 
 import com.dropbox.core.v2.DbxClientV2
 
-
 fun DbxClientV2.listAll(path: String): List<com.dropbox.core.v2.files.Metadata> {
     val list = mutableListOf<com.dropbox.core.v2.files.Metadata>()
     var result = this.files().listFolder(path)

@@ -8,13 +8,13 @@ import software.amazon.awscdk.RemovalPolicy
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.dynamodb.*
 
-private fun String.cdkDynamoAttS(): Attribute = Attribute.builder().name(this).type(AttributeType.STRING).build()
-private fun String.cdkDynamoAttN(): Attribute = Attribute.builder().name(this).type(AttributeType.NUMBER).build()
-
 /**
  * DDB는 저장소이기 때문에 엄격한 보안요구를 받는다.
  * */
 class CdkDynamoDb : CdkInterface {
+
+    private fun String.cdkDynamoAttS(): Attribute = Attribute.builder().name(this).type(AttributeType.STRING).build()
+    private fun String.cdkDynamoAttN(): Attribute = Attribute.builder().name(this).type(AttributeType.NUMBER).build()
 
     @Kdsl
     constructor(block: CdkDynamoDb.() -> Unit = {}) {

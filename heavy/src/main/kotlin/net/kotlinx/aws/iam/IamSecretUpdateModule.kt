@@ -22,7 +22,7 @@ import java.time.Duration
  * 윈도우 전용임!
  * 로컬에서 사용하며, 프로파일 없이 빈 client를 만들어서 호출하면됨
  *  */
-class IamSecretUpdateModule() {
+class IamSecretUpdateModule {
 
     private val log = KotlinLogging.logger {}
 

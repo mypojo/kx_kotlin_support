@@ -12,6 +12,7 @@ import java.io.File
  * view 타입을 명시적으로 구분하기위해서 익명 클래스 사용 안함
  * -> 부트의 경우 ResponseEntity를 쓰세요
  * */
+@Deprecated("s3 프리사인 사용하세요")
 class FileDownloadView(
     val file: File,
     val deleteAfter: Boolean = true

@@ -12,7 +12,6 @@ import net.kotlinx.string.abbr
 import net.kotlinx.string.toSnakeFromCamel
 import net.kotlinx.string.toTextGrid
 import kotlin.reflect.KClass
-import kotlin.reflect.full.isSubclassOf
 
 
 /**
@@ -100,44 +99,3 @@ class EntityFinder(
 
 }
 
-/** 테이블 */
-data class EntityTable(
-    val name: String,
-    val columns: List<EntityColumn>,
-) {
-    fun print() {
-        columns.map { column ->
-            arrayOf(
-                column.name,
-                column.columnTypeGroup,
-                column.columnType.toString().substringAfterLast(".")
-            )
-        }.also {
-            listOf("name", "typeGroup", "type").toTextGrid(it).print()
-        }
-    }
-}
-
-/** 컬럼 */
-data class EntityColumn(
-    val name: String,
-    val columnType: KClass<*>,
-    val columnTypeGroup: KColumnTypeGroup = KColumnTypeGroup.from(columnType)
-)
-
-enum class KColumnTypeGroup {
-    STRING, NUMBER, ENUM, LOCAL_DATE_TIME, LOCAL_DATE, BOOLEAN, UNKNOWN
-    ;
-
-    companion object {
-        fun from(columnType: KClass<*>): KColumnTypeGroup = when {
-            columnType == String::class -> STRING
-            columnType.isSubclassOf(Number::class) -> NUMBER
-            columnType.isSubclassOf(Enum::class) -> ENUM
-            columnType == java.time.LocalDateTime::class -> LOCAL_DATE_TIME
-            columnType == java.time.LocalDate::class -> LOCAL_DATE
-            columnType == Boolean::class -> BOOLEAN
-            else -> UNKNOWN
-        }
-    }
-}

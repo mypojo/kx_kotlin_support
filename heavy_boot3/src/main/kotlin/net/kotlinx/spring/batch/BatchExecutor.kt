@@ -18,9 +18,8 @@ import java.util.concurrent.atomic.AtomicLong
  *
  * 설정할게 많음으로 fluent하게 만들지 않는다.
  */
-class BatchExecutor(
-    block: BatchExecutor.() -> Unit
-) {
+@Deprecated("가능하면 flow 를 사용하세요")
+class BatchExecutor(block: BatchExecutor.() -> Unit) {
 
     private val log = KotlinLogging.logger {}
 

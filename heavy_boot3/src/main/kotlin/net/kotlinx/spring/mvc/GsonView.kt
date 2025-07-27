@@ -18,6 +18,7 @@ import org.springframework.web.servlet.View
  * 일반적인 용도로는 사용하지 말것
  * @see SpringGsonConverter
  */
+@Deprecated("사용안함")
 class GsonView(val data: Any, val ok: Boolean = true) : View {
 
     var gson: Gson = GsonSet.GSON

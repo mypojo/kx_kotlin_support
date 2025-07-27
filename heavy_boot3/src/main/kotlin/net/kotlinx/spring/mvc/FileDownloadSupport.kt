@@ -10,6 +10,7 @@ import java.io.File
 
 
 /** 스프링부트 오피셜 다운로드 */
+@Deprecated("s3 프리사인 사용하세요")
 fun File.download(): ResponseEntity<Resource> {
     return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_OCTET_STREAM)

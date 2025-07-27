@@ -4,6 +4,7 @@ import aws.sdk.kotlin.services.costexplorer.model.GroupDefinitionType
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.collection.flattenAny
+import net.kotlinx.core.Kdsl
 import net.kotlinx.excel.Excel
 import net.kotlinx.excel.XlsComment
 import net.kotlinx.excel.XlsFormula
@@ -17,7 +18,12 @@ import java.time.LocalDate
 /**
  * 간단 엑셀 출력기
  * */
-class CostExplorerExcel(block: CostExplorerExcel.() -> Unit = {}) {
+class CostExplorerExcel {
+
+    @Kdsl
+    constructor(block: CostExplorerExcel.() -> Unit = {}) {
+        apply(block)
+    }
 
     private val log = KotlinLogging.logger {}
 
@@ -50,10 +56,6 @@ class CostExplorerExcel(block: CostExplorerExcel.() -> Unit = {}) {
 
     /** 프로젝트별 정보 */
     val groupByProject by lazy { costDatas.groupBy { it.projectName } }
-
-    init {
-        block(this)
-    }
 
     /** 최종 계산 */
     fun Double.toWon(): BigDecimal = (this * won * fee * tax / 10000).toBigDecimal().setScale(1, RoundingMode.HALF_UP) //보기 편하게 반올림
