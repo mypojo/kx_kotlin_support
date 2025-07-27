@@ -18,11 +18,12 @@ import org.koin.core.component.inject
 /**
  * 노션 DB
  * 각 기능은 필요할때 만들기
- *
  * 데이터베이스 ID 채번 후 해당 페이지로 가서 "연결" 을 선택 후 KEY를 채번한것과 연결 해주어야 한다.
  *
- * https://github.com/BoD/klibnotion 쓰세요
+ * => 바닐라 rest 구현 지양하기!!
  *  */
+
+@Deprecated("klibnotion 쓰세요")
 class NotionDatabaseClient(
     /** 영구키임!! 주의! */
     private val secretValue: String,

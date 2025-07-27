@@ -38,7 +38,7 @@ interface GithubApiCommits {
 
     data class GitHubUser(
         val login: String,
-        val avatar_url: String
+        val avatarUrl: String
     )
 
 }

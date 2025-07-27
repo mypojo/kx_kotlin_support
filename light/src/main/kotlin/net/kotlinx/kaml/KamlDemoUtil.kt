@@ -4,7 +4,9 @@ import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlList
 import com.charleskorn.kaml.YamlMap
 
-
+/**
+ * yaml 파일 활용 데모
+ * */
 object KamlDemoUtil {
 
     val OPEN_API_METHODS = setOf("get", "post", "put", "delete", "patch", "head", "options", "trace")

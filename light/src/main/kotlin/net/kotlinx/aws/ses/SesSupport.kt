@@ -17,15 +17,18 @@ val AwsClient.ses: SesClient
 /**
  * 일단 이렇게만 구성한다.
  * 첨부파일때문에 일케함. 벌크 없음
+ *
+ * 실제 작업시 확인필요
  */
 suspend fun SesClient.sendRawEmail(message: MimeMessage) {
-    val outputStream = ByteArrayOutputStream() // use 안써도 되나??
-    withContext(Dispatchers.IO) {
-        message.writeTo(outputStream)
-    }
-    this.sendRawEmail {
-        this.rawMessage = RawMessage {
-            this.data = outputStream.toByteArray()
+    ByteArrayOutputStream().use { outputStream ->
+        withContext(Dispatchers.IO) {
+            message.writeTo(outputStream)
+        }
+        this.sendRawEmail {
+            this.rawMessage = RawMessage {
+                this.data = outputStream.toByteArray()
+            }
         }
     }
 }

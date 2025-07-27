@@ -49,22 +49,13 @@ class AwsSnsPublisher : LambdaDispatch {
         when {
 
             /** 클라우드와치 알람 */
-            msg["AlarmName"].str != null -> {
-                val alarmName = msg["AlarmName"].str!!
-                val data = msg["Trigger"]
-                bus.post(SnsAlarm(alarmName, data))
-            }
+            msg["AlarmName"].str != null -> bus.post(AwsSnsAlarm(msg))
 
             /** 간단 메세지 */
-            msg["Subject"].str != null -> {
-                val subject = msg["Subject"].str!!
-                val message = msg["Message"].str!!
-                bus.post(SnsNotification(subject, message))
-            }
+            msg["Subject"].str != null -> bus.post(AwsSnsNotification(msg))
 
-            else -> {
-                bus.post(SnsUnknown(msg))
-            }
+            /** 처음 보는거  */
+            else -> bus.post(AwsSnsUnknown(msg))
 
         }
 

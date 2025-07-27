@@ -6,12 +6,12 @@ import net.kotlinx.json.gson.GsonData
 import java.time.LocalDateTime
 
 /**
- * 람다 스케쥴 정보
+ * AWS 스케쥴이 람다를 호출하는 정보
  * 여기서 추가로 시작 & 종료 날짜 지정가능
  *
  * ex) 2025년 1월 ~ 8월 사이 매주 목금,  오전 3,7시에 작동
  * */
-data class SchedulerLambda(
+data class SchedulerForLambda(
     val groupName: String,
     /** 최대 64자까지 가능함 */
     val name: String,

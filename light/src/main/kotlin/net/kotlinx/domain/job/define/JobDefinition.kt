@@ -1,6 +1,7 @@
 package net.kotlinx.domain.job.define
 
 import net.kotlinx.core.Kdsl
+import net.kotlinx.delegate.MapAttribute
 import net.kotlinx.domain.developer.DeveloperData
 import net.kotlinx.domain.job.JobTasklet
 import net.kotlinx.domain.job.trigger.JobTriggerMethod
@@ -12,7 +13,7 @@ import kotlin.time.Duration.Companion.hours
 
 
 /** job ENUM 에서 이걸 구현하면 됨  */
-class JobDefinition {
+class JobDefinition : MapAttribute {
 
     @Kdsl
     constructor(block: JobDefinition.() -> Unit = {}) {
@@ -49,7 +50,7 @@ class JobDefinition {
      * 속성
      * 커스텀 해서 사용하세요
      * */
-    var attributes: MutableMap<String, Any> = mutableMapOf()
+    override var attributes: MutableMap<String, Any> = mutableMapOf()
 
     /** 그룹(상위 sfn 이름 등) */
     var parentJobPk: String = ""

@@ -15,6 +15,8 @@ import net.kotlinx.reflect.name
  * 성능상의 이슈로 최초 생성시 락은 잡지만 closable 로직에서는 락을 잡지 않음
  *
  * 주의!!! 스래드로 실행하세요!! 코루틴 ㄴㄴ
+ *
+ * 일단.. 너무 복잡하다..
  * */
 class ResourceLockManager {
 

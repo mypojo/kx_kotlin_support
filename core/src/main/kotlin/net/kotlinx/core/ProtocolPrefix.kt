@@ -1,6 +1,5 @@
 package net.kotlinx.core
 
-
 /**
  * 프로토콜의 접두사 모음집
  * 전부 소문자!

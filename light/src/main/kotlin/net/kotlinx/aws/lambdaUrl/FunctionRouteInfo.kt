@@ -3,7 +3,10 @@ package net.kotlinx.aws.lambdaUrl
 import net.kotlinx.aws.lambda.LambdaMapResult
 
 
-/** 라우터 정보 */
+/**
+ * 라우터 정보
+ * 쓸일이 있을까?
+ *  */
 class FunctionRouteInfo {
 
     /**

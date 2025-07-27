@@ -1,7 +1,6 @@
 package net.kotlinx.domain.batchStep.stepDefault
 
 import net.kotlinx.aws.lambda.dispatch.synch.BatchStepDispatcher
-import net.kotlinx.domain.batchStep.BatchStepListOption
 import net.kotlinx.domain.batchStep.BatchStepMode
 import net.kotlinx.domain.batchStep.BatchStepOption
 import net.kotlinx.domain.batchStep.BatchStepParameter
@@ -29,7 +28,7 @@ class BatchStepDefaultRunnerTest : BeSpecHeavy() {
                         jobPk = "batchStepTest"
                         jobSk = "aaa"
                         sfnId = "7dde7369-4d9f-4dd9-a8f2-756d3cfd28ee"
-                        listOption = BatchStepListOption {
+                        listOption = BatchStepOption.BatchStepListOption {
                             waitSeconds02 = 12
                         }
                         mode = BatchStepMode.MAP_INLINE
@@ -48,7 +47,7 @@ class BatchStepDefaultRunnerTest : BeSpecHeavy() {
                         jobPk = "batchStepTest"
                         jobSk = "aaa"
                         sfnId = "7dde7369-4d9f-4dd9-a8f2-756d3cfd28ee"
-                        listOption = BatchStepListOption {
+                        listOption = BatchStepOption.BatchStepListOption {
                             waitSeconds02 = 12
                         }
                     }

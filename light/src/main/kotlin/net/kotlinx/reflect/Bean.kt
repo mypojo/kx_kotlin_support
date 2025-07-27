@@ -1,25 +1,16 @@
 package net.kotlinx.reflect
 
 import mu.KotlinLogging
-import net.kotlinx.concurrent.parallelExecute
 import net.kotlinx.string.TextGrid
 import net.kotlinx.string.toTextGrid
-import java.util.concurrent.Callable
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KProperty
 
-
-/** CSV 등에서 간단 변환 */
-inline fun <reified T : Any> List<List<String>>.fromLines(): List<T> =
-    this.map { Callable { Bean.fromLine(T::class, it) } }.parallelExecute(Runtime.getRuntime().availableProcessors())
-
 /**
  * 데이터를 가져오고 수정하는 간단 리플렉션 빈
  * */
-class Bean(
-    val data: Any
-) {
+class Bean(val data: Any) {
 
     private val clazz: KClass<*> = data::class
 

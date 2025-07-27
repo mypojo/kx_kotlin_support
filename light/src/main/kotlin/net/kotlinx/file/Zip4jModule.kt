@@ -8,31 +8,10 @@ import net.lingala.zip4j.model.enums.CompressionMethod
 import net.lingala.zip4j.model.enums.EncryptionMethod
 import java.io.File
 
-/** 단일 파일 압축 */
-fun File.zip4j(password: String? = null): File {
-    val file = this
-    val ziped = Zip4jModule {
-        this.files = listOf(file)
-        this.password = password
-        zip()
-    }
-    return ziped.targetZipFile
-}
-
-/** 단일 파일 압축해제 */
-fun File.unzip4j(password: String? = null): File {
-    val file = this
-    val ziped = Zip4jModule {
-        this.targetZipFile = file
-        this.password = password
-        unzip()
-    }
-    return ziped.targetZipFile.parentFile
-}
-
 
 /**
  * 압축파일 읽고 쓰기
+ * 바닐라 zip 기능에서 각종 부가기능이 추가됨
  */
 class Zip4jModule {
 

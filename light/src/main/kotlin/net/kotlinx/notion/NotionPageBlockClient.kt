@@ -15,6 +15,7 @@ import org.koin.core.component.inject
  * 일단 paragraph 만 고려함
  * 각 기능은 필요할때 만들기
  *  */
+@Deprecated("klibnotion 쓰세요")
 class NotionPageBlockClient(
     /** 영구키임!! 주의! */
     private val secretValue: String,

@@ -9,8 +9,6 @@ import com.amazonaws.services.lambda.runtime.RequestHandler
 class HttpProxyHandler : RequestHandler<Map<String?, Any?>?, String> {
 
     override fun handleRequest(event: Map<String?, Any?>?, context: Context): String {
-        println(context)
-        println(event)
-        return "ok v26"
+        throw UnsupportedOperationException("미구현")
     }
 }

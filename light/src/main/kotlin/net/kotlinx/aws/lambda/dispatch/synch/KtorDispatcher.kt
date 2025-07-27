@@ -4,7 +4,6 @@ import com.amazonaws.services.lambda.runtime.Context
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import net.kotlinx.aws.lambda.LambdaMapResult
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatch
 import net.kotlinx.collection.toQueryString
 import net.kotlinx.json.gson.GsonData
@@ -35,26 +34,9 @@ class KtorDispatcher : LambdaDispatch {
             }
         }
         val body = response.bodyAsText()
-        return WebOutput(body)
+        return KtorWebOutput(body)
     }
 
 
 }
 
-/** 람다 결과  */
-class WebOutput(
-    val body: String,
-    val statusCode: Int = 200,
-    val contentType: String = "text/html",
-) : LambdaMapResult {
-
-    override fun toLambdaMap(): Map<String, Any> {
-        return mapOf(
-            "statusCode" to statusCode,
-            "headers" to mapOf(
-                "content-type" to contentType
-            ),
-            "body" to body,
-        )
-    }
-}

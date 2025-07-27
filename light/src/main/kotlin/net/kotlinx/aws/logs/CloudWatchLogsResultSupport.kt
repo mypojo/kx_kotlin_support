@@ -9,7 +9,6 @@ import java.time.LocalDateTime
 
 typealias CloudWatchResult = List<ResultField>
 
-
 /** 네이밍 마킹용 */
 val GetQueryResultsResponse.logs: List<CloudWatchResult>
     get() = this.results!!

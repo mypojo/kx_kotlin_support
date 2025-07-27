@@ -3,9 +3,8 @@ package net.kotlinx.aws.lambdaUrl
 import net.kotlinx.aws.lambda.LambdaMapResult
 import org.apache.http.HttpStatus
 
-class LambdaUrlDedirectOutput(
-    val location: String
-) : LambdaMapResult {
+/** 리다이렉트? */
+class LambdaUrlRedirectOutput(val location: String) : LambdaMapResult {
 
     override fun toLambdaMap(): Map<String, Any> {
         return mapOf(

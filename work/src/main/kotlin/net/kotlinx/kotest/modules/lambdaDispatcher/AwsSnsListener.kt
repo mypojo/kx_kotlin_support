@@ -2,9 +2,9 @@ package net.kotlinx.kotest.modules.lambdaDispatcher
 
 import com.google.common.eventbus.Subscribe
 import mu.KotlinLogging
-import net.kotlinx.aws.lambda.dispatch.asynch.SnsAlarm
-import net.kotlinx.aws.lambda.dispatch.asynch.SnsNotification
-import net.kotlinx.aws.lambda.dispatch.asynch.SnsUnknown
+import net.kotlinx.aws.lambda.dispatch.asynch.AwsSnsAlarm
+import net.kotlinx.aws.lambda.dispatch.asynch.AwsSnsNotification
+import net.kotlinx.aws.lambda.dispatch.asynch.AwsSnsUnknown
 import net.kotlinx.reflect.name
 import net.kotlinx.slack.SlackMessageSenders
 import net.kotlinx.string.abbr
@@ -22,29 +22,29 @@ class AwsSnsListener {
     //==================================================== SNS들 ======================================================
 
     @Subscribe
-    fun onEvent(event: SnsNotification) {
+    fun onEvent(event: AwsSnsNotification) {
         SlackMessageSenders.Alert.send {
-            workDiv = SnsNotification::class.name()
+            workDiv = AwsSnsNotification::class.name()
             descriptions = listOf(event.subject)
             body = listOf(event.message.abbr(BODY_LIMIT))
         }
     }
 
     @Subscribe
-    fun onEvent(event: SnsAlarm) {
+    fun onEvent(event: AwsSnsAlarm) {
         SlackMessageSenders.Alert.send {
-            workDiv = SnsAlarm::class.name()
+            workDiv = AwsSnsAlarm::class.name()
             descriptions = listOf("SNS 알림! ${event.alarmName}")
             body = listOf(event.data.toPreety().abbr(BODY_LIMIT))
         }
     }
 
     @Subscribe
-    fun onEvent(event: SnsUnknown) {
+    fun onEvent(event: AwsSnsUnknown) {
         SlackMessageSenders.Alert.send {
-            workDiv = SnsUnknown::class.name()
+            workDiv = AwsSnsUnknown::class.name()
             descriptions = listOf("알 수 없는 SNS 전달입니다. 파싱해주세요")
-            body = listOf(event.data.toPreety().abbr(BODY_LIMIT))
+            body = listOf(event.body.toPreety().abbr(BODY_LIMIT))
         }
     }
 }

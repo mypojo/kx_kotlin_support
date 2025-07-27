@@ -6,7 +6,7 @@ import net.kotlinx.json.gson.GsonData
 /**
  * 기본 이벤트브릿지 구조
  * 이를 기반으로 각 객체는 핵심 설정 내용을 코딩해준다
- * 잘 아렬지지 않은경우 이거 그대로 리턴
+ * 잘 알려지지 않은경우 이거 그대로 리턴
  *  */
 data class EventBridgeJson(override val body: GsonData) : EventBridge {
 

@@ -6,6 +6,8 @@ import kotlin.reflect.KProperty
 /**
  * 한번만 초기화되는 프로퍼티
  * 런타임에 할당 가능하지만, 에러 회피를 위해서 두번 할당시 강제 에러를 던짐
+ * ex) companion object 의 값을 강제 할다
+ *
  * 보통 레거시 업무 마이그레이션에 사용함
  * */
 class LazyLatchProperty {

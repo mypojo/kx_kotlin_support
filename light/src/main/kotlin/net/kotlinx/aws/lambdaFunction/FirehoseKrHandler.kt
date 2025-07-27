@@ -22,6 +22,7 @@ import java.net.URLDecoder
  *
  * https://gist.github.com/sawyerh/f809cc6d539c54287fc87223fc6c0f9b
  */
+@Deprecated("이제는 더이상 사용안함")
 class FirehoseKrHandler : RequestHandler<S3Event, String> {
 
     private val log = KotlinLogging.logger {}

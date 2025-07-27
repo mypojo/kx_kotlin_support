@@ -38,9 +38,6 @@ class BatchStepParameter : SerialToJson {
     companion object Parse : SerialParseJson {
         override fun parseJson(json: String): BatchStepParameter = SerialJsonSet.JSON_OTHER.decodeFromString<BatchStepParameter>(json)
 
-
-
-
     }
 
 }

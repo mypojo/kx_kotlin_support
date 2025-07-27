@@ -2,7 +2,6 @@
 
 package net.kotlinx.guava
 
-import com.google.common.base.Charsets
 import com.google.common.hash.HashFunction
 import com.google.common.hash.Hashing
 import net.kotlinx.number.NumberUtil

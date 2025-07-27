@@ -6,6 +6,9 @@ import net.kotlinx.reflect.name
 import org.koin.core.qualifier.named
 import org.koin.mp.KoinPlatformTools
 
+/**
+ * object라서 Repository 이름 붙으니 헷갈림.. 이름 바꾸고싶음..
+ * */
 object JobDefinitionRepository {
 
     /**

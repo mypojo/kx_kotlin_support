@@ -1,18 +1,21 @@
 package net.kotlinx.aws.logs
 
-import aws.sdk.kotlin.services.cloudwatchlogs.CloudWatchLogsClient
-import aws.sdk.kotlin.services.cloudwatchlogs.deleteLogStream
-import aws.sdk.kotlin.services.cloudwatchlogs.describeLogStreams
-import aws.sdk.kotlin.services.cloudwatchlogs.getLogEvents
+import aws.sdk.kotlin.services.cloudwatchlogs.*
+import aws.sdk.kotlin.services.cloudwatchlogs.model.GetQueryResultsResponse
+import aws.sdk.kotlin.services.cloudwatchlogs.model.QueryStatus
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.regist
 import net.kotlinx.collection.repeatUntil
+import net.kotlinx.exception.KnownException
 import net.kotlinx.number.padStart
 import net.kotlinx.number.toLocalDateTime
 import net.kotlinx.time.toKr01
+import net.kotlinx.time.toLong
 import java.io.File
+import kotlin.time.Duration.Companion.seconds
 
 val AwsClient.logs: CloudWatchLogsClient
     get() = getOrCreateClient { CloudWatchLogsClient { awsConfig.build(this) }.regist(awsConfig) }
@@ -72,5 +75,50 @@ suspend fun CloudWatchLogsClient.download(logGroupName: String, logStreamName: S
 
 fun CloudWatchLogsClient.getLogAnomaly() {
     //아직 지원하지 않는거 같음
+}
+
+/**
+ * 쿼리 날리고 받아온다.
+ * 대부분 로컬에서 테스트로 작동함으로 그냥 여기다 간단히 코딩함
+ *  */
+suspend fun CloudWatchLogsClient.queryAndWait(block: CloudWatchQuery.() -> Unit = {}): GetQueryResultsResponse {
+    val log = KotlinLogging.logger {}
+    val op = CloudWatchQuery().apply(block)
+    val startQueryResponse = this.startQuery {
+        this.logGroupNames = op.logGroupNames
+        this.queryString = "fields @timestamp,@log,@logStream,@message | filter @message like /${op.query}/ | limit ${op.limit}"
+        this.startTime = op.startTime.toLong()
+        this.endTime = op.endTime.toLong()
+        this.limit = op.limit
+    }
+
+    delay(2.seconds) //기본 대기
+
+    val client = this
+    return withTimeout(op.checkTimeout) {
+        repeat(op.repeat) { cnt ->
+            val resp = client.getQueryResults {
+                this.queryId = startQueryResponse.queryId
+            }
+
+            when (resp.status) {
+
+                QueryStatus.Running, QueryStatus.Scheduled -> {
+                    log.debug { " -> ${cnt + 1}/${op.repeat} ${resp.status}.." }
+                }
+
+                QueryStatus.Complete -> {
+                    return@withTimeout resp
+                }
+
+                else -> throw IllegalStateException("${resp.status} is not required")
+            }
+            delay(op.checkInterval)
+
+        }
+
+        throw KnownException.StopException("반복횟수 초과")
+    }
+
 }
 

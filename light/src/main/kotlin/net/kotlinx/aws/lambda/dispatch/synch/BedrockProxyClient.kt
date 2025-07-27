@@ -9,6 +9,7 @@ import okhttp3.OkHttpClient
 
 /**
  * 배드락 메이전트 콜 호출을 실제 API 서버로 연결해준다
+ * ex) 배드락 액선그룹 -> 람다 -> ECS
  * MCP 대용으로 사용
  * */
 class BedrockProxyClient(

@@ -45,7 +45,7 @@ suspend fun SchedulerClient.deleteSchedule(groupName: String, name: String) = th
 }
 
 /** 스케쥴 수정 or 생성 */
-suspend fun SchedulerClient.updateOrCreateSchedule(schedule: SchedulerLambda) {
+suspend fun SchedulerClient.updateOrCreateSchedule(schedule: SchedulerForLambda) {
     try {
         this.updateSchedule(schedule)
     } catch (_: ResourceNotFoundException) {
@@ -68,7 +68,7 @@ suspend fun SchedulerClient.createScheduleGroup(groupName: String, tagMap: Map<S
 }
 
 /** 간단 스캐쥴 생성 */
-suspend fun SchedulerClient.createSchedule(schedule: SchedulerLambda) {
+suspend fun SchedulerClient.createSchedule(schedule: SchedulerForLambda) {
     val config = this.awsConfig
     this.createSchedule {
         groupName = schedule.groupName
@@ -95,7 +95,7 @@ suspend fun SchedulerClient.createSchedule(schedule: SchedulerLambda) {
 }
 
 /** 간단 스캐쥴 수정 */
-suspend fun SchedulerClient.updateSchedule(schedule: SchedulerLambda) {
+suspend fun SchedulerClient.updateSchedule(schedule: SchedulerForLambda) {
     val config = this.awsConfig
     this.updateSchedule {
         groupName = schedule.groupName

@@ -9,10 +9,7 @@ import java.time.LocalDateTime
  * S3 패스가 다양하게 사용됨. 이를 명시적으로 합쳐서 다루기 위한 객체.
  * 풀 네임 사용할때도 있고, 버킷과 키를 따로 사용할때도 있다. 이것을 하나로 관리
  */
-data class S3Data(
-    val bucket: String,
-    var key: String,
-) {
+data class S3Data(val bucket: String, var key: String) {
 
     /** 버전이 있는경우. 주로 삭제할때 사용  */
     var versionId: String? = null

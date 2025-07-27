@@ -15,6 +15,7 @@ import java.time.LocalDateTime
  *
  * https://github.com/BoD/klibnotion 쓰세요
  *  */
+@Deprecated("klibnotion 쓰세요")
 class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() -> Unit = {}) : KoinComponent {
 
     private val log = KotlinLogging.logger {}

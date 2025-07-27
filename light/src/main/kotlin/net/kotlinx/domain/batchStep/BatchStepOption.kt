@@ -57,38 +57,38 @@ class BatchStepOption {
     var sfnOption: String = "{}"
 
 
-}
+    @Serializable
+    class BatchStepListOption {
 
-@Serializable
-class BatchStepListOption {
+        @Kdsl
+        constructor(block: BatchStepListOption.() -> Unit) {
+            apply(block)
+        }
 
-    @Kdsl
-    constructor(block: BatchStepListOption.() -> Unit) {
-        apply(block)
+        /**
+         * 최대 동시성. 최대 1000개임
+         * 주의!! 상대 서버가 받아줄 수 있을 만큼만 보내기.  크롤링의 경우 너무 많으면 역효과가 남.
+         * 응답속도(람다비용)이 가장 중요한 최적화 요소임.
+         * 타임아웃 4초 정도 주고 간헐적으로 오류가 날 정도가 적당함
+         *  */
+        var maxConcurrency: Int = 100
+
+        /**
+         * 요청 후 처음 1회의 대기시간 입력
+         * 이시간 이후부터 상태 체크를 수행한다
+         * ex) API 호출하면 최소 1시간 후 완료 가능
+         *  */
+        var waitSeconds01: Int = 60
+
+        /**
+         * 대기시간 (초). 정수로 입력해야한다.
+         * 로컬에서 4초 -> 15초 정도 설정해도 랜덤하게 돌리다보면 5초 까지도 떨어짐. 2배 잡으면 될듯.
+         * 주의!! 타임아웃 난다고 길게 줄 필요 없음. WAF를 회피할 정도로 입력하면 됨
+         *  */
+        var waitSeconds02: Int = 6
+
     }
 
-    /**
-     * 최대 동시성. 최대 1000개임
-     * 주의!! 상대 서버가 받아줄 수 있을 만큼만 보내기.  크롤링의 경우 너무 많으면 역효과가 남.
-     * 응답속도(람다비용)이 가장 중요한 최적화 요소임.
-     * 타임아웃 4초 정도 주고 간헐적으로 오류가 날 정도가 적당함
-     *  */
-    var maxConcurrency: Int = 100
-
-    /**
-     * 요청 후 처음 1회의 대기시간 입력
-     * 이시간 이후부터 상태 체크를 수행한다
-     * ex) API 호출하면 최소 1시간 후 완료 가능
-     *  */
-    var waitSeconds01: Int = 60
-
-    /**
-     * 대기시간 (초). 정수로 입력해야한다.
-     * 로컬에서 4초 -> 15초 정도 설정해도 랜덤하게 돌리다보면 5초 까지도 떨어짐. 2배 잡으면 될듯.
-     * 주의!! 타임아웃 난다고 길게 줄 필요 없음. WAF를 회피할 정도로 입력하면 됨
-     *  */
-    var waitSeconds02: Int = 6
-
-
 }
+
 

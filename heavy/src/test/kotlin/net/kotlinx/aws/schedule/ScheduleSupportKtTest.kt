@@ -31,7 +31,7 @@ class ScheduleSupportKtTest : BeSpecHeavy() {
                 allSchedules.printSimple()
             }
 
-            val schedule = SchedulerLambda(
+            val schedule = SchedulerForLambda(
                 groupName = "my-group2",
                 name = "my-scheduleJob-aaa-1235",
                 cron = CronExpression {

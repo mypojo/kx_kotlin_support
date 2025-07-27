@@ -36,13 +36,11 @@ class BatchTaskSfn {
     /** 기본 파라메터로 일단 생성 */
     val parameter: BatchStepParameter
 
-    //==================================================== 입력데이터 ======================================================
-
-    /** 입력데이터 (인메모리) */
-    var batchTaskInputInmemery: BatchTaskInputInmemery? = null
-
-    /** 입력데이터 청크 */
-    var batchTaskInputCsv: BatchTaskInputCsv? = null
+    /**
+     * 입력데이터
+     * 이게 설정되면 자동으로 S3에 업로드를 해준다
+     *  */
+    var batchTaskInput: BatchTaskInput? = null
 
 
 }

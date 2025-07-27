@@ -3,19 +3,7 @@ package net.kotlinx.guava
 import com.google.common.collect.Multimap
 import com.google.common.reflect.TypeParameter
 import com.google.common.reflect.TypeToken
-import com.google.gson.Gson
-import net.kotlinx.json.gson.GsonData
-import net.kotlinx.json.gson.GsonSet
 import java.lang.reflect.Type
-
-/** json을 List 객체로 간단 변환 */
-inline fun <reified T> Gson.fromJsonList(json: String): List<T> {
-    val type = TypeTokenUtil.list<T>(T::class.java)
-    return this.fromJson(json, type)
-}
-
-/** json을 List 객체로 간단 변환 */
-inline fun <reified T> GsonData.fromJsonList(gson: Gson = GsonSet.GSON): List<T> = gson.fromJsonList<T>(this.toString())
 
 /**
  * 구아바에서 지원하는 리플렉션 상세 도구

@@ -4,9 +4,9 @@ import net.kotlinx.aws.AwsConfig
 
 /**
  * 네이밍 여기로 통일
+ * SFN 전용이라서 AwsConfig 에 있던거 여기로 옮김
  * */
 class SfnConfig(private val awsConfig: AwsConfig) {
-
 
     /** 실행 ARN  */
     fun executionArn(stateMachineName: String, uuid: String): String {

@@ -1,7 +1,10 @@
 package net.kotlinx.domain.job
 
 
-object JobNaming {
+/**
+ * 잡 컨텍스트의 네이밍
+ * */
+object JobContextNaming {
 
     //==================================================== context ======================================================
 
