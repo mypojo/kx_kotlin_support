@@ -5,8 +5,10 @@ import com.microsoft.playwright.Browser
 import com.microsoft.playwright.BrowserContext
 import com.microsoft.playwright.BrowserType
 import com.microsoft.playwright.Playwright
+import com.microsoft.playwright.options.LoadState
 import mu.KotlinLogging
 import net.kotlinx.core.Kdsl
+import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.concurrent.getOrSet
 
 
@@ -34,7 +36,7 @@ class PlaywrightClient : AutoCloseable {
         "Sec-Fetch-Mode" to "navigate",
         "Sec-Fetch-Site" to "none",
         "Sec-Fetch-User" to "?1",
-        "Referer" to "https://search.naver.com/search.nave/",
+        //"Referer" to "https://search.naver.com/search.nave/",
     )
 
     //==================================================== 내부사용 ======================================================
@@ -43,13 +45,16 @@ class PlaywrightClient : AutoCloseable {
     private val playwrightContext = ThreadLocal<PlaywrightContext>()
 
     /** 전체 플레이 */
-    private val allPlaywrights = mutableListOf<PlaywrightContext>()
+    private val allPlaywrights = CopyOnWriteArrayList<PlaywrightContext>()
 
     /** 페이지 로드 실행 */
-    fun <T> page(name: String, url: String, block: (input: PlaywrightInput) -> T): T {
+    fun <T> page(input: PlaywrightInput, block: (input: PlaywrightInput) -> T): T {
         val playwrightContext = playwrightContext.getOrSet {
             val play = Playwright.create()!!
-            val browser = play.chromium().launch(BrowserType.LaunchOptions().setHeadless(true))!!
+            val browser = play.chromium().launch(
+                BrowserType.LaunchOptions()
+                    .setHeadless(true)
+            )!!
 
             val context = browser.newContext(
                 Browser.NewContextOptions()
@@ -65,10 +70,12 @@ class PlaywrightClient : AutoCloseable {
                 allPlaywrights.add(it)
             }
         }
+
         return playwrightContext.context.newPage().use { page ->
-            page.navigate(url)
-            page.waitForLoadState()
-            block(PlaywrightInput(name, page))
+            page.navigate(input.url)
+            page.waitForLoadState(LoadState.NETWORKIDLE) //NETWORKIDLE 로 해야 페이지 정상 로딩된후 캡쳐 가능함
+            input.page = page
+            block(input)
         }
     }
 

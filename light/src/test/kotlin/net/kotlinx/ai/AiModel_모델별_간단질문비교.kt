@@ -8,16 +8,16 @@ import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
 
 @OptIn(BetaOpenAI::class)
-class AiModel_벤더별간단질문비교 : BeSpecLight() {
+class AiModel_모델별_간단질문비교 : BeSpecLight() {
 
     init {
         initTest(KotestUtil.IGNORE)
 
         Given("GPT") {
 
-            val set = AiModelLocalSet {
+            val set = AiModelSet {
                 aws = aws97
-                this.systemPrompt = obj {
+                this.prompt = obj {
                     "codeLanguage" to "kotlin"
                     "awsSdk" to "kotlin SDK"
                     "requirements" to obj {

@@ -8,13 +8,11 @@ import net.kotlinx.kotest.initTest
 
 internal class MapAttributeDelegateTest : BeSpecLog() {
 
-    data class Poo2(
-        val name: String
-    ) : MapAttribute {
+    data class Poo2(val name: String) : MapAttribute {
         override var attributes: MutableMap<String, Any> = mutableMapOf()
     }
 
-    var Poo2.age: Int by MapAttributeDelegate<Int>()
+    var Poo2.age: Int by MapAttributeDelegate()
 
 
     init {

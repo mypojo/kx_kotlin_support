@@ -2,7 +2,7 @@ package net.kotlinx.ai.demo.tnd
 
 import com.aallam.openai.api.BetaOpenAI
 import com.lectra.koson.arr
-import net.kotlinx.ai.AiModelLocalSet
+import net.kotlinx.ai.AiModelSet
 import net.kotlinx.ai.printSimple
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.csv.writeCsvLines
@@ -25,9 +25,9 @@ class 광고문구01_퍼플렉시티01 : BeSpecLight() {
 
         Given("GPT") {
 
-            val set = AiModelLocalSet {
+            val set = AiModelSet {
                 aws = aws97
-                this.systemPrompt = DemoTndUtil.SYSTEM_PROMPT
+                this.prompt = DemoTndUtil.SYSTEM_PROMPT
                 /** 벤더별 기능작동 테스트 */
                 clients = listOf(
 //                    gpt4OMini,
