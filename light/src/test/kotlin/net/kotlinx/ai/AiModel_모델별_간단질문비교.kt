@@ -31,22 +31,6 @@ class AiModel_모델별_간단질문비교 : BeSpecLight() {
                         ]
                     }
                 }
-//                clients = listOf(
-//                    gpt4O,
-//                    gpt4OMini,
-//                    perplexityLarge,
-//                    perplexitySmall,
-//                    claudeSonet,
-//                    claudeHaiku,
-//                )
-                /** 벤더별 기능작동 테스트 */
-                clients = listOf(
-                    gpt4OMini,
-                    //perplexitySmall,
-                    claudeSonet,
-                    claudeHaiku,
-                    //deepseek,
-                )
             }
 
             val query = arr[
@@ -56,8 +40,16 @@ class AiModel_모델별_간단질문비교 : BeSpecLight() {
             ]
 
             Then("비교 & 프린트") {
-                val results = set.executeSingle(query.toString())
-                results.printSimple()
+
+                val clients = listOf(
+                    set.gpt4O,
+                    set.gpt4OMini,
+                    set.perplexity01,
+                    set.perplexity02,
+                    set.claudeSonet,
+                    set.claudeHaiku
+                )
+                clients.map { it.text(query.toString()) }.printSimple()
             }
         }
 
