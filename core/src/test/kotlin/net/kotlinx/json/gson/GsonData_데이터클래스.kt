@@ -62,8 +62,15 @@ internal class GsonData_데이터클래스 : BeSpecLog() {
                     }
                     "reason" to "업로드"
                 }
+                "lines" to arr[
+                    obj { "line" to "1" },
+                    obj { "line" to "2" },
+                ]
             }.toGsonData()
 
+            Then("size 테스트") {
+                s3Event["lines"].size shouldBe 2
+            }
 
             Then("json 을 map 변환") {
                 val s3EventMap = mapOf {

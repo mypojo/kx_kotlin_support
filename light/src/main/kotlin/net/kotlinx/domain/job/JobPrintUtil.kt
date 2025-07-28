@@ -39,7 +39,7 @@ object JobPrintUtil {
     }
 
     fun jobGroupBy01(allJobs: Collection<Job>): TextGrid {
-        return allJobs.groupBy { it.pk }.values.map { it.toJobSta() }.map { jobSta ->
+        return allJobs.groupBy { it.pk }.values.map { it.toJobRpt() }.map { jobSta ->
             arrayOf(
                 jobSta.job.pk,
                 jobSta.startMin.toKr01(),

@@ -3,7 +3,8 @@ package net.kotlinx.domain.job
 import net.kotlinx.aws.fargate.FargateUtil
 import net.kotlinx.number.halfUp
 
-fun Collection<Job>.toJobSta(): JobRpt {
+
+fun Collection<Job>.toJobRpt(): JobRpt {
     val jobs = this
     val sumOfDuration = jobs.sumOf { it.intervalMills ?: 0 }
     val monthTime = (sumOfDuration / 7 * 30.5).toLong()
