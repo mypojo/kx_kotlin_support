@@ -26,7 +26,11 @@ object TimeUtil {
 
     private const val ASIA_SEOUL = "Asia/Seoul"
 
+    /**
+     * ZoneId.systemDefault() 를 써도됨
+     * */
     val SEOUL: ZoneId = ZoneId.of(ASIA_SEOUL)
+
     private val ZONE_SEOUL = TimeZone.getTimeZone(SEOUL)
 
     val UTC: ZoneId = ZoneId.of("UTC")

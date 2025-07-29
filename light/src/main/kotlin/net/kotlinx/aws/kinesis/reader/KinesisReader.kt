@@ -1,18 +1,25 @@
 package net.kotlinx.aws.kinesis.reader
 
 import aws.sdk.kotlin.services.kinesis.model.DescribeStreamRequest
+import aws.sdk.kotlin.services.kinesis.model.Record
 import kotlinx.coroutines.*
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.LazyAwsClientProperty
 import net.kotlinx.aws.kinesis.kinesis
+import net.kotlinx.concurrent.delay
 import net.kotlinx.core.Kdsl
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Kinesis 스트림의 샤드를 관리하고 레코드를 처리하는 매니저 클래스
  * KCL(Kinesis Client Library)과 유사한 역할을 수행
+ *
+ * 체크포인트가 없는경우!! 리더가 작동하고 있는 상태에서 데이터를 입력해야 데이터를 읽기 가능하며, 이렇게 해야 새 체크포인트가 생긴다
  */
 class KinesisReader {
 
@@ -30,32 +37,35 @@ class KinesisReader {
     lateinit var streamName: String
 
     /** 애플리케이션 이름 (체크포인트 저장에 사용) */
-    lateinit var applicationName: String
+    lateinit var readerName: String
+
+    /**
+     * 체크포인트 테이블 이름
+     * ex) system-dev
+     *  */
+    lateinit var checkpointTableName: String
 
     /** 레코드 처리 핸들러 함수 */
-    lateinit var recordHandler: suspend (KinesisRecord) -> Unit
+    lateinit var recordHandler: suspend (String, List<Record>) -> Unit
 
-    /** 체크포인트 테이블 이름 (기본값: kinesis-checkpoints) */
-    var checkpointTableName: String = "kinesis-checkpoints"
+    /** 레코드 체크하는 주기 */
+    var recordCheckInterval: Duration = 1.seconds
 
-    /** AWS 리전 (기본값: ap-northeast-2) */
-    var region: String = "ap-northeast-2"
+    /** 사드 체크하는 주기 */
+    var shardCheckInterval: Duration = 1.minutes
+
+    /**
+     * 한번에 읽어올수.
+     * 샤드당 10,000개 or 10mb 중 적은거로 결정됨
+     *  */
+    var readChunkCnt: Int = 10000
 
     //==================================================== 내부 상태 ======================================================
 
-    private val checkpointManager by lazy { 
-        CheckpointManager {
-            this.tableName = checkpointTableName
-            this.applicationName = applicationName
-            this.region = region
-        }
-    }
+    internal val kinesisCheckpointManager = KinesisCheckpointManager(this)
+
     private val shardProcessors = ConcurrentHashMap<String, Job>()
     private val isRunning = AtomicBoolean(false)
-
-    companion object {
-        private val log = KotlinLogging.logger {}
-    }
 
     //==================================================== 기능 ======================================================
 
@@ -64,6 +74,7 @@ class KinesisReader {
      * 샤드 모니터링 및 프로세서 관리를 시작
      */
     suspend fun start() {
+
         if (!isRunning.compareAndSet(false, true)) {
             log.warn { "Consumer Manager가 이미 실행 중입니다" }
             return
@@ -71,18 +82,15 @@ class KinesisReader {
 
         log.info { "Kinesis Consumer Manager 시작 - 스트림: $streamName" }
 
-        // 체크포인트 테이블 생성
-        checkpointManager.createTableIfNotExists()
-
         // 샤드 모니터링 및 프로세서 관리
         val managerJob = CoroutineScope(Dispatchers.IO).launch {
             while (isRunning.get()) {
                 try {
                     manageShardsAndProcessors()
-                    delay(30000) // 30초마다 샤드 상태 확인
+                    shardCheckInterval.delay()
                 } catch (e: Exception) {
                     log.error(e) { "샤드 관리 중 오류 발생" }
-                    delay(10000)
+                    shardCheckInterval.delay()
                 }
             }
         }
@@ -109,17 +117,10 @@ class KinesisReader {
         log.info { "Kinesis Consumer Manager 종료 중..." }
 
         // 모든 샤드 프로세서 중지
-        shardProcessors.values.forEach { job ->
-            job.cancel()
-        }
-
-        shardProcessors.values.forEach { job ->
-            job.join()
-        }
+        shardProcessors.values.forEach { it.cancel() }
+        shardProcessors.values.forEach { it.join() }
 
         shardProcessors.clear()
-        checkpointManager.close()
-
         log.info { "Kinesis Consumer Manager 종료 완료" }
     }
 
@@ -144,8 +145,7 @@ class KinesisReader {
         closedShards.forEach { shardId ->
             stopShardProcessor(shardId)
         }
-
-        log.info { "샤드 상태 - 전체: ${currentShards.size}, 실행중: ${shardProcessors.size}" }
+        log.info { "kinesis [$streamName] 샤드 관리완료 -> 현재샤드 ${currentShards.size} / 작동중인샤드 ${runningShards.size}" }
     }
 
     /**
@@ -160,7 +160,7 @@ class KinesisReader {
             response.streamDescription?.shards?.map { it.shardId ?: "" }?.toSet() ?: emptySet()
         } catch (e: Exception) {
             log.error(e) { "샤드 목록 조회 실패" }
-            emptySet()
+            throw e
         }
     }
 
@@ -168,13 +168,11 @@ class KinesisReader {
      * 특정 샤드에 대한 프로세서 시작
      */
     private fun startShardProcessor(shardId: String) {
-        val processor = ShardProcessor(streamName, shardId, checkpointManager, recordHandler, region)
+        val processor = KinesisShardProcessor(this, shardId)
         val job = CoroutineScope(Dispatchers.IO).launch {
             processor.start()
         }
-
         shardProcessors[shardId] = job
-        log.info { "샤드 프로세서 시작: $shardId" }
     }
 
     /**
@@ -185,7 +183,10 @@ class KinesisReader {
             job.cancel()
             job.join()
             shardProcessors.remove(shardId)
-            log.info { "샤드 프로세서 중지: $shardId" }
         }
+    }
+
+    companion object {
+        private val log = KotlinLogging.logger {}
     }
 }

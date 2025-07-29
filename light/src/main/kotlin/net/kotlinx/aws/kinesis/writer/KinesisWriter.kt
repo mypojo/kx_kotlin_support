@@ -60,15 +60,15 @@ class KinesisWriter {
      * 2. 응답에서 실패한 레코드만 필터링
      * 3. 실패한 레코드만 재시도
      * 4. 모든 레코드가 성공하거나 최대 재시도 횟수에 도달할 때까지 반복
-     * @param datas 입력할 데이터 객체 목록
+     * @param inputs 입력할 데이터 객체 목록
      * @return 최종 PutRecordsResponse 객체
      */
-    suspend fun putRecords(datas: List<GsonData>) {
+    suspend fun putRecords(inputs: List<GsonData>, fixedPartitionKey: String? = null) {
         // 초기 데이터 매핑 - 요청 엔트리 생성
-        val entries = datas.map { data ->
+        val entries = inputs.map { input ->
             PutRecordsRequestEntry {
-                partitionKey = partitionKeyBuilder(data)
-                this.data = gson.toJson(data.delegate)!!.toByteArray()
+                partitionKey = fixedPartitionKey ?: partitionKeyBuilder(input)
+                data = gson.toJson(input.delegate)!!.toByteArray()
             }
         }
 
@@ -79,9 +79,9 @@ class KinesisWriter {
 
         // 모든 레코드가 처리될 때까지 반복
         while (remainingRecords.isNotEmpty() && retryCount <= maxRetries) {
-            // Kinesis에 레코드 전송
+            // putRecords 로 전송해야함
             val response = aws.kinesis.putRecords {
-                this.streamName = streamName
+                this.streamName = this@KinesisWriter.streamName
                 this.records = remainingRecords
             }
 
@@ -93,6 +93,8 @@ class KinesisWriter {
             // 실패한 레코드만 필터링하여 다음 시도를 위해 준비
             remainingRecords = response.records.mapIndexedNotNull { index, result ->
                 if (result.errorCode != null) {
+                    //로그 너무 많으면 내리기
+                    log.warn { " => failed to put record to Kinesis. index=$index, partitionKey=${entries[index].partitionKey}, errorCode=${result.errorCode}, errorMessage=${result.errorMessage}" }
                     // 실패한 레코드는 유지
                     remainingRecords[index]
                 } else {
