@@ -170,33 +170,38 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
             else -> throw IllegalStateException("${delegate::class.simpleName} is not required")
         }
 
-    val size: Int = when (delegate) {
-        is JsonObject -> delegate.size()
-        is JsonArray -> delegate.size()
-        is JsonPrimitive -> 1
-        is JsonNull -> 0
-        else -> throw IllegalStateException("${delegate::class.simpleName} is not required")
-    }
+    val size: Int
+        get() = when (delegate) {
+            is JsonObject -> delegate.size()
+            is JsonArray -> delegate.size()
+            is JsonPrimitive -> 1
+            is JsonNull -> 0
+            else -> throw IllegalStateException("${delegate::class.simpleName} is not required")
+        }
 
-    val isPrimitive: Boolean = when (delegate) {
-        is JsonPrimitive -> true
-        else -> false
-    }
+    val isPrimitive: Boolean
+        get() = when (delegate) {
+            is JsonPrimitive -> true
+            else -> false
+        }
 
-    val isObject: Boolean = when (delegate) {
-        is JsonObject -> true
-        else -> false
-    }
+    val isObject: Boolean
+        get() = when (delegate) {
+            is JsonObject -> true
+            else -> false
+        }
 
-    val isArray: Boolean = when (delegate) {
-        is JsonArray -> true
-        else -> false
-    }
+    val isArray: Boolean
+        get() = when (delegate) {
+            is JsonArray -> true
+            else -> false
+        }
 
-    val isNull: Boolean = when (delegate) {
-        is JsonNull -> true
-        else -> false
-    }
+    val isNull: Boolean
+        get() = when (delegate) {
+            is JsonNull -> true
+            else -> false
+        }
 
     /**
      * 간단버전
@@ -206,7 +211,6 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 
 
     //==================================================== 특수 ======================================================
-
 
 
     companion object {
@@ -225,7 +229,7 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
         /** array 생성. koson 사용해도 무방 */
         fun array(block: GsonData.() -> Unit = {}): GsonData = GsonData(JsonArray()).apply(block)
 
-        /** 
+        /**
          * 빈값 리턴
          * 실제 객체 생성해도 비용 크지 않으니 객체 초기화 시에는 사용하지 마세요
          *  */

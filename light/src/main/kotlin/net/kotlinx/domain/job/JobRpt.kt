@@ -18,4 +18,3 @@ data class JobRpt(
     /** 최근 일주일 비용 기준으로 계산.. 환율 1400원 */
     val sumOfCost: BigDecimal,
 )
-

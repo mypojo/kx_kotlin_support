@@ -33,8 +33,14 @@ class KinesisWriter {
     /** 스트림 이름 */
     lateinit var streamName: String
 
-    /** 파티션 키 */
-    lateinit var partitionKey: String
+    /**
+     * 파티션 키 빌더
+     * 고정값을 리턴하는경우
+     * 1. 모든값은 고정된 샤드로 전송된다  = 로드밸런싱 되지 않음
+     * 2. 하지만 동일 샤드에서는 순서가 유지됨
+     * 대량의 데이터 입력시 "키워드" 처럼 분산된 값을 사용해야함
+     *  */
+    lateinit var partitionKeyBuilder: (GsonData) -> String
 
     /** JSON 직렬화에 사용할 Gson 인스턴스 (기본값: GsonSet.TABLE_UTC_WITH_ZONE) */
     var gson: Gson = GsonSet.TABLE_UTC_WITH_ZONE
@@ -61,7 +67,7 @@ class KinesisWriter {
         // 초기 데이터 매핑 - 요청 엔트리 생성
         val entries = datas.map { data ->
             PutRecordsRequestEntry {
-                partitionKey = this@KinesisWriter.partitionKey
+                partitionKey = partitionKeyBuilder(data)
                 this.data = gson.toJson(data.delegate)!!.toByteArray()
             }
         }
