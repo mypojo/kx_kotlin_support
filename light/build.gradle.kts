@@ -149,15 +149,15 @@ dependencies {
 }
 
 /** 실행파일 + 모든 의존성. 이게 용량이 50mb 이하라면 다이렉트로 업로드 가능. */
-tasks.create("fatJar", Jar::class) {
+tasks.register("fatJar", Jar::class) {
     group = "build"
     description = "AWS 람다 all-in-one 빌드용 (전체 의존이 50mb 이내여야함)"
     manifest.attributes["Main-Class"] = "com.example.MyMainClass" //AWS 람다 등록시 필요없음
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     val dependencies = configurations.runtimeClasspath.get().map(::zipTree)
-    from(dependencies)
-    with(tasks.jar.get())
-    archiveFileName = "fatJar.jar"
+    from(dependencies)  ///외부 의존성(dependencies)과 현재 프로젝트의 컴파일된 코드(tasks.jar)를 모두 포함
+    from(tasks.jar.get().archiveFile.map(::zipTree))  //현재 프로젝트(light 모듈)의 컴파일된 코드를 JAR에 추가
+    archiveFileName.set("fatJar.jar")
     isZip64 = true //archive contains more than 65535 entries
     doLast {
         // 람다 디플로이 및 버전 갱신...
