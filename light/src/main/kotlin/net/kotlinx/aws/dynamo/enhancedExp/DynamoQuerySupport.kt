@@ -3,6 +3,8 @@ package net.kotlinx.aws.dynamo.enhancedExp
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.Select
+import aws.sdk.kotlin.services.dynamodb.paginators.queryPaginated
+import kotlinx.coroutines.flow.*
 import net.kotlinx.aws.dynamo.enhanced.DbItem
 import net.kotlinx.aws.dynamo.enhanced.getBatch
 import net.kotlinx.collection.doUntilTokenNull
@@ -38,20 +40,13 @@ suspend fun DynamoDbClient.queryCnt(block: () -> DbExpression): Int {
         select = Select.Count
         limit = DbExpression.EXPRESSION_LIMIT
     }
-    return doUntilTokenNull { _, last ->
-        expression.exclusiveStartKey = last as Map<String, AttributeValue>?
-        val resp = this.query(expression.toQueryRequest())
-        check(resp.items == null)
-        listOf(resp.count) to resp.lastEvaluatedKey //doUntilTokenNull 형식에 맞추기 위해서 예쁘지 않게 코딩함.
-    }.flatten().sum()
+    return this.queryPaginated(expression.toQueryRequest()).map { it.items?.size ?: 0 }.toList().sum()
+
 }
 
-
-/** 전체 조회 -> 단축 */
-suspend fun <T : DbItem> DynamoDbClient.queryAll(block: () -> DbExpression): List<T> = queryAll(block())
-
 /** 전체 조회 */
-suspend fun <T : DbItem> DynamoDbClient.queryAll(expression: DbExpression): List<T> {
+@Deprecated("사용안함")
+suspend fun <T : DbItem> DynamoDbClient.queryAll2(expression: DbExpression): List<T> {
     expression.limit = DbExpression.EXPRESSION_LIMIT //전부 가져올때는 강제로 최대치를 가져옴
     val itemMaps = doUntilTokenNull { _, last ->
         expression.exclusiveStartKey = last as Map<String, AttributeValue>?
@@ -59,4 +54,23 @@ suspend fun <T : DbItem> DynamoDbClient.queryAll(expression: DbExpression): List
         result2.maps to result2.lastEvaluatedKey
     }.flatten()
     return DbResult(expression.table, itemMaps, null).datas()
+}
+
+/** 전체 조회 -> 단축 */
+fun <T : DbItem> DynamoDbClient.queryAll(block: () -> DbExpression): Flow<T> = queryAll(block())
+
+/**
+ * 전체 조회
+ * AWS SDK의 페이징 함수를 이용해 Flow를 반환
+ */
+fun <T : DbItem> DynamoDbClient.queryAll(expression: DbExpression): Flow<T> {
+    expression.limit = DbExpression.EXPRESSION_LIMIT // 전부 가져올때는 강제로 최대치를 가져옴
+    return this.queryPaginated(expression.toQueryRequest()).flatMapConcat { response ->
+        // 부분 데이터만 가지고있을경우(보통 인덱스) 다시 조회 해준다
+        val items = when (expression.select) {
+            Select.AllProjectedAttributes -> getBatch(expression.table, response.items ?: emptyList())
+            else -> response.items ?: emptyList()
+        }
+        DbResult(expression.table, items, null).datas<T>().asFlow()
+    }
 }

@@ -89,6 +89,10 @@ internal class GsonData_데이터클래스 : BeSpecLog() {
                         }
                         "reason" to "업로드"
                     }
+                    "lines" to listOf(
+                        mapOf { "line" to "1" },
+                        mapOf { "line" to "2" },
+                    )
                 }
                 val orgJson = s3Event.toPreety()
                 val mapJson = GsonData.fromObj(s3EventMap).toPreety()
@@ -110,7 +114,7 @@ internal class GsonData_데이터클래스 : BeSpecLog() {
         Given("파싱 테스트") {
 
             data class Q1(
-                val nameClass: String? = null
+                val nameClass: String? = null,
             )
 
             val gsonData = obj {

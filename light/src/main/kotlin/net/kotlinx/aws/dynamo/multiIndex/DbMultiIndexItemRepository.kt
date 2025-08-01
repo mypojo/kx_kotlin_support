@@ -1,6 +1,7 @@
 package net.kotlinx.aws.dynamo.multiIndex
 
 import aws.sdk.kotlin.services.dynamodb.model.Select
+import kotlinx.coroutines.flow.Flow
 import net.kotlinx.aws.dynamo.dynamo
 import net.kotlinx.aws.dynamo.enhanced.DbRepository
 import net.kotlinx.aws.dynamo.enhanced.DbTable
@@ -19,7 +20,7 @@ class DbMultiIndexItemRepository : DbRepository<DbMultiIndexItem>() {
     }
 
     /** 전체 조회 */
-    suspend fun findAllBySkPrefix(item: DbMultiIndexItem, index: DbMultiIndex? = null, block: DbExpression.() -> Unit = {}): List<DbMultiIndexItem> {
+    fun findAllBySkPrefix(item: DbMultiIndexItem, index: DbMultiIndex? = null, block: DbExpression.() -> Unit = {}): Flow<DbMultiIndexItem> {
         return aws.dynamo.queryAll { findBySkPrefixInner(item, index, block) }
     }
 

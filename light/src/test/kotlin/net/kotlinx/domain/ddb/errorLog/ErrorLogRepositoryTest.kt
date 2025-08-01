@@ -1,6 +1,7 @@
 package net.kotlinx.domain.ddb.errorLog
 
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.flow.toList
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.dynamo.DynamoUtil
 import net.kotlinx.domain.item.errorLog.ErrorLog
@@ -58,7 +59,7 @@ class ErrorLogRepositoryTest : BeSpecLight() {
 
                 Then("입력 & 조회") {
                     repository.putItem(errorLog)
-                    val logs = repository.findAll(errorLog.group, errorLog.div)
+                    val logs = repository.findAll(errorLog.group, errorLog.div).toList()
                     logs.print()
 
                     logs.first { it.id == errorLog.id }.cause shouldBe errorLog.cause

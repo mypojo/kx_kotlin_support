@@ -12,7 +12,6 @@ import net.kotlinx.kotest.initTest
 import net.kotlinx.string.StringNumberSupport
 import net.kotlinx.string.toBigDecimal2
 import net.kotlinx.system.DeploymentType
-import net.kotlinx.time.LocalDatetimeSupport
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -106,7 +105,7 @@ class MockkEtcTest : BeSpecLog() {
                         "aa".toMockkInlineString2() shouldBe "인라인2"
                     }
 
-                    unmockkStatic(LocalDatetimeSupport.packageName())
+                    unmockkStatic(MockkTestSupport.packageName())
                 }
 
             }

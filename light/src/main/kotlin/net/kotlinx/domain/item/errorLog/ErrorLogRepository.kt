@@ -1,5 +1,6 @@
 package net.kotlinx.domain.item.errorLog
 
+import kotlinx.coroutines.flow.Flow
 import net.kotlinx.aws.dynamo.dynamo
 import net.kotlinx.aws.dynamo.enhanced.DbRepository
 import net.kotlinx.aws.dynamo.enhanced.DbTable
@@ -18,7 +19,7 @@ class ErrorLogRepository : DbRepository<ErrorLog>() {
     suspend fun find(group: String, div: String, divId: String, block: DbExpression.() -> Unit = {}): DbResult = aws.dynamo.query { findInner(group, div, divId, block) }
 
     /** 전체 조회 */
-    suspend fun findAll(group: String, div: String, divId: String? = null, block: DbExpression.() -> Unit = {}): List<ErrorLog> =
+    fun findAll(group: String, div: String, divId: String? = null, block: DbExpression.() -> Unit = {}): Flow<ErrorLog> =
         aws.dynamo.queryAll { findInner(group, div, divId, block) }
 
     /** 카운트만 조회 */

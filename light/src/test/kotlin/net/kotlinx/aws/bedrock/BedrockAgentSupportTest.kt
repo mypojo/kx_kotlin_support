@@ -2,6 +2,7 @@ package net.kotlinx.aws.bedrock
 
 import aws.sdk.kotlin.services.bedrockagentruntime.model.InvokeAgentRequest
 import aws.sdk.kotlin.services.bedrockagentruntime.model.SessionState
+import kotlinx.coroutines.flow.toList
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
@@ -45,7 +46,7 @@ class BedrockAgentSupportTest : BeSpecHeavy() {
 
             Then("프롬프트 리스팅") {
                 val resp = aws49.bra.listAllPrompts()
-                resp.print()
+                resp.toList().print()
             }
 
             Then("프롬프트 가져오기") {

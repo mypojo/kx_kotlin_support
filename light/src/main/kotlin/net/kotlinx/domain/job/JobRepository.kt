@@ -1,6 +1,7 @@
 package net.kotlinx.domain.job
 
 import aws.sdk.kotlin.services.dynamodb.model.Select
+import kotlinx.coroutines.flow.Flow
 import net.kotlinx.aws.dynamo.dynamo
 import net.kotlinx.aws.dynamo.enhanced.DbRepository
 import net.kotlinx.aws.dynamo.enhanced.DbTable
@@ -27,7 +28,7 @@ class JobRepository : DbRepository<Job>() {
      * 전체 조회
      * ex) jobs.sortedByDescending { it.startTime }
      *  */
-    suspend fun findAllByPk(jobDef: JobDefinition, block: DbExpression.() -> Unit = {}): List<Job> {
+    fun findAllByPk(jobDef: JobDefinition, block: DbExpression.() -> Unit = {}): Flow<Job> {
         return aws.dynamo.queryAll { findByPkInner(jobDef, block) }
     }
 
@@ -48,7 +49,7 @@ class JobRepository : DbRepository<Job>() {
     }
 
     /** findByStatusPk 전체 버전 */
-    suspend fun findAllByStatusPk(jobStatus: JobStatus, jobDef: JobDefinition? = null, block: DbExpression.() -> Unit = {}): List<Job> {
+    fun findAllByStatusPk(jobStatus: JobStatus, jobDef: JobDefinition? = null, block: DbExpression.() -> Unit = {}): Flow<Job> {
         return aws.dynamo.queryAll { findByStatusPkInner(jobStatus, jobDef, block) }
     }
 
@@ -83,7 +84,7 @@ class JobRepository : DbRepository<Job>() {
     }
 
     /** 특정 사용자의 요청을 요청 최신순으로 조회 -> 전체 */
-    suspend fun findAllByMemberId(jobDef: JobDefinition, memberId: String, block: DbExpression.() -> Unit = {}): List<Job> {
+    fun findAllByMemberId(jobDef: JobDefinition, memberId: String, block: DbExpression.() -> Unit = {}): Flow<Job> {
         return aws.dynamo.queryAll { findByMemberIdInner(jobDef, memberId, block) }
     }
 

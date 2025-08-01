@@ -2,9 +2,14 @@ package net.kotlinx.aws.quicksight
 
 import aws.sdk.kotlin.services.quicksight.*
 import aws.sdk.kotlin.services.quicksight.model.*
+import aws.sdk.kotlin.services.quicksight.paginators.listFoldersForResourcePaginated
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flatMapConcat
 import net.kotlinx.aws.awsConfig
 import net.kotlinx.aws.toKoreaDateTime
 import net.kotlinx.collection.doUntilTokenNull
+import net.kotlinx.concurrent.coroutine
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.string.toTextGridPrint
 import net.kotlinx.time.toKr01
@@ -52,7 +57,8 @@ suspend fun QuickSightClient.updateFolder(id: String, name: String): UpdateFolde
 }
 
 /** 폴더 리스팅 */
-suspend fun QuickSightClient.listFolders(): List<Folder> {
+@Deprecated("사용안함")
+suspend fun QuickSightClient.listFolders2(): List<Folder> {
     val folderSummarys = doUntilTokenNull { i, token ->
         val response = this.listFolders {
             this.awsAccountId = awsConfig.awsId
@@ -69,7 +75,19 @@ suspend fun QuickSightClient.listFolders(): List<Folder> {
             }.folder!!
         }
     }.coroutineExecute(20)
+}
 
+/** 작동 확인 필요 */
+fun QuickSightClient.listFolders(): Flow<Folder> {
+    return this.listFoldersForResourcePaginated { this.awsAccountId = awsConfig.awsId }.flatMapConcat {
+        val folderIds = it.folders!!
+        folderIds.coroutine { id ->
+            describeFolder {
+                awsAccountId = awsConfig.awsId
+                folderId = id
+            }.folder!!
+        }.asFlow()
+    }
 }
 
 /** 폴더 삭제 (UI에서 안보이는경우) */

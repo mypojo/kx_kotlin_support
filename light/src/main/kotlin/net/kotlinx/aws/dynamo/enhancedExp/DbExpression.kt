@@ -2,6 +2,7 @@ package net.kotlinx.aws.dynamo.enhancedExp
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
 import aws.sdk.kotlin.services.dynamodb.model.QueryRequest
+import aws.sdk.kotlin.services.dynamodb.model.ScanRequest
 import aws.sdk.kotlin.services.dynamodb.model.Select
 import net.kotlinx.aws.dynamo.enhanced.DbItem
 import net.kotlinx.aws.dynamo.enhanced.DbTable
@@ -117,6 +118,19 @@ abstract class DbExpression {
             this.scanIndexForward = this@DbExpression.scanIndexForward
         }
     }
+
+    /** 스캔 요청으로 변환 */
+    fun toScanRequest(): ScanRequest {
+        return ScanRequest {
+            this.tableName = this@DbExpression.table.tableName
+            this.limit = this@DbExpression.limit
+            this.exclusiveStartKey = this@DbExpression.exclusiveStartKey
+            this.filterExpression = this@DbExpression.filterExpression()
+            this.expressionAttributeValues = this@DbExpression.expressionAttributeValues()
+            this.consistentRead = this@DbExpression.consistentRead
+        }
+    }
+
 
     /**
      * 메인 키나 GSI 대상의 쿼리만 가능함

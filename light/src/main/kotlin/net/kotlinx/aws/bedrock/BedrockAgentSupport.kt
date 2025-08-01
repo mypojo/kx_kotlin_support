@@ -1,12 +1,17 @@
 package net.kotlinx.aws.bedrock
 
-import aws.sdk.kotlin.services.bedrockagent.*
+import aws.sdk.kotlin.services.bedrockagent.BedrockAgentClient
+import aws.sdk.kotlin.services.bedrockagent.getAgentActionGroup
+import aws.sdk.kotlin.services.bedrockagent.getPrompt
 import aws.sdk.kotlin.services.bedrockagent.model.ApiSchema
 import aws.sdk.kotlin.services.bedrockagent.model.GetPromptResponse
 import aws.sdk.kotlin.services.bedrockagent.model.PromptSummary
+import aws.sdk.kotlin.services.bedrockagent.paginators.listPromptsPaginated
+import aws.sdk.kotlin.services.bedrockagent.updateAgentActionGroup
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flatMapConcat
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.regist
-import net.kotlinx.collection.doUntilTokenNull
 
 /** 배드락 에이전트 클라이언트 */
 val AwsClient.bra: BedrockAgentClient
@@ -21,15 +26,8 @@ suspend fun BedrockAgentClient.getPrompt(promptId: String, version: String? = nu
     }
 }
 
-/** 전체 프롬프트 출력 */
-suspend fun BedrockAgentClient.listAllPrompts(): List<PromptSummary> {
-    return doUntilTokenNull { _, token ->
-        val response = this.listPrompts {
-            this.nextToken = token as String?
-        }
-        response.promptSummaries to response.nextToken
-    }.flatten()
-}
+/** 전체 프롬프트 출력 -> Flow 지원 */
+fun BedrockAgentClient.listAllPrompts(): kotlinx.coroutines.flow.Flow<PromptSummary> = listPromptsPaginated {}.flatMapConcat { it.promptSummaries.asFlow() }
 
 /**
  * 액션 그룹의 오픈 API 스키마를 업데이트함

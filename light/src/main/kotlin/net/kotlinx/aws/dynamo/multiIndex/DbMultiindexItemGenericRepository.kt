@@ -1,5 +1,7 @@
 package net.kotlinx.aws.dynamo.multiIndex
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import net.kotlinx.aws.dynamo.DynamoMap
 import net.kotlinx.aws.dynamo.enhancedExp.DbExpression
 
@@ -38,7 +40,7 @@ class DbMultiindexItemGenericRepository<T>(
     }
 
     /** 전체 조회 */
-    suspend fun findAllBySkPrefix(item: T, index: DbMultiIndex? = null, block: DbExpression.() -> Unit = {}): List<T> {
+    fun findAllBySkPrefix(item: T, index: DbMultiIndex? = null, block: DbExpression.() -> Unit = {}): Flow<T> {
         val param = eachConverter.convertFrom(item)
         val dbResult = repository.findAllBySkPrefix(param, index, block)
         return dbResult.map { eachConverter.convertTo(it) }

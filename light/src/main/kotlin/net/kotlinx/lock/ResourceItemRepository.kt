@@ -1,5 +1,6 @@
 package net.kotlinx.lock
 
+import kotlinx.coroutines.flow.toList
 import net.kotlinx.aws.dynamo.dynamo
 import net.kotlinx.aws.dynamo.enhanced.DbRepository
 import net.kotlinx.aws.dynamo.enhanced.DbTable
@@ -34,11 +35,11 @@ class ResourceItemRepository : DbRepository<ResourceItem>() {
 
     /** 리소스 전체 리스팅  */
     suspend fun findAllByPk(pk: String): List<ResourceItem> {
-        return aws.dynamo.queryAll {
+        return aws.dynamo.queryAll<ResourceItem> {
             DbExpressionSet.PkSkEq {
                 init(ResourceItem(pk, ""))
             }
-        }
+        }.toList()
     }
 
     companion object {

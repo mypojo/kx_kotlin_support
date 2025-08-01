@@ -2,6 +2,7 @@ package net.kotlinx.domain.job
 
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.flow.toList
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.dynamo.DynamoUtil
 import net.kotlinx.domain.job.define.JobDefinition
@@ -77,7 +78,7 @@ class JobRepositoryTest : BeSpecLight() {
                     lastJobs.printSimple()
                 }
                 xThen("페이징 없이 전체 쿼리") {
-                    val lastJobs = jobRepository.findAllByStatusPk(JobStatus.SUCCEEDED)
+                    val lastJobs = jobRepository.findAllByStatusPk(JobStatus.SUCCEEDED).toList()
                     lastJobs.size shouldBeGreaterThan 4
                     log.info { "전체 크기 ${lastJobs.size}" }
                 }
@@ -92,7 +93,7 @@ class JobRepositoryTest : BeSpecLight() {
                     list.size shouldBe 2
                 }
                 xThen("전체 조회 (메모리 주의!!)") {
-                    val jobs = jobRepository.findAllByPk(jobDef)
+                    val jobs = jobRepository.findAllByPk(jobDef).toList()
                     log.info { "전체 사이즈 : ${jobs.size}" }
                     jobs.size shouldBeGreaterThan 2
                 }
@@ -116,7 +117,7 @@ class JobRepositoryTest : BeSpecLight() {
                 }
 
                 Then("전체 스캔") {
-                    val jobs = jobRepository.scanAll()
+                    val jobs = jobRepository.scanAll().toList()
                     log.info { "결과파일 크기 : ${jobs.size}" }
                 }
 

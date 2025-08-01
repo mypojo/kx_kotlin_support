@@ -1,6 +1,7 @@
 package net.kotlinx.domain.ddb.repeatTask
 
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.flow.toList
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndex
 import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndexItemRepository
@@ -118,7 +119,7 @@ class RepeatTaskRepositoryTest : BeSpecLight() {
                         }
                         val datas = repository.findAllBySkPrefix(req) {
                             limit = 5
-                        }
+                        }.toList()
                         datas.size shouldBe 12
                     }
 

@@ -1,6 +1,7 @@
 package net.kotlinx.aws.dynamo.enhanced
 
 import aws.sdk.kotlin.services.dynamodb.model.DeleteItemResponse
+import kotlinx.coroutines.flow.Flow
 import net.kotlinx.aws.LazyAwsClientProperty
 import net.kotlinx.aws.dynamo.dynamo
 import net.kotlinx.aws.dynamo.enhancedExp.*
@@ -39,7 +40,7 @@ abstract class DbRepository<T : DbItem>() {
     suspend fun findPkSkEq(pk: String, sk: String? = null, block: DbExpression.() -> Unit = {}): DbResult = aws.dynamo.query { findPkSkEqInner(pk, sk, block) }
 
     /** 전체 조회 */
-    suspend fun findPkSkEqAll(pk: String, sk: String? = null, block: DbExpression.() -> Unit = {}): List<T> =
+    fun findPkSkEqAll(pk: String, sk: String? = null, block: DbExpression.() -> Unit = {}): Flow<T> =
         aws.dynamo.queryAll { findPkSkEqInner(pk, sk, block) }
 
     /** 내부 템플릿 */
@@ -56,6 +57,6 @@ abstract class DbRepository<T : DbItem>() {
     suspend fun scan(): List<T> = aws.dynamo.scan(DbExpressionSet.None { this.table = dbTable }).datas()
 
     /** 사용시 주의!! */
-    suspend fun scanAll(): List<T> = aws.dynamo.scanAll(DbExpressionSet.None { table = dbTable })
+    fun scanAll(): Flow<T> = aws.dynamo.scanAll(DbExpressionSet.None { table = dbTable })
 
 }
