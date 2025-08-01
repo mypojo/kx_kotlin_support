@@ -54,7 +54,7 @@ dependencies {
     api("aws.sdk.kotlin:codecommit:$awsVersion") //3m.. 그래도 넣자
     api("aws.sdk.kotlin:scheduler:${awsVersion}")  //새로운 이벤트브릿지 스케쥴 0.8mb
     api("aws.sdk.kotlin:rdsdata:${awsVersion}")  // 오로라 서버리스 v2 API 호출  https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/kotlin/usecases/serverless_rds
-    api("aws.sdk.kotlin:cognitoidentityprovider:$awsVersion") //코그니토
+    api("aws.sdk.kotlin:cognitoidentityprovider:$awsVersion") //코그니토  4 mbyt
 
     //==================================================== AWS 배드락 ======================================================
     api("aws.sdk.kotlin:bedrock:$awsVersion") //약 2mb  시리즈 전체 -> https://central.sonatype.com/search?q=g%3Aaws.sdk.kotlin+bedrock&smo=true
