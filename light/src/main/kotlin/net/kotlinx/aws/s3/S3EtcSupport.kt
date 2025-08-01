@@ -90,8 +90,8 @@ suspend fun S3Client.listObjects(bucket: String, prefix: String): List<S3Data> =
 suspend fun S3Client.listAllObjects(bucket: String, prefix: String): List<S3Data> = this.listObjectsV2Paginated {
     this.bucket = bucket
     this.prefix = prefix
-}.map {
-    it.contents?.map { S3Data(bucket, it.key!!).apply { this.obj = it } } ?: emptyList()
+}.map { r ->
+    r.contents?.map { S3Data(bucket, it.key!!).apply { this.obj = it } } ?: emptyList()
 }.toList().flatten()
 
 /** 간단 메소드 */

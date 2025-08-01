@@ -10,10 +10,10 @@
 # 기본방침
 
 1. 처리 과정, 플랜, 상세 단계 설명, 오류 메세지, 로그 예시 등 모든 문서화 텍스트는 한글로 작성해줘
-    1. 특별히 정해진 표준 용어(예: AWS 리소스명 등)만 예외적으로 영어를 사용 가능해.
+   1. 특별히 정해진 표준 용어(예: AWS 리소스명 등)만 예외적으로 영어를 사용 가능해.
 2. 작업시 var 나 mutableListOf 사용을 최소화 하는, 코틀린 스러운 코드로 만들어줘
 3. 처리가 완료되면 슬렉으로 간단하게 완료 메세지를 전달해줘
-    1. 채널 이름 = 'ai-콜백'
+   1. 채널 이름 = 'ai-콜백'
 
 # Kotlin 코딩 가이드 상세
 
@@ -34,8 +34,7 @@ log.warn { "Failed to put ${remainingRecords.size} records to Kinesis after $max
 ```
 
 ### AWS Client
-단일 리스팅이 아닌, 전체를 가져올때는 SDK에서 기본 제공되는 Paginated Flow 를 사용후 Flow로 리턴해줘
-CognitoSupport.kt 참고해
+전체를 가져올때는 SDK에서 기본 제공되는 Paginated Flow 를 사용후 Flow로 리턴해줘
 ```kotlin
 listUsersPaginated { this.userPoolId = userPoolId }.flatMapConcat { it.users!!.asFlow() }
 ```
