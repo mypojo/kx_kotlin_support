@@ -5,7 +5,6 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.LazyAwsClientProperty
 import net.kotlinx.aws.kinesis.reader.KinesisReader
-import net.kotlinx.aws.kinesis.reader.gson
 import net.kotlinx.aws.kinesis.writer.KinesisWriter
 import net.kotlinx.core.Kdsl
 import kotlin.time.Duration
@@ -60,7 +59,10 @@ class KinesisWorker {
     var retryDelay: Duration = 1.seconds
 
     /** 실제 작업을 처리하는 핸들러 */
-    lateinit var handler: (List<KinesisWorkerData>) -> Unit
+    lateinit var handler: suspend (List<KinesisWorkerData>) -> Unit
+
+    /** 종료되었을경우 콜백 알람등의 처리 */
+    var stopCallback: suspend (KinesisWorker) -> Unit = {}
 
     //==================================================== 내부 상태 ======================================================
 
@@ -77,7 +79,6 @@ class KinesisWorker {
         }
     }
 
-    // 커스텀 KinesisWriter (파티션 키 변환을 위해)
     private val writer by lazy {
         KinesisWriter {
             aws = this@KinesisWorker.aws
@@ -100,8 +101,10 @@ class KinesisWorker {
 
     /**
      * 워커 중지
+     * intellij 에서 JVM 강제 중단해도 호출된다
      */
     suspend fun stop() {
+        stopCallback(this)
         log.info { "KinesisWorker 종료 중..." }
         reader.stop()
         log.info { "KinesisWorker 종료 완료" }
@@ -116,14 +119,14 @@ class KinesisWorker {
         val filteredRecords = records.filter { it.partitionKey!!.endsWith("-in") }
 
         if (filteredRecords.isEmpty()) {
-            log.debug { "[$shardId] 스트림 읽었으나 -> 처리할 레코드 없음 (타입: in)" }
+            log.debug { " -> #[$shardId] ${filteredRecords.size}건의 스트림 읽었으나 -> 현재 워커에서 처리할 레코드 없음 (타입: in)" }
             return
         }
 
-        log.info { "[$shardId] ${filteredRecords.size}개의 레코드 처리 시작 (타입: in)" }
+        log.info { " -> #[$shardId] ${filteredRecords.size}개의 레코드 처리 시작 (타입: in)" }
 
         //task 별로 파티션 키가 달라지기 때문에 이렇게 작업
-        val byTask = filteredRecords.map { KinesisWorkerData(it) }.groupBy { it.taskName }
+        val byTask = filteredRecords.map { KinesisWorkerData(it) }.groupBy { it.resultPartitionKey }
         byTask.entries.forEach { e ->
             try {
                 // 데이터 처리
@@ -143,13 +146,3 @@ class KinesisWorker {
     }
 }
 
-data class KinesisWorkerData(val record: Record) {
-
-    /** 이 결과를 다시 write함 */
-    val result = record.gson
-
-    val taskName: String = record.partitionKey!!.substringBefore("-")
-    val taskId: String = record.partitionKey!!.substringAfter("-").substringBefore("-")
-    val resultPartitionKey by lazy { "$taskName-$taskId-out" }
-
-}

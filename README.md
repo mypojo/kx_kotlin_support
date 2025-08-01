@@ -1,149 +1,138 @@
 # 소개
+
 - 🛠 유틸리티 도구 모음
 - ☁️ AWS 서비스 클라이언트 확장
 - 🏗 AWS CDK DSL 지원
 - 🔌 외부 API 연동 (Google, Notion 등)
 - 🍃 Spring & Hibernate 활용 예제
 
-
 [![License](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/license/mit-0/)
 
-
-## AWS client 샘플
+## AWS kinesis 실시간 대량 처리 - 요청
 
 ```kotlin
-val awsConfig = AwsConfig(profileName = "sin")
-val aws = awsConfig.toAwsClient()
-aws.lambda.listFunctions { maxItems = 10 }.functions?.map {
-    arrayOf(
-        it.functionName, it.codeSize, it.functionArn
-    )
-}?.also {
-    listOf("함수명", "코드사이즈", "ARN").toTextGrid(it).print()
+val task = KinesisTask {
+    streamName = workerStream
+    checkpointTableName = "system-dev"
+    taskName = "demoTaskJob"
+    checkpointTtl = 1.hours
 }
-
-aws.s3.listBuckets {}.buckets?.map {
-    arrayOf(
-        it.name, it.creationDate?.toLocalDateTime()?.toKr01()
-    )
-}?.also {
-    listOf("이름", "생성날짜").toTextGrid(it).print()
-}
-
-S3Data.parse("s3://sin/athena/3eefab99-5ca7-447f-80c8-93ab1860e25a.csv").let {
-    val url = aws.s3.getObjectPresign(it.bucket, it.key)
-    println("프리사인 다운로드 url = $url")
-}
-
-```
-
-
-## JSON (Koson/Gson) 샘플
-```kotlin
-val json = obj {
-    "type" to "normal"
-    "members" to arr[
-            obj { "name" to "A"; "age" to 10; },
-            obj { "name" to "B"; "age" to 20; },
-    ]
-}
-
-val gsonData = GsonData.parse(json)
-gsonData["members"].filter { it["name"].str == "B" }.onEach { it.put("age", 25) }
-
-val sumOfAge = gsonData["members"].sumOf { it["age"].long ?: 0L }
-println("sumOfAge : $sumOfAge")
-```
-
-## AWS CDK DSL with Koin 샘플
-```kotlin
-XXCdkKoinStarter.startup {
-    single { project }
-    single { DeploymentType.DEV }
-    single { MyVpc.createForKoin() }
-}
-
-XX02CoreStack(app, props)
-
-CdkSchedulerGroup {
-    this.stack = stack
-    this.groupName = "jobSchedule"
-    role = MyRole.APP_ADMIN.iRole
-    this.dlq = dlq.iQueue
-    this.targetArn = iFunction.functionArn
-    create()
-    schedule {
-        name = "job01"
-        description = "description..."
-        cronExpression = "05 * * * ? *"
+val file: File by ResourceHolder.WORKSPACE.slash("largeFile.csv") lazyLoad "s3://xxxa/demo/largeFile.csv"
+val flow = file.toInputResource().toFlow()
+    .map { line ->
+        json {
+            "id" to line[0]
+            "query" to line[1]
+        }
+    }
+    .chunked(1000)
+task.execute(flow).collect { datas ->
+    datas.forEach {
+        log.debug { " => [${it}]" }
     }
 }
-
 ```
 
+## AWS kinesis 실시간 대량 처리 - 워커
 
-## AWS athena 테이블생성 샘플
 ```kotlin
-val demo = AthenaTable {
-    tableName = "demo"
-    location = "s3://${bucketName}/collect/event1_job/"
-    schema = mapOf(
-        "detail-type" to "string",
-        "account" to "string",
-        "detail" to mapOf(
-            "eventId" to "bigint",
-            "eventDate" to "string",
-            "datas" to listOf(
-                "id" to "string",
-                "x" to "string",
-            ),
-        ),
-    )
-    partition = mapOf(
-        "basicDate" to "string",
-        "hh" to "string",
-    )
-    athenaTableFormat = AthenaTableFormat.Json
-    athenaTablePartitionType = AthenaTablePartitionType.Index
+val worker = KinesisWorker {
+    streamName = workerStream
+    checkpointTableName = "system-dev"
+    handler = { records ->
+        log.info { "워커 테스트: ${records.size}개의 레코드 처리" }
+        records.forEach {
+            it.result.put("processed", true)
+            it.result.put("time", java.time.LocalDateTime.now().toKr01())
+            log.debug { " -> ${it.result}" }
+            100.milliseconds.delay() //0.1초에 1개씩 처리
+        }
+    }
+    readChunkCnt = 100
+    shardCheckInterval = 10.minutes
+}
+worker.start()
+```
+
+## AWS CDK - CICD (깃헙 & 코드파이프라인)
+
+```kotlin
+val stack = this
+val infra = koin<MyInfra>()
+val workBucket = infra.s3.work.load(stack)
+val appRole = MyRole.APP_ADMIN.load(stack)
+val securityGroup = MySecurityGroup.JOB.load(stack)
+val toAdmin = infra.topic.adminAll.load(stack)
+
+val build = CdkCodeBuild {
+    chacheBucket = workBucket.iBucket
+    role = appRole.iRole
+    vpc = infra.vpc.iVpc
+    securityGroups = listOf(securityGroup.iSecurityGroup)
+    concurrentBuildLimit = 1 //AWS 오류..
+    gradleVersion = "8.12.1"
+    gradleCmds(":deployAll")
+    byGithub(MyProject.GITHUB_ROOT, MyProject.PROJECT_DMP)
+    create(stack)
+}
+
+CdkCodePipeline {
+    codeBuild = build.codeBuild
+    role = appRole.iRole
+    topics = listOf(toAdmin)
+    events = when (deploymentType) {
+        DeploymentType.PROD -> listOf(EventSets.CodekPipeline.FAILED) //후킹이 걸려있기 때문에 빌드 성공은 필요없음
+        DeploymentType.DEV -> listOf(EventSets.CodekPipeline.FAILED, EventSets.CodekPipeline.SUCCESSED)
+    }
+    byGithub(MyProject.GITHUB_ROOT, MyProject.PROJECT_DMP, "arn:aws:codeconnections:ap-northeast-2:xxxx")
+    create(stack)
 }
 ```
 
-## AWS athena 쿼리 샘플
-```kotlin
+## AWS CDK - ECS (블루그린배포)
 
-val executions = listOf(
-    AthenaExecute("INSERT INTO ... SELECT ..."),
-    AthenaReadAll(
-        """
-                SELECT ..
-                FROM ..
-                group by  ..
-                order by ..
-                """
-    ) { lines ->
-        lines.forEach { println(it) }
-    },
-    AthenaDownload(
-        """
-                SELECT ..
-                FROM ..
-                """
-    ) { file ->
-        println("파일 다운로드 : ${file.absolutePath}")
-        csvReader().open(file) {
-            readAllAsSequence().forEach {
-                println(it)
-            }
-        }
-        file.toPath().deleteExisting()
-    },
-)
-val athenaModule = AthenaModule(aws)
-//모든 쿼리 로직을 동시에 처리 (동시 실행 제한수 주의)
-athenaModule.startAndWaitAndExecute(executions)
+```kotlin
+val infra = koin<MyInfra>()
+val ecr = infra.ecr.api.load(stack)
+
+val webConfig = MyEcs.ECS_CONFIGS[CdkInterface.DEPLOYMENT_TYPE]!!
+val web = CdkEcsWeb {
+    name = "api"
+    config = webConfig
+    taskRole = MyRole.APP_ADMIN.load(stack).iRole
+    executionRole = MyRole.ECS_TASK.load(stack).iRole
+    image = ecr.imageFromStackByTag(deploymentType.name.lowercase())
+    vpc = infra.vpc.load(stack).iVpc
+    sgWeb = MySecurityGroup.API.load(stack).iSecurityGroup
+    sgAlb = MySecurityGroup.ALB.load(stack).iSecurityGroup
+    containerInsights = deploymentType == DeploymentType.PROD
+    environment += mapOf(
+        AwsNaming.Spring.ENV_PROFILE to "default,${CdkInterface.SUFF}"
+    )
+    certs = listOf(MySms.CERT_DMP.get(stack))
+    healthCheck = HealthCheck.builder()
+        .interval(20.seconds.toCdk())
+        .timeout(10.seconds.toCdk())
+        .healthyThresholdCount(2) //디폴트인 5로 하면 체크 전에 내려갈 수 있음.
+        .unhealthyThresholdCount(2)
+        .path("/api/healthcheck")
+        .build()
+
+    when (CdkInterface.DEPLOYMENT_TYPE) {
+        DeploymentType.PROD -> createServiceBlueGreen(stack)  //라이브서버는 블루그린 배포
+        DeploymentType.DEV -> createServiceRolling(stack)
+    }
+    cdkLogGroup.addLogAnomalyDetector(stack)
+}
+
+//도메인 등록하기
+val hostedZone = HostedZoneUtil.load(stack, "xxx.com")
+val domain = MyEcs.DOMAINS[CdkInterface.DEPLOYMENT_TYPE]!!
+Route53Util.arecord(stack, hostedZone, domain, web.alb.toRecordTarget())
 ```
 
-## AWS step function 을 사용한 대용량 분할 처리 실행 인프라(CDK)
+## AWS CDK - 대량데이터 분할처리기 (SFN)
+
 ```kotlin
 CdkSfn(project, "batch_step") {
     this.lambda = func
@@ -188,18 +177,3 @@ CdkSfn(project, "batch_step") {
     onErrorHandle(adminAllTopic, dlq.iQueue)
 }
 ```
-
-
-## AWS step function 을 사용한 대용량 분할 처리 실행 샘플
-```kotlin
-val datas = sample().apply {
-    this.chunkSize = 8 * 60
-}.datas
-
-val input = executor.startExecution(datas)
-val consoleLink = config.consoleLink(input.sfnId)
-log.info { "SFN 실행됨 $consoleLink" }
-```
-
-### CDK step function 결과
-![img.png](readme/sfn.png)

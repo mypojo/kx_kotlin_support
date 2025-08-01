@@ -18,14 +18,14 @@ fun String.replaceAll(replacements: Map<String, String>): String {
 /**
  * SQL 형태로 치환한다
  * */
-fun String.replaceSqlAll(replacements: Map<String, String?>): String {
+fun String.replaceSqlAll(replacements: Map<String, Any?>): String {
     var result = this
     replacements.entries.forEach { e ->
         val replaced = when (val value = e.value) {
             null -> "NULL"
             is Number -> value.toString()
             is Boolean -> if (value) "TRUE" else "FALSE"
-            else -> "'${value.replace("'", "''")}'" // SQL 인젝션 방지
+            else -> "'${value.toString().replace("'", "''")}'" // SQL 인젝션 방지
         }
         result = result.replace(e.key, replaced)
     }

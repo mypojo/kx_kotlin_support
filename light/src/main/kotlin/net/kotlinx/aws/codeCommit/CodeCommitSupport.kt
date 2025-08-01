@@ -9,9 +9,9 @@ import net.kotlinx.aws.regist
 
 
 /**
- * codecommit 은 이제 지원이 중단도미.. by 2025
+ * codecommit 은 이제 지원이 중단됨.. from 2025
  * */
-@Deprecated("사용안함")
+@Deprecated("지원이 중단됨")
 val AwsClient.codeCommit: CodeCommitClient
     get() = getOrCreateClient { CodeCommitClient { awsConfig.build(this) }.regist(awsConfig) }
 

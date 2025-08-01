@@ -38,6 +38,7 @@ import org.jraf.klibnotion.client.NotionClient
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import java.util.concurrent.atomic.AtomicLong
+import kotlin.random.Random
 
 /** 해당 패키지의 기본적인 의존성 주입 */
 object BasicModule : KoinModule {
@@ -90,7 +91,7 @@ object BasicModule : KoinModule {
             }
         }
         single {
-            val tempSeq = AtomicLong()
+            val tempSeq = AtomicLong(Random.nextLong(10, 100000)) //편의상 랜덤하게 시퀀스 생성
             IdGenerator({ tempSeq.incrementAndGet() })
         }
 

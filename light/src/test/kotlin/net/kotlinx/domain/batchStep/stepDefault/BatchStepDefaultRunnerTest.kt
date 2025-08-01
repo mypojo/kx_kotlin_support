@@ -37,8 +37,8 @@ class BatchStepDefaultRunnerTest : BeSpecHeavy() {
 
                 val result = runner.postOrSkip(input.toJson().toGsonData(), null)!!
                 println(GsonData.parse(result).toPreety())
-
             }
+
             Then("StepEnd 테스트") {
 
                 val input = BatchStepParameter {

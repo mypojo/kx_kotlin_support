@@ -11,10 +11,6 @@ class AthenaTable_FDF데모 : BeSpecLight() {
 
         Given("데모 테이블") {
 
-            Then("xx") {
-                println("xx")
-            }
-
             Then("demo") {
                 val table = AthenaTable {
                     icebugTable()

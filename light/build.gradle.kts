@@ -19,6 +19,9 @@ dependencies {
     api(project(":core"))
     //ksp(project(":ksp")) //ksp 적용시 이 의존성을 컴파일러에 추가
 
+    //==================================================== jakarta 표준 ======================================================
+     api("com.sun.mail:jakarta.mail:2.0.1")
+
     //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
     val kotlinVersion: String by project
     api("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}") // 리플렉션 약 3.1메가. 살짝 부담되긴 함.  코틀린 버전하고 같이 따라감

@@ -44,29 +44,6 @@ internal class AthenaPartitionS3ModuleTest : BeSpecHeavy() {
                 partitionModule.listAndUpdate()
             }
 
-
-//            Then("event1_web") {
-//                val partitionModule = AthenaPartitionS3Module(
-//                    aws.s3,
-//                    athenaModule,
-//                    "sin-work-dev",
-//                    "collect",
-//                    "event1_web",
-//                    listOf("basicDate", "hh")
-//                )
-//                runBlocking { partitionModule.listAndUpdate() }
-//            }
-//            Then("http_log") {
-//                val partitionModule = AthenaPartitionS3Module(
-//                    aws.s3,
-//                    athenaModule,
-//                    "sin-data-dev",
-//                    "data",
-//                    "http_log",
-//                    listOf("basicDate", "name")
-//                )
-//                runBlocking { partitionModule.listAndUpdate() }
-//            }
         }
     }
 }

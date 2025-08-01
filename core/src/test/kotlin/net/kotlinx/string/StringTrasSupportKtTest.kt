@@ -24,11 +24,16 @@ class StringTrasSupportKtTest : BehaviorSpec() {
     select *                    
     from v3
     where basic_date = date_format(current_date, '%Y%m%d')
+      and query = :query
       and media_adv_id = :media_adv_id
 """
-                val replacedQuery = query.replaceAll(
-                    mapOf(":media_adv_id" to "8677")
+                val replacedQuery = query.replaceSqlAll(
+                    mapOf(
+                        ":query" to "청바지",
+                        ":media_adv_id" to 8677,
+                    )
                 )
+                replacedQuery shouldBe contain("query = '청바지'")
                 replacedQuery shouldBe contain("media_adv_id = 8677")
             }
 

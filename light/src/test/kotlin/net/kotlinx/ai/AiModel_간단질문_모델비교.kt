@@ -8,7 +8,7 @@ import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
 
 @OptIn(BetaOpenAI::class)
-class AiModel_모델별_간단질문비교 : BeSpecLight() {
+class AiModel_간단질문_모델비교 : BeSpecLight() {
 
     init {
         initTest(KotestUtil.IGNORE)
@@ -33,6 +33,7 @@ class AiModel_모델별_간단질문비교 : BeSpecLight() {
                 }
             }
 
+            //영화 반지의 제왕 시리즈 나열해주고 개봉연도 등의 특징도 같이 적어줘
             val query = arr[
                 "kotlin 용 DI 프레임워크 유명한고 2개만 소개해주고, 장단점을 알려줘",
                 "아이들에게 교육하는 말투로 답변해줘",

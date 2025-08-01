@@ -14,7 +14,7 @@ internal class GoogleSheetTest : BeSpecHeavy() {
         Given("GoogleSheet") {
 
             val googleService by koinLazy<GoogleService>()
-            val sheet = GoogleSheet(googleService, "13U-VKClgbbwhic6Jb6nsf9ITeESn7nZiEXNN6M5fsNY", "테스트용")
+            val sheet = GoogleSheet(googleService, "13U-eee", "테스트용")
 
             Then("구글시트 읽기") {
                 sheet.readAll().forEachIndexed { index, line ->

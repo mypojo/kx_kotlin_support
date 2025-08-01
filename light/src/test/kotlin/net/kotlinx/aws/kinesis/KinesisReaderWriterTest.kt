@@ -15,7 +15,7 @@ import net.kotlinx.kotest.modules.BeSpecLight
  * 2. 일부 레코드가 실패하고 재시도 후 성공하는 경우
  * 3. 일부 레코드가 계속 실패하여 최대 재시도 횟수에 도달하는 경우
  */
-class KinesisWriterTest : BeSpecLight() {
+class KinesisReaderWriterTest : BeSpecLight() {
 
     init {
         initTest(KotestUtil.IGNORE) // 실제 AWS 서비스를 호출하지 않도록 설정

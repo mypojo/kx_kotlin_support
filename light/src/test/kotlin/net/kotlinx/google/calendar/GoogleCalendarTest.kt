@@ -15,7 +15,7 @@ internal class GoogleCalendarTest : BeSpecHeavy() {
 
         Given("GoogleCalendar") {
             val calendar by koinLazy<GoogleCalendar>()
-            val calId = "dj1cr2gi7tshqd13ltgca2p0ns@group.calendar.google.com"
+            val calId = "yyy@group.calendar.google.com"
 
             Then("리스팅") {
                 val events = calendar.list(calId)

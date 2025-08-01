@@ -1,5 +1,6 @@
 package net.kotlinx.domain.menu
 
+import net.kotlinx.delegate.MapAttribute
 import java.lang.reflect.Method
 
 /**
@@ -13,10 +14,10 @@ data class MenuMethod(
     var clazz: Class<*>,
     /** 매핑 매소드. 여기서 각 설명 같은거 읽어올것! */
     var method: Method,
-) {
+) : MapAttribute {
     /** 양방향 매핑  */
     var menu: Menu? = null
 
     /** 커스텀 속성 */
-    val attributes: MutableMap<String, Any> = mutableMapOf()
+    override var attributes: MutableMap<String, Any> = mutableMapOf()
 }

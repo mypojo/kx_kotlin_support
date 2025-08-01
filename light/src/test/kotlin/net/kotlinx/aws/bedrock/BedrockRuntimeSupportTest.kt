@@ -16,27 +16,6 @@ class BedrockRuntimeSupportTest : BeSpecHeavy() {
 
         Given("베드락 런타임 테스트") {
 
-            Then("로우 API - 텍스트") {
-                val resp = aws97.brr.converse {
-                    //this.modelId = BedrockModels.OnDemand.CLAUDE_3_HAIKU.id
-                    //this.modelId = BedrockModels.CrossRegion.CLAUDE_4_SONNET.id
-                    this.modelId = BedrockModels.CrossRegion.NOVA_LITE.id
-                    this.system = listOf(
-                        SystemContentBlock.Text("주어진 질문에 대해서 단일 json으로 응답해주세요")
-                    )
-                    this.messages = listOf(
-                        Message {
-                            role = ConversationRole.User
-                            content = listOf(
-                                ContentBlock.Text("영화 반지의 제왕 시리즈 나열해주고 개봉연도 등의 특징도 같이 적어줘")
-                            )
-                        }
-                    )
-                }
-                println(resp.output?.asMessage())
-                println(resp.usage)
-            }
-
             Then("로우 API - 텍스트멀티") {
                 val resp = aws97.brr.converse {
                     // BedrockRuntimeClient

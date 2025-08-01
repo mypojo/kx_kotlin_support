@@ -29,7 +29,7 @@ class LazyLoadFilePropertyTest : BeSpecHeavy() {
                     val localFile = workspace.slash("s3.json")
                     localFile.delete()
 
-                    val filePath = "s3://cdk-hnb659fds-assets-289023186990-ap-northeast-2/0230f786c817c740269bf7f9a5149f41435f3298b8f3f73ab3dd6664c5c94ef2.json"
+                    val filePath = "s3://cdk-hnb659fds-assets-xxx-ap-northeast-2/eee.json"
                     val file: File by localFile lazyLoad {
                         info = filePath
                         profile = profileName

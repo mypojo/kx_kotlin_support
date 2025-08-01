@@ -19,7 +19,7 @@ class KamlTest : BeSpecLight() {
         Given("데이터베이스") {
 
             Then("읽기") {
-                val root = File("C:\\Users\\NHN\\IdeaProjects\\dmp\\service\\api\\src\\main\\resources")
+                val root = File("C:\\Users\\xx\\IdeaProjects\\dmp\\service\\api\\src\\main\\resources")
                 val text = root.slash("api-docs.yaml").readText()
                 val result = KamlDemoUtil.filterByTag(text, "bedrock")
                 root.slash("api-docs_bedrock.yaml").writeText(result)

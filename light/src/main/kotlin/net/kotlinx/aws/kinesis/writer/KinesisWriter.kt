@@ -64,6 +64,7 @@ class KinesisWriter {
      * @return 최종 PutRecordsResponse 객체
      */
     suspend fun putRecords(inputs: List<GsonData>, fixedPartitionKey: String? = null) {
+
         // 초기 데이터 매핑 - 요청 엔트리 생성
         val entries = inputs.map { input ->
             PutRecordsRequestEntry {

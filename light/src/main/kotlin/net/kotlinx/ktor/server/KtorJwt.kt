@@ -44,6 +44,7 @@ class KtorJwt {
     /**
      * 토큰 파싱.
      * data class 로 생성하는 경우도 있어서 리플렉션 하지 않는다.
+     * 별도의 예외를 잡아주지 않음. 파싱에러로그 보고싶으면 별도 컨버터에서 로깅할것
      *  */
     fun parseToken(token: String): Map<String, Claim> {
         val decodedJWT = verifier.verify(token)
