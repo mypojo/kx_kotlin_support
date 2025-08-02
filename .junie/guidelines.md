@@ -37,6 +37,15 @@ CognitoSupport.kt 참고해
 listUsersPaginated { this.userPoolId = userPoolId }.flatMapConcat { it.users!!.asFlow() }
 ```
 
+### retrofit2 생성 가이드
+1. package net.kotlinx.dooray.drive 를 참고해줘
+2. rest API 1건당 1개의 인터페이스를 만들고, 그안에 관련 데이터 객체를 생성해줘
+3. 모든 인터페이스와 데이터 객체는 같은 접미어를 가져야해 
+   4. ex) 
+```kotlin
+listUsersPaginated { this.userPoolId = userPoolId }.flatMapConcat { it.users!!.asFlow() }
+```
+
 ### 클래스파일 생성
 
 가능하면 클래스당 1개의 파일을 생성해줘
