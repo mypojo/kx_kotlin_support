@@ -26,7 +26,7 @@ class EmailFolder(private val reader: EmailReader, private val folder: Folder) {
     /**
      * 현재 시간으로부터 지정된 일수(days) 동안 수신된 이메일 리스트를 가져옵니다.
      */
-    fun list(days: Int): List<EmailReaderData> {
+    fun listEmailDatas(days: Int): List<EmailReaderData> {
         log.info { "INBOX 폴더에서 최근 ${days}일간의 이메일을 조회합니다." }
 
         // 현재 시간으로부터 days일 전 00:00:00 이후의 메일 검색

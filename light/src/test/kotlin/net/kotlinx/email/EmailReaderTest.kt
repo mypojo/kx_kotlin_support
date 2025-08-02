@@ -20,17 +20,17 @@ class EmailReaderTest : BeSpecHeavy() {
                 password = "xx"
             }
             Then("이메일 리스팅") {
-                reader.connect { folder ->
-                    folder.list(2).print()
+                reader.connect {
+                    listEmailDatas(2).print()
                 }
             }
 
             Then("이메일 다운로드") {
-                reader.connect { folder ->
+                reader.connect {
 //                    val datas = folder.list(2)
 //                    val msg = datas.find { it.messageNumber == 1254 }!!
 
-                    val files = folder.downloadAllFiles(1254)
+                    val files = downloadAllFiles(1254)
                     println(files)
 
                 }

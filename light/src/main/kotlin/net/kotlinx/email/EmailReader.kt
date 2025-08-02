@@ -60,8 +60,10 @@ class EmailReader {
      * 사용할때마다 연결 후 close 해줘야함
      * 모드가 동일하기때문에 1개의 store , 1개의 folder를 재사용해서 대량처리한다고 가정한다
      * 폴더 접근 모드가 다를경우, 별도 메소드를 만들것
+     *
+     * 한번의 커넥트 후 템플릿을 전달하는 전형적인 코드 샘플임
      *  */
-    fun <T> connect(block: (EmailFolder) -> T): T {
+    fun <T> connect(block: EmailFolder.() -> T): T {
         val store = session.getStore(protocol)
         log.info { "스토어를 연결합니다. protocol=$protocol host=$host, port=$port, useSSL=$useSSL" }
         store.connect(host, username, password)
