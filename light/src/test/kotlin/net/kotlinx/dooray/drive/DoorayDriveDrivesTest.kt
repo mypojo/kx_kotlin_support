@@ -1,4 +1,3 @@
-
 package net.kotlinx.dooray.drive
 
 import io.kotest.matchers.shouldNotBe
