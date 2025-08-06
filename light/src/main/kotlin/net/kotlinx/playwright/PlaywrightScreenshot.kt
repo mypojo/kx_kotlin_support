@@ -2,6 +2,7 @@ package net.kotlinx.playwright
 
 
 import com.microsoft.playwright.Locator
+import com.microsoft.playwright.Page
 import com.microsoft.playwright.options.ScreenshotType
 import mu.KotlinLogging
 import net.kotlinx.core.Kdsl
@@ -24,8 +25,11 @@ class PlaywrightScreenshot : (PlaywrightInput) -> File {
     /** 네이밍 룰 */
     var fileNaming: (input: PlaywrightInput) -> File = { homeDir.slash(it.group).slash("${it.name}_${TimeFormat.YMDHM_F02.get()}.jpeg") }
 
-    /** 캡쳐 선택자 */
-    var cssSelector: String = "body"
+    /**
+     * 캡쳐 선택자
+     * 보통 css 셀렉터로 구하면됨
+     * */
+    var select: (Page) -> Locator = { it.locator("body") }
 
     /**
      * 커스텀 설정시 강제 세팅
@@ -36,7 +40,7 @@ class PlaywrightScreenshot : (PlaywrightInput) -> File {
 
     override fun invoke(input: PlaywrightInput): File {
         val page = input.page
-        val element = page.locator(cssSelector)!!
+        val element = select(page)
         log.trace { " => ${element.boundingBox().width} / ${element.boundingBox().height}" }
         viewportHeight?.let {
             page.setViewportSize(element.boundingBox().width.toInt(), it)

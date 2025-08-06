@@ -1,5 +1,7 @@
 import ch.qos.logback.classic.Level
+import net.kotlinx.aws.AwsConfig
 import net.kotlinx.gradle.get
+import net.kotlinx.koin.Koins
 import net.kotlinx.logback.TempLogger
 import net.kotlinx.number.halfUp
 import net.kotlinx.number.toSiText
@@ -27,7 +29,7 @@ allprojects {
     }
 
     apply {
-        plugin("org.jetbrains.kotlin.jvm")
+        plugin("org.jetbrains.kotlin.jvm")  //이게 있어야 gradle 의 java {} 확장을 사용 가능함
     }
 
     //두 버전 일치시켜야함
@@ -127,6 +129,12 @@ allprojects {
 
 }
 
+/** TempLogger 인스턴스 생성 (기본 로그 레벨: DEBUG) */
+val log = TempLogger(Level.DEBUG)
+
+/** 배포 타입 */
+fun pubType(): String = System.getenv("pubType") ?: "light"
+
 /**
  * public 배포
  * jitpack.io 으로 해도 되는데 직접 배포하는게 더 좋은듯
@@ -141,10 +149,12 @@ publishing {
             }
         }
         //모든 의존성이 순서대로 다 있어야함. 병렬처리 해보려다 접음.
+        log.info { "빌드.. -> ${pubType()}" }
         pub("core")
         pub("light")
-        pub("heavy").run {
-            pub("heavy_boot3")
+        // pubType 환경 변수가 "all"인 경우에만 heavy 프로젝트 배포
+        if (pubType() == "all") {
+            pub("heavy")
         }
     }
     repositories {
@@ -164,12 +174,34 @@ publishing {
     }
 }
 
+/** 기본 코인 DI 추가 (슬랙 알람때문에) */
+Koins.startupReset {
+    single { AwsConfig() }
+    single { get<AwsConfig>().client }
+}
+
+tasks.named("publish") {
+    doLast {
+        //슬렉 메세지 일단 보류함.. gralde 자체 버전하고 안맞는게 있는듯. NoSuchMethodError 발생
+//        val token by lazyLoadStringSsm("/slack/token")
+//        val slackApp = SlackApp(token)
+//        val alert = SlackSimpleAlert {
+//            channel = "#kx_alert"
+//            source = "kotlin_support"
+//            workDiv = "gradle 빌드"
+//            workLocation = "local"
+//            descriptions = listOf(
+//                "빌드 (${pubType()}) 처리완료",
+//            )
+//        }
+//        slackApp.send(alert)
+    }
+}
+
 /**
  * org.gradle.configuration-cache=true 가 있어야 doLast가 병렬 실행됨
  * 일반적인 빌드는 --parallel 만 있어도 병렬 처리됨
  * */
-// TempLogger 인스턴스 생성 (기본 로그 레벨: DEBUG)
-val log = TempLogger(Level.DEBUG)
 
 tasks.register("deployAll") {
     group = "aws"

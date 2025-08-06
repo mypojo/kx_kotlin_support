@@ -50,7 +50,7 @@ object BasicModule : KoinModule {
         //==================================================== 기본 ======================================================
         single { OkHttpClient() }
         single {
-            val token by lazyLoadStringSsm("/slack/token")
+            val token by lazyLoadStringSsm("/secret/api/slack")
             SlackApp(token)
         }
         single { GsonSet.GSON }
@@ -99,7 +99,7 @@ object BasicModule : KoinModule {
 
         /** 오픈소스 노션 SDK */
         single {
-            val secretValue by lazyLoadStringSsm("/notion/key")
+            val secretValue by lazyLoadStringSsm("/secret/api/notion")
             NotionClient.newInstance(
                 ClientConfiguration(
                     Authentication(secretValue)
@@ -109,15 +109,15 @@ object BasicModule : KoinModule {
 
         /** 한국은행 API */
         single<EcosClient> {
-            val apikey by lazyLoadStringSsm("/api/ecos/key")
+            val apikey by lazyLoadStringSsm("/secret/api/ecos")
             EcosClient(apikey)
         }
         single {
-            val secretValue by lazyLoadStringSsm("/notion/key")
+            val secretValue by lazyLoadStringSsm("/secret/api/notion")
             NotionDatabaseClient(secretValue)
         }
         single {
-            val secretValue by lazyLoadStringSsm("/notion/key")
+            val secretValue by lazyLoadStringSsm("/secret/api/notion")
             NotionPageBlockClient(secretValue)
         }
         single<GoogleService> {

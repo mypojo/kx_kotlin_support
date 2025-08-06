@@ -1,6 +1,9 @@
 package net.kotlinx.flow
 
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * 병렬 처리를 위한 단축 메소드
@@ -12,6 +15,7 @@ import kotlinx.coroutines.flow.*
  *  #1 에러가 안나게 catch로 무조건 감싸던가 -> 에러나면 실패 emit()
  *  #2 .catch {} 를 달아서 emit() 후  collect 에서 마지막 메세지를 처리하던가 (이건 쓸일 없을듯..)
  * */
+@Deprecated("사용안함.. 까먹지를 마세요")
 suspend fun <T, R> Flow<T>.execute(concurrency: Int = DEFAULT_CONCURRENCY, transform: suspend (T) -> Flow<R>): List<R> = this.flatMapMerge(concurrency, transform).toList()
 
 /**
@@ -20,6 +24,28 @@ suspend fun <T, R> Flow<T>.execute(concurrency: Int = DEFAULT_CONCURRENCY, trans
  * */
 @Deprecated("사용안함")
 suspend fun <T> Flow<T>.collectIt(block: () -> FlowCollector<T>) = this.collect(block())
+
+/**
+ * 딜레이를 부여해준다
+ * 더 정교한 컨트롤리 필요한경우 Resilience4j를 사용할것
+ * */
+fun <T> Flow<T>.rateLimit(permits: Int, period: Duration = 1.seconds): Flow<T> = flow {
+    val delayBetweenEmissions = period.inWholeMilliseconds / permits
+    var lastEmissionTime = 0L
+
+    collect { value ->
+        val currentTime = System.currentTimeMillis()
+        val timeSinceLastEmission = currentTime - lastEmissionTime
+
+        if (timeSinceLastEmission < delayBetweenEmissions) {
+            delay(delayBetweenEmissions - timeSinceLastEmission) //여기서 차이만큼 딜레이
+        }
+
+        lastEmissionTime = System.currentTimeMillis()
+        emit(value)
+    }
+}
+
 
 /**
  * collect 하면서 close 함

@@ -9,10 +9,6 @@ plugins {
     //id("com.google.devtools.ksp")  //ksp 적용시 버전 에러남. k2 컴파일러 때문인듯.. 당장 필요하지 않으니 안정화 되면 사용해보자
 }
 
-apply {
-    plugin("org.jetbrains.kotlin.plugin.serialization")
-}
-
 //==================================================== 프로젝트별 설정 ======================================================
 
 dependencies {
@@ -23,7 +19,7 @@ dependencies {
     //ksp(project(":ksp")) //ksp 적용시 이 의존성을 컴파일러에 추가
 
     //==================================================== jakarta 표준 ======================================================
-    api("com.sun.mail:jakarta.mail:2.0.1")
+    api("com.sun.mail:jakarta.mail:_")  //jakarta.mail:jakarta.mail-api 의 구현체. 구현체가 sun/eclp무조건 지정해야함
 
     //==================================================== 코틀린 & 젯브레인 시리즈 ======================================================
     val kotlinVersion: String by project
@@ -83,6 +79,7 @@ dependencies {
 
     //==================================================== 구아바 (이정도는 괜찮겠지) ======================================================
     api("com.google.guava:guava:_") //약 3mb
+
     //==================================================== 노션 SDK ======================================================
     api("org.jraf:klibnotion:_") //약 1mb 흠.. 미덥지 못하다. ktor  2점대 잘 동작하나 3점대 작동안함.. 업데이트가 안되는중.. 일단 무시
 
@@ -107,7 +104,7 @@ dependencies {
 
     //==================================================== ktor-client (OPEN-AI / 노션 등 에서 사용) ======================================================
     //클라이언트 버전은 서버 버전하고 동일하게 일단 가자. 충돌은 거기서 풀기
-    implementation("io.ktor:ktor-client-core:_") //open API 의 ktor core  베타인 3점대 쓰면 에러남..
+    implementation("io.ktor:ktor-client-core:_") //open API 의 ktor core  베타인 3점대 쓰면 에러남../
     runtimeOnly("io.ktor:ktor-client-okhttp:_") //open API 의 ktor JVM http 엔진. 나는 okhttp 사용.
 
     //==== 이하 플러그인 ====
@@ -134,18 +131,13 @@ dependencies {
     api("io.ktor:ktor-server-host-common-jvm:_")
     api("io.ktor:ktor-server-status-pages-jvm:_")
 
-    //==================================================== AI - MCP ======================================================
-    //api("io.modelcontextprotocol:kotlin-sdk:_")  --> 일단 포기
-
-
     //==================================================== retrofit2 (rest API) ======================================================
     api("com.squareup.retrofit2:retrofit:_")
     api("com.squareup.retrofit2:converter-gson:_")
     api("com.squareup.okhttp3:logging-interceptor:_")
 
-    //==================================================== 크롤릭 ======================================================
+    //==================================================== 크롤링 ======================================================
     api("com.microsoft.playwright:playwright:_")
-
 
     //==================================================== 기타 ======================================================
     api("gov.nist.math:jama:1.0.3") //https://mvnrepository.com/artifact/gov.nist.math/jama 회귀분석 패키지

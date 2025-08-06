@@ -10,7 +10,6 @@ import net.kotlinx.counter.EventCountChecker
 import net.kotlinx.file.slash
 import net.kotlinx.io.output.toOutputResource
 import net.kotlinx.number.padStart
-import net.kotlinx.system.ResourceHolder
 import java.io.File
 import java.io.OutputStream
 import java.lang.AutoCloseable
@@ -30,24 +29,20 @@ class CsvSplitCollector : FlowCollector<List<List<String>>>, AutoCloseable {
     //==================================================== 설정파일 ======================================================
 
     /**
-     * 편의용 파일 디렉토리 지정
-     * @see outputStreamFactory
-     * */
-    var fileDir: File = ResourceHolder.WORKSPACE.slash(this::class.simpleName!!)
-
-    /**
-     * 편의용 압축 설정
-     * 보통 사용자 결과인경우는 write할때는 비압축 -> 모두 모두 모아서 하나로 압축
-     * s3 등으로 스플릿 할때는 write 하면서 압축
-     * @see outputStreamFactory
-     * */
-    var gzip: Boolean = false
-
-    /**
      * 편의용 아웃풋 스트림 제공자 (위의 두 설정은 이것을 위한것임)
      * 압축 등을 하고싶은경우 커스텀 할것
      * */
-    var outputStreamFactory: (Int) -> OutputStream = { fileDir.slash("${it.padStart(3)}.csv").toOutputResource(gzip).outputStream }
+    lateinit var outputStreamFactory: (Int) -> OutputStream
+
+    /**
+     * 간단 내부 outputStreamFactory 생성기
+     * 보통 사용자 결과인경우는 write할때는 비압축 -> 모두 모두 모아서 하나로 압축
+     *  s3 등으로 스플릿 할때는 write 하면서 압축
+     *  @see outputStreamFactory
+     * */
+    fun File.toOutputStreamFactory(gzip: Boolean = false): (Int) -> OutputStream {
+        return { this.slash("${it.padStart(3)}.csv").toOutputResource(gzip).outputStream }
+    }
 
     /** 분할 수. 디폴트로 엑셀 최대 크기 */
     var counter = EventCountChecker(1000000)

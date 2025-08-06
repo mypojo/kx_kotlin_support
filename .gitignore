@@ -44,5 +44,7 @@ buildSrc/build
 **/*_sin*
 *.ahk
 
+#### 클로드 코드 ####
+.claude/settings.local.json
 
 

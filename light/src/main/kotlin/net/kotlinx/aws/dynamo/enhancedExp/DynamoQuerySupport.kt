@@ -40,7 +40,7 @@ suspend fun DynamoDbClient.queryCnt(block: () -> DbExpression): Int {
         select = Select.Count
         limit = DbExpression.EXPRESSION_LIMIT
     }
-    return this.queryPaginated(expression.toQueryRequest()).map { it.items?.size ?: 0 }.toList().sum()
+    return this.queryPaginated(expression.toQueryRequest()).map { it.count }.toList().sum()
 
 }
 

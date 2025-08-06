@@ -10,12 +10,13 @@ plugins {
 
 //==================================================== 프로젝트별 설정 ======================================================
 
-apply(plugin = "io.spring.dependency-management")
-
 dependencies {
 
     //==================================================== 내부 의존성 ======================================================
-    api(project(":heavy_boot3"))
+    api(project(":heavy"))
+
+    //==================================================== AI - MCP ======================================================
+    api("io.modelcontextprotocol:kotlin-sdk:_")
 
     //==================================================== 테스트용 도구 추가 ======================================================
     implementation("com.google.ortools:ortools-java:_") //구글 최적화도구 orTool https://developers.google.com/optimization/install/java/pkg_windows?hl=ko

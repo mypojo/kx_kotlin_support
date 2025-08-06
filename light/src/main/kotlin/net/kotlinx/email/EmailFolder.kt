@@ -25,6 +25,7 @@ class EmailFolder(private val reader: EmailReader, private val folder: Folder) {
 
     /**
      * 현재 시간으로부터 지정된 일수(days) 동안 수신된 이메일 리스트를 가져옵니다.
+     * 페이징 없이 한번에 작동함!!
      */
     fun listEmailDatas(days: Int): List<EmailReaderData> {
         log.info { "INBOX 폴더에서 최근 ${days}일간의 이메일을 조회합니다." }
@@ -77,7 +78,6 @@ class EmailFolder(private val reader: EmailReader, private val folder: Folder) {
             val file = messageDir.slash(fileName)
             FileOutputStream(file).buffered(bufferSize = BUFFER_SIZE).use { fos ->
                 attachmentWithPart.part.inputStream.use { inputStream ->
-                    println("==")
                     inputStream.copyTo(fos, bufferSize = BUFFER_SIZE)
                 }
             }

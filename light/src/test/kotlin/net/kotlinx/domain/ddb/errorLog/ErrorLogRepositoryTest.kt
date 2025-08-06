@@ -35,7 +35,6 @@ class ErrorLogRepositoryTest : BeSpecLight() {
                 log.info { "에러로그링크 -> ${job.errorLogQueryLink}" }
             }
 
-
             When("단건 테스트") {
 
                 val errorLog = ErrorLog(

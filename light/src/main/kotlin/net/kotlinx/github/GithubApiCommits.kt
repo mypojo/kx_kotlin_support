@@ -19,6 +19,7 @@ interface GithubApiCommits {
     data class CommitResponse(
         val sha: String,
         val commit: CommitDetails,
+        /** 보통 null이 들어옴 */
         val author: GitHubUser?
     )
 

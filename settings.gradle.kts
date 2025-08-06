@@ -1,6 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
-
 pluginManagement {
 
     /** KSP 의 google 때문에 이 설정 추가함 */
@@ -56,59 +53,13 @@ dependencyResolutionManagement {
 
 //==================================================== refreshVersions 세팅 여러가지 ======================================================
 plugins {
-    id("com.gradle.enterprise") version "3.6.3"
-////                        # available:"3.6.4"
-////                        # available:"3.7"
-////                        # available:"3.7.1"
-////                        # available:"3.7.2"
-////                        # available:"3.8"
-////                        # available:"3.8.1"
-////                        # available:"3.9"
-////                        # available:"3.10"
-////                        # available:"3.10.1"
-////                        # available:"3.10.2"
-////                        # available:"3.10.3"
-////                        # available:"3.11"
-////                        # available:"3.11.1"
-////                        # available:"3.11.2"
-////                        # available:"3.11.3"
-////                        # available:"3.11.4"
-////                        # available:"3.12"
-////                        # available:"3.12.1"
-////                        # available:"3.12.2"
-////                        # available:"3.12.3"
-////                        # available:"3.12.4"
-////                        # available:"3.12.5"
-////                        # available:"3.12.6"
-////                        # available:"3.13"
-////                        # available:"3.13.1"
-////                        # available:"3.13.2"
-////                        # available:"3.13.3"
-////                        # available:"3.13.4"
-////                        # available:"3.14"
-////                        # available:"3.14.1"
-////                        # available:"3.15"
-////                        # available:"3.15.1"
-////                        # available:"3.16"
-////                        # available:"3.16.1"
-////                        # available:"3.16.2"
-////                        # available:"3.17"
-////                        # available:"3.17.1"
-////                        # available:"3.17.2"
-////                        # available:"3.17.3"
-////                        # available:"3.17.4"
-////                        # available:"3.17.5"
-////                        # available:"3.17.6"
-////                        # available:"3.18"
-////                        # available:"3.18.1"
-////                        # available:"3.18.2"
-////                        # available:"3.19"
-////                        # available:"3.19.1"
-////                        # available:"3.19.2"
-    id("de.fayard.refreshVersions") version "0.60.2" //기타의존성 버전 자동갱신
-////                            # available:"0.60.3"
-////                            # available:"0.60.4"
-////                            # available:"0.60.5"
+    id("com.gradle.develocity") version "3.19.2"
+////                        # available:"4.0"
+////                        # available:"4.0.1"
+////                        # available:"4.0.2"
+////                        # available:"4.0.3"
+////                        # available:"4.1"
+    id("de.fayard.refreshVersions") version "0.60.5" //기타의존성 버전 자동갱신
 }
 
 /**
@@ -119,11 +70,10 @@ refreshVersions {
 }
 
 // https://dev.to/jmfayard/the-one-gradle-trick-that-supersedes-all-the-others-5bpg
-gradleEnterprise {
+develocity {
     buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
-        publishAlways()
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
         buildScanPublished {
             file("buildscan.log").appendText("${java.util.Date()} - $buildScanUri\n")
         }
@@ -136,8 +86,7 @@ include(
     "core", //최소 의존성으로 사용 가능
 
     "light", //람다용으로 의존성을 분리한것. GraalVM 활성화 전까지는 snapstart로 사용
-    "heavy", //DB연결이 포함된 의존성
-    "heavy_boot3", //스프링 부트3 의존성.
+    "heavy", //spring boot & DB연결이 포함된 의존성
 
     "ksp", //어노테이션 프로세서 모음집
     "work", //로컬작업 및 테스트용

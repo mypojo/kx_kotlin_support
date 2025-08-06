@@ -1,14 +1,11 @@
 package net.kotlinx.aws.cognito
 
 import aws.sdk.kotlin.services.cognitoidentityprovider.CognitoIdentityProviderClient
-import aws.sdk.kotlin.services.cognitoidentityprovider.listUsers
 import aws.sdk.kotlin.services.cognitoidentityprovider.model.AdminGetUserRequest
 import aws.sdk.kotlin.services.cognitoidentityprovider.model.AdminGetUserResponse
 import aws.sdk.kotlin.services.cognitoidentityprovider.model.UserType
 import aws.sdk.kotlin.services.cognitoidentityprovider.paginators.listUsersPaginated
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.*
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.regist
 
@@ -29,8 +26,11 @@ suspend fun CognitoIdentityProviderClient.adminGetUser(userPoolId: String, usern
     return this.adminGetUser(request)
 }
 
-/** 모든 사용자 목록을 가져옵니다. */
+/**
+ * 모든 사용자 목록을 가져옵니다.
+ * 디폴트로 60개씩(최대) 가져옴
+ *  */
 fun CognitoIdentityProviderClient.listAllUsers(userPoolId: String): Flow<UserType> = listUsersPaginated { this.userPoolId = userPoolId }.flatMapConcat { it.users!!.asFlow() }
 
 /** 사용자 목록을 가져옵니다. (단일 페이지) */
-suspend fun CognitoIdentityProviderClient.listUsers(userPoolId: String): List<UserType> = listUsers { this.userPoolId = userPoolId }.users!!
+suspend fun CognitoIdentityProviderClient.listUsers(userPoolId: String): List<UserType> = listAllUsers(userPoolId).take(60).toList()
