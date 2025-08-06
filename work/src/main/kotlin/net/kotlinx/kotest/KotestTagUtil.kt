@@ -25,6 +25,7 @@ object KotestUtil {
     val SLOW = Tag("slow")
 
     /** AWS 인프라 등 시크릿이 필요하고 비용이 발생할 수 있는것 */
+    @Deprecated("사용안함")
     val PROJECT = Tag("project")
 
     /** 테스트중인거 */
