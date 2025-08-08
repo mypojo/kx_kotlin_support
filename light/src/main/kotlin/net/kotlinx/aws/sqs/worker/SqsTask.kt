@@ -24,6 +24,8 @@ import kotlin.time.Duration.Companion.seconds
  * 아래의 요구사항을 따른다
  * 1. 요청 / 응답을 flow로 간단하게 사용할 수 있어야함
  * 2. timeout 기능이 있어야 함
+ *
+ * 롱폴링 최대 대기 시간(20초)에 맞춰 24시간 동안 계속 받는다고 가정하면, 1개월(30일) 동안 약 13만 건의 API 호출이 발생하고, 이 경우 비용은 약 0.26 USD(약 336원) 정도
  */
 class SqsTask {
 
