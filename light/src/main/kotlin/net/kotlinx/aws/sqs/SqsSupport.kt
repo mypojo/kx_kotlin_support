@@ -66,21 +66,25 @@ suspend fun SqsClient.deleteMessageBatch(queueUrl: String, messages: Collection<
 
 //==================================================== 가져오기 ======================================================
 
-/**
- * 메세지 간단 가져오기
- * @param visibilityTimeout 기본값 오버라이딩 가능. 읽기 전용으로 쓸경우 0으로 하면 같은게 어려게 읽어짐..  1 정도로 할것
- * */
-suspend fun SqsClient.receiveMessage(queueUrl: String, visibilityTimeout: Int? = null, maxNum: Int = MAX_NUMBER_OF_MESSAGES): List<Message> {
+suspend fun SqsClient.receiveMessage(
+    queueUrl: String, 
+    visibilityTimeout: Int? = null, 
+    maxNum: Int = MAX_NUMBER_OF_MESSAGES,
+    waitTimeSeconds: Int = 20  // 롱 폴링을 위한 파라미터 추가
+): List<Message> {
     check(maxNum <= MAX_NUMBER_OF_MESSAGES)
     visibilityTimeout?.let {
         check(it > 0) { "가시성은 0보다 커야함! 무한루프가 되는 수 있음" }
     }
+    check(waitTimeSeconds in 0..20) { "waitTimeSeconds는 0에서 20 사이여야 합니다" }
+    
     return this.receiveMessage {
         this.queueUrl = queueUrl
         this.maxNumberOfMessages = maxNum
         this.visibilityTimeout = visibilityTimeout
+        this.waitTimeSeconds = waitTimeSeconds  // 롱 폴링 설정
         this.messageSystemAttributeNames = listOf(
-            MessageSystemAttributeName.SentTimestamp, //시간 정도는 기본적으로 가져옴
+            MessageSystemAttributeName.SentTimestamp,
         )
     }.messages ?: emptyList()
 }
