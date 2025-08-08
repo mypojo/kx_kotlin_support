@@ -26,23 +26,30 @@ suspend fun <T, R> Flow<T>.execute(concurrency: Int = DEFAULT_CONCURRENCY, trans
 suspend fun <T> Flow<T>.collectIt(block: () -> FlowCollector<T>) = this.collect(block())
 
 /**
- * 딜레이를 부여해준다
- * 더 정교한 컨트롤리 필요한경우 Resilience4j를 사용할것
- * */
-fun <T> Flow<T>.rateLimit(permits: Int, period: Duration = 1.seconds): Flow<T> = flow {
+ * 딜레이를 부여해준다.
+ * 더 정교한 컨트롤이 필요한 경우 Resilience4j를 사용해야한다.
+ * -> 하지만 클라우드 시대가 와버려서.. 분산락 쓸거 아니면, 인메모리 리밋은 크게 의미 없을듯
+ *
+ * https://godekdls.github.io/Resilience4j/latelimiter/
+ * @see CoroutineSleepTool
+ */
+fun <T> Flow<T>.rateLimit(permits: Int, period: Duration = 1.seconds): Flow<T> {
+    require(permits > 0) { "permits must be > 0" }
     val delayBetweenEmissions = period.inWholeMilliseconds / permits
-    var lastEmissionTime = 0L
-
-    collect { value ->
-        val currentTime = System.currentTimeMillis()
-        val timeSinceLastEmission = currentTime - lastEmissionTime
-
-        if (timeSinceLastEmission < delayBetweenEmissions) {
-            delay(delayBetweenEmissions - timeSinceLastEmission) //여기서 차이만큼 딜레이
+    return flow {
+        var lastEmissionTime = 0L
+        collect { value ->
+            val currentTime = System.currentTimeMillis()
+            if (lastEmissionTime != 0L) {
+                val nextAllowedTime = lastEmissionTime + delayBetweenEmissions
+                val delayTime = nextAllowedTime - currentTime
+                if (delayTime > 0) {
+                    delay(delayTime)
+                }
+            }
+            emit(value)
+            lastEmissionTime = System.currentTimeMillis()
         }
-
-        lastEmissionTime = System.currentTimeMillis()
-        emit(value)
     }
 }
 

@@ -5,6 +5,7 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.LazyAwsClientProperty
 import net.kotlinx.aws.kinesis.reader.KinesisReader
+import net.kotlinx.aws.kinesis.writer.KinesisWriteData
 import net.kotlinx.aws.kinesis.writer.KinesisWriter
 import net.kotlinx.core.Kdsl
 import kotlin.time.Duration
@@ -41,10 +42,13 @@ class KinesisWorker {
     lateinit var checkpointTableName: String
 
     /** 레코드 체크하는 주기 */
-    var recordCheckInterval: Duration = 1.seconds
+    var recordCheckInterval: Duration = 3.seconds
 
-    /** 샤드 체크하는 주기 */
-    var shardCheckInterval: Duration = 60.seconds
+    /**
+     * 샤드 옵션
+     * 워커가 여러대 있을경우 수정할것!
+     *  */
+    var shardOption: KinesisReader.KinesisReaderShardOption = KinesisReader.KinesisReaderShardOption.KinesisReaderShardAll()
 
     /**
      * 한번에 읽어올수.
@@ -55,11 +59,11 @@ class KinesisWorker {
     /** 최대 재시도 횟수 */
     var maxRetries: Int = 10
 
-    /** 재시도 간 지연 시간 (기본값: 1초) */
-    var retryDelay: Duration = 1.seconds
+    /** 재시도 간 지연 시간*/
+    var writeRetryDelay: Duration = 1.seconds
 
     /** 실제 작업을 처리하는 핸들러 */
-    lateinit var handler: suspend (List<KinesisWorkerData>) -> Unit
+    lateinit var handler: suspend (List<KinesisTaskRecord>) -> Unit
 
     /** 종료되었을경우 콜백 알람등의 처리 */
     var stopCallback: suspend (KinesisWorker) -> Unit = {}
@@ -73,7 +77,7 @@ class KinesisWorker {
             readerName = this@KinesisWorker.readerName
             checkpointTableName = this@KinesisWorker.checkpointTableName
             recordCheckInterval = this@KinesisWorker.recordCheckInterval
-            shardCheckInterval = this@KinesisWorker.shardCheckInterval
+            shardOption = this@KinesisWorker.shardOption
             readChunkCnt = this@KinesisWorker.readChunkCnt
             recordHandler = this@KinesisWorker::handleRecords
         }
@@ -84,7 +88,7 @@ class KinesisWorker {
             aws = this@KinesisWorker.aws
             streamName = this@KinesisWorker.streamName
             maxRetries = this@KinesisWorker.maxRetries
-            retryDelay = this@KinesisWorker.retryDelay
+            writeRetryDelay = this@KinesisWorker.writeRetryDelay
         }
     }
 
@@ -116,7 +120,7 @@ class KinesisWorker {
      */
     private suspend fun handleRecords(shardId: String, records: List<Record>) {
         // "in" 타입 데이터만 필터링
-        val filteredRecords = records.filter { it.partitionKey!!.endsWith("-in") }
+        val filteredRecords = records.filter { KinesisTaskRecordKey.isIn(it.partitionKey!!) }
 
         if (filteredRecords.isEmpty()) {
             log.debug { " -> #[$shardId] ${filteredRecords.size}건의 스트림 읽었으나 -> 현재 워커에서 처리할 레코드 없음 (타입: in)" }
@@ -125,20 +129,12 @@ class KinesisWorker {
 
         log.info { " -> #[$shardId] ${filteredRecords.size}개의 레코드 처리 시작 (타입: in)" }
 
-        //task 별로 파티션 키가 달라지기 때문에 이렇게 작업
-        val byTask = filteredRecords.map { KinesisWorkerData(it) }.groupBy { it.resultPartitionKey }
-        byTask.entries.forEach { e ->
-            try {
-                // 데이터 처리
-                handler.invoke(e.value)
-            } finally {
-                // 예외와 상관없이 레코드를 다시 쓴다
-                val fixedPartitionKey = e.value.first().resultPartitionKey
-                val results = e.value.map { it.result }
-                writer.putRecords(results, fixedPartitionKey)
-                log.info { "[$shardId] task ${e.key} -> ${filteredRecords.size}개의 레코드를 out 타입으로 전송 완료 (예외 무시)" }
-            }
-        }
+        val records = filteredRecords.map { KinesisTaskRecord(it) }
+        handler.invoke(records)
+
+        val returnRecords = records.map { KinesisWriteData(it.partitonKey.outPartitionKey, it.result) }
+        writer.putRecords(returnRecords)
+        log.info { " -> #[$shardId] ${filteredRecords.size}개의 레코드 처리 완료 & 결과 push 완료" }
     }
 
     companion object {

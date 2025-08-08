@@ -4,20 +4,10 @@
 - 상세 코드 가이드라인은 .junie/guidelines.md 파일을 를 참고해줘
 - 처리가 완료되면 슬렉으로 간단하게 완료 메세지를 전달해줘 
   - 채널 이름 = 'ai-콜백'
-
-## Build Commands
-
-- **Build all projects**: `./gradlew build`
-- **Test all projects**: `./gradlew test`
-- **Run tests for specific module**: `./gradlew :core:test` or `./gradlew :light:test` or `./gradlew :heavy:test`
-- **Clean all builds**: `./gradlew clean` (also cleans `out` directories)
-- **Check dependencies**: `./gradlew allDependencies` (creates AWS Lambda layer zip)
-- **Publish to repository**: `./gradlew publish` (publishes to repsy.io)
-- **Deploy all tasks**: `./gradlew deployAll` (runs t1, t2, t3 in parallel)
-- **Refresh dependency versions**: `./gradlew refreshVersions`
+- 테스트 코드는 작성만 해줘. 실행해볼 필요는 없어
+- 모든 결과나 프로세스 과정 등의 텍스트는 가능하면 한글을 사용해줘
 
 ## Architecture Overview
-
 This is a multi-module Kotlin project that provides utility libraries for AWS services, Spring Boot applications, and general Kotlin development. The project is structured as follows:
 
 ### Module Structure
@@ -35,13 +25,6 @@ This is a multi-module Kotlin project that provides utility libraries for AWS se
 - **Kotest**: Testing framework with snapshot versions
 - **Koin**: Dependency injection
 
-### Build Configuration
-- **Java 21**: Target JVM version with toolchain support
-- **Kotlin multiplatform**: Configured but not fully enabled yet
-- **Publishing**: Automated to repsy.io repository with GitHub packages as backup
-- **Testing**: Uses Kotest exclusively with parallel execution support
-- **Dependency management**: Centralized version management with refreshVersions plugin
-
 ### Key Patterns
 - **DSL-heavy code**: Extensive use of Kotlin DSL for AWS CDK, configuration builders, and domain-specific languages
 - **Flow-based processing**: Heavy use of Kotlin Flow for data streaming and CSV processing
@@ -57,10 +40,3 @@ The project provides extensive AWS service wrappers including:
 - **Step Functions**: State machine orchestration
 - **Lambda**: Optimized cold start handling
 - **DynamoDB**: Enhanced query support and session management
-
-### Development Notes
-- Uses snapshot versions for active development dependencies (especially kotest)
-- Parallel build support enabled with configuration cache
-- Extensive logging configuration with Logback
-- Maven publication with source jars included
-- Dependency exclusions configured to avoid logging conflicts

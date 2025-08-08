@@ -27,10 +27,10 @@ class ProgressDataTest : BeSpecLog() {
                 }
             }
             Then("프로그레스 진행확인") {
-                val now = LocalDateTime.now()
+                val startTime = LocalDateTime.now()
                 val totalCount: Long = 30
                 (0..totalCount).forEach {
-                    val data = ProgressData(totalCount, it, now)
+                    val data = ProgressData(totalCount, it, startTime)
                     log.info { " -> $data" }
                     Thread.sleep(80)
                 }

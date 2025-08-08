@@ -5,6 +5,7 @@ import net.kotlinx.aws.AwsInstanceType
 import net.kotlinx.aws.dynamo.enhanced.DbItem
 import net.kotlinx.aws.fargate.FargateUtil
 import net.kotlinx.aws.lambda.LambdaUtil
+import net.kotlinx.calculator.ProgressData
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.reflect.name
@@ -150,6 +151,21 @@ class Job(override val pk: String, override val sk: String) : DbItem {
                 AwsInstanceType.BATCH -> FargateUtil.cost(0.5, 1.0, sumOfInterval)
                 else -> null
             }
+        }
+
+    /**
+     * 진행상태
+     * 종료된 상태인경우 null 리턴
+     *  */
+    val progressData: ProgressData?
+        get() {
+
+            if (jobStatus.finished()) return null
+
+            val totalCnt = this.jobContext[JobContextNaming.TOTAL_CNT].long ?: 0
+            val successCnt = this.jobContext[JobContextNaming.SUCCESS_CNT].long ?: 0
+            val failCnt = this.jobContext[JobContextNaming.FAIL_CNT].long ?: 0
+            return ProgressData(totalCnt, successCnt + failCnt, startTime)
         }
 
     /**

@@ -2,6 +2,7 @@ package net.kotlinx.aws.kinesis
 
 import net.kotlinx.aws.kinesis.reader.KinesisReader
 import net.kotlinx.aws.kinesis.reader.printSimple
+import net.kotlinx.aws.kinesis.writer.KinesisWriteData
 import net.kotlinx.aws.kinesis.writer.KinesisWriter
 import net.kotlinx.json.gson.json
 import net.kotlinx.kotest.KotestUtil
@@ -46,12 +47,12 @@ class KinesisReaderWriterTest : BeSpecLight() {
                 val writer = KinesisWriter {
                     aws = aws49
                     streamName = workerStreamName
-                    partitionKeyBuilder = { "xxJob" }
                     maxRetries = 3
                 }
 
                 Then("모든 레코드가 성공적으로 처리된다") {
-                    writer.putRecords(datas)
+                    val records = datas.map { KinesisWriteData(it["id"].str!!, it) }
+                    writer.putRecords(records)
                 }
             }
 

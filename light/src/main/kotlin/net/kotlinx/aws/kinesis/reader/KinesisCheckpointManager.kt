@@ -31,7 +31,7 @@ class KinesisCheckpointManager(private val reader: KinesisReader) {
             )
         }
         reader.aws.dynamo.putItem(request)
-        log.debug { " -> [${reader.streamName}/${reader.readerName}] -> #[${data.shardId}] 체크포인트 저장완료 -> ${data.sequenceNumber}" }
+        log.trace { " -> [${reader.streamName}/${reader.readerName}] -> #[${data.shardId}] 체크포인트 저장완료 -> ${data.sequenceNumber}" }
     }
 
 

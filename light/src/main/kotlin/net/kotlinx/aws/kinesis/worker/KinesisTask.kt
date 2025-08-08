@@ -1,12 +1,11 @@
 package net.kotlinx.aws.kinesis.worker
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.*
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.LazyAwsClientProperty
+import net.kotlinx.aws.kinesis.reader.KinesisReader
+import net.kotlinx.aws.kinesis.writer.KinesisWriteData
 import net.kotlinx.aws.kinesis.writer.KinesisWriter
 import net.kotlinx.core.Kdsl
 import net.kotlinx.id.IdGenerator
@@ -50,17 +49,23 @@ class KinesisTask {
     /** 스트림 이름 */
     lateinit var streamName: String
 
-    /** 태스크 이름 */
+    /**
+     * 태스크 이름
+     * ex) xxJob
+     *  */
     lateinit var taskName: String
 
     /** 체크포인트 테이블 이름 */
     lateinit var checkpointTableName: String
 
     /** 레코드 체크하는 주기 */
-    var recordCheckInterval: Duration = 1.seconds
+    var recordCheckInterval: Duration = 5.seconds
 
-    /** 샤드 체크하는 주기 */
-    var shardCheckInterval: Duration = 60.seconds
+    /**
+     * 샤드 옵션
+     * 작업 요청자는 모든 샤드를 읽어야함
+     *  */
+    var shardOption: KinesisReader.KinesisReaderShardOption.KinesisReaderShardAll = KinesisReader.KinesisReaderShardOption.KinesisReaderShardAll()
 
     /** 한번에 읽어올 수 있는 최대 레코드 수 */
     var readChunkCnt: Int = 10000
@@ -68,14 +73,20 @@ class KinesisTask {
     /** 최대 재시도 횟수 */
     var maxRetries: Int = 10
 
-    /** 재시도 간 지연 시간 (기본값: 1초) */
-    var retryDelay: Duration = 1.seconds
+    /** 재시도 간 지연 시간  */
+    var writeRetryDelay: Duration = 1.seconds
 
     /** 체크포인트 보존시간. task의 경우 짧게 지정해도됨 */
     var checkpointTtl: Duration = 10.days
 
     /** 태스크 실행 타임아웃. 이 시간이 지나면 태스크가 강제 종료됨 */
     var timeout: Duration = 1.hours
+
+    /**
+     * ID만 추출하게 해주면됨
+     * 내부에서 다시 조함함
+     *  */
+    var toId: (GsonData) -> String = { it["id"].str!! }
 
     //==================================================== 내부 상태 ======================================================
 
@@ -87,7 +98,7 @@ class KinesisTask {
             aws = this@KinesisTask.aws
             streamName = this@KinesisTask.streamName
             maxRetries = this@KinesisTask.maxRetries
-            retryDelay = this@KinesisTask.retryDelay
+            writeRetryDelay = this@KinesisTask.writeRetryDelay
         }
     }
 
@@ -101,18 +112,26 @@ class KinesisTask {
      */
     suspend fun execute(inputFlow: Flow<List<GsonData>>): Flow<List<GsonData>> {
 
-        val totalCnt = inputFlow.map { it.size }.toList().sum() //미리 전체를 구함
+        val taskId = idGenerator.nextvalAsString()
+        //val totalCnt = inputFlow.fold(0) { acc, list -> acc + list.size } //미리 전체를 구함
+        val uniqueKeys = inputFlow.flatMapMerge { datas -> flow { datas.map { emit(toId(it)) } } }.toSet()
 
-        val taskFlow = KinesisTaskFlow(this, idGenerator.nextvalAsString(), totalCnt)
-        taskFlow.startup()
+        log.trace { "step01 - flow start 해서 수신 대기" }
+        val taskFlow = KinesisTaskFlow(this, taskId, uniqueKeys)
+        taskFlow.startup() //스타트업 먼저 함
 
-        // 1. 요청 데이터 입력
-        inputFlow.collect {
-            writer.putRecords(it, taskFlow.inPartitionKey)
+        log.trace { "step02 - 요청 데이터 입력" }
+        inputFlow.collect { datas ->
+            val records = datas.map { data ->
+                val recordId = toId(data)
+                val recordKey = KinesisTaskRecordKey(taskName, taskId, recordId)
+                KinesisWriteData(recordKey.inPartitionKey, data)
+            }
+            writer.putRecords(records)
         }
-        log.info { "요청 파티션(${taskFlow.inPartitionKey})에 ${totalCnt}개의 데이터 입력 완료" }
+        log.info { "taskId ${taskId} -> ${uniqueKeys.size}개의 데이터 입력 완료 -> 결과데이터 수신대기.." }
 
-        // 채널을 Flow로 변환하여 반환
+        log.trace { "step03 - 채널을 Flow로 변환하여 반환" }
         return taskFlow.recordChannel.consumeAsFlow()
     }
 

@@ -88,6 +88,6 @@ include(
     "light", //람다용으로 의존성을 분리한것. GraalVM 활성화 전까지는 snapstart로 사용
     "heavy", //spring boot & DB연결이 포함된 의존성
 
-    "ksp", //어노테이션 프로세서 모음집
+    //"ksp", //어노테이션 프로세서 모음집 -> 잘 안되서 일단 무시
     "work", //로컬작업 및 테스트용
 )
