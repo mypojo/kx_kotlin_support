@@ -1,7 +1,6 @@
 package net.kotlinx.guava
 
 import com.google.common.collect.Multimap
-import com.google.common.reflect.TypeParameter
 import com.google.common.reflect.TypeToken
 import java.lang.reflect.Type
 
@@ -20,64 +19,44 @@ import java.lang.reflect.Type
 object TypeTokenUtil {
 
     /** List<T> 타입 리턴  </T> */
-    fun <T> list(type: Type): Type {
-        return object : TypeToken<List<T>?>() {}.where(object : TypeParameter<T>() {}, TypeToken.of(type) as TypeToken<T>).type
-    }
+    inline fun <reified T> list(): Type =
+        object : TypeToken<List<T>>() {}.type
 
     /**
      * Map<String></String>, Collectio<T>> 인 타입 리턴
     </T> */
-    fun <T> mapCollectionType(type: Type?): Type {
-        return if (type == null) MutableMap::class.java else object :
-            TypeToken<Map<String?, Collection<T>?>?>() {}.where(object :
-            TypeParameter<T>() {}, TypeToken.of(type) as TypeToken<T>).type //파라메터가 없는 타입이라면 일반 MAP리턴
-    }
+    inline fun <reified T> mapCollectionType(): Type =
+        object : TypeToken<Map<String, Collection<T>>>() {}.type
 
     /**
      * Map<String></String>, T> 인 타입 리턴
      * 경고 줄이고 인라인으로 만들기 위해 도입
      */
-    fun <T> mapType(type: Type?): Type {
-        return if (type == null) MutableMap::class.java else object : TypeToken<Map<String?, T>?>() {}.where(object :
-            TypeParameter<T>() {}, TypeToken.of(type) as TypeToken<T>).type //파라메터가 없는 타입이라면 일반 MAP리턴
-    }
+    inline fun <reified T> mapType(): Type =
+        object : TypeToken<Map<String, T>>() {}.type
 
     /**
      * Map<String></String>, Map<String></String>,T>> 인 타입 리턴
      */
-    fun <T> mapMapType(type: Type?): Type {
-        return if (type == null) MutableMap::class.java else object :
-            TypeToken<Map<String?, Map<String?, T>?>?>() {}.where(object :
-            TypeParameter<T>() {}, TypeToken.of(type) as TypeToken<T>).type //파라메터가 없는 타입이라면 일반 MAP리턴
-    }
+    inline fun <reified T> mapMapType(): Type =
+        object : TypeToken<Map<String, Map<String, T>>>() {}.type
 
     /**
      * Map<String></String>, Map<String></String>,Map<String></String>,T>>> 인 타입 리턴
      */
-    fun <T> mapMapMapType(type: Type?): Type {
-        return if (type == null) MutableMap::class.java else object :
-            TypeToken<Map<String?, Map<String?, Map<String?, T>?>?>?>() {}.where(
-            object : TypeParameter<T>() {},
-            TypeToken.of(type) as TypeToken<T>
-        ).type
-    }
+    inline fun <reified T> mapMapMapType(): Type =
+        object : TypeToken<Map<String, Map<String, Map<String, T>>>>() {}.type
 
     /**
      * Map<String></String>, Map<String></String>,Map<String></String>,T>>> 인 타입 리턴
      */
-    fun <T> mapMapMapMapType(type: Type?): Type {
-        return if (type == null) MutableMap::class.java else object :
-            TypeToken<Map<String?, Map<String?, Map<String?, Map<String?, T>?>?>?>?>() {}.where(
-            object : TypeParameter<T>() {},
-            TypeToken.of(type) as TypeToken<T>
-        ).type
-    }
+    inline fun <reified T> mapMapMapMapType(): Type =
+        object : TypeToken<Map<String, Map<String, Map<String, Map<String, T>>>>>() {}.type
 
     /**
      * Multimap<String></String>, T> 인 타입 리턴
      * ex) TypeTokenUtil.multimapType(Long.class) => com.google.common.collect.Multimap<java.lang.String></java.lang.String>, java.lang.Long>
      */
-    fun <T> multimapType(type: Type): Type {
-        return object : TypeToken<Multimap<String?, T>?>() {}.where(object : TypeParameter<T>() {}, TypeToken.of(type) as TypeToken<T>).type
-    }
+    inline fun <reified T> multimapType(): Type =
+        object : TypeToken<Multimap<String, T>>() {}.type
 }

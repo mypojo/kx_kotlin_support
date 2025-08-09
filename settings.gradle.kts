@@ -46,19 +46,14 @@ dependencyResolutionManagement {
         mavenCentral()
         maven { url = uri("https://jitpack.io") } //가끔 사용함
         google() //com.google.devtools.ksp 때문에 사용
-        maven { url = uri("https://maven.scijava.org/content/repositories/public/") } //형태소 분석기용 리파지토리
+        //maven { url = uri("https://maven.scijava.org/content/repositories/public/") } //형태소 분석기용 리파지토리 -> 여기 너무 느려서 일단 중지
     }
 }
 
 
 //==================================================== refreshVersions 세팅 여러가지 ======================================================
 plugins {
-    id("com.gradle.develocity") version "3.19.2"
-////                        # available:"4.0"
-////                        # available:"4.0.1"
-////                        # available:"4.0.2"
-////                        # available:"4.0.3"
-////                        # available:"4.1"
+    id("com.gradle.develocity") version "4.1"
     id("de.fayard.refreshVersions") version "0.60.5" //기타의존성 버전 자동갱신
 }
 

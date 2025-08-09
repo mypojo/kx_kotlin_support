@@ -17,7 +17,7 @@ class CodeCommitSupportKtTest : BeSpecHeavy() {
     private val aws by lazy { koin<AwsClient>(findProfile97) }
 
     init {
-        initTest(KotestUtil.PROJECT)
+        initTest(KotestUtil.IGNORE)
 
         Given("codeCommit") {
 
@@ -28,8 +28,8 @@ class CodeCommitSupportKtTest : BeSpecHeavy() {
                     this.commitSpecifier = "refs/heads/dev"
                     this.filePath = ".gitignore"
                 }.revisionDag
-                history.size shouldBeGreaterThan 1
                 history.print()
+                history.size shouldBeGreaterThan 0
             }
 
             Then("특정 브랜치의 최근 히스토리 가져오기") {

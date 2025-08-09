@@ -6,7 +6,7 @@ import net.kotlinx.json.gson.GsonSet
 
 /** json을 List 객체로 간단 변환 */
 inline fun <reified T> Gson.fromJsonList(json: String): List<T> {
-    val type = TypeTokenUtil.list<T>(T::class.java)
+    val type = TypeTokenUtil.list<T>()
     return this.fromJson(json, type)
 }
 

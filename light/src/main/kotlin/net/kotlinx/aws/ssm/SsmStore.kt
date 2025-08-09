@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 class SsmStore(
     private val ssmClient: SsmClient,
     /** 캐시 구현체. 디폴트로 하루 한번 */
-    private val cache: Cache<String, String?> = CacheBuilder.newBuilder().expireAfterWrite(24, TimeUnit.HOURS).build(),
+    private val cache: Cache<String, String> = CacheBuilder.newBuilder().expireAfterWrite(24, TimeUnit.HOURS).build(),
 ) {
 
     /** 캐시값 우선 리턴 */

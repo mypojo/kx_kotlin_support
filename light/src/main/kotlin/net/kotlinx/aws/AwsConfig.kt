@@ -2,7 +2,7 @@ package net.kotlinx.aws
 
 import aws.sdk.kotlin.runtime.auth.credentials.DefaultChainCredentialsProvider
 import aws.sdk.kotlin.runtime.auth.credentials.StsAssumeRoleCredentialsProvider
-import aws.sdk.kotlin.runtime.client.AwsSdkClientConfig
+import aws.sdk.kotlin.runtime.config.AwsSdkClientConfig
 import aws.sdk.kotlin.services.sts.model.GetCallerIdentityResponse
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
 import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProviderConfig
@@ -125,6 +125,7 @@ data class AwsConfig(
 
     /** 빌더에 각종 설정을 추가해줌 */
     fun build(clientBuilder: Any) {
+
         //이제 credentialsProvider 에서 설정했기 때문에엔진하고 리전은 필요 없을지도?
         if (clientBuilder is AwsSdkClientConfig.Builder) clientBuilder.region = region
         if (clientBuilder is CredentialsProviderConfig.Builder) clientBuilder.credentialsProvider = credentialsProvider

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 class SmStore(
     private val sm: SecretsManagerClient,
     /** 캐시 구현체. 디폴트로 하루 한번 */
-    private val cache: Cache<String, String?> = CacheBuilder.newBuilder().expireAfterWrite(24, TimeUnit.HOURS).build(),
+    private val cache: Cache<String, String> = CacheBuilder.newBuilder().expireAfterWrite(24, TimeUnit.HOURS).build(),
 ) {
 
     /**
