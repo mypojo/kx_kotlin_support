@@ -44,7 +44,7 @@ allprojects {
     tasks.compileKotlin {
         compilerOptions {
             freeCompilerArgs.add("-Xjsr305=strict") //null값 체크 strict
-            jvmTarget.set(JvmTarget.JVM_21)
+            jvmTarget.set(JvmTarget.JVM_21) //애 때문에 JVM 설정을 프로퍼티화 하지 않음..
         }
     }
 

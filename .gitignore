@@ -14,6 +14,7 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 .jpb
+.vscode
 
 
 # 그래들이 자동생성 해주는거
