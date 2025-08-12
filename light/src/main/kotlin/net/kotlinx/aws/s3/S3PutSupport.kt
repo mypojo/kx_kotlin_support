@@ -49,6 +49,8 @@ suspend inline fun S3Client.putObject(bucket: String, key: String, byteArray: By
  * 멀티파트 업로드
  * @param key 업로드 디렉토리 path.  /로 시작하지 않음!!
  * @param splitMb 분할처리할 용량
+ *
+ * 주의!! 다운로드는 스트리밍이 되지만 (전체 크기가 정해져있음으로) 업로드는 스트리밍이 불가능함 (전체 크기를 미리 지정해야 함으로)
  *  */
 suspend inline fun S3Client.putObjectMultipart(bucket: String, key: String, file: File, splitMb: Int = 1024, metadata: Map<String, String>? = null) {
 
