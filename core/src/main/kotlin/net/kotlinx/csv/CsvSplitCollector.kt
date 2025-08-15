@@ -41,7 +41,10 @@ class CsvSplitCollector : FlowCollector<List<List<String>>>, AutoCloseable {
      *  @see outputStreamFactory
      * */
     fun File.toOutputStreamFactory(gzip: Boolean = false): (Int) -> OutputStream {
-        return { this.slash("${it.padStart(3)}.csv").toOutputResource(gzip).outputStream }
+        return {
+            val extension = if (gzip) ".csv.gz" else ".csv"
+            this.slash("${it.padStart(3)}$extension").toOutputResource(gzip).outputStream
+        }
     }
 
     /** 분할 수. 디폴트로 엑셀 최대 크기 */
@@ -49,6 +52,9 @@ class CsvSplitCollector : FlowCollector<List<List<String>>>, AutoCloseable {
 
     /** 인코딩 등 변경에 사요 */
     var writerFactory: () -> CsvWriter = { csvWriter() }
+
+    /** CSV 파일의 헤더. null이면 헤더를 쓰지 않음 */
+    var headers: List<String>? = null
 
     //==================================================== 내부사용 ======================================================
 
@@ -63,7 +69,12 @@ class CsvSplitCollector : FlowCollector<List<List<String>>>, AutoCloseable {
             log.trace { "call index $it" }
             writer?.close()
             val outputStream = outputStreamFactory(fileIndex++)
-            writerFactory().openAndGetRawWriter(outputStream)
+            val newWriter = writerFactory().openAndGetRawWriter(outputStream)
+            
+            // 새 파일이 생성될 때 헤더가 설정되어 있으면 헤더를 먼저 씀
+            headers?.let { headerList -> newWriter.writeRow(headerList) }
+            
+            newWriter
         } ?: writer
         lines.forEach { writer!!.writeRow(it) }
     }
@@ -77,4 +88,3 @@ class CsvSplitCollector : FlowCollector<List<List<String>>>, AutoCloseable {
     }
 
 }
-

@@ -13,8 +13,9 @@ class AwsDbClientDmpTest : BeSpecHeavy() {
     private val aws by lazy { koin<AwsClient>(findProfile49) }
 
     init {
-        initTest(KotestUtil.PROJECT)
+        initTest(KotestUtil.IGNORE)
 
+        /** DB 세팅되면 테스트 만들기 */
         Given("AwsDbClient") {
 
             val db = AwsDbClient {

@@ -15,17 +15,21 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.core.Kdsl
-import net.kotlinx.number.toSiText
-import java.io.ByteArrayOutputStream
+import net.kotlinx.core.VibeCoding
+import net.kotlinx.io.output.toOutputResource
+import java.io.File
+import java.nio.file.Files
 
 /**
- * FlowCollector 기반 CSV S3 멀티파트 업로드 콜렉터
- * lambda 등에서 ->  메모리와 디스크용량이 부족할때 -> 대용량 파일을 업로드할때 사용됨
- * - emit() 으로 전달되는 레코드(List<List<String>>)를 CSV로 버퍼에 기록하고, splitMb 임계에 도달하면 멀티파트 업로드 수행
- * - close() 시 남은 데이터를 업로드하여 마무리 (필요 시 단일 PUT)
+ * FlowCollector 기반 CSV S3 업로드 콜렉터
+ * lambda 처럼 메모리와 디스크 모두 부족환 환경에서 대용량을 처리하기 위한 도구임
  *
- * 주의!! 테스트 필요함
+ * - emit() 으로 전달되는 레코드(List<List<String>>)를 로컬 파일에 CSV로 기록
+ * - 파일 크기가 임계값(기본 5MB)을 넘으면 멀티파트 업로드 수행
+ * - 임계값 미만이면 단일 PUT으로 업로드
+ * - close() 시 남은 데이터를 업로드하여 마무리
  */
+@VibeCoding
 class CsvS3MultipartUploadCollector : FlowCollector<List<List<String>>>, AutoCloseable {
 
     @Kdsl
@@ -38,34 +42,31 @@ class CsvS3MultipartUploadCollector : FlowCollector<List<List<String>>>, AutoClo
     /** S3 클라이언트 */
     lateinit var s3: S3Client
 
-    /** 버킷 */
-    lateinit var bucket: String
+    /** S3 데이터 (버킷과 키) */
+    lateinit var s3Data: S3Data
 
-    /** 키 (경로) */
-    lateinit var key: String
-
-    /** 파트 분할 기준(MB). 기본 1GB. 최대 5GB */
-    var splitMb: Int = 1024
+    /** 멀티파트 업로드 임계값 (MB). 기본 5MB (S3 최소값) */
+    var multipartThresholdMb: Int = 5
 
     /** 메타데이터 (베이스64 인코딩되어 저장됨) */
     var metadata: Map<String, String>? = null
 
     /** CSV Writer 설정 */
-    var csv: CsvWriter = csvWriter()
+    var csvWriter: CsvWriter = csvWriter()
 
     /** 헤더 (첫 파트에만 기록) */
     var header: List<String>? = null
 
     //==================================================== 내부 상태 =====================================================
 
-    private val partSize: Long get() = splitMb * 1024L * 1024L
     private var partNumber: Int = 1
     private var uploadId: String? = null
     private val completedParts: MutableList<CompletedPart> = mutableListOf()
 
-    private var buffer: ByteArrayOutputStream = ByteArrayOutputStream()
-    private var rawWriter: CsvFileWriter? = null
-    private var writerOpened: Boolean = false
+    private var currentFile: File? = null
+    private var csvRawWriter: CsvFileWriter? = null
+    private val multipartThresholdBytes: Long get() = multipartThresholdMb * 1024L * 1024L
+    private var headerWritten: Boolean = false
 
     companion object {
         private val log = KotlinLogging.logger {}
@@ -76,111 +77,114 @@ class CsvS3MultipartUploadCollector : FlowCollector<List<List<String>>>, AutoClo
     private suspend fun ensureInitiated() {
         if (uploadId == null) {
             val res = s3.createMultipartUpload {
-                this.bucket = bucket
-                this.key = key
+                this.bucket = s3Data.bucket
+                this.key = s3Data.key
                 this.metadata = metadata?.map { it.key to it.value.encodeBase64() }?.toMap()
             }
             uploadId = res.uploadId
-            log.info { "  ==> s3 CSV MultipartUpload 시작.. partSize=${partSize.toSiText()}" }
+            log.info { "  ==> s3 CSV MultipartUpload 시작.. threshold=${multipartThresholdMb}MB" }
         }
     }
 
-    private fun openWriter(firstPart: Boolean) {
-        rawWriter = csv.openAndGetRawWriter(buffer)
-        if (firstPart) header?.let { rawWriter!!.writeRow(it) }
-        writerOpened = true
-    }
+    private fun createNewFile() {
+        currentFile = Files.createTempFile("csv_part_", ".csv").toFile()
+        csvRawWriter = csvWriter.openAndGetRawWriter(currentFile!!.toOutputResource().outputStream)
 
-    private suspend fun uploadCurrentBufferAndReset() {
-        rawWriter?.close()
-        val bytes = buffer.toByteArray()
-        if (bytes.isEmpty()) {
-            buffer = ByteArrayOutputStream()
-            rawWriter = csv.openAndGetRawWriter(buffer)
-            return
-        }
-        ensureInitiated()
-        val req = UploadPartRequest {
-            this.bucket = bucket
-            this.key = key
-            this.uploadId = uploadId
-            this.partNumber = partNumber
-            this.body = ByteStream.fromBytes(bytes)
-        }
-        log.trace { "  --> [${partNumber}] ${bytes.size.toLong().toSiText()} upload... " }
-        val res = s3.uploadPart(req)
-        completedParts.add(
-            CompletedPart {
-                partNumber = partNumber
-                eTag = res.eTag
+        // 첫 번째 파트에만 헤더 추가
+        if (!headerWritten) {
+            header?.let {
+                csvRawWriter!!.writeRow(it)
             }
-        )
-        partNumber += 1
-        buffer = ByteArrayOutputStream()
-        rawWriter = csv.openAndGetRawWriter(buffer)
-        // 헤더는 첫 파트에만 기록
+            headerWritten = true
+        }
     }
+
 
     //==================================================== FlowCollector 구현 ============================================
 
     override suspend fun emit(lines: List<List<String>>) {
-        check(splitMb > 0)
-        check(splitMb <= 1024 * 5) { "1회당 업로드 크기는 최대 5GB 용량 지원" }
+        check(multipartThresholdMb >= 5) { "multipartThresholdMb는 5MB 이상이어야 합니다" }
 
-        if (!writerOpened) openWriter(firstPart = true)
+        if (csvRawWriter == null) createNewFile()
+
         lines.forEach { row ->
-            rawWriter!!.writeRow(row)
-            if (buffer.size().toLong() >= partSize) {
-                // 임계 도달 시 현재 버퍼 업로드
-                uploadCurrentBufferAndReset()
-            }
+            csvRawWriter!!.writeRow(row)
         }
     }
 
     //==================================================== AutoCloseable 구현 ============================================
 
     override fun close() {
-        // 네트워크 호출 필요 → runBlocking 사용
-        rawWriter?.close()
-        val remaining = buffer.toByteArray()
         runBlocking {
-            when {
-                uploadId == null && completedParts.isEmpty() -> {
-                    if (remaining.isEmpty()) return@runBlocking
-                    s3.putObject(bucket, key, ByteStream.fromBytes(remaining), metadata)
-                    log.info { "  ==> s3 CSV Upload (single PUT) ${remaining.size.toLong().toSiText()} 완료" }
+            csvRawWriter?.close()
+            csvRawWriter = null
+
+            val file = currentFile
+            if (file != null && file.exists() && file.length() > 0) {
+                val fileSize = file.length()
+
+                if (fileSize < multipartThresholdBytes) {
+                    // 임계값 미만이면 단일 PUT
+                    val bytes = file.readBytes()
+                    s3.putObject(s3Data.bucket, s3Data.key, ByteStream.fromBytes(bytes), metadata)
+                    log.info { "  ==> s3 CSV Upload (single PUT) ${bytes.size} bytes 완료" }
+                } else {
+                    // 임계값 이상이면 멀티파트 업로드로 분할
+                    uploadFileAsMultipart(file)
                 }
 
-                else -> {
-                    if (remaining.isNotEmpty()) {
-                        val req = UploadPartRequest {
-                            this.bucket = bucket
-                            this.key = key
-                            this.uploadId = uploadId
-                            this.partNumber = partNumber
-                            this.body = ByteStream.fromBytes(remaining)
-                        }
-                        log.trace { "  --> [${partNumber}] ${remaining.size.toLong().toSiText()} upload (last)... " }
-                        val res = s3.uploadPart(req)
-                        completedParts.add(
-                            CompletedPart {
-                                partNumber = partNumber
-                                eTag = res.eTag
-                            }
-                        )
-                    }
+                file.delete()
+            }
 
-                    s3.completeMultipartUpload {
-                        this.bucket = bucket
-                        this.key = key
-                        this.uploadId = uploadId
-                        this.multipartUpload = CompletedMultipartUpload {
-                            this.parts = completedParts
-                        }
-                    }
-                    log.info { "  ==> s3 CSV MultipartUpload 완료 (${completedParts.size} parts)" }
+            // 임시 파일 정리
+            currentFile?.let { if (it.exists()) it.delete() }
+        }
+    }
+
+    private suspend fun uploadFileAsMultipart(file: File) {
+        ensureInitiated()
+
+        val currentUploadId = uploadId ?: throw IllegalStateException("uploadId가 null입니다")
+
+        val bytes = file.readBytes()
+        val partSize = multipartThresholdBytes.toInt()
+        var offset = 0
+        var currentPartNumber = 1
+
+        while (offset < bytes.size) {
+            val endOffset = minOf(offset + partSize, bytes.size)
+            val partBytes = bytes.sliceArray(offset until endOffset)
+
+            val req = UploadPartRequest {
+                this.bucket = s3Data.bucket
+                this.key = s3Data.key
+                this.uploadId = currentUploadId
+                this.partNumber = currentPartNumber
+                this.body = ByteStream.fromBytes(partBytes)
+            }
+
+            log.debug { "  --> [${currentPartNumber}] ${partBytes.size} bytes upload..." }
+            val res = s3.uploadPart(req)
+            completedParts.add(
+                CompletedPart {
+                    partNumber = currentPartNumber
+                    eTag = res.eTag
                 }
+            )
+
+            offset = endOffset
+            currentPartNumber++
+        }
+
+        // 멀티파트 업로드 완료
+        s3.completeMultipartUpload {
+            this.bucket = s3Data.bucket
+            this.key = s3Data.key
+            this.uploadId = currentUploadId
+            this.multipartUpload = CompletedMultipartUpload {
+                this.parts = completedParts
             }
         }
+        log.info { "  ==> s3 CSV MultipartUpload 완료 (${completedParts.size} parts)" }
     }
 }

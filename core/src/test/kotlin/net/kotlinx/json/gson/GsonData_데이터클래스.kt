@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
 import net.kotlinx.aws.lambda.dispatch.asynch.EventBridgeJson
 import net.kotlinx.aws.lambda.dispatch.asynch.EventBridgeS3
 import net.kotlinx.collection.mapOf
+import net.kotlinx.guava.fromJsonList
 import net.kotlinx.json.koson.KosonTest.Companion.DEMO_KOSON
 import net.kotlinx.json.koson.toGsonData
 import net.kotlinx.json.serial.SerialJsonSet
@@ -63,13 +64,26 @@ internal class GsonData_데이터클래스 : BeSpecLog() {
                     "reason" to "업로드"
                 }
                 "lines" to arr[
-                    obj { "line" to "1" },
+                    obj {
+                        "line" to "1"
+                        "name" to "철수"
+                    },
                     obj { "line" to "2" },
                 ]
             }.toGsonData()
 
             Then("size 테스트") {
                 s3Event["lines"].size shouldBe 2
+
+                data class Line2(
+                    val line: String,
+                    val name: String?,
+                )
+
+                val lines = s3Event["lines"].fromJsonList<Line2>()
+                lines.print()
+                lines.size shouldBe 2
+
             }
 
             Then("json 을 map 변환") {

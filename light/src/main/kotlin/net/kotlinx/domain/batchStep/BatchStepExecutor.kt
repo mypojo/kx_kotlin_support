@@ -69,6 +69,7 @@ class BatchStepExecutor {
      * 파일 업로드는 프로그레스 체크할정도로 오래걸리지 않음
      * @param datas 각 단위는 5~8분 이내로 처리 가능한 사이즈가 좋아보임. (부득이하게 좀 길어져도 안전하도록)
      *  */
+    @Deprecated("사용안함")
     fun uploadAllInmemory(targetSfnId: String, datas: List<S3LogicInput>) {
         val thisDir = workDir.slashDir(targetSfnId)
         measureTimeString {

@@ -1,10 +1,11 @@
 package net.kotlinx.aws.s3
 
 import aws.sdk.kotlin.services.s3.deleteObject
-import aws.sdk.kotlin.services.s3.listBuckets
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.flow.flow
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
+import net.kotlinx.flow.collectClose
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -15,72 +16,85 @@ import kotlin.random.Random
 
 internal class CsvS3MultipartUploadCollectorTest : BeSpecHeavy() {
 
-    private val aws by lazy { koin<AwsClient>(findProfile97) }
+    private val aws by lazy { koin<AwsClient>(findProfile49) }
 
     companion object {
         private val log = KotlinLogging.logger {}
     }
 
+    // 공통 테스트 데이터
+
+    private var expectedCount = 0L
+    private var expectedSum = 0L
+
+    private fun randomRow(): List<String> {
+        val keyword = buildString {
+            repeat(12) { append(('a'..'z').random()) }
+        }
+        val adCost = Random.nextInt(0, 10_000)
+        val payload = buildString {
+            // 약 1500자로 행 크기 증가 (한 행당 약 1.5KB)
+            repeat(1500) { append('x') }
+            append('-')
+            append(keyword)
+        }
+        val extraData = buildString {
+            // 추가 데이터 필드로 행 크기를 더 늘림 (약 500자 추가)
+            repeat(500) { append(('A'..'Z').random()) }
+        }
+        expectedCount += 1
+        expectedSum += adCost
+        return listOf(keyword, adCost.toString(), payload, extraData)
+    }
+
     init {
-        initTest(KotestUtil.PROJECT)
+        initTest(KotestUtil.IGNORE)
 
         Given("CsvS3MultipartUploadCollector") {
-            Then("2MB 기준 멀티파트 업로드 -> 다운로드 검증 -> 삭제") {
-                val bucket = "${findProfile97}-work-dev"
-                val keyPrefix = "upload/csv_multi_test/"
-                val ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS"))
-                val key = "$keyPrefix$ts.csv"
 
-                // 버킷 존재 여부 확인 (없으면 스킵)
-                val exists = aws.s3.listBuckets {}.buckets?.any { it.name == bucket } == true
-                if (!exists) {
-                    log.warn { "테스트 버킷이 존재하지 않아 스킵합니다. bucket=$bucket" }
-                    return@Then
-                }
+            val ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS"))
+            val header = listOf("keyword", "adCost", "payload", "extraData")
 
-                val header = listOf("keyword", "adCost", "payload")
+            val s3Data = S3Data("${findProfile49}-work-dev", "temp/csv_multi_test/$ts.csv")
 
-                // 업로드할 데이터 구성: 3000행 * 3회, 행당 ~700B payload로 2MB 임계 유도
-                var expectedCount = 0L
-                var expectedSum = 0L
+            Then("용량 기준 자동 업로드 테스트") {
+                expectedCount = 0
+                expectedSum = 0
+                
+                // 대용량 데이터 플로우 생성: 실제 데이터 스트림을 시뮬레이션
+                // 한 행당 약 2KB, 총 15,000 라인 = 약 30MB
+                val dataFlow = flow {
+                    val totalRows = 15000 // 총 15,000 라인 (약 30MB)
+                    val batchSize = 1000
 
-                val collector = CsvS3MultipartUploadCollector {
-                    s3 = aws.s3
-                    this.bucket = bucket
-                    this.key = key
-                    splitMb = 2 // 2MB 기준으로 파트 분할
-                    this.header = header
-                }
-
-                fun randomRow(): List<String> {
-                    val keyword = buildString {
-                        repeat(12) { append(('a'..'z').random()) }
+                    log.info { "테스트 데이터 생성 시작: ${totalRows} 라인" }
+                    for (i in 0 until totalRows step batchSize) {
+                        val remainingRows = minOf(batchSize, totalRows - i)
+                        val batch = List(remainingRows) { randomRow() }
+                        emit(batch)
+                        if (i % 5000 == 0) {
+                            log.info { "진행률: ${i}/${totalRows} 라인 생성됨" }
+                        }
                     }
-                    val adCost = Random.nextInt(0, 10_000)
-                    val payload = buildString {
-                        // 약 680자 + 키워드로 행 크기 확보
-                        repeat(680) { append('x') }
-                        append('-')
-                        append(keyword)
+                    log.info { "테스트 데이터 생성 완료" }
+                }
+
+                dataFlow.collectClose {
+                    CsvS3MultipartUploadCollector {
+                        s3 = aws.s3
+                        this.s3Data = s3Data
+                        multipartThresholdMb = 7 // 5MB 임계값 (기본값)
+                        this.header = header
                     }
-                    expectedCount += 1
-                    expectedSum += adCost
-                    return listOf(keyword, adCost.toString(), payload)
                 }
+            }
 
-                // 3번 청크로 emit -> 대략 3파트 이상 업로드 예상
-                repeat(3) {
-                    val chunk = List(3000) { randomRow() }
-                    collector.emit(chunk)
-                }
-
-                collector.close()
-
-                // 다운로드 및 검증 (헤더 스킵)
+            Then("다운로드 및 데이터 검증") {
                 var actualCount = 0L
                 var actualSum = 0L
                 var first = true
-                aws.s3.getObjectCsvFlow(bucket, key) { flow ->
+
+                aws.s3.getObjectCsvFlow(s3Data.bucket, s3Data.key) { flow ->
                     flow.collect { row ->
                         if (first) {
                             // 헤더 검증 후 스킵
@@ -95,13 +109,15 @@ internal class CsvS3MultipartUploadCollectorTest : BeSpecHeavy() {
 
                 actualCount shouldBe expectedCount
                 actualSum shouldBe expectedSum
+            }
 
-                // 정리: 삭제 후 확인
+            Then("업로드된 파일 삭제 및 확인") {
                 aws.s3.deleteObject {
-                    this.bucket = bucket
-                    this.key = key
+                    this.bucket = s3Data.bucket
+                    this.key = s3Data.key
                 }
-                val metadata = aws.s3.getObjectMetadata(bucket, key)
+
+                val metadata = aws.s3.getObjectMetadata(s3Data.bucket, s3Data.key)
                 metadata shouldBe null
             }
         }

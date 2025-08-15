@@ -26,6 +26,12 @@ import kotlin.time.Duration.Companion.seconds
  * 2. timeout 기능이 있어야 함
  *
  * 롱폴링 최대 대기 시간(20초)에 맞춰 24시간 동안 계속 받는다고 가정하면, 1개월(30일) 동안 약 13만 건의 API 호출이 발생하고, 이 경우 비용은 약 0.26 USD(약 336원) 정도
+ *
+ * 실시간/대량/고속 처리가 아니라, 분산 버퍼 처리를 위한 시스템임 -> 실시간 고속이 필요한경우 kinesisTask
+ * ex) A 프로젝트에서 B 프로젝트로 작업 요청 -> SQS의 데이터를 B에서 분산처리
+ * 테스트 필요함!!
+ *
+ * @see net.kotlinx.aws.kinesis.worker.KinesisTask
  */
 class SqsTask {
 
@@ -98,12 +104,12 @@ class SqsTask {
                 val recordKey = SqsTaskRecordKey(taskName, taskId, recordId)
                 recordKey.inMessageId to data.toString()
             }
-            
+
             // 메시지 배치 전송
             val messageMap = messages.toMap()
             val messageList = messageMap.values.toList()
             val failedMessages = aws.sqs.sendBatch(requestQueueUrl, messageList)
-            
+
             if (failedMessages.isNotEmpty()) {
                 log.warn { "Failed to send ${failedMessages.size} messages to SQS after retries." }
             }
