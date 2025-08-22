@@ -10,7 +10,7 @@ class MapAttributeDelegate<T> {
 
     operator fun getValue(thisRef: MapAttribute, property: KProperty<*>): T {
         @Suppress("UNCHECKED_CAST")
-        return thisRef.attributes[property.name] as T ?: throw IllegalStateException("menu의 attributes에  ${property.name}가 존재하지 않습니다")
+        return thisRef.attributes[property.name] as T ?: throw IllegalStateException("${property.name}가 존재하지 않습니다 from ${thisRef}")
     }
 
     operator fun setValue(thisRef: MapAttribute, property: KProperty<*>, value: T) {

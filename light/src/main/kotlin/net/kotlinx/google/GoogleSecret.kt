@@ -8,12 +8,13 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.http.HttpRequestInitializer
 import com.google.api.client.json.JsonFactory
-import com.google.api.client.json.jackson2.JacksonFactory
+import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.sheets.v4.SheetsScopes
 import net.kotlinx.core.Kdsl
 import net.kotlinx.file.slash
+import net.kotlinx.lazyLoad.default
 import net.kotlinx.system.ResourceHolder
 import java.io.File
 import java.io.FileInputStream
@@ -24,14 +25,17 @@ import java.io.InputStreamReader
  * #1. API 키 -> 그냥 따면 되지만, 사용못하는 서비스가 너무 많은듯(401 Unauthorized남) -> 사용 가능한지는 해당 서비스의 "사용자 인증 정보"를 가볼것 (불확실)
  * #2. OAuth 2.0 클라이언트 ID -> 브라우저로 인증해야하는 귀찮음이 조금 있음. 호스트 권한 생성이 상당히 빡빡해짐. 유투브 링크까지 걸어야한다. -> 이경우 테스트로 전환해서 할것. 100명 제한이 있지만 넉넉함.
  *   => 이 토큰은 (주기적으로 expire 되는듯.. 쓰기 힘들다. 권한 변경시 캐싱 지우도 새로 받을것)
- *
  * ...
  *
- * ###### 작업방법 ######
+ * ###### 작업방법 (이게 맞는지는 잘 모름) ######
  * #1. google 계정 생성 ex) 호스트-myProject, 게스트-돈주는업체 ???
  * #2. 호스트 계정으로 API 권한 만들기  -> https://console.cloud.google.com/projectselector2/apis/dashboard?pli=1&supportedpurview=project
- * #3 프로젝트 생성 & 원하는 서비스 활성화 -> OAuth 2.0 클라이언트 ID -> 동의화면 만들기 (유니크이름지정,시트읽고쓰기 권한부여)
- * #4 OAuth 2.0 생성 (데스크톱앱) -> 시크릿 다운로드 -> google-sheet-secret 로 이름 바꿔서 저장 & 시크릿 스토어로 저장
+ * #3 프로젝트 생성 & 원하는 서비스 활성화
+ * #4 OAuth 동의화면 생성 -> OAuth 클라이언트 만들기 (나혼자 쓸거니 데스크톱앱 -> 이거해야 리다이렉션 같은거 안하는듯) ->  secret.json 로 이름 바꿔서 저장 & 시크릿 스토어로 저장
+ * #5
+ *
+ * #? OAuth 2.0 클라이언트 ID -> 동의화면 만들기 (유니크이름지정,시트읽고쓰기 권한부여)
+ * #? OAuth 2.0 생성 (데스크톱앱) -> 시크릿 다운로드 -> secret.json 로 이름 바꿔서 저장 & 시크릿 스토어로 저장
  */
 class GoogleSecret {
 
@@ -54,17 +58,18 @@ class GoogleSecret {
      * 디폴트로 자주 사용되는 디렉토리 지정
      * ex) C:\Users\${userName}\.google
      *  */
-    var secretDir: File = ResourceHolder.USER_ROOT.slash(".google")
-
+    var secretDir: File by default { ResourceHolder.USER_ROOT.slash(".google") }
 
     /**
      * 클라이언트 시크릿 파일.  편의상 secretDir 에 같이 쓴다.
-     * SSM 등에서 데이터를 가져와서 여기에 파일로 만들것
+     * 최초 계정 생성시 만든다음, SSM 등에서 데이터를 가져와서 여기에 파일로 만들것
      *  */
-    var secretClientFile: File = secretDir.slash(SECRET_CLIENT_FILE_NAME)
+    val secretClientFile: File
+        get() = secretDir.slash(SECRET_CLIENT_FILE_NAME)
 
     /**
      * 시크릿 파일
+     * 최초 호출시 이게 없는경우, 데스크톱앱 으로 지정시, 내부 8888 포트로 인증 후 시크릿 파일이 생성된다
      * secretDir 를 지정해주면, 구글SDK가 내부 시크릿을 읽어가는 구조임
      * */
     val secretFile: File
@@ -76,7 +81,7 @@ class GoogleSecret {
     val transport = GoogleNetHttpTransport.newTrustedTransport()!!
 
     /** 걍 JSON 파싱하는애  */
-    val jsonFactory: JsonFactory = JacksonFactory.getDefaultInstance()
+    val jsonFactory: JsonFactory = GsonFactory.getDefaultInstance()
 
     /** 최종 크리덴셜 */
     val credential: Credential by lazy {

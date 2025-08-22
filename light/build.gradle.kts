@@ -93,12 +93,16 @@ dependencies {
     //implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0") //https://github.com/googleapis/google-auth-library-java  구글인증은 이걸로 다 바뀐듯함 -> 나는 안씀
     implementation("com.google.gdata:core:_") //구글 기본세트
 
-    //구글 시리즈는 순서가 이상해서, 리프레시 버전 사용하지 않는다!! 어차피 2020년 이후로 업데이트 거의 안해줌
-    //client 사용 버전이 과도하게 낮다..  이때문에 jib 쓸때 오류남. 별도로 추가해줄것.
+    //구글 기본세트는 메이븐에 없음 -> https://central.sonatype.com/artifact/com.google.apis/google-api-services-oauth2/v2-rev20200213-1.32.1
+    //이때문에 일단 리프레시 버전 안쓰고 하드코딩함
     //implementation("com.google.api-client:google-api-client:2.6.0") //구글 Jib 빌드시 사용.
-    implementation("com.google.apis:google-api-services-oauth2:v2-rev157-1.25.0") //구글 기본세트
-    implementation("com.google.apis:google-api-services-calendar:v3-rev411-1.25.0") //캘린더
-    implementation("com.google.apis:google-api-services-sheets:v4-rev614-1.18.0-rc") //구글시트
+    implementation("com.google.apis:google-api-services-oauth2:v2-rev20200213-1.32.1") //구글 기본세트
+    implementation("com.google.apis:google-api-services-calendar:v3-rev20250404-2.0.0") //캘린더
+    implementation("com.google.apis:google-api-services-sheets:v4-rev20250616-2.0.0") //구글시트
+
+    implementation("com.google.api-client:google-api-client-gson:2.8.1")
+    implementation("com.google.http-client:google-http-client-gson:2.0.0")
+
 
     //==================================================== OPEN-AI ======================================================
     api("com.aallam.openai:openai-client:_") //open API (챗GPT) kotlin client.  커스텀 host를 로드하려면 implementation -> api 로 해야함

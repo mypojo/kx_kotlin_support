@@ -26,6 +26,14 @@ class EventCountChecker(
         block(count.get())
     }
 
+    /** 서스펜드 버전 */
+    suspend fun checks(block: suspend (Long) -> Unit) {
+        val main = invoke()
+        if (!main) return
+
+        block(count.get())
+    }
+
     /**
      * 메인이면 실행 후 리턴
      *  */

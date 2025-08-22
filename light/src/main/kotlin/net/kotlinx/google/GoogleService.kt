@@ -5,6 +5,7 @@ import com.google.api.services.sheets.v4.Sheets
 
 /**
  * 구글 서비스 캐시
+ * Too many requests 를 항상 대비해야함!
  */
 class GoogleService(secret: GoogleSecret) {
 

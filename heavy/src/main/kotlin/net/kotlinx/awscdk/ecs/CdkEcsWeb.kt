@@ -6,6 +6,7 @@ import net.kotlinx.awscdk.basic.TagUtil
 import net.kotlinx.awscdk.network.PortUtil
 import net.kotlinx.awscdk.toCdk
 import net.kotlinx.core.Kdsl
+import net.kotlinx.lazyLoad.default
 import net.kotlinx.system.DeploymentType
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.applicationautoscaling.EnableScalingProps
@@ -109,7 +110,7 @@ class CdkEcsWeb : CdkInterface {
     //==================================================== 대부분 고정하는값 ======================================================
 
     /** 로그 그룹 이름 */
-    var logGroupName = "ecs/web"
+    var logGroupName by default { "ecs/${name}" }
 
 
     //==================================================== 결과들 ======================================================
@@ -176,7 +177,7 @@ class CdkEcsWeb : CdkInterface {
                         LogDriver.awsLogs(
                             AwsLogDriverProps.builder()
                                 .logGroup(cdkLogGroup.logGroup)
-                                .streamPrefix("web")
+                                .streamPrefix(name)
                                 .build()
                         )
                     }

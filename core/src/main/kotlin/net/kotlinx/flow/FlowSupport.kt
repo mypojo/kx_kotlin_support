@@ -1,5 +1,6 @@
 package net.kotlinx.flow
 
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlin.time.Duration
@@ -24,6 +25,16 @@ suspend fun <T, R> Flow<T>.execute(concurrency: Int = DEFAULT_CONCURRENCY, trans
  * */
 @Deprecated("사용안함")
 suspend fun <T> Flow<T>.collectIt(block: () -> FlowCollector<T>) = this.collect(block())
+
+/**
+ * 하나의 컬릭트를 다수로 flow로 나눌때 사용하는 코드 샘플
+ * ex) CSV 결과를 파일로 쓰기 & kinesis 전송
+ * ex) channel.consumeAsFlow().collect { ... }
+ *  */
+suspend fun <T> Flow<T>.collectChannel(channels: List<Channel<T>>) {
+    this.collect { channels.forEach { channel -> channel.send(it) } }
+    channels.forEach { channel -> channel.close() }
+}
 
 /**
  * 딜레이를 부여해준다.
