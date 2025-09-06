@@ -2,6 +2,7 @@ package net.kotlinx.awscdk.sfn
 
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.awscdk.toCdk
+import net.kotlinx.lazyLoad.default
 import software.amazon.awscdk.services.lambda.IFunction
 import software.amazon.awscdk.services.stepfunctions.RetryProps
 import software.amazon.awscdk.services.stepfunctions.TaskInput
@@ -34,6 +35,9 @@ class CdkSfnLambda(
      * */
     var allRetry: Pair<Number, Duration>? = null
 
+    /** 표시되는 이름 */
+    var comment: String by default { name }
+
     override fun convert(): LambdaInvoke {
         val lambdaInvoke = LambdaInvoke(
             cdkSfn.stack, "${name}${suffix}", LambdaInvokeProps.builder()
@@ -54,7 +58,7 @@ class CdkSfnLambda(
                         "body.$" to "$.Payload", //실무에서는 이거만 씀. 혹시 모르니 뎁스 구조는 남겨놓음
                     )
                 )
-                .comment(name)
+                .comment(comment)
                 .retryOnServiceExceptions(serviceRetry)
                 .build()
         )

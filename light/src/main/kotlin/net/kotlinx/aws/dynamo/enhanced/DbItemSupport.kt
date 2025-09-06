@@ -26,11 +26,15 @@ suspend fun <T : DbItem> DynamoDbClient.put(item: T) {
 suspend fun <T : DbItem> DynamoDbClient.update(item: T, updateKeys: Collection<String>) {
     val table = item.table()
     if (!table.persist(item)) return
+
+    val attributes = table.conv<T>().toAttribute(item)
     this.updateItem {
         this.tableName = table.tableName
         this.key = item.toKeyMap()
         this.updateExpression = "SET ${updateKeys.joinToString(",") { "$it = :${it}" }}"
-        this.expressionAttributeValues = table.conv<T>().toAttribute(item).filterKeys { it in updateKeys }.mapKeys { ":${it.key}" }
+        this.expressionAttributeValues = updateKeys.associate { key ->
+            ":$key" to (attributes[key] ?: AttributeValue.Null(true))  //updateKeys 에 있지만 속성이 null인경우 null로 입력
+        }
         this.returnValues = ReturnValue.AllNew
     }
 }

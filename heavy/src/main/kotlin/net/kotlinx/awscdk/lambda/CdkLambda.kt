@@ -109,16 +109,23 @@ class CdkLambda : CdkEnum {
 
     /** 일반 로드 */
     fun load(stack: Stack): CdkLambda {
-        defaultFun = Function.fromFunctionName(stack, logicalName, logicalName)
+        try {
+            defaultFun = Function.fromFunctionName(stack, logicalName, logicalName)
+        } catch (_: Exception) {
+            println(" -> [${stack.stackName}] object already loaded -> $logicalName")
+        }
         return this
     }
 
     /** alias 버전은 ARN 으로 로드한다. */
     fun loadAlias(stack: Stack): CdkLambda {
         checkNotNull(aliasName)
-
-        val arn = "arn:aws:lambda:${awsConfig.region}:${awsConfig.awsId}:function:${logicalName}:${aliasName}"
-        aliasFun = Function.fromFunctionArn(stack, arn, arn)
+        try {
+            val arn = "arn:aws:lambda:${awsConfig.region}:${awsConfig.awsId}:function:${logicalName}:${aliasName}"
+            aliasFun = Function.fromFunctionArn(stack, arn, arn)
+        } catch (_: Exception) {
+            println(" -> [${stack.stackName}] object already loaded -> $logicalName")
+        }
         return this
     }
 

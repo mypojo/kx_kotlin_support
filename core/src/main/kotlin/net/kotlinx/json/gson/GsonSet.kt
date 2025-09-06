@@ -61,6 +61,17 @@ object GsonSet {
         }.create()!!
     }
 
+    /** 오픈 API용 (LocalDateTime 맞춤) */
+    val GSON_OPENAPI: Gson by lazy {
+        GsonBuilder().apply {
+            setExclusionStrategies(NotExposeStrategy())
+            registerTypeAdapter(GsonData::class.java, GsonAdapterUtil.GsonDataAdapter())
+            registerTypeAdapter(BigDecimal::class.java, GsonAdapterUtil.BigDecimalAdapter())
+            registerTypeAdapter(Map::class.java, GsonAdapterUtil.MapAdapter()) //Lambda 기본 변환에 사용 (다른데는 쓸일 없음)
+            registerTypeAdapter(LocalDateTime::class.java, GsonAdapterUtil.DateTimeAdapter(TimeFormat.ISO)) //날짜만 변경해줌
+        }.create()!!
+    }
+
     /**
      * bean(카멜) 을 athena table 데이터 등으로 바로 쓸때 사용
      * 대부분 athena 로 읽으면 대소문자 구분을 안하는 경우가 많아서 UNDERSCORES로 하는게 편함

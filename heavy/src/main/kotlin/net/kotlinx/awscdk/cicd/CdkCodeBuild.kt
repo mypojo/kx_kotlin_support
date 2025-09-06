@@ -17,6 +17,8 @@ import software.amazon.awscdk.services.s3.IBucket
 
 /**
  * AWS 코드빌드
+ *
+ * 참고자료 : https://blog.3o3.co.kr/tech-korean-coding/
  * */
 class CdkCodeBuild : CdkInterface {
 
@@ -73,6 +75,21 @@ class CdkCodeBuild : CdkInterface {
 
     /** 코드빌드용 SG */
     var securityGroups: List<ISecurityGroup>? = null
+
+    /** 서브넷 타입 (기본: PRIVATE_WITH_EGRESS) */
+    var subnetType: SubnetType = SubnetType.PRIVATE_WITH_EGRESS
+
+    /** CodeBuild 컴퓨트 타입 (기본: MEDIUM) */
+    var computeType: ComputeType = ComputeType.MEDIUM
+
+    /** CodeBuild 프로젝트 설명 */
+    var description: String = "push -> build -> deploy"
+
+    /** S3 캐시 프리픽스 */
+    var cachePrefix: String = "codebuild_cache"
+
+    /** NodeJS 런타임 버전 (buildspec install.phase runtime-versions) */
+    var nodejsVersion: String = "latest"
 
     /**
      * 동시에 빌드 가능한 숫자.
@@ -143,23 +160,23 @@ class CdkCodeBuild : CdkInterface {
             ProjectProps.builder()
                 .projectName(logicalName)
                 .vpc(vpc)
-                .subnetSelection(SubnetSelection.builder().subnetType(SubnetType.PRIVATE_WITH_EGRESS).build())
+                .subnetSelection(SubnetSelection.builder().subnetType(subnetType).build())
                 .securityGroups(securityGroups)
                 .source(source)
-                .description("push -> build -> deploy")
+                .description(description)
                 .concurrentBuildLimit(concurrentBuildLimit)
                 .environment(
                     // https://docs.aws.amazon.com/codebuild/latest/userguide/available-runtimes.html
                     // node는 최신으로 개발 & java 는 컴파일할때 최신 버전(하위호환성 유지됨) 사용하면 됨
                     BuildEnvironment.builder()
                         .buildImage(buildImage)
-                        .computeType(ComputeType.MEDIUM) // react build 때문에 small 사용하면 안됨
+                        .computeType(computeType) // react build 때문에 small 사용하면 안됨
                         .environmentVariables(environment)
                         .build()
                 )
                 //.logging()
                 .role(role)
-                .cache(Cache.bucket(chacheBucket, BucketCacheOptions.builder().prefix("codebuild_cache").build()))
+                .cache(Cache.bucket(chacheBucket, BucketCacheOptions.builder().prefix(cachePrefix).build()))
                 .buildSpec(
                     /** 빌드스펙 구성에 순서가 있는지 확인필요 */
                     BuildSpec.fromObject(
@@ -180,7 +197,7 @@ class CdkCodeBuild : CdkInterface {
                                     /** 런타임을 지정하면 해당 토커를 커스텀 해주는듯? */
                                     "runtime-versions" to mapOf {
                                         "java" to javaVersion
-                                        "nodejs" to "latest"
+                                        "nodejs" to nodejsVersion
                                     }
                                     "run-as" to "root"
                                     "commands" to listOf(
@@ -189,7 +206,14 @@ class CdkCodeBuild : CdkInterface {
                                     )
                                 }
                                 "pre_build" to mapOf {
-                                    "commands" to emptyList<String>()
+                                    "commands" to listOf(
+                                        //# 1. yum을 이용해 한국어 관련 패키지를 설치합니다. (한글 class 파일 적용가능)
+                                        "yum install -y -q glibc-langpack-ko",
+                                        //# 2. 시스템 전체에 적용될 언어 환경 변수를 설정합니다.
+                                        "export LANG=ko_KR.UTF-8",   //# 기본 언어를 한국어로 설정
+                                        "export LANGUAGE=ko_KR:ko",  //# 언어 우선순위 설정
+                                        "export LC_ALL=ko_KR.UTF-8", //# 모든 로케일 카테고리를 한국어로 설정
+                                    )
                                 }
                                 "build" to mapOf {
                                     "commands" to gradleCmds

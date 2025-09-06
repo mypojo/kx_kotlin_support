@@ -26,6 +26,7 @@ suspend inline fun S3Client.putObjectMultipart(bucket: String, key: String, file
 
     check(splitMb > 0)
     check(splitMb <= 1024 * 5) { "1회당 업로드 크기는 최대 5GB 용량 지원" }
+    check(splitMb >= 5) { "1회당 업로드 크기는 최소 5MB 용량 지원" }
 
     val log = KotlinLogging.logger {}
 

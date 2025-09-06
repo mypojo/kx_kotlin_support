@@ -19,6 +19,9 @@ data class OkHttpResp(
     companion object {
 
         private val log = KotlinLogging.logger {}
+
+        /** 204 No Content 는 포함하지 않음  */
+        private val OK = setOf(200, 201, 202)
     }
 
     /** resp 스트림을 가져온다.  IO 작업이라서 별도 호출 */
@@ -48,7 +51,7 @@ data class OkHttpResp(
 
     /** 200 code일때만 */
     val ok: Boolean
-        get() = response.code == 200
+        get() = response.code in OK
 
     /** 이미지 등의 캐시에 사용됨 */
     val lastModified: String by lazy { response.headers[OkHttpUtil.HRADER_LAST_MODIFIED] ?: "" }

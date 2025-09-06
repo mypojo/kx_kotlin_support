@@ -49,8 +49,8 @@ class LambdaDispatcher {
         AwsEventBridgePublisher(),
         AwsSnsPublisher(),
         AwsSqsPublisher(),
-
         JobEventBridgePublisher(),
+        
         //==================================================== synch (런타임 직접 실행) ======================================================
         CommandDispatcher(),
         BatchStepDispatcher(),

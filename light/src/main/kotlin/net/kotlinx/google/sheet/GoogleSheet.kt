@@ -1,6 +1,7 @@
 package net.kotlinx.google.sheet
 
 import com.google.api.services.sheets.v4.Sheets
+import com.google.api.services.sheets.v4.model.Spreadsheet
 import com.google.api.services.sheets.v4.model.ValueRange
 import net.kotlinx.google.GoogleService
 import net.kotlinx.number.StringIntUtil
@@ -55,6 +56,24 @@ class GoogleSheet(service: GoogleService, val sheetId: String, val tabName: Stri
     fun Pair<Int, Int>?.toRange(): String {
         if (this == null) return ""
         return "${StringIntUtil.intToUpperAlpha(this.first)}:${this.second}"
+    }
+
+
+    companion object {
+
+        /** 모든 시트 이름 리턴 */
+        fun allTabNames(sheets: Sheets, sheetId: String): List<String> {
+            // Spreadsheet 전체 메타데이터 조회
+            val spreadsheet: Spreadsheet = sheets
+                .spreadsheets()
+                .get(sheetId)
+                .setFields("sheets.properties") // 필요한 부분만 가져오도록 제한
+                .execute()
+
+            // 시트 이름들 추출
+            return spreadsheet.sheets?.mapNotNull { it.properties?.title } ?: emptyList()
+        }
+
     }
 
 }

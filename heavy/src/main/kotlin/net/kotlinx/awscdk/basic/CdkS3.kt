@@ -94,7 +94,7 @@ class CdkS3 : CdkEnum {
     fun load(stack: Stack): CdkS3 {
         try {
             iBucket = Bucket.fromBucketName(stack, logicalName, logicalName)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             println(" -> [${stack.stackName}] object already loaded -> $logicalName")
         }
         return this

@@ -106,7 +106,7 @@ class Job(override val pk: String, override val sk: String) : DbItem {
     //==================================================== 공통 옵션 입력값 ======================================================
 
     /** JOB 옵션 (json형식). 해당 잡에서 필요한 설정/옵션 값을 입력. ex) 처리 타입, 시작 날짜 등등   */
-    var jobOption: GsonData = GsonData.empty()
+    var jobOption: GsonData = GsonData.obj()
 
     /**
      * 잡 옵션을 클래스로 매핑한경우 , 객체로 변경해서 리턴해줌.

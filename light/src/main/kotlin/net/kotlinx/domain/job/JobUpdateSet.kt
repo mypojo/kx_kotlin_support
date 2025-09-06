@@ -19,6 +19,7 @@ object JobUpdateSet {
      *  -> 이 정보는 callback 등에서 다시 로드함
      *  */
     val STATUS = setOf(
+        Job::updateTime,
         Job::jobStatus,
         Job::jobContext,
     ).map { it.name }

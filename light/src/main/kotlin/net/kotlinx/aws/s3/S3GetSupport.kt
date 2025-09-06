@@ -114,7 +114,7 @@ suspend fun S3Client.getObjectLines(bucket: String, key: String, charset: Charse
  * @see takeWhile -> 조건부 읽기 가능
  * 짧게 읽고 끊으면 , 읽음 만큼만 과금됨
  * */
-suspend fun S3Client.getObjectCsvFlow(bucket: String, key: String, reader: CsvReader = csvReader(), action: suspend (Flow<List<String>>) -> Unit) = this.getObject(
+suspend fun <T> S3Client.getObjectCsvFlow(bucket: String, key: String, reader: CsvReader = csvReader(), action: suspend (Flow<List<String>>) -> T): T = this.getObject(
     GetObjectRequest {
         this.bucket = bucket
         this.key = key

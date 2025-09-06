@@ -114,6 +114,8 @@ class SlackSimpleAlert : SlackMessage {
     /**
      * 본문 텍스트 - Code blocks
      * 링크 삽입 불가능함!! 주로 코드나 표, SQL 문구 등 표기용
+     *
+     * 코드블록 크기를 지정하는 방법은 없으며 권장하지 않음!! 주의!
      * */
     var body: List<String> = emptyList()
 

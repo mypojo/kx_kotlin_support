@@ -10,6 +10,7 @@ import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.okhttp.build
 import net.kotlinx.reflect.name
 import net.kotlinx.slack.msg.SlackSimpleAlert
+import net.kotlinx.string.toTextGrid
 import okhttp3.HttpUrl.Companion.toHttpUrl
 
 class SlackApp_메세지템플릿 : BeSpecHeavy() {
@@ -55,7 +56,16 @@ class SlackApp_메세지템플릿 : BeSpecHeavy() {
 //                }
             }
 
-            xThen("성공메세지 데모") {
+            Then("성공메세지 데모") {
+
+                val lines = listOf(
+                    arrayOf("1", "2025년09월02일(화) 14시50분55초", "dskim", "Merge remote-tracking branch 'origin/master'"),
+                    arrayOf("2", "2025년09월02일(화) 14시50분39초", "dskim", "SQS 재시도 로직 분리 및 테스트 수정- `sendSqs` 메서드 분리로 SQS 처리 로직 가독성 개선- `NvMasterDemoJobT.."),
+                    arrayOf("3", "2025년09월02일(화) 14시34분33초", "sin", "권한 디버깅"),
+                    arrayOf("4", "2025년09월02일(화) 14시06분51초", "sin", "권한 디버깅"),
+                )
+                val grid = listOf("sha", "Date", "Author", "Message").toTextGrid(lines)
+
                 val slackApp by koinLazy<SlackApp>()
                 val alert = SlackSimpleAlert {
                     channel = "#kx_alert"
@@ -70,8 +80,7 @@ class SlackApp_메세지템플릿 : BeSpecHeavy() {
                         "작업 xx 처리완료",
                     )
                     body = listOf(
-                        "처리건수 xx",
-                        "처리시간 xx",
+                        grid.text,
                     )
                 }
                 slackApp.send(alert)
