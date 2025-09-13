@@ -50,7 +50,7 @@ class LambdaDispatcher {
         AwsSnsPublisher(),
         AwsSqsPublisher(),
         JobEventBridgePublisher(),
-        
+
         //==================================================== synch (런타임 직접 실행) ======================================================
         CommandDispatcher(),
         BatchStepDispatcher(),
@@ -103,8 +103,8 @@ class LambdaDispatcher {
             }
         } catch (e: Throwable) {
             log.warn { "오류!! ${e.toSimpleString()} -> 입력이벤트 = $data" }
-            e.printStackTrace()
             bus.postEvent { LambdaDispatcherFailEvent(data, e) }
+            throw e  //SFN 등에서 명시적으로 실패(빨간줄)가 되도록 예외를 던진다. 예외가 던져지면 안되는 일부 로직(S3Logic)등은 따로 처리할것
         }
         return toMapConverter(result)
     }

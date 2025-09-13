@@ -79,6 +79,26 @@ suspend fun <IN, OUT> List<IN>.coroutine(maxConcurrency: Int = Int.MAX_VALUE, bl
     }
 }
 
+/**
+ * 간단한 코루틴 실행기 (인덱스 포함 버전)
+ * coroutineScope 를 사용해서, 예외 전파를 제한해준다
+ * 인라인 처리도 되지만 semaphore 때문에 별도로 뺐다
+ * */
+suspend fun <IN, OUT> List<IN>.coroutineIndexed(maxConcurrency: Int = Int.MAX_VALUE, block: suspend (i: Int, IN) -> OUT): List<OUT> {
+    val semaphore = Semaphore(maxConcurrency)
+    val list = this
+    return coroutineScope {
+        list.mapIndexed { index, input ->
+            async {
+                semaphore.withPermit {
+                    block(index, input)
+                }
+            }
+        }.awaitAll()
+    }
+}
+
+
 
 /** 간단 delay. */
 suspend fun Duration.delay() {

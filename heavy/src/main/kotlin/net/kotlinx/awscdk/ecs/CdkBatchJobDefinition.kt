@@ -51,6 +51,7 @@ class CdkBatchJobDefinition(
      * */
     var command: List<String> = listOf(
         "Ref::${BatchUtil.BATCH_ARGS01}",
+        "Ref::${BatchUtil.BATCH_ARGS02}",
     )
 
     /** 디폴트로 12시간. 프로젝트에 따라 조절할거시 */

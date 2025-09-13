@@ -14,6 +14,11 @@ object BatchUtil {
      * */
     const val BATCH_ARGS01 = "jobOption01"
 
+    /**
+     * 두번째 인자. SFN 등에서 사용됨
+     * */
+    const val BATCH_ARGS02 = "jobOption02"
+
 //    /**
 //     * 잡 옵션 -> jobOption01 과 머지됨.
 //     * ex) sfn에서 AWS BATCH 싦행시 동적으로 옵션 입력으로 사용

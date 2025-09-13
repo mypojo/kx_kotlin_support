@@ -96,6 +96,7 @@ class BeanTest : BeSpecLog() {
             )
 
             Then("객체 -> csv") {
+                println(datas.map { Bean(it).toList() })
                 file.writeCsvLines(datas.map { Bean(it).toList() })
                 file.length() shouldBeGreaterThan 10
             }

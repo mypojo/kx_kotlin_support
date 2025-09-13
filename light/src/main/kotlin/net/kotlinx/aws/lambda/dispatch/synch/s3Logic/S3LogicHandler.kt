@@ -18,17 +18,19 @@ import net.kotlinx.file.unGzip
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.koin.Koins.koinOrCheck
+import net.kotlinx.reflect.name
 import net.kotlinx.time.TimeStart
 import java.io.File
 
 /**
- * S3 경로 입력에 반응하는 핸들러. (커스텀 입력 or SFN 자동실행)
+ * S3 경로 입력에 반응해서 정해진 처리를 수행하는 핸들러. (커스텀 입력 or SFN 자동실행)
  * 크롤링, API 호출 등등 모든 실제 로직이 여기서 실행됨
  * 개발 편의상 모든 입력은 S3 으로 통일했음 (돈 얼마 안함. 천번 호출해야 $0.0045 정도 / S3 삭제로 진행완료 판단)
  *
  * #1 S3 파일을 읽고
  * #2 지정된 로직을 실행하고
- * #3 결과를 S3에 업로드
+ * #3 결과를 S3에 업로드  <-- 중요
+ *
  *  */
 class S3LogicHandler {
 
@@ -55,7 +57,7 @@ class S3LogicHandler {
     /** 직접 호출 */
     suspend fun execute(input: S3LogicInput): S3LogicOutput {
         val s3Logic = koinOrCheck<S3Logic>(input.logicId)
-        log.debug { " -> ${s3Logic.id} 실행" }
+        log.debug { " -> ${s3Logic.id} (${s3Logic::class.name()}) 실행" }
         return s3Logic.runtime.executeLogic(input)
     }
 
@@ -73,7 +75,7 @@ class S3LogicHandler {
                 try {
                     getObjectDownload(workBucket, s3InputDataKey, localInput)
                     localInput.unGzip().readText()
-                } catch (e: NoSuchKey) {
+                } catch (_: NoSuchKey) {
                     null
                 }
             }
@@ -90,27 +92,30 @@ class S3LogicHandler {
         val s3LogicOutput = try {
             execute(inputData)
         } catch (e: Exception) {
+            //예외가 발생하는경우, 이벤트만 쏘고 무시함
             eventBus.post(S3LogicFailEvent(path, inputData, e))
             return
         }
 
-        val resultJson = GsonData.obj {
-            put("sfn_id", path.pathId)
-            put("file_name", path.fileName)
-            put("total_size", inputData.datas.size)
-            put("total_interval", start.interval())  //전체 걸린시간
-            put("input", s3LogicOutput.input)
-            put("output", s3LogicOutput.result)
-        }
+        if (s3LogicOutput.write) {
+            val resultJson = GsonData.obj {
+                put("sfn_id", path.pathId)
+                put("file_name", path.fileName)
+                put("total_size", inputData.datas.size)
+                put("total_interval", start.interval())  //전체 걸린시간
+                put("input", s3LogicOutput.input)
+                put("output", s3LogicOutput.result)
+            }
 
-        val outFile =  File(workDir, "${path.fileName}.json").run {
-            writeText(resultJson.toString())
-            gzip()
-        }
+            val outFile = File(workDir, "${path.fileName}.json").run {
+                writeText(resultJson.toString())
+                gzip()
+            }
 
-        val outputKey = "${path.outputDir}${path.pathId}/${outFile.name}"
-        log.trace { "결과파일 생성.. $outputKey" }
-        aws.s3.with { putObject(workBucket, outputKey, outFile) }
+            val outputKey = "${path.outputDir}${path.pathId}/${outFile.name}"
+            log.trace { "결과파일 생성.. $outputKey" }
+            aws.s3.with { putObject(workBucket, outputKey, outFile) }
+        }
 
         log.trace { "입력파일 삭제.." }
         aws.s3.with {
@@ -119,7 +124,7 @@ class S3LogicHandler {
                 this.key = path.s3InputDataKey
             }
         }
-        log.info { "데이터 처리성공. ${path.fileName} ${inputData.datas.size}건 -> $start" }
+        log.info { "데이터 처리(쓰기${s3LogicOutput.write})성공. ${path.fileName}  / 입력데이터 ${inputData.datas.size}건 -> $start" }
     }
 
 }

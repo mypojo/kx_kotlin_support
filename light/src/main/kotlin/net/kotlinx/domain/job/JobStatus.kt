@@ -49,8 +49,8 @@ enum class JobStatus(val desc: String) {
     FAILED("실패"),
 
     /**
-     * 사용자의 (예약중 상태에서) 취소
-     * SCHEDULED -> CANCELED
+     * #1 사용자의 예약 취소 ex) SCHEDULED -> CANCELED
+     * #2 사용자의 강제 취소 ex) AWS BATCH or SFN의 강제 인터럽트
      */
     CANCELED("취소");
 

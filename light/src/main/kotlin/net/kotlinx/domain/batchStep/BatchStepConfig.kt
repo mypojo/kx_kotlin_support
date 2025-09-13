@@ -6,7 +6,6 @@ import aws.sdk.kotlin.services.sfn.model.DescribeExecutionResponse
 import kotlinx.coroutines.flow.toList
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
-import net.kotlinx.aws.lambda.dispatch.LambdaDispatchLogic
 import net.kotlinx.aws.s3.deleteDir
 import net.kotlinx.aws.s3.s3
 import net.kotlinx.aws.sfn.sfn
@@ -47,7 +46,7 @@ class BatchStepConfig {
     fun consoleLink(sfnId: String): String = aws.awsConfig.sfnConfig.consoleLink(stateMachineName, sfnId)
 
     /** 미리 준비된 로직들 */
-    var logics: List<LambdaDispatchLogic> = listOf(
+    var logics: List<BatchStepLogic> = listOf(
         StepStart(),
         StepList(),
         StepEnd(),

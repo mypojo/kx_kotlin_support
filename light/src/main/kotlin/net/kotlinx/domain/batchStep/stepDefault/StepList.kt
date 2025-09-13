@@ -7,7 +7,6 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.lambda.LambdaUtil
-import net.kotlinx.aws.lambda.dispatch.LambdaDispatchLogic
 import net.kotlinx.aws.lambda.dispatch.synch.S3LogicDispatcher
 import net.kotlinx.aws.lambda.invokeAsynch
 import net.kotlinx.aws.lambda.lambda
@@ -16,6 +15,7 @@ import net.kotlinx.aws.with
 import net.kotlinx.calculator.ProgressData
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.domain.batchStep.BatchStepConfig
+import net.kotlinx.domain.batchStep.BatchStepLogic
 import net.kotlinx.domain.batchStep.BatchStepParameter
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.serial.SerialJsonSet
@@ -33,7 +33,7 @@ import net.kotlinx.time.TimeStart
  * 1. 가능하면 쓰지말고
  * 2. 써야 한다면 list 구할때 해시 분할하게 작업할것!  ex) 10개중  1,3,5 ->2,4,6  이런식으로 처리해야 중복 방지가능
  *  */
-class StepList : LambdaDispatchLogic {
+class StepList : BatchStepLogic {
 
     private val log = KotlinLogging.logger {}
 

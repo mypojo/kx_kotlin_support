@@ -2,6 +2,7 @@ package net.kotlinx.aws.lambda.dispatch.synch.s3Logic
 
 /**
  * S3에 결과 디렉토리 변환
+ * 경로에 SFN ID 가 반드시 있어야 한다
  * */
 data class S3LogicPath(
     /** 전달된 S3 path */

@@ -39,7 +39,7 @@ class S3LogicFailEventDefaultListener {
         if (log.isDebugEnabled) {
             event.e.printStackTrace()
         }
-        log.warn { "###### 데이터 처리 실패!! 알람 보내지 않고 넘어감 -> ${event.path.fileName} / ${event.e.toSimpleString()}" }
+        log.warn { "###### 데이터 처리 실패!! 알람 보내지 않고 넘어감 -> ${event.path.s3InputDataKey} / ${event.path.pathId} -> ${event.e.toSimpleString()}" }
 
         //ex) path =  upload/sfnBatchModuleInput/batchTaskExecutor-job.kwdDemoMapJob.49610001/00000.txt
         //ex) pathId = batchTaskExecutor-job.kwdDemoMapJob.49610001

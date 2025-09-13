@@ -35,6 +35,9 @@ class CdkSfnLambda(
      * */
     var allRetry: Pair<Number, Duration>? = null
 
+    /** 한글로 넣어도됨 */
+    var stateName: String by default { name }
+
     /** 표시되는 이름 */
     var comment: String by default { name }
 

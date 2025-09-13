@@ -61,6 +61,9 @@ class Bean(val data: Any) {
     /** 리스트 변환 */
     fun toList(): List<Any?> = ordered.map { props[it]!!.getter.call(data) }
 
+    /** 라인으로 변환 */
+    fun toLine(): List<String> = toList().map { it?.toString() ?: "" }
+
     /** 어레이로 변환 (편의용도) */
     fun toArray(): Array<Any?> = toList().toTypedArray<Any?>()
 

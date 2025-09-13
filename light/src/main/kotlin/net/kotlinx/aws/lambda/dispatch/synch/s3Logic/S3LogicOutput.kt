@@ -9,10 +9,12 @@ import net.kotlinx.string.print
  * input의 data 와 1:1로 매핑된다
  * */
 data class S3LogicOutput(
-    /** 입력값 json */
+    /** 입력값 json -> 결과 json에는 이게 입력됨 */
     val input: GsonData,
     /** 결과값 json */
     val result: GsonData,
+    /** 결과를 S3로 업로드 할지 여부 */
+    val write: Boolean = true,
 ) {
 
     /** 테스트 등의 간단 출력용 */
@@ -25,6 +27,10 @@ data class S3LogicOutput(
 
     companion object {
         private val log = KotlinLogging.logger {}
+
+        /** 빈값 리턴 */
+        fun empty(): S3LogicOutput = S3LogicOutput(GsonData.empty(), GsonData.empty(), false)
+
     }
 
 }

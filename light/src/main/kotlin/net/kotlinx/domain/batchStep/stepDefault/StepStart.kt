@@ -5,12 +5,8 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsInstanceMetadata
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.dynamo.DynamoUtil
-import net.kotlinx.aws.lambda.dispatch.LambdaDispatchLogic
 import net.kotlinx.aws.lambda.dispatch.synch.S3LogicDispatcher
-import net.kotlinx.domain.batchStep.BatchStepCallback
-import net.kotlinx.domain.batchStep.BatchStepConfig
-import net.kotlinx.domain.batchStep.BatchStepMode
-import net.kotlinx.domain.batchStep.BatchStepParameter
+import net.kotlinx.domain.batchStep.*
 import net.kotlinx.domain.job.Job
 import net.kotlinx.domain.job.JobExeFrom
 import net.kotlinx.domain.job.JobRepository
@@ -26,7 +22,7 @@ import java.util.concurrent.TimeUnit
 /**
  * 공통  처리
  *  */
-class StepStart : LambdaDispatchLogic {
+class StepStart : BatchStepLogic {
 
     private val log = KotlinLogging.logger {}
 

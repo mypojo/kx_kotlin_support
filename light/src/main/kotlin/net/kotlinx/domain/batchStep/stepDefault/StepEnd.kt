@@ -5,9 +5,9 @@ import com.lectra.koson.obj
 import mu.KotlinLogging
 import net.kotlinx.aws.athena.AthenaModule
 import net.kotlinx.aws.lambda.LambdaUtil
-import net.kotlinx.aws.lambda.dispatch.LambdaDispatchLogic
 import net.kotlinx.domain.batchStep.BatchStepCallback
 import net.kotlinx.domain.batchStep.BatchStepConfig
+import net.kotlinx.domain.batchStep.BatchStepLogic
 import net.kotlinx.domain.batchStep.BatchStepParameter
 import net.kotlinx.domain.job.Job
 import net.kotlinx.domain.job.JobRepository
@@ -24,7 +24,7 @@ import kotlin.time.Duration.Companion.seconds
 
 
 /** 공통 처리 */
-class StepEnd : LambdaDispatchLogic {
+class StepEnd : BatchStepLogic {
 
     private val log = KotlinLogging.logger {}
 
