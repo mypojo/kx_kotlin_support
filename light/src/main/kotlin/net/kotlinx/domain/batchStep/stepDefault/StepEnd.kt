@@ -5,21 +5,14 @@ import com.lectra.koson.obj
 import mu.KotlinLogging
 import net.kotlinx.aws.athena.AthenaModule
 import net.kotlinx.aws.lambda.LambdaUtil
-import net.kotlinx.domain.batchStep.BatchStepCallback
 import net.kotlinx.domain.batchStep.BatchStepConfig
 import net.kotlinx.domain.batchStep.BatchStepLogic
 import net.kotlinx.domain.batchStep.BatchStepParameter
-import net.kotlinx.domain.job.Job
 import net.kotlinx.domain.job.JobRepository
-import net.kotlinx.domain.job.JobStatus
-import net.kotlinx.domain.job.JobUpdateSet
 import net.kotlinx.json.gson.GsonData
-import net.kotlinx.json.koson.toGsonData
-import net.kotlinx.koin.Koins
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.retry.RetryTemplate
 import net.kotlinx.time.toTimeString
-import java.time.LocalDateTime
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -46,10 +39,10 @@ class StepEnd : BatchStepLogic {
             throw IllegalStateException("StepEnd 감지 : 처리되지 못한 데이터파일 ${inputDatas.size}건")
         }
 
-        val job = jobRepository.getItem(Job(option.jobPk, option.jobSk))!!
-
-        log.trace { "BatchStepCallback 이 등록되어있다면 실행" }
-        Koins.koinOrNull<BatchStepCallback>(job.pk)?.execute(option, job)
+//        val job = jobRepository.getItem(Job(option.jobPk, option.jobSk))!!
+//
+//        log.trace { "BatchStepCallback 이 등록되어있다면 실행" }
+//        Koins.koinOrNull<BatchStepCallback>(job.pk)?.execute(option, job)
 
         val datas = retry.withRetry {
             athenaModule.readAll {
@@ -89,13 +82,13 @@ class StepEnd : BatchStepLogic {
             }
         }
 
-        job.apply {
-            jobStatus = JobStatus.SUCCEEDED
-            endTime = LocalDateTime.now()
-            jobContext = resultJson.toGsonData()
-            jobRepository.updateItem(this, JobUpdateSet.END)
-            log.debug { "job [${this.toKeyString()}] 로그 update" }
-        }
+//        job.apply {
+//            jobStatus = JobStatus.SUCCEEDED
+//            endTime = LocalDateTime.now()
+//            jobContext = resultJson.toGsonData()
+//            jobRepository.updateItem(this, JobUpdateSet.END)
+//            log.debug { "job [${this.toKeyString()}] 로그 update" }
+//        }
 
         return resultJson
     }

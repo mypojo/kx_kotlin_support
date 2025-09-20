@@ -3,6 +3,8 @@ package net.kotlinx.aws.sfn
 import aws.sdk.kotlin.services.sfn.model.ExecutionStatus
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.AwsNaming
+import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -11,7 +13,7 @@ import net.kotlinx.string.print
 
 class SfnSupportKtTest : BeSpecHeavy() {
 
-    private val aws by lazy { koin<AwsClient>(findProfile28) }
+    private val aws by lazy { koin<AwsClient>(findProfile49) }
 
     init {
         initTest(KotestUtil.PROJECT)
@@ -26,6 +28,14 @@ class SfnSupportKtTest : BeSpecHeavy() {
                 val target = lists.executions.first()
                 val desc = aws.sfn.describeExecution(target.executionArn)
                 log.debug { "로드된 desc : $desc" }
+            }
+
+            Then("SFN 상세조회") {
+                val executionArn = aws.awsConfig.sfnConfig.executionArn("${findProfile49}-batchStep-dev", "batchTaskExecutor-job.kwdDemoMapJob.10450001")
+                val desc = aws.sfn.describeExecution(executionArn)
+                val result = desc.output!!.toGsonData()
+                log.info { "desc.output ${result.toPreety()}" }
+                log.info { "desc.output ${result[AwsNaming.OPTION]["stepEnd"]["body"].toPreety()}" }
             }
         }
     }

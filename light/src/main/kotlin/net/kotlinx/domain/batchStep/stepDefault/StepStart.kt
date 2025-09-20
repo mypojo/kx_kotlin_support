@@ -3,21 +3,17 @@ package net.kotlinx.domain.batchStep.stepDefault
 import com.lectra.koson.obj
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsInstanceMetadata
-import net.kotlinx.aws.AwsNaming
-import net.kotlinx.aws.dynamo.DynamoUtil
 import net.kotlinx.aws.lambda.dispatch.synch.S3LogicDispatcher
-import net.kotlinx.domain.batchStep.*
-import net.kotlinx.domain.job.Job
-import net.kotlinx.domain.job.JobExeFrom
+import net.kotlinx.domain.batchStep.BatchStepConfig
+import net.kotlinx.domain.batchStep.BatchStepLogic
+import net.kotlinx.domain.batchStep.BatchStepMode
+import net.kotlinx.domain.batchStep.BatchStepParameter
 import net.kotlinx.domain.job.JobRepository
-import net.kotlinx.domain.job.JobStatus
 import net.kotlinx.json.gson.GsonData
-import net.kotlinx.koin.Koins
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.regex.RegexSet
 import net.kotlinx.regex.retainFrom
 import java.time.LocalDateTime
-import java.util.concurrent.TimeUnit
 
 /**
  * 공통  처리
@@ -42,25 +38,25 @@ class StepStart : BatchStepLogic {
             }
         }
 
-        //context 정보를 저장하기 위해서 필요함
-        val sfnContextLog = Job(option.jobPk, option.jobSk) {
-            jobStatus = JobStatus.RUNNING
-            reqTime = LocalDateTime.now()
-            jobStatus = JobStatus.RUNNING
-            ttl = DynamoUtil.ttlFromNow(TimeUnit.DAYS, 7 * 2)
-            instanceMetadata = this@StepStart.instanceMetadata
-
-            //파싱값 입력 4개
-            //jobOption = input[AwsNaming.OPTION].str!!.toGsonData()
-            jobOption = input[AwsNaming.OPTION]
-            jobExeFrom = JobExeFrom.SFN
-            sfnId = option.sfnId
-        }
-        jobRepository.putItem(sfnContextLog)
-        log.debug { "job [${sfnContextLog.toKeyString()}] 로그 insert" }
-
-        log.trace { "BatchStepCallback 이 등록되어있다면 실행" }
-        Koins.koinOrNull<BatchStepCallback>(sfnContextLog.pk)?.execute(option, sfnContextLog)
+//        //context 정보를 저장하기 위해서 필요함
+//        val sfnContextLog = Job(option.jobPk, option.jobSk) {
+//            jobStatus = JobStatus.RUNNING
+//            reqTime = LocalDateTime.now()
+//            jobStatus = JobStatus.RUNNING
+//            ttl = DynamoUtil.ttlFromNow(TimeUnit.DAYS, 7 * 2)
+//            instanceMetadata = this@StepStart.instanceMetadata
+//
+//            //파싱값 입력 4개
+//            //jobOption = input[AwsNaming.OPTION].str!!.toGsonData()
+//            jobOption = input[AwsNaming.OPTION]
+//            jobExeFrom = JobExeFrom.SFN
+//            sfnId = option.sfnId
+//        }
+//        jobRepository.putItem(sfnContextLog)
+//        log.debug { "job [${sfnContextLog.toKeyString()}] 로그 insert" }
+//
+//        log.trace { "BatchStepCallback 이 등록되어있다면 실행" }
+//        Koins.koinOrNull<BatchStepCallback>(sfnContextLog.pk)?.execute(option, sfnContextLog)
 
         return StepStartContext(
             LocalDateTime.now(),

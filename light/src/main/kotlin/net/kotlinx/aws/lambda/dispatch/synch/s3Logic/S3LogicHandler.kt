@@ -124,7 +124,7 @@ class S3LogicHandler {
                 this.key = path.s3InputDataKey
             }
         }
-        log.info { "데이터 처리(쓰기${s3LogicOutput.write})성공. ${path.fileName}  / 입력데이터 ${inputData.datas.size}건 -> $start" }
+        log.info { "데이터 처리(s3_upolad:${s3LogicOutput.write})성공. ${path.fileName}  / 입력데이터 ${inputData.datas.size}건 -> $start" }
     }
 
 }

@@ -50,6 +50,8 @@ class JobLocalExecutor() {
 
             //==============  결과 마킹 ===================
             when (job.jobStatus) {
+
+                /** RUNNING 그대로 끝나는경우 성공처리  */
                 JobStatus.RUNNING -> {
                     job.jobStatus = JobStatus.SUCCEEDED
                     job.endTime = LocalDateTime.now()
@@ -58,12 +60,14 @@ class JobLocalExecutor() {
                     eventBus.post(JobSuccessEvent(job))
                 }
 
-                JobStatus.PROCESSING -> {
+                /** 특수 상태로 리턴되면, 상태만 업데이트  */
+                in setOf(JobStatus.PROCESSING, JobStatus.CANCELED, JobStatus.FAILED) -> {
+                    job.updateTime = LocalDateTime.now()
                     jobRepository.updateItem(job, JobUpdateSet.STATUS)
                 }
 
                 else -> {
-                    throw IllegalStateException("JobStatus is ${job.jobStatus} but not RUNNING or PROCESSING")
+                    throw IllegalStateException("JobStatus is ${job.jobStatus} but not RUNNING or PROCESSING or CANCELED or FAILED")
                 }
             }
         } catch (e: Throwable) {
@@ -90,7 +94,7 @@ class JobLocalExecutor() {
      * @param block job에 대한 전처리
      *  */
     suspend fun resume(jobPk: String, jobSk: String, block: suspend (Job) -> Unit = {}) {
-        val job = jobRepository.getItem(Job(jobPk, jobSk))!!
+        val job = jobRepository.getItem(Job(jobPk, jobSk)) ?: throw IllegalArgumentException("resume -> 잡이 존재하지 않습니다. $jobPk / $jobSk")
         block(job)
         val jobService = JobDefinitionRepository.findById(job.pk).jobClass.newInstance()
         try {
@@ -101,9 +105,8 @@ class JobLocalExecutor() {
         } catch (e: Exception) {
             log.warn { "onProcessComplete 처리중 예외! -> ${e.toSimpleString()}" }
             e.printStackTrace()
-            this.resumeFail(job, "onProcessComplete 처리중 예외! -> ${e.toSimpleString()}")
+            this.resumeFail(job, "onProcessComplete 처리중 예외! -> ${e.toSimpleString()}", JobStatus.FAILED)
         }
-
     }
 
 
@@ -119,15 +122,19 @@ class JobLocalExecutor() {
         return job.toKeyString()
     }
 
-    suspend fun resumeFail(jobPk: String, jobSk: String, jobErrMsg: String, block: suspend (Job) -> Unit = {}): String {
+    /**
+     * 실패 베이스로 처리함. 상태 변경가능
+     * ex) Cancel
+     *  */
+    suspend fun resumeFail(jobPk: String, jobSk: String, jobErrMsg: String, status: JobStatus = JobStatus.FAILED, block: suspend (Job) -> Unit = {}): String {
         val job = jobRepository.getItem(Job(jobPk, jobSk))!!
         block(job)
-        return resumeFail(job, jobErrMsg)
+        return resumeFail(job, jobErrMsg, status)
     }
 
     /** resume 내 실패처리 */
-    suspend fun resumeFail(job: Job, jobErrMsg: String): String {
-        job.jobStatus = JobStatus.FAILED
+    suspend fun resumeFail(job: Job, jobErrMsg: String, status: JobStatus): String {
+        job.jobStatus = status
         job.endTime = LocalDateTime.now()
         job.jobErrMsg = jobErrMsg
         jobRepository.updateItem(job, JobUpdateSet.ERROR)

@@ -41,7 +41,7 @@ class AwsEventBridgeListener {
     fun onEvent(event: EventBridgeSfnStatus) {
         SlackMessageSenders.Alert.send {
             workDiv = EventBridgeSfnStatus::class.name()
-            descriptions = listOf(event.sfnName)
+            descriptions = listOf(event.stateMachineName)
             body = listOf(event.cause.abbr(AwsSnsListener.BODY_LIMIT))
         }
     }

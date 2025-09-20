@@ -1,10 +1,7 @@
 package net.kotlinx.aws.sfn
 
 import aws.sdk.kotlin.services.sfn.*
-import aws.sdk.kotlin.services.sfn.model.DescribeExecutionResponse
-import aws.sdk.kotlin.services.sfn.model.ExecutionStatus
-import aws.sdk.kotlin.services.sfn.model.ListActivitiesResponse
-import aws.sdk.kotlin.services.sfn.model.ListExecutionsResponse
+import aws.sdk.kotlin.services.sfn.model.*
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.awsConfig
 import net.kotlinx.aws.regist
@@ -54,4 +51,13 @@ suspend fun SfnClient.describeExecution(executionArn: String): DescribeExecution
 suspend fun SfnClient.describeExecution(stateMachineName: String, sfnId: String): DescribeExecutionResponse {
     val awsConfig = this.awsConfig
     return describeExecution(awsConfig.sfnConfig.executionArn(stateMachineName, sfnId))
+}
+
+/** 인라인 간단 중지 (stateMachineName, sfnId로 실행 ARN 구성) */
+suspend fun SfnClient.stopExecution(stateMachineName: String, sfnId: String, cause: String? = null): StopExecutionResponse {
+    val awsConfig = this.awsConfig
+    return this.stopExecution {
+        this.executionArn = awsConfig.sfnConfig.executionArn(stateMachineName, sfnId)
+        this.cause = cause
+    }
 }

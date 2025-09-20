@@ -37,6 +37,7 @@ object IamPolicyAdminUtil {
         "sts:*",
         "ecr:*",
         "firehose:*",
+        "secretsmanager:*", //퀵사이트 등에서 사용 ex) 구글시트 등록시 비밀키를 시크릿매니저에 등록
         "cloudfront:*", //클라우드프론트 CICD 등 배포할때 사용
         "states:*", //sfn.. 애네 이름에 일관성이 없음.
         "events:*", //이벤트브릿지

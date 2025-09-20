@@ -8,6 +8,7 @@ import net.kotlinx.domain.job.Job
  *
  * job pk로 콜백이 등록되어있을경우 StepStart 등이 끝날때 호출됨
  * */
+@Deprecated("필요없다..")
 interface BatchStepCallback {
 
     suspend fun execute(option: BatchStepOption, job: Job)

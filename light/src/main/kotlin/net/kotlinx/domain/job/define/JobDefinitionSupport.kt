@@ -1,5 +1,6 @@
 package net.kotlinx.domain.job.define
 
+import net.kotlinx.delegate.MapAttributeDelegateNull
 import net.kotlinx.string.abbr
 import net.kotlinx.string.toTextGridPrint
 import org.koin.core.module.Module
@@ -17,3 +18,9 @@ fun List<JobDefinition>.printSimple() {
         this.map { arrayOf(it.jobPk, it.name, it.authors.firstOrNull()?.name, it.descs.joinToString(",").abbr(100)) }
     }
 }
+
+/**
+ * SFN 사용시 stateMachineName
+ * job 에서 SFN을 지원하기때문에 여기도 지원
+ *  */
+var JobDefinition.stateMachineName: String? by MapAttributeDelegateNull()
