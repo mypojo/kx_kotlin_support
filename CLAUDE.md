@@ -1,42 +1,49 @@
-# CLAUDE.md
+# 공통
+- 처리 과정, 플랜, 상세 단계 설명, 오류 메세지, 로그 예시 등 모든 문서화 텍스트는 한글로 작성해줘
+    - 특별히 정해진 표준 용어(예: AWS 리소스명 등)만 예외적으로 영어를 사용 가능해.
+- 작업시 var 나 mutableListOf 사용을 최소화 하는, 코틀린 스러운 코드로 만들어줘
+- 예외처리
+    - 모든 예외는 항상 처리 되어야해
+    - 꼭 필요한경우가 아닌경우 예외를 catch 해서 로깅후 무시하는 코드를 넣지 말아줘
+- 작업후 IDE의 컴파일 에러만 확인해줘. 별도의 gradle 명령은 실행하지 말아줘.
 
-- This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-- 상세 코드 가이드라인은 .junie/guidelines.md 파일을 를 참고해줘
-- 처리가 완료되면 슬렉으로 간단하게 완료 메세지를 전달해줘 
-  - 채널 이름 = 'ai-콜백'
-- 테스트 코드는 작성만 해줘. 실행해볼 필요는 없어
-- 모든 결과나 프로세스 과정 등의 텍스트는 가능하면 한글을 사용해줘
 
-## Architecture Overview
-This is a multi-module Kotlin project that provides utility libraries for AWS services, Spring Boot applications, and general Kotlin development. The project is structured as follows:
+# 백엔드 공통
+- 가능하면 클래스당 1개의 파일을 생성해줘
+- 확장 함수 기능을 추가할때는 xxxSupport.kt 이런식으로 접미어가 담긴 파일을 만든 후, 거기에 추가해ㅃ줘
 
-### Module Structure
-- **core**: Minimal dependencies utility module with basic Kotlin extensions, collection utilities, time handling, CSV processing, and validation
-- **light**: AWS Lambda-focused module extending core with AWS SDK utilities (DynamoDB, S3, SQS, etc.), external API integrations (Google, Slack, GitHub), and optimized for cold start performance
-- **heavy**: Spring Boot module with JPA/Hibernate support, batch processing, security, and comprehensive web application features
-- **ksp**: Kotlin Symbol Processing annotation processors
-- **work**: Local development and testing utilities with notebook support
+## 로거
 
-### Key Technologies
-- **Kotlin**: Primary language with coroutines, serialization, and multiplatform support
-- **Gradle**: Build system using Kotlin DSL with version catalog management via refreshVersions
-- **Spring Boot**: Web framework (heavy module only)
-- **AWS SDK**: Comprehensive AWS service integration
-- **Kotest**: Testing framework with snapshot versions
-- **Koin**: Dependency injection
+로거 설정시 아래처럼 companion object /  KotlinLogging 으로 설정
+```kotlin
+companion object {
+    private val log = KotlinLogging.logger {}
+}
+```
 
-### Key Patterns
-- **DSL-heavy code**: Extensive use of Kotlin DSL for AWS CDK, configuration builders, and domain-specific languages
-- **Flow-based processing**: Heavy use of Kotlin Flow for data streaming and CSV processing
-- **Resource management**: Custom resource handling with lazy loading and AWS S3 integration
-- **Extension functions**: Extensive use of extension functions for enhancing existing APIs
-- **Coroutine-first**: Async programming with structured concurrency patterns
+로그 쓰기시 항상 아래처럼 {} 를 사용
 
-### AWS Integration
-The project provides extensive AWS service wrappers including:
-- **Kinesis**: Real-time data processing with worker/task patterns
-- **CDK**: Infrastructure as code with Kotlin DSL
-- **ECS**: Blue-green deployment support
-- **Step Functions**: State machine orchestration
-- **Lambda**: Optimized cold start handling
-- **DynamoDB**: Enhanced query support and session management
+```kotlin
+log.warn { "Failed to put ${remainingRecords.size} records to Kinesis after $maxRetries retries." }
+```
+
+## AWS SDK
+단일 리스팅이 아닌, 전체를 가져올때는 SDK에서 기본 제공되는 Paginated Flow 를 사용후 Flow로 리턴해줘
+CognitoSupport.kt 참고해
+```kotlin
+listUsersPaginated { this.userPoolId = userPoolId }.flatMapConcat { it.users!!.asFlow() }
+```
+
+## retrofit2 생성
+- package net.kotlinx.dooray.drive 를 참고해줘
+- rest API 1건당 1개의 인터페이스를 만들고, 그안에 관련 데이터 객체를 생성해줘
+- 모든 인터페이스와 데이터 객체는 같은 접미어를 가져야해
+```kotlin
+listUsersPaginated { this.userPoolId = userPoolId }.flatMapConcat { it.users!!.asFlow() }
+```
+
+## springframework
+스프링에서 delete 등의 처리 완료후 성공 메세지 리턴에는 ApiResponse 를 리턴
+```kotlin
+return ApiResponse(true)
+```

@@ -5,13 +5,12 @@
 - 예외처리
     - 모든 예외는 항상 처리 되어야해
     - 꼭 필요한경우가 아닌경우 예외를 catch 해서 로깅후 무시하는 코드를 넣지 말아줘
-- 처리가 완료되면 슬렉으로 간단하게 완료 메세지를 전달해줘
-  - 채널 이름 = 'ai-콜백'
+- 작업후 IDE의 컴파일 에러만 확인해줘. 별도의 gradle 명령은 실행하지 말아줘.
 
 
 # 백엔드 공통
-- 가능하면 클래스당 1개의 파일을 생성해줘 
-- 확장 함수 기능을 추가할때는 xxxSupport.kt 이런식으로 접미어가 담긴 파일을 만든 후, 거기에 추가해줘
+- 가능하면 클래스당 1개의 파일을 생성해줘
+- 확장 함수 기능을 추가할때는 xxxSupport.kt 이런식으로 접미어가 담긴 파일을 만든 후, 거기에 추가해ㅃ줘
 
 ## 로거
 
@@ -38,7 +37,7 @@ listUsersPaginated { this.userPoolId = userPoolId }.flatMapConcat { it.users!!.a
 ## retrofit2 생성
 - package net.kotlinx.dooray.drive 를 참고해줘
 - rest API 1건당 1개의 인터페이스를 만들고, 그안에 관련 데이터 객체를 생성해줘
-- 모든 인터페이스와 데이터 객체는 같은 접미어를 가져야해  
+- 모든 인터페이스와 데이터 객체는 같은 접미어를 가져야해
 ```kotlin
 listUsersPaginated { this.userPoolId = userPoolId }.flatMapConcat { it.users!!.asFlow() }
 ```
@@ -46,7 +45,7 @@ listUsersPaginated { this.userPoolId = userPoolId }.flatMapConcat { it.users!!.a
 ## springframework
 스프링에서 delete 등의 처리 완료후 성공 메세지 리턴에는 ApiResponse 를 리턴
 ```kotlin
-return ApiResponse(true)
+return ApiResponse(true,"xx가 저장됨")
 ```
 
 # 프로젝트 상세
