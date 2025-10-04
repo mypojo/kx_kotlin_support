@@ -24,6 +24,8 @@ suspend fun BatchStepExecutor.startExecution(op: BatchTaskSfn) {
     op.job.jobStatus = JobStatus.PROCESSING
 
     //명시적으로 DDB 입력값을 기준으로 리트라이 인지 아닌지를 구분함
+    //주의!! 이러한 리트라이는 범용 크롤링처럼, 미리 데이터를 업로드후 SFN을 실행하는 로직에서만 유효하다 (데이터 경로에 sfnId이 포함되어 있어서 재사용 해야함)
+    //매번 유효한 데이터를 체크하는 커스텀 로직에서는 각각 다른 sfnId를 생성해야함
     if (op.job.sfnId == null) {
         //==================================================== 첫 시도 ======================================================
         val sfnId = op.parameter.option.sfnId
@@ -35,6 +37,7 @@ suspend fun BatchStepExecutor.startExecution(op: BatchTaskSfn) {
                 upload(sfnId, i, s3LogicInput)
             }
         }
+
 
         op.job.sfnId = sfnId
         op.job.lastSfnId = sfnId

@@ -14,7 +14,9 @@ import kotlin.time.Duration
 class CoroutineSleepTool(private val duration: Duration) {
 
     private var before: Long = 0
-    val cnt:AtomicLong = AtomicLong()
+
+    /** 카운팅은 오픈 되어야함 */
+    val cnt: AtomicLong = AtomicLong()
 
     suspend fun checkAndSleep() {
         cnt.incrementAndGet()
