@@ -18,7 +18,9 @@ class SqsSupportKtTest : BeSpecHeavy() {
 
             Then("가시성 체크") {
                 repeat(1) {
-                    val messages = aws97.sqs.receiveMessageAll(queueName, 1)
+                    log.info { "큐 데이터 로드.." }
+                    //val messages = aws97.sqs.receiveMessageAll(queueName, 30)
+                    val messages = aws97.sqs.receiveMessage(queueName, visibilityTimeout = 30, waitTimeSeconds = 0)
                     log.info { "큐 데이터 ${messages.size}건.." }
                     messages.forEach {
                         log.debug { " -> ${it.messageId} from ${it.sentTimestamp.toKr01()}" }

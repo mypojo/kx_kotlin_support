@@ -67,8 +67,8 @@ suspend fun SqsClient.deleteMessageBatch(queueUrl: String, messages: Collection<
 //==================================================== 가져오기 ======================================================
 
 suspend fun SqsClient.receiveMessage(
-    queueUrl: String, 
-    visibilityTimeout: Int? = null, 
+    queueUrl: String,
+    visibilityTimeout: Int? = null,
     maxNum: Int = MAX_NUMBER_OF_MESSAGES,
     waitTimeSeconds: Int = 20  // 롱 폴링을 위한 파라미터 추가
 ): List<Message> {
@@ -77,7 +77,7 @@ suspend fun SqsClient.receiveMessage(
         check(it > 0) { "가시성은 0보다 커야함! 무한루프가 되는 수 있음" }
     }
     check(waitTimeSeconds in 0..20) { "waitTimeSeconds는 0에서 20 사이여야 합니다" }
-    
+
     return this.receiveMessage {
         this.queueUrl = queueUrl
         this.maxNumberOfMessages = maxNum
@@ -94,6 +94,7 @@ suspend fun SqsClient.receiveMessage(
  * 주의!  표시 제한 시간이 0이면 무한 로드 될거임. 무한로드 방지 로직이 포함됨
  * 반드시 전체 내용이 필요한 로직 등, 제한적으로 사용해야함!!
  */
+@Deprecated("첨 만들때 잘못 만든거같다..")
 suspend fun SqsClient.receiveMessageAll(queueUrl: String, visibilityTimeout: Int? = null, limitCnt: Int = 10): List<Message> = doUntilNotEmpty {
     if (it >= limitCnt) emptyList()
     else receiveMessage(queueUrl, visibilityTimeout)
