@@ -65,7 +65,7 @@ class LambdaDispatcherAsynchTest : BeSpecHeavy() {
                         "name" to "nabus-new-real-work"
                     }
                     "object" to obj {
-                        "key" to "integration/adpriv/OUTPUT/tv-banner-07.html"
+                        "key" to "integration/ap/OUTPUT/tv-banner-07.html"
                         "size" to 1415
                         "etag" to "02e4ed8357db06eda74a7ec4cc680153"
                         "sequencer" to "0067A41D8F0A04DA0A"

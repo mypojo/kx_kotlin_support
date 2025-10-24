@@ -59,4 +59,24 @@ dependencies {
     //==================================================== AI Koog ======================================================
     implementation("ai.koog:koog-agents:_")
 
+    //==================================================== 델타 세어 API (데이터브릭스 연동) ======================================================
+    // 로깅 라이브러리 충돌 제거를 위한 헬퍼 함수
+    fun ExternalModuleDependency.excludeLoggingConflicts() {
+        exclude(group = "org.slf4j", module = "slf4j-reload4j")
+        exclude(group = "org.slf4j", module = "slf4j-log4j12")
+        exclude(group = "org.apache.logging.log4j", module = "log4j-slf4j-impl")
+        exclude(group = "org.apache.logging.log4j", module = "log4j-slf4j2-impl")
+    }
+
+    //implementation("com.databricks.labs:delta-sharing-java-connector:0.1.0-SNAPSHOT")  -> 데이터브릭스가 제공하는 공식 래퍼인데 버전업 안해줘서 사용하지 않음
+    val deltaVersion = "2.13:4.0.0"
+    implementation("io.delta:delta-sharing-spark_${deltaVersion}") { excludeLoggingConflicts() } //스파크 베이스의 데이터 공유 표준 프로토콜 (대중적이지는 않은듯?)
+    compileOnly("org.apache.spark:spark-sql_${deltaVersion}") { excludeLoggingConflicts() } //필수 지정해야함
+    implementation("org.apache.spark:spark-core_${deltaVersion}") { excludeLoggingConflicts() }
+
+    //로컬에서 Parquet 파일 읽기를 위한 의존성
+    implementation("org.apache.parquet:parquet-avro:1.13.1") { excludeLoggingConflicts() }
+    implementation("org.apache.parquet:parquet-hadoop:1.13.1") { excludeLoggingConflicts() }
+    implementation("org.apache.hadoop:hadoop-common:3.3.6") { excludeLoggingConflicts() }
+
 }

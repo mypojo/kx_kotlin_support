@@ -57,7 +57,7 @@ class CloudWatchLogsSupportKtTest : BeSpecHeavy() {
 
             Then("전체 로그 대상으로 쿼리") {
                 val doQuery = aws.logs.queryAndWait {
-                    this.logGroupNames = listOf("/aws/lambda/adpriv-fn-dev")
+                    this.logGroupNames = listOf("/aws/lambda/ap-fn-dev")
                     this.query = "Job"
                     this.startTime = LocalDateTime.now().minusHours(1)
                 }

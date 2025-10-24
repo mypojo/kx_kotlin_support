@@ -25,7 +25,7 @@ class AthenaTableTest : BeSpecLight() {
             Then("스키마 확인") {
                 val table = HttpLogTable.HTTP_ICEBUG.apply {
                     database = "d1"
-                    bucket = "adpriv-work-dev"
+                    bucket = "ap-work-dev"
                     s3Key = "data/level1/${tableName}/"
                 }
                 println(table.create())

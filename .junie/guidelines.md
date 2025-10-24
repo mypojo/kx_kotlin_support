@@ -34,21 +34,7 @@ CognitoSupport.kt 참고해
 listUsersPaginated { this.userPoolId = userPoolId }.flatMapConcat { it.users!!.asFlow() }
 ```
 
-## retrofit2 생성
-- package net.kotlinx.dooray.drive 를 참고해줘
-- rest API 1건당 1개의 인터페이스를 만들고, 그안에 관련 데이터 객체를 생성해줘
-- 모든 인터페이스와 데이터 객체는 같은 접미어를 가져야해
-```kotlin
-listUsersPaginated { this.userPoolId = userPoolId }.flatMapConcat { it.users!!.asFlow() }
-```
-
-## springframework
-스프링에서 delete 등의 처리 완료후 성공 메세지 리턴에는 ApiResponse 를 리턴
-```kotlin
-return ApiResponse(true,"xx가 저장됨")
-```
-
-# 프로젝트 상세
+# 프로젝트별 상세
 
 ## 구조
 구조는 의존성의 크기과 관계가 있음

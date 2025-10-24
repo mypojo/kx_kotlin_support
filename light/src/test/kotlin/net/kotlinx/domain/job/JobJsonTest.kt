@@ -56,7 +56,7 @@ class JobJsonTest : BeSpecLight() {
             Then("이벤트 강제 전송") {
 
                 val jobStatusByAccount = EventBridgeConfig(
-                    EventBridgeConfig.byAccount("992365606987", "job_from_adpriv-prod"),
+                    EventBridgeConfig.byAccount("992365606987", "job_from_ap-prod"),
                     JobEventBridgePublisher.SOURCE,
                     EventBridgeJobStatus.DETAIL_TYPE,
                 )

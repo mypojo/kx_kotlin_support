@@ -141,10 +141,8 @@ class CostExplorerExcel {
             val line = listOf(
                 e.key!!,
                 values,
-                XlsFormula("ROUND(SUM(${startCol}${row}:${endCol}${row}) ,0)"),
-                XlsFormula("ROUND(${sumCol}${row}/SUM(${sumCol}${2}:${sumCol}$gridEndRowNum),4)") {
-                    style = sheet.excel.style.percentage
-                }
+                XlsFormula("ROUND(SUM(${startCol}${row}:${endCol}${row}) ,0)"), //합계
+                XlsFormula("ROUND(${sumCol}${row}/SUM(${sumCol}${2}:${sumCol}$gridEndRowNum),4)") { style = sheet.excel.style.percentage }  //증감 퍼센트
             ).flattenAny()
             sheet.writeLine(line)
         }
