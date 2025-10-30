@@ -6,6 +6,7 @@ import aws.sdk.kotlin.services.dynamodb.model.DynamoDbException
 import aws.sdk.kotlin.services.dynamodb.putItem
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import net.kotlinx.aws.dynamo.enhanced.DbTable
 
 /**
  * 다이나모DB를 사용한 글로벌 유니크 키 채번기
@@ -20,10 +21,10 @@ class DynamoIdSource(
     private val pkValue: String,
     /** DDB 테이블명 */
     private val seqTableName: String = "guid",
-    /** DDB 테이블의 PK 이름  */
-    private val pkName: String = "pk",
     /** 채번할 키값 컬럼명 */
     private val idSeqColumnName: String = "id_seq",
+    /** 정렬키 값 (시퀀스용 기본값) */
+    private val skValue: String = "seq",
 ) : () -> Long {
 
     private val log = KotlinLogging.logger {}
@@ -33,7 +34,8 @@ class DynamoIdSource(
         dynamoDbClient.putItem {
             this.tableName = seqTableName
             this.item = mapOf(
-                pkName to AttributeValue.S(pkValue),
+                DbTable.PK_NAME to AttributeValue.S(pkValue),
+                DbTable.SK_NAME to AttributeValue.S(skValue),
                 idSeqColumnName to AttributeValue.N("0")
             )
         }
@@ -45,12 +47,12 @@ class DynamoIdSource(
             increaseAndGet()
         } catch (e: DynamoDbException) {
             create()
-            log.warn { "테이블 [${seqTableName}] : 신규 seq 컬럼[${pkName}] => 생성됨" }
+            log.warn { "테이블 [${seqTableName}] : 신규 seq 아이템 생성됨 (pk=${pkValue}, sk=${skValue})" }
             increaseAndGet()
         }
     }
 
     @Throws(DynamoDbException::class)
-    private suspend fun increaseAndGet(): Long = dynamoDbClient.increaseAndGet(seqTableName, pkName, pkValue, idSeqColumnName)
+    private suspend fun increaseAndGet(): Long = dynamoDbClient.increaseAndGet(seqTableName, pkValue, skValue, idSeqColumnName)
 
 }

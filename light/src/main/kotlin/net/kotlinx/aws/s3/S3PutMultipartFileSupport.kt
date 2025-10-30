@@ -18,11 +18,11 @@ import java.io.FileInputStream
 /**
  * 멀티파트 업로드
  * @param key 업로드 디렉토리 path.  /로 시작하지 않음!!
- * @param splitMb 분할처리할 용량
+ * @param splitMb 분할처리할 용량 -> 대량파일 성능 올리고싶으면 늘려서 지정. 보통 람다에서 작동함으로 최소화 지정함.
  *
  * 주의!! 다운로드는 스트리밍이 되지만 (전체 크기가 정해져있음으로) 업로드는 스트리밍이 까다로움 (전체 크기를 미리 지정해야 함으로)
  *  */
-suspend inline fun S3Client.putObjectMultipart(bucket: String, key: String, file: File, splitMb: Int = 1024, metadata: Map<String, String>? = null) {
+suspend inline fun S3Client.putObjectMultipart(bucket: String, key: String, file: File, splitMb: Int = 5, metadata: Map<String, String>? = null) {
 
     check(splitMb > 0)
     check(splitMb <= 1024 * 5) { "1회당 업로드 크기는 최대 5GB 용량 지원" }
@@ -42,7 +42,7 @@ suspend inline fun S3Client.putObjectMultipart(bucket: String, key: String, file
     val partSize = splitMb * 1024L * 1024L
     val numParts = ((fileSize + partSize - 1) / partSize).toInt()
 
-    log.info { "  ==> s3 MultipartUpload (${file}) ${fileSize.toSiText()} / ${partSize.toSiText()} -> ${numParts}분할 업로드 시작.." }
+    log.debug { "  ==> s3 MultipartUpload [${file}] ${fileSize.toSiText()} -> ${numParts}분할(${partSize.toSiText()}) 업로드 시작.." }
 
     val partETags = (0 until numParts).map { i ->
         val startPos = i * partSize

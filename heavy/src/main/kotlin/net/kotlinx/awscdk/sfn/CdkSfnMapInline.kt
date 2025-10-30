@@ -48,7 +48,7 @@ class CdkSfnMapInline(
 
     var retryIntervalSeconds: Int = 10 // 적게 주어야 더 빠르게 작동할듯
     var backoffRate: Double = 1.2 //오류시 리트라이 증분. IP 블록 우회하는 크롤링이라면 동시에 실행되어야 람다가 다르게 실생되서 분산된다.
-    var maxAttempts: Int = 3
+    var maxAttempts: Int = 2
 
     /** 별도 설정이 없어서 노가다 했음.. 차라리 이게 더 나은듯.. */
     override fun convert(): State {
@@ -77,13 +77,7 @@ class CdkSfnMapInline(
                         ),
                         "Retry" to listOf(
                             mapOf(
-                                "ErrorEquals" to listOf(
-                                    "Lambda.ServiceException",
-                                    "Lambda.AWSLambdaException",
-                                    "Lambda.SdkClientException",
-                                    "Lambda.TooManyRequestsException",
-                                    "States.TaskFailed", //태스크가 오류난거도 리트라이 해준다.  (특정 예외 캐치 기능은 아직 없는듯.. retryException만 리트라이 하고싶다)
-                                ),
+                                "ErrorEquals" to CdkSfnUtil.DEFAULT_RETRY_ERRORS,
                                 "IntervalSeconds" to retryIntervalSeconds,
                                 "BackoffRate" to backoffRate, //기본값
                                 "MaxAttempts" to maxAttempts, //기본값

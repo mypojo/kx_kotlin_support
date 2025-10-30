@@ -42,6 +42,12 @@ class EmailFolder(private val reader: EmailReader, private val folder: Folder) {
         log.info { "총 ${messages.size}개의 이메일을 찾았습니다." }
 
         return messages.map { message ->
+            val body = try {
+                extractText(message)
+            } catch (e: Exception) {
+                log.warn { "본문 추출에 실패했습니다. messageNumber=${message.messageNumber} : ${e.message}" }
+                ""
+            }
             EmailReaderData(
                 messageNumber = message.messageNumber,
                 subject = message.subject ?: "제목 없음",
@@ -49,7 +55,64 @@ class EmailFolder(private val reader: EmailReader, private val folder: Folder) {
                 receivedDate = message.receivedDate?.toInstant()
                     ?.atZone(ZoneId.systemDefault())?.toLocalDateTime()
                     ?: LocalDateTime.now(),
+                body = body,
             )
+        }
+    }
+
+    /**
+     * 파트에서 텍스트 본문을 추출합니다.
+     * - text/plain 우선, 없으면 text/html 사용
+     * - multipart/alternative 처리
+     * - 첨부파일(attachment/inline)로 표시된 파트는 본문에서 제외
+     */
+    private fun extractText(part: Part): String {
+        return try {
+            when {
+                // 텍스트 직접
+                part.isMimeType("text/*") -> {
+                    if (Part.ATTACHMENT.equals(part.disposition, ignoreCase = true)) return ""
+                    val content = part.content
+                    when (content) {
+                        is String -> content
+                        else -> content?.toString() ?: ""
+                    }
+                }
+
+                // 대안들 중에서 고르기: 일반 텍스트를 최우선으로, 없으면 HTML
+                part.isMimeType("multipart/alternative") -> {
+                    val mp = part.content as MimeMultipart
+                    var html: String? = null
+                    for (i in 0 until mp.count) {
+                        val bp = mp.getBodyPart(i)
+                        if (bp.isMimeType("text/plain")) {
+                            val text = extractText(bp)
+                            if (text.isNotBlank()) return text
+                        } else if (bp.isMimeType("text/html")) {
+                            if (html == null) html = extractText(bp)
+                        } else {
+                            val other = extractText(bp)
+                            if (other.isNotBlank()) return other
+                        }
+                    }
+                    html ?: ""
+                }
+
+                // 기타 멀티파트: 재귀적으로 합치되, 첫 번째 유의미 텍스트를 우선
+                part.isMimeType("multipart/*") -> {
+                    val mp = part.content as MimeMultipart
+                    (0 until mp.count)
+                        .asSequence()
+                        .map { extractText(mp.getBodyPart(it)) }
+                        .firstOrNull { it.isNotBlank() } ?: ""
+                }
+
+                // 그 외는 본문 아님
+                else -> ""
+            }
+        } catch (e: Exception) {
+            log.warn { "본문 파싱 중 예외가 발생했습니다: ${e.message}" }
+            ""
         }
     }
 

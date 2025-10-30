@@ -27,8 +27,12 @@ class EmailReader {
     /** 비번 */
     lateinit var password: String
 
-    /** 이메일 서버 호스트 */
-    var host: String = "imap.dooray.com"
+    /**
+     * 이메일 서버 호스트
+     * 지메일 imap.gmail.com -> 앱 패스워드 에서 비번 발급
+     * 두레이 imap.dooray.com -> 설정에서 비번 발급
+     *  */
+    var host: String = "imap.gmail.com"
 
     /** 기본 프로토콜 */
     var protocol: String = "imaps"

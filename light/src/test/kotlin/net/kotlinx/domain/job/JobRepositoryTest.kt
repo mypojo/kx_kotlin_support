@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.toList
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.dynamo.DynamoUtil
 import net.kotlinx.domain.job.define.JobDefinition
-import net.kotlinx.koin.Koins.koin
+import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
@@ -16,9 +16,11 @@ import kotlin.time.Duration.Companion.hours
 
 class JobRepositoryTest : BeSpecLight() {
 
+    private val aws by koinLazy<AwsClient>(findProfile97)
+
     private val jobRepository by lazy {
         JobRepository().apply {
-            aws = koin<AwsClient>(findProfile97)
+            this.aws = aws
         }
     }
 
@@ -44,7 +46,7 @@ class JobRepositoryTest : BeSpecLight() {
 
         Given("기본 조회기능") {
 
-            xThen("단일조회") {
+            Then("단일조회") {
                 val job = jobRepository.getItem(Job("kwdDemoMapJob", "58570001"))!!
                 listOf(job).print()
             }

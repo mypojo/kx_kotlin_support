@@ -10,5 +10,6 @@ data class EmailReaderData(
     val subject: String,
     val from: String,
     val receivedDate: LocalDateTime,
+    val body: String,
 )
 

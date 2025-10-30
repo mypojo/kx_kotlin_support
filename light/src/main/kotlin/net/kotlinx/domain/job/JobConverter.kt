@@ -1,6 +1,7 @@
 package net.kotlinx.domain.job
 
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
+import net.kotlinx.aws.dynamo.DynamoMapUtil
 import net.kotlinx.aws.dynamo.enhanced.DbConverter
 import net.kotlinx.aws.dynamo.enhanced.DbTable
 import net.kotlinx.aws.dynamo.find
@@ -31,6 +32,8 @@ class JobConverter(private val table: DbTable) : DbConverter<Job> {
             put(Job::jobExeFrom.name, AttributeValue.S(item.jobExeFrom.name))
             put(Job::jobContext.name, AttributeValue.S(item.jobContext.toString()))
             put(Job::jobOption.name, AttributeValue.S(item.jobOption.toString()))
+            // 스레드 안전한 맵 컨텍스트(Map으로 저장)
+            put(Job::jobContextMap.name, DynamoMapUtil.toAttribute(item.jobContextMap))
 
             //==================================================== 공통 시스템 자동(필수) 입력값 ======================================================
             item.startTime?.let { put(Job::startTime.name, AttributeValue.S(it.toIso())) }
@@ -57,6 +60,7 @@ class JobConverter(private val table: DbTable) : DbConverter<Job> {
             jobStatus = map.findOrThrow(Job::jobStatus)
             jobExeFrom = map.findOrThrow(Job::jobExeFrom)
             jobContext = map.findOrThrow(Job::jobContext)
+            jobContextMap = DynamoMapUtil.fromAttributeMap(map[Job::jobContextMap.name])
 
             //==================================================== 공통 시스템 자동(필수) 입력값 ======================================================
             startTime = map.find(Job::startTime)
@@ -71,6 +75,5 @@ class JobConverter(private val table: DbTable) : DbConverter<Job> {
             jobEnv = map.find(Job::jobEnv)
         }
     }
-
 
 }

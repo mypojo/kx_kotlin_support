@@ -43,4 +43,12 @@ object JobUpdateSet {
     val ERROR = (END + Job::jobErrMsg.name)
 
 
+    /**
+     * SFN 등, 병렬처리중인 데이터를 안전하게 업데이트 하는용
+     *  */
+    val CONTEXT = setOf(
+        Job::jobContextMap,
+    ).map { it.name }
+
+
 }

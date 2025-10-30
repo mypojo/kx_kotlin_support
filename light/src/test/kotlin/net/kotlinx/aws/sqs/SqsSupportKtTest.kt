@@ -4,6 +4,7 @@ import net.kotlinx.concurrent.delay
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
+import net.kotlinx.string.capital
 import net.kotlinx.time.toKr01
 import kotlin.time.Duration.Companion.seconds
 
@@ -15,6 +16,11 @@ class SqsSupportKtTest : BeSpecHeavy() {
         Given("기본기능") {
 
             val queueName = "${findProfile97}-dlq-dev"
+
+            Then("asd") {
+                println("NV".capital())
+                println("NV".capitalize())
+            }
 
             Then("가시성 체크") {
                 repeat(1) {

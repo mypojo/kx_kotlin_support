@@ -1,6 +1,7 @@
 package net.kotlinx.awscdk.sfn2
 
 import net.kotlinx.aws.AwsNaming
+import net.kotlinx.awscdk.sfn.CdkSfnUtil
 import software.amazon.awscdk.services.stepfunctions.*
 import software.amazon.awscdk.services.stepfunctions.Map
 import software.amazon.awscdk.services.stepfunctions.tasks.LambdaInvoke
@@ -50,7 +51,7 @@ class CdkSfnMapInline(
 
     var retryIntervalSeconds: Int = 10 // 적게 주어야 더 빠르게 작동할듯
     var backoffRate: Double = 1.2 //오류시 리트라이 증분. IP 블록 우회하는 크롤링이라면 동시에 실행되어야 람다가 다르게 실생되서 분산된다.
-    var maxAttempts: Int = 3
+    var maxAttempts: Int = 2 //디폴트로 2번만
 
     /** 별도 설정이 없어서 노가다 했음.. 차라리 이게 더 나은듯.. */
     override fun convert(): State {
@@ -64,15 +65,7 @@ class CdkSfnMapInline(
             .build()
 
         val retryProps = RetryProps.builder()
-            .errors(
-                listOf(
-                    "Lambda.ServiceException",
-                    "Lambda.AWSLambdaException",
-                    "Lambda.SdkClientException",
-                    "Lambda.TooManyRequestsException",
-                    "States.TaskFailed"
-                )
-            )
+            .errors(CdkSfnUtil.DEFAULT_RETRY_ERRORS)
             .interval(software.amazon.awscdk.Duration.seconds(retryIntervalSeconds))
             .backoffRate(backoffRate)
             .maxAttempts(maxAttempts)

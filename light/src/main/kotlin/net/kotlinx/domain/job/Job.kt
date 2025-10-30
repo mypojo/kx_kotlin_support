@@ -64,6 +64,13 @@ class Job(override val pk: String, override val sk: String) : DbItem {
      * */
     var jobContext: GsonData = GsonData.obj()
 
+    /**
+     * 스래드 안전한 값이 필요해서 만들어짐
+     * SFN등의 병렬 배치처리에서 스래드 안전한 값 업데이트 등을 위해서 만들어짐
+     * ex) 병렬 처리상태에서 스래드 안전한 진행율 체크
+     * */
+    var jobContextMap: Map<String, Any> = emptyMap()
+
     //==================================================== 시스템 자동 입력값 ======================================================
     /** 사용자가 자신이 요청한 job를 찾는용도. (인덱싱) -> {memberId}#{요청시간 밀리초}  */
     val memberReqTime: String
@@ -154,7 +161,7 @@ class Job(override val pk: String, override val sk: String) : DbItem {
         }
 
     /**
-     * 진행상태
+     * 전체적인 진행상태
      * 종료된 상태인경우 null 리턴
      *  */
     val progressData: ProgressData?
@@ -162,11 +169,14 @@ class Job(override val pk: String, override val sk: String) : DbItem {
 
             if (jobStatus.finished()) return null
 
-            val totalCnt = this.jobContext[JobContextNaming.TOTAL_CNT].long ?: 0
-            val successCnt = this.jobContext[JobContextNaming.SUCCESS_CNT].long ?: 0
-            val failCnt = this.jobContext[JobContextNaming.FAIL_CNT].long ?: 0
+            val totalCnt = findContextLong(JobContextNaming.TOTAL_CNT)
+            val successCnt = findContextLong(JobContextNaming.SUCCESS_CNT)
+            val failCnt = findContextLong(JobContextNaming.FAIL_CNT)
             return ProgressData(totalCnt, successCnt + failCnt, startTime)
         }
+
+    /** 컨텍스트 2개를 찾아서 원하는 값을 리턴함 */
+    private fun findContextLong(string: String): Long = this.jobContext[string].long ?: jobContextMap[string]?.toString()?.toLong() ?: 0
 
     /**
      * 클라우드와치 로그 링크를 리턴

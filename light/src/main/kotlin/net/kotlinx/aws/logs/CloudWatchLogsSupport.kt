@@ -86,7 +86,7 @@ suspend fun CloudWatchLogsClient.queryAndWait(block: CloudWatchQuery.() -> Unit 
     val op = CloudWatchQuery().apply(block)
     val startQueryResponse = this.startQuery {
         this.logGroupNames = op.logGroupNames
-        this.queryString = "fields @timestamp,@log,@logStream,@message | filter @message like /${op.query}/ | limit ${op.limit}"
+        this.queryString = "fields @timestamp,@log,@logStream,@message | filter @message like /${op.queryEncoded}/ | limit ${op.limit}"
         this.startTime = op.startTime.toLong()
         this.endTime = op.endTime.toLong()
         this.limit = op.limit

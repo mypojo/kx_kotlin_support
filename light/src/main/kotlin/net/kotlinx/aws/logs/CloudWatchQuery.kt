@@ -28,4 +28,11 @@ class CloudWatchQuery {
     var startTime: LocalDateTime = LocalDateTime.now().minusDays(1)
     var endTime: LocalDateTime = LocalDateTime.now()
 
+    /** CloudWatch regex는 슬래시(/), $, {, }, [, ], (, ), ?, +, *, ., ^ 같은 정규식 메타문자 주의 */
+    val queryEncoded: String
+        get() {
+            val regexMeta = Regex("([/\\\\^$*+?.()|\\[\\]{}])")
+            return query.replace(regexMeta, "\\\\$1")
+        }
+
 }

@@ -30,6 +30,10 @@ abstract class DbRepository<T : DbItem>() {
 
     suspend fun deleteItem(pk: String, sk: String) = aws.dynamo.delete(dbTable, pk, sk)
 
+    //==================================================== 스레드 세이프 map 업데이트 ======================================================
+
+
+
     //==================================================== 벌크처리 ======================================================
 
     suspend fun getItemBatch(items: List<T>): List<T> = aws.dynamo.getBatch(items)
