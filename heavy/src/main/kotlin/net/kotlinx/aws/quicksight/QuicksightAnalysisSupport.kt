@@ -25,7 +25,6 @@ suspend fun QuickSightClient.listAnalyses(): List<AnalysisSummary> {
     return resp.analysisSummaryList!!
 }
 
-
 /** 분석 삭제 */
 suspend fun QuickSightClient.deleteAnalysis(analysisId: String): DeleteAnalysisResponse = this.deleteAnalysis {
     this.awsAccountId = awsConfig.awsId

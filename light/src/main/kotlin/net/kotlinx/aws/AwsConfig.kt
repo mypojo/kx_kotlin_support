@@ -1,6 +1,7 @@
 package net.kotlinx.aws
 
 import aws.sdk.kotlin.runtime.auth.credentials.DefaultChainCredentialsProvider
+import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
 import aws.sdk.kotlin.runtime.auth.credentials.StsAssumeRoleCredentialsProvider
 import aws.sdk.kotlin.runtime.config.AwsSdkClientConfig
 import aws.sdk.kotlin.services.sts.model.GetCallerIdentityResponse
@@ -55,6 +56,13 @@ data class AwsConfig(
      *  */
     val patent: AwsConfig? = null,
 
+    /**
+     * 시크릿을 직접 입력할경우
+     * ex) 장기 프리사인을 위한 User 계정 사용
+     * ex) 하드코딩된 타사 크리덴셜 등
+     *  */
+    val staticCredentials: Pair<String, String>? = null,
+
     ) {
 
     /** SDK 기본 클라이언트는 버려진듯. 근데 이러면 클라이언트가 어려개 생기지 않는지? */
@@ -94,22 +102,50 @@ data class AwsConfig(
      * https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html
      *  -> DurationSeconds : 900초(15분) ~ 최대값 43200 ?? -> duration_seconds = 43200
      * */
-    val credentialsProvider: CredentialsProvider = if (patent == null) {
-        log.trace { "기본 환경에서 프로바이더 생성" }
-        DefaultChainCredentialsProvider(
-            profileName = profileName,
-            region = region,
-            httpClient = httpClientEngine,
-        )
-    } else {
-        log.trace { "기본 환경의 데이터에서 STS로 프로바이더 생성" }
-        StsAssumeRoleCredentialsProvider(
-            bootstrapCredentialsProvider = patent.credentialsProvider,
-            roleArn = "arn:aws:iam::${awsId}:role/${profileName}",
-            roleSessionName = "sts", //공백문자 허용안함
-            region = region
-        )
+    val credentialsProvider: CredentialsProvider = when {
+        staticCredentials != null -> {
+            log.trace { "static 프로바이더 그대로 사용" }
+            StaticCredentialsProvider.Builder().apply {
+                accessKeyId = staticCredentials.first
+                secretAccessKey = staticCredentials.second
+            }.build()
+        }
+
+        patent == null -> {
+            log.trace { "기본 환경에서 프로바이더 생성" }
+            DefaultChainCredentialsProvider(
+                profileName = profileName,
+                region = region,
+                httpClient = httpClientEngine,
+            )
+        }
+
+        else -> {
+            log.trace { "기본 환경의 데이터에서 STS로 프로바이더 생성" }
+            StsAssumeRoleCredentialsProvider(
+                bootstrapCredentialsProvider = patent.credentialsProvider,
+                roleArn = "arn:aws:iam::${awsId}:role/${profileName}",
+                roleSessionName = "sts", //공백문자 허용안함
+                region = region
+            )
+        }
     }
+//    val credentialsProvider: CredentialsProvider = if (patent == null) {
+//        log.trace { "기본 환경에서 프로바이더 생성" }
+//        DefaultChainCredentialsProvider(
+//            profileName = profileName,
+//            region = region,
+//            httpClient = httpClientEngine,
+//        )
+//    } else {
+//        log.trace { "기본 환경의 데이터에서 STS로 프로바이더 생성" }
+//        StsAssumeRoleCredentialsProvider(
+//            bootstrapCredentialsProvider = patent.credentialsProvider,
+//            roleArn = "arn:aws:iam::${awsId}:role/${profileName}",
+//            roleSessionName = "sts", //공백문자 허용안함
+//            region = region
+//        )
+//    }
 
     /**
      * STS를 사용해서 새로운 연결은 만든다

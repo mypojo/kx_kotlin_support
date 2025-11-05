@@ -18,9 +18,7 @@ suspend fun <T> List<suspend () -> T>.coroutineExecute(scope: CoroutineScope, ma
         scope.async {
             gate.withPermit { it() }
         }
-    }.map {
-        it.await()
-    }
+    }.awaitAll()
 }
 
 /**
@@ -40,9 +38,7 @@ fun <T> List<suspend () -> T>.coroutineExecute(maxConcurrency: Int = Int.MAX_VAL
             async {
                 gate.withPermit { it() }
             }
-        }.map {
-            it.await()
-        }
+        }.awaitAll()
     }
 }
 

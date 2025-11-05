@@ -180,7 +180,7 @@ class KinesisReader {
 
         // 모든 샤드 프로세서 중지
         shardProcessors.values.forEach { it.cancel() }
-        shardProcessors.values.forEach { it.join() }
+        shardProcessors.values.joinAll()
 
         shardProcessors.clear()
         log.info { "${title} 종료 완료" }

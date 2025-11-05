@@ -42,9 +42,6 @@ class CdkRdsAuroraServerlessV2 : CdkInterface {
     /** 1AU = 시간당 0.2$ */
     var capacity = 0.5 to 4
 
-    /** 최대 커넥션 수. 보통 capacity에 따라서 조절  */
-    val maxConnection: Int = 200
-
     /** 개발의 경우 삭제로 해도 됨 */
     var removalPolicy = RemovalPolicy.SNAPSHOT
 
@@ -56,11 +53,36 @@ class CdkRdsAuroraServerlessV2 : CdkInterface {
      * athena 등을 활용할 수 있어서 트랜잭션만 필요한경우 = mysql
      * 트랜잭션 & 리포트 등 select 쿼리 최적화가 필요한경우 = postgresql
      * */
-    var clusterEngine = MYSQL
+    var clusterEngine = POSTGRESQL
 
+    /**
+     * 파라메터 그룹 인자
+     * 각 서버 별로 상이하니 주의할것!!
+     * @see Param
+     *  */
+    var parameters = emptyMap<String, String>()
+
+    /**
+     * 참고로 POSTGRESQL 에서 admin은 예약어라서 안됨
+     * xxx_admin 이렇게 설정
+     * */
+    var username = "admin"
+
+    /** 각 버전은 최신버전으로 업데이트! */
     companion object {
         val MYSQL = DatabaseClusterEngine.auroraMysql(AuroraMysqlClusterEngineProps.builder().version(AuroraMysqlEngineVersion.VER_3_07_1).build())
         val POSTGRESQL = DatabaseClusterEngine.auroraPostgres(AuroraPostgresClusterEngineProps.builder().version(AuroraPostgresEngineVersion.VER_17_4).build())
+
+        /** 기본 파라메터 샘플 */
+        object Param {
+
+            val MYSQL = mapOf(
+                "transaction_isolation" to "READ-COMMITTED",
+                "time_zone" to "Asia/Seoul", //server time zone을 바꾸는 방식은 mysql 만 가능
+                "max_connections" to "200"  //최대 커넥션 수. 보통 capacity에 따라서 조절
+            )
+
+        }
     }
 
     fun create(stack: Stack, block: DatabaseClusterProps.Builder.() -> Unit = {}) {
@@ -69,13 +91,7 @@ class CdkRdsAuroraServerlessV2 : CdkInterface {
             stack, "pg-$logicalName", ParameterGroupProps.builder()
                 .engine(clusterEngine)
                 .description("CDK - AuroraMysql - $logicalName")
-                .parameters(
-                    mapOf(
-                        "time_zone" to "Asia/Seoul",
-                        "transaction_isolation" to "READ-COMMITTED", //보통 이거로 기본
-                        "max_connections" to "$maxConnection"
-                    )
-                )
+                .parameters(parameters)
                 .build()
         )
 
@@ -119,7 +135,7 @@ class CdkRdsAuroraServerlessV2 : CdkInterface {
                 .deletionProtection(true)
                 .subnetGroup(subnetGroup)
                 .backup(BackupProps.builder().retention(backupRetention.toCdk()).preferredWindow(backupWindow).build())
-                .credentials(Credentials.fromGeneratedSecret("admin", CredentialsBaseOptions.builder().secretName(logicalName).build()))
+                .credentials(Credentials.fromGeneratedSecret(username, CredentialsBaseOptions.builder().secretName(logicalName).build()))
                 .cloudwatchLogsRetention(RetentionDays.ONE_WEEK)
                 //.defaultDatabaseName(logicalName)
                 .iamAuthentication(true)

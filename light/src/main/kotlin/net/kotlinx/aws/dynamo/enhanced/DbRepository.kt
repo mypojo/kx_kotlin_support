@@ -3,8 +3,11 @@ package net.kotlinx.aws.dynamo.enhanced
 import aws.sdk.kotlin.services.dynamodb.model.DeleteItemResponse
 import kotlinx.coroutines.flow.Flow
 import net.kotlinx.aws.LazyAwsClientProperty
+import net.kotlinx.aws.dynamo.addMapSynch
 import net.kotlinx.aws.dynamo.dynamo
 import net.kotlinx.aws.dynamo.enhancedExp.*
+import net.kotlinx.aws.dynamo.updateMap
+import net.kotlinx.domain.job.Job
 
 /**
  * DDB 간단접근용 헬퍼
@@ -32,7 +35,30 @@ abstract class DbRepository<T : DbItem>() {
 
     //==================================================== 스레드 세이프 map 업데이트 ======================================================
 
+    /**
+     * Map 컬럼의 여러 키 값을 동시에 증가시킴(숫자 add) — 스레드 세이프 버전
+     * - 반환값은 각 키의 증가된(새로운) 값
+     */
+    suspend fun addMapSynch(item: T, append: Map<String, Long>): Map<String, Long> =
+        aws.dynamo.addMapSynch(
+            tableName = dbTable.tableName,
+            pk = item.pk,
+            sk = item.sk,
+            columnName = Job::jobContextMap.name,
+            append = append,
+        )
 
+    /**
+     * Map 컬럼의 여러 키 값을 동시에 set(문자 등) — 기존 값이 있으면 덮어씀
+     */
+    suspend fun updateMap(item: T, append: Map<String, String>) =
+        aws.dynamo.updateMap(
+            tableName = dbTable.tableName,
+            pk = item.pk,
+            sk = item.sk,
+            columnName = Job::jobContextMap.name,
+            append = append,
+        )
 
     //==================================================== 벌크처리 ======================================================
 

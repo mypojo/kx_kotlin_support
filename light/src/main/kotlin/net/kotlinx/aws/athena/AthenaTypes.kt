@@ -122,10 +122,15 @@ object AthenaTypes {
     const val ARRAY: String = "array"
 
     /**
-     * 맵 타입 (Key-Value 구조)
-     * 예: MAP<VARCHAR, INT> => {'apple': 3, 'banana': 5}
+     * 비정형 값 매핑에 주로 사용됨
      */
-    const val MAP: String = "map"
+    const val MAP_STRING: String = "map<string,string>"
+
+    /**
+     * 비정형 값 매핑에 주로 사용됨
+     * ex) 리포트 전환 값
+     */
+    const val MAP_BINT: String = "map<string,bigint>"
 
     /**
      * 구조체 타입 (컬럼 그룹)

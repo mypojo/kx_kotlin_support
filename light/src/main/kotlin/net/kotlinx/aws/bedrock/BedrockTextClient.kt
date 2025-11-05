@@ -85,7 +85,7 @@ class BedrockTextClient : AiTextClient {
             this.system = listOf(
                 SystemContentBlock.Text(systemPrompt.toString())  //시스템 프롬프트는 무조건 하나로
             )
-            this.inferenceConfig = inferenceConfig
+            this.inferenceConfig = this@BedrockTextClient.inferenceConfig
             this.messages = listOf(
                 BedrockTextConverter.convert(inputs) //무조건 한개만 입력
             )

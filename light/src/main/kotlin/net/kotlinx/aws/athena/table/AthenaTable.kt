@@ -189,7 +189,7 @@ class AthenaTable {
             AthenaTablePartitionType.PROJECTION -> {
                 val basicProps = mapOf(
                     "projection.enabled" to "true",
-                    "storage.location.template" to "${location}${partitions.joinToString("/") { "\${${it}}" }}/",
+                    "storage.location.template" to "${location}${partitions.joinToString("/") { $$"${$${it}}" }}/",
                 )
                 val columnProps = partitions.flatMap { colimnName ->
                     val projectionConfig = projectionMap[colimnName] ?: mapOf("type" to "injected") //아무 설정 없으면 injected로 설정

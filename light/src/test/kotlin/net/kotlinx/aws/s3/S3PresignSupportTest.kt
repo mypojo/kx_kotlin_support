@@ -10,10 +10,11 @@ import net.kotlinx.kotest.modules.BeSpecHeavy
 import net.kotlinx.okhttp.fetch
 import net.kotlinx.system.ResourceHolder
 import okhttp3.OkHttpClient
+import kotlin.time.Duration.Companion.days
 
 internal class S3PresignSupportTest : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile28 }
+    private val profileName by lazy { findProfile49 }
     private val aws by lazy { koin<AwsClient>(profileName) }
 
     init {
@@ -21,9 +22,13 @@ internal class S3PresignSupportTest : BeSpecHeavy() {
 
         Given("S3SupportKt") {
 
-            Then("버킷 프리사인_다운로드URL 생성") {
-                val url = aws.s3.presignGetObject("$profileName-work-dev", "code/$profileName-layer_v1-dev/deployLayerV1.zip")
-                log.debug { "presignGetObject url : $url" }
+            Then("버킷 프리사인_다운로드URL 생성 일반 / 장기") {
+                val url1 = aws.s3.presignGetObject("$profileName-work-dev", "code/$profileName-layer_v1-dev/deployLayerV1.zip", 7.days)
+                log.debug { "일반 프리사인 : $url1" }
+
+                val presigned = koin<AwsClient>("app-presigned-${profileName}")
+                val url2 = presigned.s3.presignGetObject("$profileName-work-dev", "code/$profileName-layer_v1-dev/deployLayerV1.zip", 7.days)
+                log.debug { "전용 프리사인 : $url2" }
             }
 
             Then("버킷 프리사인_다운로드URL 생성 (이름변경)") {

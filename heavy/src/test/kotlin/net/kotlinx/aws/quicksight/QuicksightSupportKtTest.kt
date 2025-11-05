@@ -41,7 +41,7 @@ class QuicksightSupportKtTest : BeSpecHeavy() {
             val datasetId = "${tableName}-${suff}-demo"
             Then("데이터세트 만들기") {
                 val columns = athenaModule97.readAll { AthenaUtil.schemaColumn(dbName, tableName) }
-                val setConfig = QuicksightDataSetConfig {
+                val setConfig = QuicksightDataSetCreation {
                     this.dataSourceId = dataSourceAthena
                     this.dataSetId = datasetId
                     this.dataSetName = "리포트_네이버_검색광고_키워드-${suff}-demo"

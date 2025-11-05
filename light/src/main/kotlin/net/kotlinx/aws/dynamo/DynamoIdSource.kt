@@ -23,7 +23,7 @@ class DynamoIdSource(
     private val seqTableName: String = "guid",
     /** 채번할 키값 컬럼명 */
     private val idSeqColumnName: String = "id_seq",
-    /** 정렬키 값 (시퀀스용 기본값) */
+    /** 정렬키 값 (시퀀스용 기본값) -> 사실 필요는 없는데 sk 자리를 비우기 싫어서 강제로 채움 */
     private val skValue: String = "seq",
 ) : () -> Long {
 

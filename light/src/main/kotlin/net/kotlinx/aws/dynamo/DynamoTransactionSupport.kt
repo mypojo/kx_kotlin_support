@@ -28,7 +28,7 @@ suspend fun DynamoDbClient.increaseAndGet(tableName: String, pk: String, sk: Str
 }
 
 /** Map 컬럼의 특정 키 값을 증가시키고 새 값을 리턴 */
-suspend fun DynamoDbClient.updateMapSynch(tableName: String, pk: String, sk: String, columnName: String, mapKey: String, incrementValue: Long = 1): Long {
+suspend fun DynamoDbClient.addMapSynch(tableName: String, pk: String, sk: String, columnName: String, mapKey: String, incrementValue: Long = 1): Long {
     val resp = this.updateItem {
         this.tableName = tableName
         this.updateExpression = "SET #mapCol.#mapKey = if_not_exists(#mapCol.#mapKey, :zero) + :val"
@@ -54,7 +54,7 @@ suspend fun DynamoDbClient.updateMapSynch(tableName: String, pk: String, sk: Str
  * - updateMap 참고한 다중 파라미터 버전
  * - append: 증가시킬 대상과 증가값(Long)
  */
-suspend fun DynamoDbClient.updateMapSynch(tableName: String, pk: String, sk: String, columnName: String, append: Map<String, Long>): Map<String, Long> {
+suspend fun DynamoDbClient.addMapSynch(tableName: String, pk: String, sk: String, columnName: String, append: Map<String, Long>): Map<String, Long> {
     if (append.isEmpty()) return emptyMap()
 
     // placeholder 는 키에 안전하게 v0, v1 ... 형태로 생성한다
@@ -108,7 +108,6 @@ suspend fun DynamoDbClient.updateMap(tableName: String, pk: String, sk: String, 
     }
 
     val exprValues = items.associate { (idx, _, value) -> ":v$idx" to AttributeValue.S(value) }
-
     this.updateItem {
         this.tableName = tableName
         this.returnValues = ReturnValue.None // 필요한 경우 없음.

@@ -4,6 +4,7 @@ import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
+import net.kotlinx.time.TimeUtil
 import net.kotlinx.time.toTimeString
 import net.kotlinx.time.toYmd
 import java.time.LocalDate
@@ -58,6 +59,27 @@ internal class AthenaPartitionSqlBuilderTest : BeSpecHeavy() {
                 println(addSql)
 
                 athenaModule.execute(addSql)
+            }
+
+            Then("파티션_생성 v2") {
+                val builder = AthenaPartitionSqlBuilder {
+                    bucketName = "md2-db"
+                    prefix = "data1"
+                }
+
+                //전후 하루씩 추가
+                val basicDates = TimeUtil.between("20251110" to "20271231")
+                val advIds = listOf("302565")
+
+                val datas = basicDates.flatMap { basicDate ->
+                    advIds.map {
+                        linkedMapOf("basic_date" to basicDate, "adv_id" to it)
+                    }
+                }
+                val addSql = builder.generateAddSql("adtrigger.kk_master_kwd", datas)
+                println(addSql)
+
+                //athenaModule.execute(addSql)
             }
         }
     }

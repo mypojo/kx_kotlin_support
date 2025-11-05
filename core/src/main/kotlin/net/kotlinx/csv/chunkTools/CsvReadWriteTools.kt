@@ -26,11 +26,11 @@ import net.kotlinx.io.output.OutputResource
  * 내부적으로 순서를 유지함 -> 대신 청크 안에서 병렬 처리를 할것
  * 중단된 파일 이어쓰는 기능을 하려고 했으나.. 압축이나 헤더 문제 때문에 힘듬 => 그냥 분리 & 청크처리 하는게 훨씬 좋음!
  *
- *
  * 주의!!! 이건 올드 스타일이다. 가능하면 flow를 사용하는게 고급기능 사용하기에 좋다
  *  ex) 멀티파일read, 멀티파일write, 순서없는 병렬처리 등등..
  * @see List<InputResource>.toFlow
  *  */
+@Deprecated("가능하면 toFlow 쓰세요")
 class CsvReadWriteTools : SuspendRunnable {
 
     @Kdsl

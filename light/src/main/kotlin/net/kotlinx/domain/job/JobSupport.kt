@@ -22,8 +22,11 @@ fun Job.toJobDefinition(): JobDefinition = JobDefinitionRepository.findById(pk) 
  * 새로운 잡 생성해서 일부 데이터 복사
  * ex) SQS 전송
  *  */
-fun Job.copyNewJob(): Job = Job(this.pk, this.sk).apply {
-    jobOption = this.jobOption
-    memberId = this.memberId
-    jobEnv = this.jobEnv
+fun Job.copyNewJob(): Job {
+    val exist = this
+    return Job(exist.pk, exist.sk).apply {
+        jobOption = exist.jobOption
+        memberId = exist.memberId
+        jobEnv = exist.jobEnv
+    }
 }

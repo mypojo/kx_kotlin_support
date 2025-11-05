@@ -4,19 +4,11 @@ import aws.sdk.kotlin.services.quicksight.model.DataSetImportMode
 import aws.sdk.kotlin.services.quicksight.model.InputColumnDataType
 import net.kotlinx.core.Kdsl
 
-enum class QuicksightDataSetConfigType {
 
-    /** 테이블 */
-    TABLE,
-
-    /** 쿼리로 하면 증분이 안되는듯 */
-    QUERY
-}
-
-class QuicksightDataSetConfig {
+class QuicksightDataSetCreation {
 
     @Kdsl
-    constructor(block: QuicksightDataSetConfig.() -> Unit = {}) {
+    constructor(block: QuicksightDataSetCreation.() -> Unit = {}) {
         apply(block)
     }
 
@@ -34,7 +26,6 @@ class QuicksightDataSetConfig {
 
     /** 컬럼 필수임.. 자동으로 안해줌  */
     lateinit var columns: Map<String, InputColumnDataType>
-
 
     /** 폴더 없으면 안넣어도 됨 */
     var folderIds: List<String> = emptyList()
@@ -58,6 +49,15 @@ class QuicksightDataSetConfig {
     //==================================================== 옵션 - 쿼리 매핑 ======================================================
 
     lateinit var query: String
+
+    enum class QuicksightDataSetConfigType {
+
+        /** 테이블 */
+        TABLE,
+
+        /** 쿼리로 하면 증분이 안되는듯 */
+        QUERY
+    }
 
 
 }

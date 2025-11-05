@@ -55,6 +55,13 @@ class CdkVpc : CdkInterface {
     lateinit var iVpc: IVpc
 
     /**
+     * 설정할 GatewayVpcEndpointAwsService
+     * 디폴트로는 무료 2종 넣어준다
+     * 주의! IP 화아트리스트로 S3 버킷을 다운로드 해야하는경우 이걸 꺼야 상대방에서 NAT를 통과한 IP로 허용할 수 있다
+     * */
+    var vpcEndpointServices: List<GatewayVpcEndpointAwsService> = listOf(GatewayVpcEndpointAwsService.S3, GatewayVpcEndpointAwsService.DYNAMODB)
+
+    /**
      * 필요에따라 오버라이드. ex) VPC 하나에 다수의 프로젝트 설정
      *  -> 여기서 서브넷 추가시,  vpc에서 서브넷을 조회할때 최초 생성된 서브넷만 조회된다. 이거말고도 문제가 많음..
      *  따라서 프로젝트별로 VPC를 만들고 그냥 이들을 연결하자
@@ -141,11 +148,8 @@ class CdkVpc : CdkInterface {
      * 주의!!! 외부 S3 리소스가 NAT IP를 대상으로 화이트리스트 필터링을 사용한다면 이걸 사용하면 안된다!
      *  => 그냥 끄거나, 라우팅 테이블을 편집하거나 해야할듯
      *  */
-    fun gatewayVpcEndpoint(
-        services: List<GatewayVpcEndpointAwsService> = listOf(GatewayVpcEndpointAwsService.S3, GatewayVpcEndpointAwsService.DYNAMODB),
-        block: PolicyStatement.Builder.() -> Unit = {}
-    ) {
-        services.forEach { service ->
+    fun gatewayVpcEndpoint(block: PolicyStatement.Builder.() -> Unit = {}) {
+        vpcEndpointServices.forEach { service ->
             val serviceName = service.name.substringAfterLast(".")
             val endpointName = "${this.projectName}_${this.deploymentType}_endpoint_${serviceName}"
             val endpoint = iVpc.addGatewayEndpoint(endpointName, GatewayVpcEndpointOptions.builder().service(service).build())

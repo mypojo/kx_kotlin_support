@@ -16,6 +16,10 @@ object CdkIamPolicySet {
      *  */
     const val SSM = "AmazonSSMManagedInstanceCore"
 
+    /** 읽기전용 */
+    const val S3_READONLY = "AmazonS3ReadOnlyAccess"
+
+
     /**
      * SSM (주로 배스천 터널링)
      * 디폴트 세션 타임아웃 20분 -> 60분으로 늘려서 사용할것
@@ -75,7 +79,7 @@ object CdkIamPolicySet {
                         "iam:ListAccessKeys",
                     )
                     resources = listOf(
-                        "arn:aws:iam::${awsId}:user/\${aws:username}" //$ 이스케이핑됨 주의!!
+                        $$"arn:aws:iam::$${awsId}:user/${aws:username}" //$ 이스케이핑됨 주의!!
                     )
                 }
             )

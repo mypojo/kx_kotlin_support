@@ -34,7 +34,7 @@ class DynamoDbSupportTest : BeSpecHeavy() {
                 val mapColumnName = "counterMap"
                 val mapKey = "today"
 
-                val newVal = aws.dynamo.updateMapSynch(
+                val newVal = aws.dynamo.addMapSynch(
                     tableName = tableName,
                     pk = pk,
                     sk = sk,

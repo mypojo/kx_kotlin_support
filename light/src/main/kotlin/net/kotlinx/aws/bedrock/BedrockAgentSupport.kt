@@ -10,6 +10,7 @@ import aws.sdk.kotlin.services.bedrockagent.paginators.listPromptsPaginated
 import aws.sdk.kotlin.services.bedrockagent.updateAgentActionGroup
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapConcat
+import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.regist
 
@@ -17,6 +18,7 @@ import net.kotlinx.aws.regist
 val AwsClient.bra: BedrockAgentClient
     get() = getOrCreateClient { BedrockAgentClient { awsConfig.build(this) }.regist(awsConfig) }
 
+private val log = KotlinLogging.logger {}
 
 /** 프롬프트 가져오기.. 실제 텍스트는 못가져옴 */
 suspend fun BedrockAgentClient.getPrompt(promptId: String, version: String? = null): GetPromptResponse {

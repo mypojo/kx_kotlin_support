@@ -42,7 +42,8 @@ class S3PresignGet {
 
 /**
  * presign 다운로드 URL을 리턴해준다.
- * 일단 toString 으로..
+ * 주의!! Presigned URL은 서명 시점에 사용된 크레덴셜의 만료 시각보다 오래 유효할 수 없음
+ * @see net.kotlinx.aws.AwsConfig.staticCredentials
  *  */
 suspend fun S3Client.presignGetObjectUrl(block: S3PresignGet.() -> Unit = {}): String {
     val param = S3PresignGet(block)

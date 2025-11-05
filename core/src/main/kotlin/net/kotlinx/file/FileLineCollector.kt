@@ -34,7 +34,6 @@ class FileLineCollector : FlowCollector<List<String>>, AutoCloseable {
      * ex) xml 헤더 입력
      * */
     open fun open() {
-        this.file = file
         writer = BufferedWriter(OutputStreamWriter(FileOutputStream(file), encoding), BUFFER_SIZE)
     }
 

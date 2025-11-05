@@ -4,16 +4,16 @@ import net.kotlinx.core.Kdsl
 import java.time.LocalDate
 
 
-
 /**
  * Athena 파티션 sql 생성 도우미
  * 미리 파티션에 입력될 값을 알고 있어야 한다.
  * 파티션 정보를 모르는경우 S3 스캔해서 확인
+ *
+ * 경고!!  가능하면 파티션 대신 projection 이나 아이스버그를 사용하세요
  */
-@Deprecated("가능하면 파티션 대신 projection 이나 아이스버그를 사용하세요")
 class AthenaPartitionSqlBuilder {
 
-    companion object{
+    companion object {
         /**
          * 문법상 limit는 없는듯 하지만 쿼리가 너무 길어지면 오류가 나기때문에 1000개 이하로 추천
          * 샘플 : 파티션 7500개 생성에 1분 56초 걸림

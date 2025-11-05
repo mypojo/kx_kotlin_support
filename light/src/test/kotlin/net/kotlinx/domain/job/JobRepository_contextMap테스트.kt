@@ -1,9 +1,10 @@
 package net.kotlinx.domain.job
 
 import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.dynamo.addMapSynch
 import net.kotlinx.aws.dynamo.dynamo
 import net.kotlinx.aws.dynamo.updateMap
-import net.kotlinx.aws.dynamo.updateMapSynch
+import net.kotlinx.json.gson.json
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -16,7 +17,7 @@ class JobRepository_contextMap테스트 : BeSpecLight() {
 
     private val jobRepository by lazy {
         JobRepository().apply {
-            this.aws = aws
+            aws = this@JobRepository_contextMap테스트.aws
         }
     }
 
@@ -50,6 +51,51 @@ class JobRepository_contextMap테스트 : BeSpecLight() {
                 jobRepository.updateItem(job, JobUpdateSet.CONTEXT)
             }
 
+            Then("컨텍스트 프로그레스 테스트") {
+                val job = jobRepository.getItem(item)!!
+                job.jobStatus = JobStatus.RUNNING
+                job.jobContextMap = emptyMap()
+                job.jobContext = json {
+                    JobContextNaming.TOTAL_CNT to 12
+                }
+
+                jobRepository.updateItem(job, JobUpdateSet.STATUS)
+                jobRepository.updateItem(job, JobUpdateSet.CONTEXT)
+
+                jobRepository.addMapSynch(
+                    job, mapOf(
+                        JobContextNaming.SUCCESS_CNT to 0,
+                        JobContextNaming.FAIL_CNT to 0,
+                    )
+                )
+                println(jobRepository.getItem(item)!!.progressData)
+
+                jobRepository.addMapSynch(
+                    job, mapOf(
+                        JobContextNaming.SUCCESS_CNT to 2,
+                        JobContextNaming.FAIL_CNT to 4,
+                    )
+                )
+                println(jobRepository.getItem(item)!!.progressData)
+
+                jobRepository.addMapSynch(
+                    job, mapOf(
+                        JobContextNaming.SUCCESS_CNT to 3,
+                        JobContextNaming.FAIL_CNT to 1,
+                    )
+                )
+                println(jobRepository.getItem(item)!!.progressData)
+
+                jobRepository.addMapSynch(
+                    job, mapOf(
+                        JobContextNaming.SUCCESS_CNT to 2,
+                        JobContextNaming.FAIL_CNT to 0,
+                    )
+                )
+                println(jobRepository.getItem(item)!!.progressData)
+
+            }
+
 
         }
 
@@ -60,7 +106,7 @@ class JobRepository_contextMap테스트 : BeSpecLight() {
                 val sk = "10010002"
                 val mapColumnName = Job::jobContextMap.name
 
-                val newVal = aws.dynamo.updateMapSynch(
+                val newVal = aws.dynamo.addMapSynch(
                     tableName = tableName,
                     pk = pk,
                     sk = sk,
@@ -80,7 +126,7 @@ class JobRepository_contextMap테스트 : BeSpecLight() {
                 val mapColumnName = Job::jobContextMap.name
                 val mapKey = "age"
 
-                val newVal = aws.dynamo.updateMapSynch(
+                val newVal = aws.dynamo.addMapSynch(
                     tableName = tableName,
                     pk = pk,
                     sk = sk,

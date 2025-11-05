@@ -117,7 +117,7 @@ data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 
     /** 간단히 entrySet 변형 구현 */
     fun entryMap(): Map<String, GsonData> {
-        check(delegate is JsonObject)
+        check(delegate is JsonObject) { "entryMap 은 JsonObject 를 기반으로만 가능합니다. delegate : $delegate" }
         return delegate.entrySet().associate { it.key to GsonData(it.value) }
     }
 

@@ -26,7 +26,6 @@ class GoogleSheet(service: GoogleService, val sheetId: String, val tabName: Stri
      * 간단히 전부 다 읽는다
      * 참고 https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
      */
-    @Suppress("UsePropertyAccessSyntax")
     fun readAll(): List<List<Any>> {
         val sheet = sheets.spreadsheets().values().get(sheetId, tabName)
         val response: ValueRange = sheet.setValueRenderOption("UNFORMATTED_VALUE").execute()

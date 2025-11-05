@@ -64,7 +64,8 @@ class IamSecretUpdateModule {
         allKeys.find { it != invalidKey }?.let {
             log.debug { " -> 가장 오래된 키 ${it.key.accessKeyId} (${it.key.status}) 를 삭제합니다. (키는 2개만 유지 가능)" }
             client.iam.deleteAccessKey {
-                this.userName = userName
+                //this.userName = userName
+                this.userName = awsUserName //이상한할당 수정했음.
                 this.accessKeyId = it.key.accessKeyId
             }
         }
@@ -74,13 +75,13 @@ class IamSecretUpdateModule {
 
         check(invalidKey.key.accessKeyId == oldKey.first) { "저장된 키와 invalid 키가 동일해야 합니다." }
 
-        val newKey = client.iam.createAccessKey { this.userName = userName }.let { it.accessKey!!.accessKeyId to it.accessKey!!.secretAccessKey }
+        val newKey = client.iam.createAccessKey { this.userName = awsUserName }.let { it.accessKey!!.accessKeyId to it.accessKey!!.secretAccessKey }
         log.info { " -> 키가 교체되어 저장됩니다. ${oldKey.first} => ${newKey.first} / 확인 :  ${credential.secretPath}" }
         credential.replaceKey(newKey)
 
         log.info { " -> invalid 키 ${oldKey.first} 를 비활성화 시킵니다." }
         client.iam.updateAccessKey {
-            this.userName = userName
+            this.userName = awsUserName //이상한할당 수정했음.
             this.accessKeyId = oldKey.first
             this.status = StatusType.Inactive
         }

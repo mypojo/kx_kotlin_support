@@ -42,6 +42,12 @@ class HikariIamDataSource(@Kdsl block: HikariIamDataSource.() -> Unit = {}) : Hi
         block(this)
     }
 
+    //==================================================== 편의용 메소드 ======================================================
+
+    fun addDataSourcePropertyPostgreSQL() {
+        addDataSourceProperty("sessionVariables", "timezone=Asia/Seoul") //Aurora Serverless v2 for PostgreSQL
+    }
+
     //==================================================== 블록 이후의 설정 (위험하다.. 일반 lzay로 수정하자) ======================================================
 
     /** AWS 설정 */

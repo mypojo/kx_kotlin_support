@@ -66,7 +66,7 @@ class AiModelSet {
             host = OpenAiModels.Perplexity.HOST
             model = OpenAiModels.Perplexity.SONAR01
             systemMessage = prompt.toString()
-            responseFormat = ChatResponseFormat.Companion.Text //단순 JSON 지원 안함.  스키마가 있어가 해야하는듯?
+            responseFormat = ChatResponseFormat.Text //단순 JSON 지원 안함.  스키마가 있어가 해야하는듯?
         }
     }
 
@@ -76,7 +76,7 @@ class AiModelSet {
             host = OpenAiModels.Perplexity.HOST
             model = OpenAiModels.Perplexity.SONAR02
             systemMessage = prompt.toString()
-            responseFormat = ChatResponseFormat.Companion.Text //단순 JSON 지원 안함.  스키마가 있어가 해야하는듯?
+            responseFormat = ChatResponseFormat.Text //단순 JSON 지원 안함.  스키마가 있어가 해야하는듯?
         }
     }
     val perplexity03 by lazy {
@@ -85,7 +85,7 @@ class AiModelSet {
             host = OpenAiModels.Perplexity.HOST
             model = OpenAiModels.Perplexity.SONAR03
             systemMessage = prompt.toString()
-            responseFormat = ChatResponseFormat.Companion.Text //단순 JSON 지원 안함.  스키마가 있어가 해야하는듯?
+            responseFormat = ChatResponseFormat.Text //단순 JSON 지원 안함.  스키마가 있어가 해야하는듯?
         }
     }
     val perplexity04 by lazy {
@@ -94,7 +94,7 @@ class AiModelSet {
             host = OpenAiModels.Perplexity.HOST
             model = OpenAiModels.Perplexity.SONAR04
             systemMessage = prompt.toString()
-            responseFormat = ChatResponseFormat.Companion.Text //단순 JSON 지원 안함.  스키마가 있어가 해야하는듯?
+            responseFormat = ChatResponseFormat.Text //단순 JSON 지원 안함.  스키마가 있어가 해야하는듯?
         }
     }
 

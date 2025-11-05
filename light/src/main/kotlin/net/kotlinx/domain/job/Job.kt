@@ -61,6 +61,7 @@ class Job(override val pk: String, override val sk: String) : DbItem {
      * JOB context (json형식). 중단 인덱스,
      * 블락수 등의 컨텍스트 입력 .
      * 강제 업데이트 함으로 null 아님
+     * 일반적으로 변경되지 않는값 저장 ex) TOTAL_CNT
      * */
     var jobContext: GsonData = GsonData.obj()
 
@@ -68,6 +69,7 @@ class Job(override val pk: String, override val sk: String) : DbItem {
      * 스래드 안전한 값이 필요해서 만들어짐
      * SFN등의 병렬 배치처리에서 스래드 안전한 값 업데이트 등을 위해서 만들어짐
      * ex) 병렬 처리상태에서 스래드 안전한 진행율 체크
+     * 일반적으로 동적으로 변경되는값 저장 ex) SUCCESS_CNT, FAIL_CNT
      * */
     var jobContextMap: Map<String, Any> = emptyMap()
 
@@ -160,6 +162,9 @@ class Job(override val pk: String, override val sk: String) : DbItem {
             }
         }
 
+    /** 2개의 잡 컨텍스트를 하나로 합쳐줌 */
+    val jobContextAll: GsonData get() = GsonData.parse(jobContextMap).apply { addAll(jobContext) }
+
     /**
      * 전체적인 진행상태
      * 종료된 상태인경우 null 리턴
@@ -169,14 +174,12 @@ class Job(override val pk: String, override val sk: String) : DbItem {
 
             if (jobStatus.finished()) return null
 
-            val totalCnt = findContextLong(JobContextNaming.TOTAL_CNT)
-            val successCnt = findContextLong(JobContextNaming.SUCCESS_CNT)
-            val failCnt = findContextLong(JobContextNaming.FAIL_CNT)
+            val context = jobContextAll
+            val totalCnt = context[JobContextNaming.TOTAL_CNT].long ?: 0
+            val successCnt = context[JobContextNaming.SUCCESS_CNT].long ?: 0
+            val failCnt = context[JobContextNaming.FAIL_CNT].long ?: 0
             return ProgressData(totalCnt, successCnt + failCnt, startTime)
         }
-
-    /** 컨텍스트 2개를 찾아서 원하는 값을 리턴함 */
-    private fun findContextLong(string: String): Long = this.jobContext[string].long ?: jobContextMap[string]?.toString()?.toLong() ?: 0
 
     /**
      * 클라우드와치 로그 링크를 리턴

@@ -7,8 +7,10 @@ import net.kotlinx.aws.AwsInstanceMetadataLoader
 import net.kotlinx.aws.iam.IamCredential
 import net.kotlinx.aws.iam.IamProfiles
 import net.kotlinx.aws.javaSdkv2.AwsJavaSdkV2Client
+import net.kotlinx.collection.toPair
 import net.kotlinx.koin.KoinModule
 import net.kotlinx.koin.Koins.koin
+import net.kotlinx.lazyLoad.lazyLoadStringSsm
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -27,7 +29,7 @@ object AwsModule : KoinModule {
 
         log.trace { "디폴트 AWS Client 주입" }
         single { AwsConfig() }
-        single { koin<AwsConfig>().client }
+        single<AwsClient> { koin<AwsConfig>().client }
         single {
             AwsInstanceMetadataLoader {
                 aws = koin<AwsClient>()
@@ -57,6 +59,13 @@ object AwsModule : KoinModule {
                     log.debug { "[${profile}] AwsJavaSdkV2Client 생성.." }
                     AwsJavaSdkV2Client(koin<AwsConfig>(profile))
                 }
+
+                /** 프리사인  전용 계정 */
+                single<AwsClient>(named("app-presigned-${profile}")) {
+                    val secret by lazyLoadStringSsm("/secret/user/app-presigned", profile)
+                    AwsConfig(staticCredentials = secret.split("###").toPair()).client
+                }
+
             }
 
         }

@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.takeWhile
 import net.kotlinx.csv.CsvCollector
 import net.kotlinx.csv.CsvUtil
 import net.kotlinx.csv.toFlow
+import net.kotlinx.flow.collectClose
 import net.kotlinx.io.input.toInputResource
 import net.kotlinx.io.output.toOutputResource
 import java.io.File
@@ -52,14 +53,16 @@ suspend fun S3Client.getObjectDownload(bucket: String, key: String, file: File, 
  * ex) athena 결과파일을 사용자가 볼 수 있는 형태로 다운로드
  * 샘플 코드임! 응용해서 사용할것
  * 자주 사용해서 일단 넣었고, 거의 응용이 필요하지 않아서 별도의 옵션화는 하지 않음
- * @see CsvSplitCollector  파일 청크단위로 분리해서 다운로드할때 사용
+ * @see net.kotlinx.csv.CsvSplitCollector  파일 청크단위로 분리해서 다운로드할때 사용
  *  */
 suspend fun S3Client.getObjectCsvMs949Download(bucket: String, key: String, file: File, zip: Boolean = false) {
     this.getObjectCsvFlow(bucket, key, csvReader()) { flow ->
-        flow.chunked(1000).collect(CsvCollector {
-            outputResource = file.toOutputResource(zip)
-            writer = CsvUtil.ms949Writer()  //ms949로 다운로드
-        })
+        flow.chunked(1000).collectClose {
+            CsvCollector {
+                outputResource = file.toOutputResource(zip)
+                writer = CsvUtil.ms949Writer()  //ms949로 다운로드
+            }
+        }
     }
 }
 
