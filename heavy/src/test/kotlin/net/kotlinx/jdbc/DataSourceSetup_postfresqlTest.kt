@@ -11,11 +11,10 @@ import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecHeavy
-import net.kotlinx.lazyLoad.lazyLoadStringSsm
 import net.kotlinx.string.toTextGrid
 
 
-class DataSourceSetupTest : BeSpecHeavy() {
+class DataSourceSetup_postfresqlTest : BeSpecHeavy() {
 
 
     init {
@@ -23,7 +22,11 @@ class DataSourceSetupTest : BeSpecHeavy() {
 
         Given("DataSourceSetup") {
 
-            val projectName = findProfile97
+            val projectName = findProfile49
+
+            val client = koin<AwsClient>(projectName)
+            val secret = client.smStore["main-prod"].toGsonData()
+            val port = 54321
 
             fun doTest(dataSource: HikariDataSource) {
                 using(session(dataSource)) { session ->
@@ -37,12 +40,12 @@ class DataSourceSetupTest : BeSpecHeavy() {
                 val setup = DataSourceSetup {
                     dataSourceSetupType = DataSourceSetupType.IAM
                     profile = projectName
-                    username = "${profile}_prod"
+                    username = "${projectName}-dev"
                     jdbcUrl = JdbcUrl {
-                        host = "main-prod.cluster-cfs4usogashn.ap-northeast-2.rds.amazonaws.com"
-                        connectPort = 33061
+                        host = secret["host"].str!!
+                        connectPort = port
                         direct = false
-                        database = username
+                        database = "${projectName}-dev"
                     }
                 }
                 log.info { "JDBC URL : ${setup.jdbcUrl.url}" }
@@ -53,19 +56,20 @@ class DataSourceSetupTest : BeSpecHeavy() {
             }
 
             Then("ID PASS 접속 - 터널링 (DB admin)") {
-                val client = koin<AwsClient>(projectName)
-                val secret = client.smStore["main-prod"].toGsonData()
                 val setup = DataSourceSetup {
                     dataSourceSetupType = DataSourceSetupType.ID_PASS
-                    profile = projectName
-                    username = "admin"
+                    username = secret["username"].str!!
                     password = secret["password"].str!!
                     jdbcUrl = JdbcUrl {
-                        host = "main-prod.cluster-cfs4usogashn.ap-northeast-2.rds.amazonaws.com"
-                        connectPort = 33061
+                        host = secret["host"].str!!
+                        connectPort = port
                         direct = false
-                        database = "${profile}_prod"
+                        database = "${projectName}-dev"
+                        option = emptyMap()
                     }
+                    log.debug { " -> url : ${jdbcUrl.url}" }
+                    //jdbc:postgresql://localhost:54321/dmp_dev?
+                    //jdbc:aws-wrapper:postgresql://localhost:54321/dmp-prod
                 }
 
                 val dataSource = setup.createDataSource {
@@ -73,28 +77,6 @@ class DataSourceSetupTest : BeSpecHeavy() {
                 }
 
                 doTest(dataSource)
-            }
-
-            Then("ID PASS 접속 - 직접접속 (공용 테스트서버)") {
-                val pwd by lazyLoadStringSsm("/rds/secret/dev", projectName)
-                val setup = DataSourceSetup {
-                    dataSourceSetupType = DataSourceSetupType.ID_PASS
-                    username = "${projectName}"
-                    password = pwd
-                    jdbcUrl = JdbcUrl {
-                        host = "mysql.dev.11h11m.net"
-                        database = username
-                    }
-                }
-                val dataSource = setup.createDataSource {
-                    minimumIdle = 1
-                }
-
-                using(session(dataSource)) { session ->
-                    val query = sqlQuery("select member_id,member_name,last_login_time from member limit ?", 3000)
-                    val queryResult = session.listAny(query)
-                    queryResult.header.toTextGrid(queryResult.results.map { it.toTypedArray() }).print()
-                }
             }
         }
     }

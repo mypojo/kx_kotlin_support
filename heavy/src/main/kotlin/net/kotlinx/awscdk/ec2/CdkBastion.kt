@@ -13,6 +13,9 @@ import software.amazon.awscdk.services.iam.IRole
  *
  * https://ap-northeast-2.console.aws.amazon.com/systems-manager/session-manager/preferences?region=ap-northeast-2
  * 최초 세팅시 Idle 타임아웃 기본 20분인데 60으로 늘려주자
+ *
+ * 에러나면 SSM으로 붙어서 아래 로깅 켜보자
+ * sudo tail -f /var/log/amazon/ssm/amazon-ssm-agent.log
  * */
 class CdkBastion : CdkInterface {
 
@@ -41,6 +44,8 @@ class CdkBastion : CdkInterface {
 
     /**
      * 최초 실행시킬 커맨드
+     * 경고!! 포트 포워딩 같은경우 보안상 & 네트워크 장애 발생가능해서 아래 커맨드를 추천하지 않음
+     * 세션 만들때 파라메터로 직접 연결할것
      *  */
     var commands: List<String> = emptyList()
 
@@ -117,10 +122,16 @@ class CdkBastion : CdkInterface {
          * @param fromPort  포워딩으로 설정된, 들어오는 포트 ex) 33060
          * @param toUrl 연결해줄 주소 ex)  xx.cluster-xx.ap-northeast-2.rds.amazonaws.com
          *
+         * val host = "${db.name}-${CdkInterface.SUFF}.cluster-${rdsCode}.${CdkInterface.AWS_CONFIG.region}.rds.amazonaws.com"
+         * val port = "${PortUtil.POSTGRESQL}1".toInt()  //기본포트에 패드1 추가
+         *
          * host 이름을 시크릿 매니저에서 가져올 수 있지만 이렇게 하면 너무~~~~ 느려진다. 왜인지 모름.
          * 그래서 그냥 하드코딩함 or 파라메터 스토어에 입력
+         *
+         *  -> AWS-StartPortForwardingSessionToRemoteHost 를 사용할것!!
          * */
-        fun cmdConnect(fromPort: Int, toUrl: String, dbPort: Int = 3306): List<String> {
+        @Deprecated("AWS-StartPortForwardingSessionToRemoteHost 로 대체")
+        fun cmdConnect(fromPort: Int, toUrl: String, dbPort: Int): List<String> {
             return listOf(
                 "sudo yum install socat -y",
                 "sudo socat -d -d TCP4-LISTEN:${fromPort},fork TCP4:${toUrl}:${dbPort} &",

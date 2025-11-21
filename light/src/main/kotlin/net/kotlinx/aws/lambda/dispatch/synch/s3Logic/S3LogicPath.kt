@@ -17,8 +17,14 @@ data class S3LogicPath(
     /**
      * 파일 디렉토리 폴더
      * ex) sfnId
+     * 뒤에서 2번째부터 읽어가면서 '-'가 포함된 첫 번째 요소를 반환
      *  */
-    val pathId: String by lazy { inputPaths[inputPaths.size - 2] }
+    val pathId: String by lazy {
+        inputPaths.asReversed()
+            .drop(1) // 마지막 요소(파일명) 제외
+            .firstOrNull { it.contains('-') && it.contains('.') }
+            ?: throw IllegalStateException("'-'가 포함된 pathId를 찾을 수 없습니다: $s3InputDataKey")
+    }
 
     /**
      * 결과가 저장될 S3 디렉토리 key  (/로 끝나야함)

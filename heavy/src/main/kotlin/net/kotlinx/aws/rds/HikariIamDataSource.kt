@@ -5,6 +5,7 @@ import aws.smithy.kotlin.runtime.net.url.Url
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.runBlocking
 import net.kotlinx.aws.AwsConfig
+import net.kotlinx.awscdk.network.PortUtil
 import net.kotlinx.core.Kdsl
 import net.kotlinx.koin.Koins.koinLazy
 
@@ -31,12 +32,14 @@ class HikariIamDataSource(@Kdsl block: HikariIamDataSource.() -> Unit = {}) : Hi
     var profile: String? = null
 
     /** 실제 DB의 포트  */
-    var port: Int = 3306
+    var port: Int = PortUtil.POSTGRESQL
 
     /**
      * 인증 토큰을 생성한 후 만료되기 전 x분 동안 유효 -> 디폴트 사용함
      *  */
-    override fun getPassword(): String = runBlocking { generator.generateAuthToken(Url.parse("https://$inputHostname:${port}"), awsConfig.region, username) }
+    override fun getPassword(): String = runBlocking {
+        generator.generateAuthToken(Url.parse("https://$inputHostname:${port}"), awsConfig.region, username)
+    }
 
     init {
         block(this)

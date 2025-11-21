@@ -75,6 +75,7 @@ dependencies {
     //==================================================== RDB ======================================================
     //implementation("software.amazon.jdbc:aws-advanced-jdbc-wrapper:_") //https://github.com/aws/aws-advanced-jdbc-wrapper/  공식 드라이버 래퍼. (토큰관리 등등 내장)
     implementation("com.mysql:mysql-connector-j:_") //이걸로 해야 IAM JDBC 연결됨.. 마리아로 하면 안됨. 뭐 추가옵션이 있는듯. (왜??)
+    implementation("org.postgresql:postgresql:_") //IAM 잘됨. 향후 필요시 AWS 래퍼로 변경해조기
     api("com.zaxxer:HikariCP:_")  //최신버전(6.3.x) 쓰면 IAM 로그인시 Access denied 발생함.  5.1.0 으로 고정
 
     //==================================================== RDB 도구 ======================================================

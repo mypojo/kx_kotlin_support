@@ -54,6 +54,7 @@ class DataSourceSetup : KoinComponent {
                     inputHostname = this@DataSourceSetup.jdbcUrl.host
                     username = this@DataSourceSetup.username
                     jdbcUrl = this@DataSourceSetup.jdbcUrl.url
+                    port = this@DataSourceSetup.jdbcUrl.jdbcDriver.port
                     block()
                 }
             }

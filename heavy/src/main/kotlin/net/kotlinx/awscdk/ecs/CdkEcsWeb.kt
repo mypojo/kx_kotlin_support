@@ -105,7 +105,7 @@ class CdkEcsWeb : CdkInterface {
      * 0.30 per metric-month for the first 10,000 metrics
      * 이걸로 월 5$ 정도 나오는거 같다
      *  */
-    var containerInsights: Boolean = true
+    var containerInsights: ContainerInsights = ContainerInsights.ENABLED
 
     //==================================================== 대부분 고정하는값 ======================================================
 
@@ -128,7 +128,7 @@ class CdkEcsWeb : CdkInterface {
             stack, clusterName, ClusterProps.builder()
                 .vpc(vpc)
                 .clusterName(clusterName)
-                .containerInsights(containerInsights) //기본으로 켜줌
+                .containerInsightsV2(containerInsights)
                 .enableFargateCapacityProviders(true) //파게이트 용량공급 설정 가능하게 온
                 .build()
         )

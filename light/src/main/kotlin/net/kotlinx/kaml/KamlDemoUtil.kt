@@ -13,6 +13,98 @@ object KamlDemoUtil {
     private val log = KotlinLogging.logger {}
 
     /**
+     * !!! 처음에 태그로 하려고했는데, 스웨거는 일반적은 그 태그가 아님.. 이때문에 속성으로 변경함
+     * OpenApiCustomizer 로 단순화 해보려고 했는데 쉽지않아서 포기. -> 다시 태그로 돌아옴
+     *
+     * 속성값(x-group)으로 필터링한다
+     * group에는 자동으로 x- 접두어가 붙는다
+     * value가 null이면 key까지만 매칭되면 통과
+     * 추가로, 남은 경로에서 사용되지 않는 components.schemas 항목을 제거한다.
+     * 관리 편의를 위해 처리 중 모든 데이터를 메모리에서 계산한다.
+     * */
+    fun filterByAttribute(yamlContent: String, group: String, key: String, value: String?): String {
+        val yamlMap = Yaml.default.parseToYamlNode(yamlContent) as YamlMap
+        val attributeName = "x-$group"
+
+        // 1) paths를 속성값으로 필터링
+        val filteredTopEntries = yamlMap.entries.mapNotNull { (scalar1, node1) ->
+            when {
+                scalar1.content == "paths" && node1 is YamlMap -> {
+                    val filteredPaths = node1.entries
+                        .filter { it.value is YamlMap }
+                        .mapNotNull { (scalar2, node2) ->
+                            val byUrl = node2 as YamlMap
+                            val filteredByMethod = byUrl.entries.filter { (_, methodValue) ->
+                                val attributeNode = (methodValue as? YamlMap)
+                                    ?.let { getChild(it, attributeName) as? YamlMap }
+
+                                if (attributeNode == null) {
+                                    false
+                                } else {
+                                    val keyNode = getChild(attributeNode, key)
+                                    if (keyNode == null) {
+                                        false
+                                    } else if (value == null) {
+                                        true // key만 있으면 통과
+                                    } else {
+                                        (keyNode as? YamlScalar)?.content == value
+                                    }
+                                }
+                            }
+                            if (filteredByMethod.isNotEmpty()) scalar2 to YamlMap(filteredByMethod, byUrl.path) else null
+                        }
+                    if (filteredPaths.isNotEmpty()) scalar1 to YamlMap(filteredPaths.toMap(), node1.path) else null
+                }
+
+                else -> scalar1 to node1 // 그 외는 유지 (info, openapi, components 등)
+            }
+        }
+
+        val filteredRoot = YamlMap(filteredTopEntries.toMap(), yamlMap.path)
+
+        // 2) 남은 paths로부터 참조된 components.schemas 수집 (초기 집합)
+        val pathsNode = getChild(filteredRoot, "paths")
+        val initialSchemaRefs = collectSchemaRefs(pathsNode)
+
+        // 3) components.schemas 내에서 참조 전이를 따라가며 필요한 스키마 폐쇄 집합 계산
+        val componentsNode = getChild(filteredRoot, "components") as? YamlMap
+        val schemasNode = componentsNode?.let { getChild(it, "schemas") as? YamlMap }
+
+        val usedSchemas: Set<String> = if (schemasNode == null) emptySet() else expandSchemaRefs(initialSchemaRefs, schemasNode)
+
+        // 4) components.schemas 정리: 사용되지 않는 항목 제거
+        val rebuiltEntries = filteredRoot.entries.mapNotNull { (k, v) ->
+            if (k.content != "components") return@mapNotNull k to v
+
+            val compMap = v as? YamlMap ?: return@mapNotNull k to v
+            val newSchemasNode: YamlMap? = (getChild(compMap, "schemas") as? YamlMap)
+                ?.let { schemas ->
+                    if (usedSchemas.isEmpty()) null
+                    else {
+                        val kept = schemas.entries.filter { it.key.content in usedSchemas }
+                        if (kept.isEmpty()) null else YamlMap(kept.toMap(), schemas.path)
+                    }
+                }
+
+            // components의 다른 섹션들은 그대로 유지
+            val othersPairs = compMap.entries
+                .filter { it.key.content != "schemas" }
+                .map { it.key to it.value }
+            val rebuiltCompEntries: List<Pair<YamlScalar, YamlNode>> = if (newSchemasNode != null) {
+                othersPairs + (YamlScalar("schemas", compMap.path) to newSchemasNode)
+            } else othersPairs
+
+            if (rebuiltCompEntries.isEmpty()) null else k to YamlMap(rebuiltCompEntries.toMap(), compMap.path)
+        }
+
+        val finalRoot = YamlMap(rebuiltEntries.toMap(), filteredRoot.path)
+
+        log.info { "속성 필터링(${attributeName}.${key}=${value ?: "any"}) 후 참조된 스키마 수=${initialSchemaRefs.size}, 최종 유지 스키마 수=${usedSchemas.size}" }
+
+        return Yaml.default.encodeToString(YamlMap.serializer(), finalRoot)
+    }
+
+    /**
      * 컨트롤러에 1:1로 매핑된 tag를 체크해서, 포함되는것만 남기고 삭제한다
      * 추가로, 남은 경로에서 사용되지 않는 components.schemas 항목을 제거한다.
      * 관리 편의를 위해 처리 중 모든 데이터를 메모리에서 계산한다.
@@ -38,6 +130,7 @@ object KamlDemoUtil {
                         }
                     if (filteredPaths.isNotEmpty()) scalar1 to YamlMap(filteredPaths.toMap(), node1.path) else null
                 }
+
                 else -> scalar1 to node1 // 그 외는 유지 (info, openapi, components 등)
             }
         }
@@ -109,6 +202,7 @@ object KamlDemoUtil {
             val fromChild = collectSchemaRefs(v)
             fromSelf + fromChild
         }.toSet()
+
         is YamlList -> node.items.flatMap { collectSchemaRefs(it) }.toSet()
         is YamlScalar -> emptySet()
         else -> emptySet()

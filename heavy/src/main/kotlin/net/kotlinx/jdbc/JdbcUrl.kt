@@ -1,5 +1,6 @@
 package net.kotlinx.jdbc
 
+import net.kotlinx.awscdk.network.PortUtil
 import net.kotlinx.collection.toQueryString
 import net.kotlinx.core.Kdsl
 import net.kotlinx.lazyLoad.lazyLoadString
@@ -24,30 +25,16 @@ class JdbcUrl {
      * 실제 접속시 포트
      * 로컬인경우 터널링 포트
      *  */
-    var connectPort: Int = 3306
+    var connectPort: Int = PortUtil.POSTGRESQL
 
     /** 드라이버 */
-    var jdbcDriver: JdbcDriver = JdbcDriver.MYSQL
+    var jdbcDriver: JdbcDriver = JdbcDriver.POSTGRESQL
 
     /**
      * 옵션
      * https://2ssue.github.io/programming/HikariCP-MySQL/
      *  */
-    var option: Map<String, String> = mapOf(
-        /** 대량의 데이터 insert시 쿼리 변경  */
-        "rewriteBatchedStatements" to "true",
-        /** 캐시 온 */
-        "cachePrepStmts" to "true",
-        "prepStmtCacheSize" to "250",
-        "prepStmtCacheSqlLimit" to "2048",
-        /** 서버측 PreparedStatement 사용  */
-        "useServerPrepStmts" to "true",
-        //이하 인증관련 옵션.. 필요 없는듯
-//        "allowPublicKeyRetrieval" to "true",
-//        "useSSL" to "true",
-//        "sslMode" to "REQUIRED",
-//        "authenticationPlugins" to "com.mysql.cj.protocol.a.authentication.MysqlClearPasswordPlugin",
-    )
+    var option: Map<String, String> = DefaultOption.POSTGRESQL
 
     /** 배스천 호스트 고려한 jdbcUrl  */
     val url: String
@@ -55,5 +42,29 @@ class JdbcUrl {
             val connectHost = if (direct) host else "localhost"
             return "jdbc:${jdbcDriver.name.lowercase()}://${connectHost}:${connectPort}/${database}?${option.toQueryString()}"
         }
+
+    companion object {
+
+        object DefaultOption {
+
+            /** SSL 필수 */
+            val POSTGRESQL = mapOf(
+                "ssl" to "true",
+                "sslmode" to "require",
+            )
+            val MYSQL = mapOf(
+                /** 대량의 데이터 insert시 쿼리 변경  */
+                "rewriteBatchedStatements" to "true",
+                /** 캐시 온 */
+                "cachePrepStmts" to "true",
+                "prepStmtCacheSize" to "250",
+                "prepStmtCacheSqlLimit" to "2048",
+                /** 서버측 PreparedStatement 사용  */
+                "useServerPrepStmts" to "true",
+            )
+        }
+
+
+    }
 
 }

@@ -56,6 +56,8 @@ plugins {
     id("com.gradle.develocity") version "4.1"
 ////                        # available:"4.1.1"
 ////                        # available:"4.2"
+////                        # available:"4.2.1"
+////                        # available:"4.2.2"
     id("de.fayard.refreshVersions") version "0.60.5" //기타의존성 버전 자동갱신
 ////                            # available:"0.60.6"
 }

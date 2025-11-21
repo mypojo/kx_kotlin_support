@@ -16,22 +16,22 @@ class KamlTest : BeSpecLight() {
         //수정필요!!
         Given("데이터베이스") {
 
-            Then("읽기") {
+            Then("filterByTag") {
                 val code = "NHN"
                 val root = File("C:\\Users\\${code}\\IdeaProjects\\dmp\\service\\api\\src\\main\\resources")
                 val text = root.slash("api-docs.yaml").readText()
                 val result = KamlDemoUtil.filterByTag(text, "bedrock")
-
-                //println("=== org ")
-                //println(text)
-
                 println("=== reformat ")
                 println(result)
+            }
 
-
-                //root.slash("api-docs_bedrock.yaml").writeText(result)
-
-                //aws49.bra.updateAgentActionGroupSchema("L8YEZD07X9", "IL5F1ALNYA", result)
+            Then("filterByAttribute") {
+                val code = "NHN"
+                val root = File("C:\\Users\\${code}\\IdeaProjects\\dmp\\service\\api\\src\\main\\resources")
+                val text = root.slash("api-docs.yaml").readText()
+                val result = KamlDemoUtil.filterByAttribute(text, "usage", "service", null)
+                println("=== reformat ")
+                println(result)
             }
 
         }
