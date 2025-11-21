@@ -49,7 +49,7 @@ class SesSupportKtTest : BeSpecHeavy() {
                 val emailRequest = SendEmailRequest {
                     destination = Destination {
                         toAddresses = listOf(
-                            "xx@nhnad.com",
+                            "xx@nnnad.com",
                         )
                     }
                     message = emailBody

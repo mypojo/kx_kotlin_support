@@ -19,7 +19,7 @@ class KnotionSupportKtTest : BeSpecLight() {
         //수정필요!!
         Given("데이터베이스") {
 
-            val dbId = "sss"
+            val dbId = "d712536212504d0d9664c4e5af877b79"
 
             Then("조회") {
                 val resps = client.databases.queryDatabase(dbId)

@@ -115,6 +115,28 @@ class Bean(val data: Any) {
             }
         }
 
+        /**
+         * CSV 등에서 객체를 생성할때 사용함 (유연 매핑 버전)
+         * - 생성자 인자 수와 라인 수가 정확히 일치하지 않아도 됨
+         * - 모자란 값은 공백 문자열("")로 채워넣음
+         * - 라인이 더 길면 초과분은 무시함
+         * - 대상 타입은 단순 DTO를 가정
+         */
+        fun <T : Any> fromLineIgnore(to: KClass<T>, lines: List<String>): T {
+            try {
+                // 가장 파라미터가 많은 생성자를 선택 (일반적으로 데이터 클래스의 주 생성자)
+                val constructor = to.constructors.maxBy { it.parameters.size }
+                val args = constructor.parameters.mapIndexed { index, param ->
+                    val raw = lines.getOrNull(index) ?: ""
+                    param.type.from(raw)
+                }
+                return constructor.call(*args.toTypedArray())
+            } catch (e: Exception) {
+                log.warn { "파싱 실패(fromLineIgnore)!! $to from $lines" }
+                throw e
+            }
+        }
+
 
     }
 

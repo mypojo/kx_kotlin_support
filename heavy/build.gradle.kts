@@ -43,6 +43,7 @@ dependencies {
     api("aws.sdk.kotlin:secretsmanager:$awsVersion")
     api("aws.sdk.kotlin:ec2:$awsVersion") //용량 큼. 27 mbyte
     api("aws.sdk.kotlin:ecr:$awsVersion")
+    api("aws.sdk.kotlin:wafv2:$awsVersion")  // WAF IP 동적 교체용
 
     //덜중요한것들
     api("aws.sdk.kotlin:costexplorer:$awsVersion") //계정당 비용 확인용 & 카테고리 태그 달기

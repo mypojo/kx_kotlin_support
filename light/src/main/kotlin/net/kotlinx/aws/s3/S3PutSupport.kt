@@ -21,10 +21,14 @@ suspend inline fun S3Client.putObject(bucket: String, key: String, byteStream: B
     }
 }
 
-/** 파일 업로드 */
+/**
+ * 자동 간단 파일 업로드
+ * 1기가(GB) 이하이면 단일 putObject, 그 외(> 1GB)는 멀티파트 업로드로 처리
+ *  */
 suspend inline fun S3Client.putObject(bucket: String, key: String, file: File, metadata: Map<String, String>? = null) {
     when {
-        file.length() > 1024 * 1024 * 10 -> putObjectMultipart(bucket, key, file, metadata = metadata)
+        // 1GB 초과 시 멀티파트 사용
+        file.length() > 1024L * 1024 * 1024 -> putObjectMultipart(bucket, key, file, metadata = metadata)
         else -> putObject(bucket, key, file.asByteStream(), metadata)
     }
 }

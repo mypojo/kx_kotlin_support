@@ -17,7 +17,7 @@ class KamlTest : BeSpecLight() {
         Given("데이터베이스") {
 
             Then("filterByTag") {
-                val code = "NHN"
+                val code = "nnn"
                 val root = File("C:\\Users\\${code}\\IdeaProjects\\dmp\\service\\api\\src\\main\\resources")
                 val text = root.slash("api-docs.yaml").readText()
                 val result = KamlDemoUtil.filterByTag(text, "bedrock")
@@ -26,7 +26,7 @@ class KamlTest : BeSpecLight() {
             }
 
             Then("filterByAttribute") {
-                val code = "NHN"
+                val code = "nnn"
                 val root = File("C:\\Users\\${code}\\IdeaProjects\\dmp\\service\\api\\src\\main\\resources")
                 val text = root.slash("api-docs.yaml").readText()
                 val result = KamlDemoUtil.filterByAttribute(text, "usage", "service", null)

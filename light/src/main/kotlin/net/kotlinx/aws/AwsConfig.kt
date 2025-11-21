@@ -151,11 +151,7 @@ data class AwsConfig(
      * STS를 사용해서 새로운 연결은 만든다
      * ex) 중앙계정 lakeformation 접근
      *  */
-    fun toSts(awsId: String, role: String): AwsConfig = AwsConfig(
-        inputAwsId = awsId,
-        profileName = role,
-        patent = this
-    )
+    fun toSts(awsId: String, role: String): AwsConfig = this.copy(inputAwsId = awsId, profileName = role, patent = this)
 
     //==================================================== client 빌드 옵션 추가 ======================================================
 

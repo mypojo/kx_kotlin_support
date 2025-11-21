@@ -20,17 +20,16 @@ class AwsDbClientDmpTest : BeSpecHeavy() {
 
             val db = AwsDbClient {
                 this.aws = this@AwsDbClientDmpTest.aws
-                //aurora-postgresql-dev.cluster-cbsovqqs2kr2.ap-northeast-2.rds.amazonaws.com
-                this.resourceName = "aurora-xxx"
-                this.databaseName = "xx"
-                this.secretManagerName = "rds!xxx"
+                this.resourceName = "main-prod"
+                this.databaseName = "${findProfile49}-dev"
+                this.secretManagerName = resourceName
             }
 
             Then("단순 조회 테스트") {
                 val param = mapOf {
-                    "id" to 1
+                    "id" to 11420002
                 }
-                val res = db.executeStatement("select * from member where 1 = :id limit 10", param)
+                val res = db.executeStatement("select * from dmp.member where member_id = :id limit 10", param)
                 res.records!!.forEach { t ->
                     log.debug { t.joinToString("\t") }
                 }

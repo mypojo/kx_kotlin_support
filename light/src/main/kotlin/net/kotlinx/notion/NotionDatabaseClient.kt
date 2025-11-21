@@ -1,14 +1,12 @@
 package net.kotlinx.notion
 
-import com.lectra.koson.KosonType
 import com.lectra.koson.ObjectType
 import com.lectra.koson.obj
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import mu.KotlinLogging
-import net.kotlinx.collection.repeatCollectUntil
 import net.kotlinx.json.gson.GsonData
-import net.kotlinx.json.koson.rawKeyValue
 import net.kotlinx.okhttp.await
-import net.kotlinx.string.toLocalDateTime
 import net.kotlinx.time.TimeStart
 import okhttp3.OkHttpClient
 import org.koin.core.component.KoinComponent
@@ -21,9 +19,8 @@ import org.koin.core.component.inject
  * 데이터베이스 ID 채번 후 해당 페이지로 가서 "연결" 을 선택 후 KEY를 채번한것과 연결 해주어야 한다.
  *
  * => 바닐라 rest 구현 지양하기!!
+ * klibnotion 가 업데이트 안되서 걍 rest로 구현함
  *  */
-
-@Deprecated("klibnotion 쓰세요")
 class NotionDatabaseClient(
     /** 영구키임!! 주의! */
     private val secretValue: String,
@@ -33,35 +30,56 @@ class NotionDatabaseClient(
 
     private val client: OkHttpClient by inject()
 
-    suspend fun insert(dbId: String, cells: List<NotionCell2>) {
+    /**
+     * 데이터베이스 쿼리
+     * - 각 페이지네이션 결과(최대 100건)를 리스트로 묶어 순차적으로 Flow로 방출한다.
+     * - sorts 파라미터를 지정하지 않거나 null일 경우, 기본 정렬 순서는 마지막 편집 시간(Last Edited Time) 내림차순(Descending)이 일반적이다.
+     */
+    fun query(dbId: String, filter: ObjectType? = null): Flow<List<NotionDatabaseRow>> = flow {
+        var nextToken: String? = null
+        repeat(100) { // 안전장치
+            val start = TimeStart()
+            val resp = client.await {
+                url = "https://api.notion.com/v1/databases/${dbId}/query"
+                method = "POST"
+                header = toHeader()
+                body = obj {
+                    filter?.let { "filter" to it }
+                    nextToken?.let { "start_cursor" to it }
+                    "page_size" to 100 // 100개가 최대임
+                }
+            }
+
+            check(resp.response.code == 200) { "${resp.response.code} ${resp.respText}" }
+
+            val resultObj = GsonData.parse(resp.respText)
+            val lines = resultObj["results"].map { line -> NotionDatabaseRow(line) }
+            log.debug { " -> DB[${dbId}] 데이터로드 ${lines.size}건 -> $start" }
+            if (lines.isNotEmpty()) emit(lines)
+
+            nextToken = resultObj["next_cursor"].str
+            if (nextToken == null) return@flow
+        }
+    }
+
+    suspend fun insert(dbId: String, properties: ObjectType) {
         val resp = client.await {
             url = "https://api.notion.com/v1/pages"
             method = "POST"
             header = toHeader()
-            body = toBody(dbId, cells)
+            body = toBody(dbId, properties)
         }
         check(resp.response.code == 200) { "${resp.response.code} ${resp.respText}" }
         log.trace { " -> notion insert 성공" }
+        println(resp.respText)
     }
 
-    suspend fun insert(dbId: String, cells: Map<String, KosonType>) {
-        val resp = client.await {
-            url = "https://api.notion.com/v1/pages"
-            method = "POST"
-            header = toHeader()
-            body = toBody(dbId, cells)
-            println(body)
-        }
-        check(resp.response.code == 200) { "${resp.response.code} ${resp.respText}" }
-        log.trace { " -> notion insert 성공" }
-    }
-
-    suspend fun update(dbId: String, pageId: String, cells: List<NotionCell2>) {
+    suspend fun update(dbId: String, pageId: String, properties: ObjectType) {
         val resp = client.await {
             url = "https://api.notion.com/v1/pages/${pageId}"
             method = "PATCH"
             header = toHeader()
-            body = toBody(dbId, cells)
+            body = toBody(dbId, properties)
         }
         check(resp.response.code == 200) { "${resp.response.code} ${resp.respText}" }
         log.trace { " -> notion update 성공" }
@@ -85,56 +103,11 @@ class NotionDatabaseClient(
         log.trace { " -> notion delete 성공" }
     }
 
-    /** 데이터베이스 쿼리  */
-    suspend fun queryAll(dbId: String, filter: ObjectType? = null): List<NotionRow> {
-        return repeatCollectUntil { keep, nextToken ->
-
-            val start = TimeStart()
-            val resp = client.await {
-                url = "https://api.notion.com/v1/databases/${dbId}/query"
-                method = "POST"
-                header = toHeader()
-                body = obj {
-                    filter?.let { "filter" to it }
-                    nextToken?.let { "start_cursor" to it }
-                    "page_size" to 100 //이게 최대임
-                }
-            }
-
-            check(resp.response.code == 200) { "${resp.response.code} ${resp.respText}" }
-
-            val resultObj = GsonData.parse(resp.respText)
-            val lines = resultObj["results"].map { line ->
-
-                val id = line["id"].str!!
-                val createdTime = line["created_time"].str!!.toLocalDateTime().plusHours(9)
-                val lastEditedTime = line["last_edited_time"].str!!.toLocalDateTime().plusHours(9)
-
-                val columns = line["properties"].entryMap().map { it.key to NotionCell(it.value) }.toMap()
-                NotionRow(id, createdTime, lastEditedTime, columns)
-            }
-            log.debug { " -> DB[${dbId}] 데이터로드 ${lines.size}건 -> $start" }
-            keep.add(lines)
-            resultObj["next_cursor"].str
-        }.flatten()
-    }
-
-    private fun toBody(dbId: String, cells: Map<String, KosonType>) = obj {
+    private fun toBody(dbId: String, properties: ObjectType) = obj {
         "parent" to obj {
             "database_id" to dbId
         }
-        "properties" to obj {
-            cells.forEach { rawKeyValue(it.key, it.value) }
-        }
-    }
-
-    private fun toBody(dbId: String, cells: List<NotionCell2>) = obj {
-        "parent" to obj {
-            "database_id" to dbId
-        }
-        "properties" to obj {
-            cells.forEach { rawKeyValue(it.name, it.notionJson) }
-        }
+        "properties" to properties
     }
 
     private fun toHeader() = mapOf(

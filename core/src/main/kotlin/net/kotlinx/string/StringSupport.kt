@@ -28,3 +28,22 @@ inline fun <T> String?.lett(block: (String) -> T): T? {
  * 널 & empty 세이프한  enum 로드
  *  */
 inline fun <reified T : Enum<T>> enumValueOf(str: String?, nullValue: T): T = str.lett { enumValueOf<T>(it) } ?: nullValue
+
+
+/**
+ * 문자열이 주어진 컬렉션의 어떤 값으로든 `startsWith` 되는지 여부
+ *
+ * 사용 예:
+ * "".startsWithAny(listOf("ab", "cd"))
+ *
+ * - 컬렉션이 비어있으면 false 리턴
+ * - 빈 문자열("")이 컬렉션에 포함되어 있으면 `startsWith("")` 특성상 true 가 된다
+ */
+fun String.startsWithAny(prefixes: Iterable<String>): Boolean = prefixes.any { this.startsWith(it) }
+
+/**
+ * 가변 인자 버전
+ */
+fun String.startsWithAny(vararg prefixes: String): Boolean = this.startsWithAny(prefixes.asList())
+
+

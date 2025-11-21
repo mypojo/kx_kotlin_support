@@ -25,7 +25,7 @@ import kotlin.time.Duration.Companion.seconds
 
 
 /**
- * 웹서비스 ECS 구현
+ * 웹서비스 ECS 구현.
  *
  * 작업전에!
  * 이미지가 ECR에 정상 배포 되었고, 헬스체크가 정상적으로 작동 하는지 확인 해주세요

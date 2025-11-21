@@ -53,4 +53,3 @@ data class VpcInfo(
     /** 엘라스틱 IP의 ID */
     val allocationId: String,
 )
-

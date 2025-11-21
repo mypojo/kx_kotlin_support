@@ -12,14 +12,17 @@ import java.time.LocalDateTime
  *  */
 object NotionFilterSet {
 
-    /** 간단한 and eq 조건들  */
-    fun eq(options: List<NotionCell2>): ObjectType = obj {
+    /**
+     * 간단한 and eq 조건들
+     * @(property, operator, value) 이름, 타입, 값
+     *  */
+    fun eq(options: List<Triple<String, String, String>>): ObjectType = obj {
         "and" to arr[
             options.map {
                 obj {
-                    "property" to it.name
-                    it.type.name to obj {
-                        "equals" to it.value
+                    "property" to it.first
+                    it.second to obj {
+                        "equals" to it.third
                     }
                 }
             }

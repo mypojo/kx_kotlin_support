@@ -66,8 +66,8 @@ class AwsDbClient {
                 SqlParameter {
                     name = it.key
                     value = when (it.value) {
-                        is Long -> Field.LongValue(it.value as Long)
                         is Double -> Field.DoubleValue(it.value as Double)
+                        is Number -> Field.LongValue((it.value as Number).toLong())
                         is Boolean -> Field.BooleanValue(it.value as Boolean)
                         else -> Field.StringValue(it.value.toString())
                     }

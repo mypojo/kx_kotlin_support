@@ -22,7 +22,8 @@ import java.nio.file.Files
 
 /**
  * FlowCollector 기반 CSV S3 업로드 콜렉터
- * lambda 처럼 메모리와 디스크 모두 부족환 환경에서 대용량을 처리하기 위한 도구임
+ * lambda(256mb) 처럼 메모리와 디스크 모두 부족환 환경에서 대용량 데이터를 업로드하기 위한 도구임
+ * ex) 10G 데이터를 athena로  읽기 -> 인코딩변경 & 데이터 추가 -> 100mb로 잘라서 S3 재업로드
  *
  * - emit() 으로 전달되는 레코드(List<List<String>>)를 로컬 파일에 CSV로 기록
  * - 파일 크기가 임계값(기본 5MB)을 넘으면 멀티파트 업로드 수행

@@ -13,7 +13,7 @@ class EncryptDecryptToolTest : BeSpecLog() {
         Given("EncryptDecryptTool") {
             Then("암/목호화") {
 
-                val kryword = "nhn"
+                val kryword = "nnn"
 
                 run {
                     val key = kryword

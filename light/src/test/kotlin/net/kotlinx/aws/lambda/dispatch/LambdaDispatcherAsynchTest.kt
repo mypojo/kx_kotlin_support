@@ -57,12 +57,12 @@ class LambdaDispatcherAsynchTest : BeSpecHeavy() {
                 "time" to "2025-02-06T02:25:19Z"
                 "region" to "ap-northeast-2"
                 "resources" to arr[
-                    "arn:aws:s3:::nabus-new-real-work"
+                    "arn:aws:s3:::nxxxb-new-real-work"
                 ]
                 "detail" to obj {
                     "version" to "0"
                     "bucket" to obj {
-                        "name" to "nabus-new-real-work"
+                        "name" to "nxxxb-new-real-work"
                     }
                     "object" to obj {
                         "key" to "integration/ap/OUTPUT/tv-banner-07.html"

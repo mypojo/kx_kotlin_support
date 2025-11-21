@@ -12,13 +12,10 @@ import net.kotlinx.koin.Koins.koinLazy
 /**
  * 코틀린용 IAM 데이터소스
  * https://sdk.amazonaws.com/kotlin/api/latest/rds/aws.sdk.kotlin.services.rds/-rds-auth-token-generator/index.html
- * MYSQL 드라이버 / 마리아 드라이버 둘다 가능함.
+ * MYSQL 드라이버 / 마리아 드라이버 / 포스트그레스큐엘 등등 다 가능함.
  *
- * AWS 공식 JDBC 래퍼 드라이버에서 토큰 관리도 해준다는데.. 뭔가 설정을 좀 해야하는듯? 난 잘 안됨
- * https://github.com/aws/aws-advanced-jdbc-wrapper/tree/main?tab=readme-ov-file
- *
- * 코틀린 사용자 다 어디갔나?? 검색해도 안나오고.. ㅠㅠ
- * 생성자 오버라이드 때문에 , 별도 생성자로 구현함
+ * AWS 에서 IAM 지원하는 공식 드라이버를 오픈했으니 이거 써도됨
+ * https://aws.amazon.com/ko/blogs/tech/introducing-the-advanced-jdbc-wrapper-driver-for-amazon-aurora/
  */
 class HikariIamDataSource(@Kdsl block: HikariIamDataSource.() -> Unit = {}) : HikariDataSource() {
 

@@ -57,13 +57,16 @@ class CdkStaticHost {
 
     var cloudFrontBuild: DistributionProps.Builder.() -> Unit = {}
 
+    /** 외부에서 생성된 WAF WebACL ARN. 설정되면 CloudFront에 연결됨 */
+    var webAclArn: String? = null
+
     //==================================================== 결과 ======================================================
 
     lateinit var origon: CdkS3
 
     lateinit var cloudFront: CdkCloudFront
 
-    fun create(stack: Stack) {
+    fun create(stack: Stack,block: CdkCloudFront.() -> Unit = {}) {
         val s3Name = hostS3Name ?: hostDomain
         origon = CdkS3(s3Name).apply {
             domain = true
@@ -78,7 +81,12 @@ class CdkStaticHost {
             domain = hostDomain
             origin = CdkCloudFront.forWebsite(origon.iBucket)
             iCertificate = Certificate.fromCertificateArn(stack, "hosting-${hostDomain}", certArn)
-            create(stack, cloudFrontBuild)
+            webAclArn = this@CdkStaticHost.webAclArn
+            block()
+            create(stack) {
+                // 외부에서 전달된 추가 설정 적용
+                this.apply(cloudFrontBuild)
+            }
         }
         Route53Util.arecord(stack, hostedZone, hostDomain, cloudFront.distribution.toRecordTarget())
 

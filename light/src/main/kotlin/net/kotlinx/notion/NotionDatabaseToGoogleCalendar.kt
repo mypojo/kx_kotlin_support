@@ -2,7 +2,6 @@ package net.kotlinx.notion
 
 import mu.KotlinLogging
 import net.kotlinx.google.calendar.GoogleCalendar
-import net.kotlinx.google.calendar.GoogleCalendarData
 import net.kotlinx.string.toLocalDateTime
 import net.kotlinx.time.toF01
 import org.koin.core.component.KoinComponent
@@ -129,28 +128,28 @@ class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() ->
 //        }
     }
 
-    private suspend fun synchInsert(calendarId: String, calendarData: GoogleCalendarData, notionPageId: String) {
-        googleCalendar.insert(calendarId, calendarData)
-        //노션에 구글 캘린더 ID를 업데이트함
-        notionDatabaseClient.update(
-            notionDbId, notionPageId, listOf(
-                NotionCell2(gceid, NotionCellType.rich_text, calendarData.eventId),
-            )
-        )
-        log.debug { " -> [${calendarData.title}] insert" }
-    }
-
-    private suspend fun synchUpdate(calendarId: String, calendarData: GoogleCalendarData, gceId: String, notionPageId: String) {
-        try {
-            calendarData.eventId = gceId
-            googleCalendar.update(calendarId, calendarData)
-            log.debug { " -> [${calendarData.title}] update" }
-        } catch (e: Exception) {
-            log.warn { "업데이트 실패 (캘린더ID 변경) -> gceId(${gceId})를 초기화 후 insert" }
-            calendarData.eventId = ""
-            synchInsert(calendarId, calendarData, notionPageId)
-        }
-    }
+//    private suspend fun synchInsert(calendarId: String, calendarData: GoogleCalendarData, notionPageId: String) {
+//        googleCalendar.insert(calendarId, calendarData)
+//        //노션에 구글 캘린더 ID를 업데이트함
+//        notionDatabaseClient.update(
+//            notionDbId, notionPageId, listOf(
+//                NotionCell2(gceid, NotionCellType.rich_text, calendarData.eventId),
+//            )
+//        )
+//        log.debug { " -> [${calendarData.title}] insert" }
+//    }
+//
+//    private suspend fun synchUpdate(calendarId: String, calendarData: GoogleCalendarData, gceId: String, notionPageId: String) {
+//        try {
+//            calendarData.eventId = gceId
+//            googleCalendar.update(calendarId, calendarData)
+//            log.debug { " -> [${calendarData.title}] update" }
+//        } catch (e: Exception) {
+//            log.warn { "업데이트 실패 (캘린더ID 변경) -> gceId(${gceId})를 초기화 후 insert" }
+//            calendarData.eventId = ""
+//            synchInsert(calendarId, calendarData, notionPageId)
+//        }
+//    }
 
 
 }

@@ -17,7 +17,7 @@ class HttpAuthUtilTest : BeSpecLog() {
                 val auth = "Basic bmhuOjEyMzQ="
                 val pair = HttpAuthUtil.validate(auth)
                 pair shouldNotBe null
-                pair!!.first shouldBe "nhn"
+                pair!!.first shouldBe "nnn"
                 pair!!.second shouldBe "1234"
             }
         }
