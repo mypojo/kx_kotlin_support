@@ -14,6 +14,7 @@ import kotlin.time.Duration.Companion.seconds
 fun List<DataSetSummary>.printSimple() {
     listOf("id", "importMode", "name", "createdTime", "lastUpdatedTime").toTextGridPrint {
         this.map {
+            println(it)
             arrayOf(it.dataSetId, it.importMode, it.name, it.createdTime, it.lastUpdatedTime)
         }
     }

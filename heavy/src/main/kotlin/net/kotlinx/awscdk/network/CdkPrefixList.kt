@@ -24,7 +24,7 @@ class CdkPrefixList : CdkInterface {
     lateinit var prefixDatas: Map<String, String>
 
     /** 기본 최대 */
-    val maxEntries: Int = 50
+    var maxEntries: Int = 50
 
     override val logicalName: String
         get() = "${projectName}-prefix_${name}-${suff}"

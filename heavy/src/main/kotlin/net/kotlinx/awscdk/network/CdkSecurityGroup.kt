@@ -11,12 +11,12 @@ import software.amazon.awscdk.services.ec2.*
  * enum으로 설정하면됨.
  * 수정시 추가 후 삭제하는 방식 ->  5개 넘으면 오류남.. 엉성하다..
  * 이경우 Rule 다 삭제 -> 다시 추가 이런식으로 하면됨
+ *
+ * 주의!!
+ * 최초 세칭은 룰 60개 밖에 안된다.
+ * 개발 IP 화이트리스트 적용시 턱없이 부족하니, 리소스 요청 증가를 할것
  *  */
-class CdkSecurityGroup(
-    val sgName: String,
-//    /** ID 하드코딩된 맵 (캐시 등의 이유로 name으로 조회가 안될때) */
-//    var idMap: Map<DeploymentType, String> = emptyMap()
-) : CdkEnum {
+class CdkSecurityGroup(val sgName: String) : CdkEnum {
 
     override val logicalName: String
         get() = "${projectName}-sg_${sgName}-${suff}"

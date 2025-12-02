@@ -135,9 +135,12 @@ class CdkEcsWeb : CdkInterface {
         TagUtil.tagDefault(cluster)
     }
 
+    lateinit var targetGroup: IApplicationTargetGroup
+
     lateinit var taskDef: TaskDefinition
 
     lateinit var container: ContainerDefinition
+
 
     /** ECS - TASK DEFINITION */
     private fun createTaskDefinition(stack: Stack) {
@@ -192,14 +195,14 @@ class CdkEcsWeb : CdkInterface {
         val albName = "${projectName}-${name}-alb-${suff}"
 
         /** 내부 서버의 타임아웃은 이거보다 짧게 설정해야 한다. */
-        val TIMEOUT_ALB = (60).seconds.toCdk()  // 2분에서 5분으로 늘림 (전체 리스트 조회시 2분 넘게걸림)
+        val duration = (60).seconds.toCdk()  // 2분에서 5분으로 늘림 (전체 리스트 조회시 2분 넘게걸림)
 
         alb = ApplicationLoadBalancer(
             stack, albName, ApplicationLoadBalancerProps.builder()
                 .vpc(vpc)
                 .internetFacing(true) //true는 버블릭용.
                 .loadBalancerName(albName)
-                .idleTimeout(TIMEOUT_ALB)
+                .idleTimeout(duration)
                 .vpcSubnets(SubnetSelection.builder().subnets(vpc.publicSubnets).build()) //ALB는 public에 있어야함
                 .securityGroup(sgAlb)
                 .build()
@@ -234,7 +237,24 @@ class CdkEcsWeb : CdkInterface {
         createAlb(stack)
 
         val service = createFargateService(stack)
-        val httpsListner = alb.addListener(
+
+        val targetGroupName = "${projectName}-${name}-target-${suff}" //언더바 사용 금지
+        this.targetGroup = ApplicationTargetGroup(
+            stack, targetGroupName, ApplicationTargetGroupProps.builder()
+                .vpc(vpc)
+                .targetType(TargetType.IP)
+                .targetGroupName(targetGroupName)
+                .protocol(ApplicationProtocol.HTTP)
+                .port(PortUtil.WEB_8080)
+                .healthCheck(healthCheck)
+                .apply {
+                    stickinessCookieDuration?.let { stickinessCookieDuration(it.toCdk()) }
+                }
+                .build()
+        )
+        TagUtil.tagDefault(targetGroup)
+
+        alb.addListener(
             "${projectName}-${name}_alb_listner_https-${suff}",
             BaseApplicationListenerProps.builder()
                 .port(PortUtil.WEB_443)
@@ -242,30 +262,32 @@ class CdkEcsWeb : CdkInterface {
                 .open(false) //오픈 옵션 주면, 자동으로 SG에 전체 오픈이 추가됨. 실제운영시에는 별도 SG를 사용함
                 .sslPolicy(SslPolicy.RECOMMENDED) //최신버전 쓰자
                 .certificates(certs.map { ListenerCertificate.fromArn(it) })
+                .defaultAction(ListenerAction.forward(listOf(targetGroup))) // 타겟그룹 연결
                 .build()
         )
+        service.attachToApplicationTargetGroup(targetGroup)
 
-        val targetGroupName = "${projectName}-${name}-target-${suff}" //언더바 사용 금지
-        service.registerLoadBalancerTargets(
-            EcsTarget.builder()
-                .containerName(container.containerName)
-                .containerPort(PortUtil.WEB_8080)
-                .newTargetGroupId(targetGroupName)
-                .listener(
-                    ListenerConfig.applicationListener(
-                        httpsListner, AddApplicationTargetsProps.builder()
-                            .protocol(ApplicationProtocol.HTTP)
-                            .port(PortUtil.WEB_8080)
-                            .healthCheck(healthCheck)
-                            .targetGroupName(targetGroupName)
-                            .apply {
-                                stickinessCookieDuration?.let { stickinessCookieDuration(it.toCdk()) }
-                            }
-                            .build()
-                    )
-                )
-                .build()
-        )
+        // 기존 EcsTarget 방식을 ,직접 타겟그룹을 생성하는 방식으로 변경 (확장때문)
+//        val ecsTarget = EcsTarget.builder()
+//            .containerName(container.containerName)
+//            .containerPort(PortUtil.WEB_8080)
+//            .newTargetGroupId(targetGroupName)
+//            .listener(
+//                ListenerConfig.applicationListener(
+//                    httpsListner, AddApplicationTargetsProps.builder()
+//                        .protocol(ApplicationProtocol.HTTP)
+//                        .port(PortUtil.WEB_8080)
+//                        .healthCheck(healthCheck)
+//                        .targetGroupName(targetGroupName)
+//                        .apply {
+//                            stickinessCookieDuration?.let { stickinessCookieDuration(it.toCdk()) }
+//                        }
+//                        .build()
+//                )
+//            )
+//            .build()
+//        service.registerLoadBalancerTargets(ecsTarget)
+
     }
 
     private fun createFargateService(stack: Stack, block: FargateServiceProps.Builder.() -> Unit = {}): FargateService {
@@ -388,5 +410,35 @@ class CdkEcsWeb : CdkInterface {
             .build()
     }
 
+    /**
+     * 특수한 포트를 설정해서 오픈함
+     * 소스코드 참고용
+     * ex) XX 포트의 경우 all open 으로 열어두지만 특수 경로만 하용됨 -> ListenerCondition.pathPatterns(listOf("/api/nhn/basic/call/..*")
+     *  */
+    fun addListenerCustomPort(port: Int, conditions: List<ListenerCondition>) {
+        /** 8081 특수포트 설정 */
+        val listener = alb.addListener(
+            "${projectName}-${name}_alb_listner_$port-${suff}", BaseApplicationListenerProps.builder()
+                .port(port)
+                .protocol(ApplicationProtocol.HTTP)
+                // 기본 동작을 403으로 고정 응답. 조건과 일치하지 않는 모든 요청은 403을 반환하게 함
+                .defaultAction(
+                    ListenerAction.fixedResponse(
+                        403, FixedResponseOptions.builder()
+                            .contentType("text/plain")
+                            .messageBody("Forbidden")
+                            .build()
+                    )
+                )
+                .build()
+        )
+        listener.addAction(
+            "${projectName}-${name}_alb_action_$port-${suff}",
+            AddApplicationActionProps.builder()
+                .priority(10)
+                .conditions(conditions)
+                .action(ListenerAction.forward(listOf(targetGroup)))
+                .build()
+        )
+    }
 }
-

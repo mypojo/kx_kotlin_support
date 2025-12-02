@@ -21,7 +21,7 @@ class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() ->
 
     private val googleCalendar: GoogleCalendar by inject()
     private val notionDatabaseClient: NotionDatabaseClient by inject()
-    private val notionPageBlockClient: NotionPageBlockClient by inject()
+    private val notionBlockClient: NotionBlockClient by inject()
 
     //==================================================== 노션 설정 ======================================================
 
@@ -67,7 +67,7 @@ class NotionDatabaseToGoogleCalendar(block: NotionDatabaseToGoogleCalendar.() ->
     /** 스냅스타트용 */
     suspend fun snapstart() {
         log.warn { "스냅스타트.." }
-        notionPageBlockClient.blocks(notionPageId, 1)
+        notionBlockClient.list(notionPageId, 1)
         googleCalendar.list(calendarDefaultId, 1)
     }
 

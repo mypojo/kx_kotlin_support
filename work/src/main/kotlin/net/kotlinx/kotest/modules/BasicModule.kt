@@ -26,8 +26,8 @@ import net.kotlinx.kotest.modules.lambdaDispatcher.AwsSnsListener
 import net.kotlinx.kotest.modules.lambdaDispatcher.LambdaDispatcherDefaultListener
 import net.kotlinx.lazyLoad.lazyLoad
 import net.kotlinx.lazyLoad.lazyLoadStringSsm
+import net.kotlinx.notion.NotionBlockClient
 import net.kotlinx.notion.NotionDatabaseClient
-import net.kotlinx.notion.NotionPageBlockClient
 import net.kotlinx.reflect.name
 import net.kotlinx.slack.SlackApp
 import net.kotlinx.slack.SlackMessageSenders
@@ -118,7 +118,7 @@ object BasicModule : KoinModule {
         }
         single {
             val secretValue by lazyLoadStringSsm("/secret/api/notion")
-            NotionPageBlockClient(secretValue)
+            NotionBlockClient(secretValue)
         }
         single<GoogleService> {
             val client = koin<AwsClient>()

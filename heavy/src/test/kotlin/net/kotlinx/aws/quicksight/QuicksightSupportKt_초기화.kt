@@ -8,7 +8,8 @@ import net.kotlinx.kotest.modules.BeSpecHeavy
 
 class QuicksightSupportKt_초기화 : BeSpecHeavy() {
 
-    private val client by koinLazy<AwsClient>(findProfile97)
+    private val client by koinLazy<AwsClient>(findProfile49)
+    //private val client by koinLazy<AwsClient>(findProfile97)
 
 
     init {
@@ -39,6 +40,16 @@ class QuicksightSupportKt_초기화 : BeSpecHeavy() {
                     client.quicksight.deleteDataSet(it.dataSetId!!)
                     log.warn { "데이터세트 ${it.name} 삭제 완료" }
                 }
+            }
+
+            Then("데이터소스 생성") {
+                val ADMINS = listOf("DEV/sin")
+                val items = client.quicksight.createDataSourceAthena(
+                    id = "athena-dev",
+                    sourceName = "athena-dev",
+                    workGroup = "workgroup-dev",
+                    users = ADMINS
+                )
             }
 
             Then("데이터소스 리스팅") {

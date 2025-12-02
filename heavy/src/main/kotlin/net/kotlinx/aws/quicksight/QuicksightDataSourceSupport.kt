@@ -48,7 +48,7 @@ suspend fun QuickSightClient.deleteDataSourceIfExist(dataSourceId: String): Dele
             this.awsAccountId = awsConfig.awsId
             this.dataSourceId = dataSourceId
         }
-    } catch (e: ResourceNotFoundException) {
+    } catch (_: ResourceNotFoundException) {
         null
     }
 }
@@ -77,6 +77,11 @@ suspend fun QuickSightClient.createDataSourceS3(id: String, sourceName: String, 
     }
 }
 
+/**
+ * 주의!!
+ * 콘솔에서 만들면 권한 문제로 작동을 안하는듯.
+ * SDK로 생성하자
+ * */
 suspend fun QuickSightClient.createDataSourceAthena(id: String, sourceName: String, workGroup: String, users: List<String>): CreateDataSourceResponse {
     return this.createDataSource {
         awsAccountId = awsConfig.awsId

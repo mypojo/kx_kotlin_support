@@ -20,7 +20,7 @@ sealed interface NotionCell {
 
         /** 사람이 인식 가능한 간단 텍스트로 변환해준다 */
         fun toText(body: GsonData): String {
-            val type: String = body["type"].str!!
+            val type: String = body["type"].str ?: body.toPreety()
             return when (type) {
 
                 //==================================================== 공용 ======================================================
@@ -30,7 +30,7 @@ sealed interface NotionCell {
                 "title" -> body["title"].joinToString("|") { it["plain_text"].str ?: "xx" }
 
                 //==================================================== 데이터베이스 속성 ======================================================
-                
+
                 "child_database" -> body["title"].str!!  //강제로 생성한 타입!!
                 "rich_text" -> body["plain_text"].str ?: ""
                 "select" -> body["select"]["name"].str ?: ""

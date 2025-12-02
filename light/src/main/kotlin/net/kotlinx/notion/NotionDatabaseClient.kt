@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import mu.KotlinLogging
 import net.kotlinx.json.gson.GsonData
+import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.okhttp.await
 import net.kotlinx.time.TimeStart
 import okhttp3.OkHttpClient
@@ -62,7 +63,7 @@ class NotionDatabaseClient(
         }
     }
 
-    suspend fun insert(dbId: String, properties: ObjectType) {
+    suspend fun insert(dbId: String, properties: ObjectType): NotionDatabaseRow {
         val resp = client.await {
             url = "https://api.notion.com/v1/pages"
             method = "POST"
@@ -71,10 +72,10 @@ class NotionDatabaseClient(
         }
         check(resp.response.code == 200) { "${resp.response.code} ${resp.respText}" }
         log.trace { " -> notion insert 성공" }
-        println(resp.respText)
+        return NotionDatabaseRow(resp.respText.toGsonData())
     }
 
-    suspend fun update(dbId: String, pageId: String, properties: ObjectType) {
+    suspend fun update(dbId: String, pageId: String, properties: ObjectType): NotionDatabaseRow {
         val resp = client.await {
             url = "https://api.notion.com/v1/pages/${pageId}"
             method = "PATCH"
@@ -83,6 +84,7 @@ class NotionDatabaseClient(
         }
         check(resp.response.code == 200) { "${resp.response.code} ${resp.respText}" }
         log.trace { " -> notion update 성공" }
+        return NotionDatabaseRow(resp.respText.toGsonData())
     }
 
     /**

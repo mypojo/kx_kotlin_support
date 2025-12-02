@@ -17,6 +17,8 @@ import net.kotlinx.string.lett
  *
  *
  * json path 의존성도 추가됨 (저용량이라 따로 안뺌)
+ *
+ * 복사할때는 delegate.deepCopy() 할것
  */
 data class GsonData(val delegate: JsonElement) : Iterable<GsonData> {
 

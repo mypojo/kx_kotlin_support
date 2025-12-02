@@ -17,11 +17,11 @@ class NotionPageBlockClientTest : BeSpecHeavy() {
 
         Given("NotionPageBlockClient") {
 
-            val page by koinLazy<NotionPageBlockClient>()
+            val page by koinLazy<NotionBlockClient>()
             val pageId = "23b20bec-25ea-441f-8de6-448e9c8a5e95"
 
             Then("블록조회") {
-                val blocks = page.blocks(pageId, 10).first()
+                val blocks = page.list(pageId, 10).first()
                 log.info { "블록사이즈 ${blocks.size}" }
                 listOf("id", "block type", "cell type", "viewText").toTextGridPrint {
                     blocks.map { arrayOf(it.id, it.type, it.cell?.type ?: "", it.cell?.viewText ?: "") }
@@ -35,7 +35,7 @@ class NotionPageBlockClientTest : BeSpecHeavy() {
             }
 
             Then("블록추가 ") {
-                page.appendChildrenRaw(pageId) {
+                page.insertTableRow(pageId, obj {
                     "children" to arr[
                         obj {
                             "object" to "block"
@@ -52,11 +52,11 @@ class NotionPageBlockClientTest : BeSpecHeavy() {
                             }
                         }
                     ]
-                }
+                })
             }
 
             Then("블록추가 리스트") {
-                page.appendChildrenRaw(pageId) {
+                page.insertTableRow(pageId, obj {
                     "children" to arr[
                         obj {
                             "object" to "block"
@@ -83,7 +83,7 @@ class NotionPageBlockClientTest : BeSpecHeavy() {
                             }
                         }
                     ]
-                }
+                })
             }
 
 
