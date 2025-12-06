@@ -10,7 +10,7 @@ import java.time.LocalDate
 
 /**
  * CostExplorerSupport2 kotest 템플릿
- * 내용은 비워둡니다. 필요 시 테스트 케이스를 추가하세요.
+ * 내용은 비워둡니다. 필요 시 테스트 케이스를 추가하세요..
  */
 internal class CostExplorerSupport2_kotest : BeSpecHeavy() {
 
@@ -30,7 +30,6 @@ internal class CostExplorerSupport2_kotest : BeSpecHeavy() {
                 )
                 costs.collect { it.print() }
             }
-
         }
     }
 }

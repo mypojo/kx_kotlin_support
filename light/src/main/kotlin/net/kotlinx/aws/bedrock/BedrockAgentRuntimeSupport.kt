@@ -10,18 +10,27 @@ import net.kotlinx.aws.regist
 val AwsClient.brar: BedrockAgentRuntimeClient
     get() = getOrCreateClient { BedrockAgentRuntimeClient { awsConfig.build(this) }.regist(awsConfig) }
 
-
-/** 간단 텍스트 변환 -> 스트리밍 전체 인메모리로 */
-suspend fun InvokeAgentResponse.toSimpleText(): String = buildString { toSimpleText { append(it) } }
-
-/** 간단 텍스트 변환 - 스트리밍 */
-suspend fun InvokeAgentResponse.toSimpleText(block: (String) -> Unit = {}) {
+/**
+ * 배드락 응답 결과 간단 파싱
+ * 1. 결과는 문자로 리턴  ( 대용량 응답이 아니라고 가정 )
+ * 2. 트레이스는 콜백으로 처리
+ * */
+suspend fun InvokeAgentResponse.toSimpleText(debug: (Int, ResponseStream.Trace) -> Unit = { _, _ -> }): String {
+    val list = mutableListOf<String>()
+    var traceCnt = 0
     this.completion!!.collect { event ->
-        val append = when (event) {
-            is ResponseStream.Chunk -> event.value.bytes?.decodeToString() ?: "" //일반적으로 Chunk 로 리턴됨
-            is ResponseStream.Trace -> event.value.toString()
+        when (event) {
+            is ResponseStream.Chunk -> {
+                val result = event.value.bytes?.decodeToString() ?: "" //일반적으로 Chunk 로 리턴됨
+                list.add(result)
+            }
+
+            is ResponseStream.Trace -> {
+                debug.invoke(traceCnt++, event)
+            }
+
             else -> throw IllegalArgumentException("지원하지 않는 타입 : ${event::class.qualifiedName}")
         }
-        block(append)
     }
+    return list.joinToString()
 }

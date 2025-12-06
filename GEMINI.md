@@ -1,1 +1,0 @@
-상세 코드 가이드라인은 .junie/guidelines.md 파일을 를 참고해줘

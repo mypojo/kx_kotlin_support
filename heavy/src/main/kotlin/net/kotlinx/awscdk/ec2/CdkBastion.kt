@@ -12,7 +12,7 @@ import software.amazon.awscdk.services.iam.IRole
  * 2022.12 기준 아직 DB 포워딩을 다이렉트로 해주지 않는다
  *
  * https://ap-northeast-2.console.aws.amazon.com/systems-manager/session-manager/preferences?region=ap-northeast-2
- * 최초 세팅시 Idle 타임아웃 기본 20분인데 60으로 늘려주자
+ * 최초 세팅시 Idle 타임아웃 기본 20분인데 60으로 늘려주자 & Maximum session duration 을 보안이 허락하는한 최대로 수정
  *
  * 에러나면 SSM으로 붙어서 아래 로깅 켜보자
  * sudo tail -f /var/log/amazon/ssm/amazon-ssm-agent.log

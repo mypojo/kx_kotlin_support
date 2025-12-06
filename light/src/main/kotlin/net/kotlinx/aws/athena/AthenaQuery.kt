@@ -27,8 +27,12 @@ data class AthenaExecute(
 ) : AthenaQuery {
     override var token: String? = UUID.randomUUID().toString()
 
+    /** 실행결과 */
+    lateinit var queryExecution: QueryExecution
+
     /** S3 결과 저장 */
-    lateinit var outputLocation: String
+    val outputLocation: String
+        get() = queryExecution!!.resultConfiguration!!.outputLocation!!
 
     /** 결과 S3 경로 */
     val queryResultPath: S3Data

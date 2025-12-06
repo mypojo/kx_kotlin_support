@@ -1,11 +1,9 @@
 package net.kotlinx.aws.athena
 
 import aws.sdk.kotlin.services.athena.getQueryExecution
-import aws.sdk.kotlin.services.athena.model.QueryExecution
-import aws.sdk.kotlin.services.athena.model.QueryExecutionContext
-import aws.sdk.kotlin.services.athena.model.QueryExecutionState
+import aws.sdk.kotlin.services.athena.getQueryResults
+import aws.sdk.kotlin.services.athena.model.*
 import aws.sdk.kotlin.services.athena.model.QueryExecutionState.*
-import aws.sdk.kotlin.services.athena.model.TooManyRequestsException
 import aws.sdk.kotlin.services.athena.startQueryExecution
 import ch.qos.logback.classic.Level
 import kotlinx.coroutines.launch
@@ -121,7 +119,7 @@ class AthenaModule {
             //편의성 콜백 정의
             when (athenaQuery) {
                 is AthenaExecute -> {
-                    athenaQuery.outputLocation = currentQueryExecution!!.resultConfiguration!!.outputLocation!!
+                    athenaQuery.queryExecution = currentQueryExecution!!
                     athenaQuery.callback?.invoke(currentQueryExecution!!) //콜백이 없으면 작동 안함.
                 }
 
@@ -210,6 +208,18 @@ class AthenaModule {
             }
         }.coroutineExecute()
         return query
+    }
+
+    /**
+     * 실행 후 결과 세트 샘플을 가져온다
+     * ex) 메타데이터 확인
+     *  */
+    suspend fun executeAndgetQueryResults(sqlQuery: String, limit: Int): GetQueryResultsResponse {
+        val exe = execute(sqlQuery)
+        return aws.athena.getQueryResults {
+            this.queryExecutionId = exe.queryExecution.queryExecutionId
+            this.maxResults = limit
+        }
     }
 
     //==================================================== 폐기 ======================================================

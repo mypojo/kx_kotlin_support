@@ -9,17 +9,20 @@ import kotlinx.coroutines.flow.toList
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.awsConfig
 import net.kotlinx.aws.regist
-import net.kotlinx.concurrent.coroutineExecute
+import net.kotlinx.concurrent.coroutine
 import net.kotlinx.string.toTextGridPrint
 import net.kotlinx.time.TimeUtil
 
 val AwsClient.schedule: SchedulerClient
     get() = getOrCreateClient { SchedulerClient { awsConfig.build(this) }.regist(awsConfig) }
 
-/** 전체 스케쥴 리턴 */
+/**
+ * 전체 스케쥴 리턴
+ * 내부적으로 flow 전체를 사용함
+ *  */
 suspend fun SchedulerClient.listAllScheduleDetails(groupName: String? = null): List<GetScheduleResponse> {
-    val summaryList = this.listSchedulesPaginated { this.groupName = groupName }.toList().map { it.schedules }.flatten()
-    return summaryList.map { suspend { getSchedule(it.groupName!!, it.name!!) } }.coroutineExecute(8)
+    val summaryList = this.listSchedulesPaginated { this.groupName = groupName }.toList().flatMap { it.schedules }
+    return summaryList.coroutine { getSchedule(it.groupName!!, it.name!!) }
 }
 
 /** 단일 스케쥴 리턴 */

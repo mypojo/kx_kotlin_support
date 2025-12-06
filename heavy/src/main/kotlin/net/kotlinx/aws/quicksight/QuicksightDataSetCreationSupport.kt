@@ -4,6 +4,7 @@ import aws.sdk.kotlin.services.quicksight.QuickSightClient
 import aws.sdk.kotlin.services.quicksight.createDataSet
 import aws.sdk.kotlin.services.quicksight.model.*
 import net.kotlinx.aws.awsConfig
+import net.kotlinx.aws.quicksight.QuicksightDataSetCreation.QuicksightDataSetConfigType
 
 
 /**
@@ -28,7 +29,7 @@ suspend fun QuickSightClient.createDataSet(dataSet: QuicksightDataSetCreation): 
 
     when (dataSet.type) {
 
-        QuicksightDataSetCreation.QuicksightDataSetConfigType.QUERY -> physicalTableMap = mapOf(
+        QuicksightDataSetConfigType.QUERY -> physicalTableMap = mapOf(
             "AthenaTable" to PhysicalTable.CustomSql(
                 CustomSql {
                     dataSourceArn = "arn:aws:quicksight:${awsConfig.region}:${awsConfig.awsId}:datasource/${dataSet.dataSourceId}"
@@ -44,7 +45,7 @@ suspend fun QuickSightClient.createDataSet(dataSet: QuicksightDataSetCreation): 
             )
         )
 
-        QuicksightDataSetCreation.QuicksightDataSetConfigType.TABLE -> physicalTableMap = mapOf(
+        QuicksightDataSetConfigType.TABLE -> physicalTableMap = mapOf(
             "AthenaTable" to PhysicalTable.RelationalTable(
                 RelationalTable {
                     dataSourceArn = "arn:aws:quicksight:${awsConfig.region}:${awsConfig.awsId}:datasource/${dataSet.dataSourceId}"
