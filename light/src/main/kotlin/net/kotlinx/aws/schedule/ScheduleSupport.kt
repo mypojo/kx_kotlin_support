@@ -18,7 +18,7 @@ val AwsClient.schedule: SchedulerClient
 
 /**
  * 전체 스케쥴 리턴
- * 내부적으로 flow 전체를 사용함
+ * 내부적으로 flow 전체를 사용함.
  *  */
 suspend fun SchedulerClient.listAllScheduleDetails(groupName: String? = null): List<GetScheduleResponse> {
     val summaryList = this.listSchedulesPaginated { this.groupName = groupName }.toList().flatMap { it.schedules }
