@@ -8,6 +8,9 @@ import aws.sdk.kotlin.services.ec2.model.RemovePrefixListEntry
 import aws.sdk.kotlin.services.ec2.modifyManagedPrefixList
 import aws.sdk.kotlin.services.ec2.paginators.getManagedPrefixListEntriesPaginated
 import kotlinx.coroutines.flow.*
+import mu.KotlinLogging
+
+private val log = KotlinLogging.logger {}
 
 /** 최신 Prefix List 버전 조회 */
 suspend fun Ec2Client.getPrefixListVersion(prefixListId: String): Long {
@@ -45,8 +48,12 @@ suspend fun Ec2Client.getPrefixListCidrs(prefixListId: String): List<PrefixListE
  * - 기존에 있는데 입력에 없으면 제거
  * 경고!! 보통 SG당 60개 제한임. SG는 5개까지 달수있음으로 일반적으로는 최대 300개 까지 가능함 (비현실적임!)
  * 경고!! 다수의 시스템이 있는경우 각각 업데이트 해도 되고, share를 해서 써도 된다.  -> 관리는 각각 업데이트 하는게 더 편한듯
+ * IP 프리픽스는 입력 / 삭제 갯수의 합이 100을 넘어가면 안된다.
+ * 업데이트 후, 딜레이를 줘야하기때문에, 연속 입력으로 코딩하기도 애매하니 대량 입력시, 점진적으로 할것!
+ *
+ * WAF는 대량 가능한것으로 보임
  */
-suspend fun Ec2Client.updateIpToPrefixList(prefixListId: String, cidrs: List<Pair<String, String>>) {
+suspend fun Ec2Client.updateIpToPrefixList(prefixListId: String, cidrs: List<Pair<String, String>>): Triple<Int, Int, Int> {
 
     // 현재 등록된 CIDR 전체 조회
     val existingCidrs: List<String> = getPrefixListCidrs(prefixListId).map { it.cidr!! }
@@ -77,7 +84,9 @@ suspend fun Ec2Client.updateIpToPrefixList(prefixListId: String, cidrs: List<Pai
         }
         .toList()
 
-    if (addEntries.isEmpty() && removeEntries.isEmpty()) return
+    //아래 에러날 수 있어서, 상황체크용 로깅
+    log.debug { " -> 기등록 ${existingCidrs.size}건 -> 신규 데이터 적용으로 add=${addEntries.size}건, remove=${removeEntries.size}건 적용..." }
+    if (addEntries.isEmpty() && removeEntries.isEmpty()) return Triple(existingCidrs.size, 0, 0)
 
     val prefixListVersion = getPrefixListVersion(prefixListId) //update 시에는 버전 필수
     modifyManagedPrefixList {
@@ -86,6 +95,8 @@ suspend fun Ec2Client.updateIpToPrefixList(prefixListId: String, cidrs: List<Pai
         if (addEntries.isNotEmpty()) this.addEntries = addEntries
         if (removeEntries.isNotEmpty()) this.removeEntries = removeEntries
     }
+
+    return Triple(existingCidrs.size, addEntries.size, removeEntries.size)
 }
 
 

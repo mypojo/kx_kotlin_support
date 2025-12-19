@@ -63,6 +63,7 @@ abstract class BeSpecKoin(modules: List<Module>) : BeSpecLog() {
         }
     }
 
+    /** dp */
     val aws49 by koinLazy<AwsClient>(findProfile49)
 
     val athenaModule49 by lazy {

@@ -117,6 +117,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.session:spring-session-core")
     implementation("org.springframework.retry:spring-retry") //이건 사용 안할수도 있음
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server") //코그니토 JWT 사용시 필요
 
     //==================================================== 벨리데이션 ======================================================
     implementation("org.hibernate.validator:hibernate-validator") //버전표기 안함 (스프링부트 관리) -> 약 1mb

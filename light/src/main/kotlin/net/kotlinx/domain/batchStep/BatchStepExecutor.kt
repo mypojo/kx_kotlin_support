@@ -103,10 +103,8 @@ class BatchStepExecutor {
      * 결과 대기 & 콜백 기능이 추가됨
      *  */
     suspend fun startExecution(parameter: BatchStepParameter) {
-
         val sfnId = parameter.option.sfnId
         aws.sfn.startExecution(config.stateMachineName, parameter.option.sfnId, parameter.toJson()) //이 메소드를 여기서만 호출함
-
         if (synchSfn) {
             log.trace { "로컬인경우 작업을 다 기다린다음 결과 출력" }
             waitResult(sfnId)
@@ -119,7 +117,6 @@ class BatchStepExecutor {
      * 그대로 재실행함으로 별도의 옵션 필요없음
      *  */
     suspend fun startExecutionRetry(failedSfnId: String, newSfnId: String) {
-
         val execution = config.describeExecution(failedSfnId)
         log.warn { "작업 재시도!! [$failedSfnId] -> job의 상태 ${execution.status}" }
         check(execution.status == ExecutionStatus.Failed) { "SFN은 작업상태가 ${ExecutionStatus.Failed} 인것만 재시도가 가능합니다" }
@@ -137,9 +134,7 @@ class BatchStepExecutor {
                     sfnOption = it.str!!  //단순 문자열임 주의!!
                 }
             }
-
         }
-
         startExecution(parameter)
     }
 
