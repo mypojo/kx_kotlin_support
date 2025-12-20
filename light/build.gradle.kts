@@ -82,7 +82,8 @@ dependencies {
     api("com.google.guava:guava:_") //약 3mb
 
     //==================================================== 노션 SDK ======================================================
-    api("org.jraf:klibnotion:_") //약 1mb 흠.. 미덥지 못하다. ktor  2점대 잘 동작하나 3점대 작동안함.. 업데이트가 안되는중.. 일단 무시
+    api("org.jraf:klibnotion:_") //약 1mb 흠.. 미덥지 못하다. ktor  2점대 잘 동작하나 3점대 작동안함.. 업데이트가 안되는중.. 일단 무시 (향후 삭제할것)
+    api("com.petersamokhin.notionsdk:notionsdk:_") //사용하니 ktor 1점대 쓰고있네.. 업데이트 안되는듯.. 일단 무시 (향후 삭제할것)
 
     //==================================================== 슬랙 ======================================================
     api("com.slack.api:slack-api-client:_") //기본 API만 포함함
@@ -113,7 +114,8 @@ dependencies {
 
     //==================================================== ktor-client (OPEN-AI / 노션 등 에서 사용) ======================================================
     //클라이언트 버전은 서버 버전하고 동일하게 일단 가자. 충돌은 거기서 풀기
-    implementation("io.ktor:ktor-client-core:_") //open API 의 ktor core  베타인 3점대 쓰면 에러남../
+    implementation("io.ktor:ktor-client-core:_")
+    implementation("io.ktor:ktor-client-okhttp-jvm:3.3.0") //open API 의 ktor core  베타인 3점대 쓰면 에러남../
     runtimeOnly("io.ktor:ktor-client-okhttp:_") //open API 의 ktor JVM http 엔진. 나는 okhttp 사용.
 
     //==== 이하 플러그인 ====
