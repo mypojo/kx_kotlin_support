@@ -93,20 +93,20 @@ dependencies {
     //implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0") //https://github.com/googleapis/google-auth-library-java  구글인증은 이걸로 다 바뀐듯함 -> 나는 안씀
     implementation("com.google.gdata:core:_") //구글 기본세트
 
+
     //구글 기본세트는 메이븐에 없음 -> https://central.sonatype.com/artifact/com.google.apis/google-api-services-oauth2/v2-rev20200213-1.32.1
     //이때문에 일단 리프레시 버전 안쓰고 하드코딩함
     //implementation("com.google.api-client:google-api-client:2.6.0") //구글 Jib 빌드시 사용.
     //주의!! 구글은 API 2.x 를 내놨지만 시트 등은 여전히 1x 버전임. (com.google.api-client:google-api-client)
     // 호환안되고 확장해줄 의사도 앖음 -> 장기적으로는 rest 직접 호출이 바람직함
+    //실무 사용시 충돌나는경우 전역설정에 force 로 해결하면됨
     implementation("com.google.apis:google-api-services-oauth2:v2-rev20200213-1.32.1") //구글 기본세트
     implementation("com.google.apis:google-api-services-calendar:v3-rev20250404-2.0.0") //캘린더
     implementation("com.google.apis:google-api-services-sheets:v4-rev20250616-2.0.0") //구글시트
-
-    implementation("com.google.api-client:google-api-client:1.34.1") //강제로 1x 버전으로 내림
-    implementation("com.google.http-client:google-http-client-gson:1.43.3") //강제로 1x 버전으로 내림
-//    implementation("com.google.api-client:google-api-client-gson:2.8.1")
-//    implementation("com.google.http-client:google-http-client-gson:2.0.0")
-
+    constraints {
+        implementation("com.google.api-client:google-api-client:1.34.1") { because("api-client와 구글서비스 호환때문에 강제로 1.x 버전 사용") }
+        implementation("com.google.http-client:google-http-client-gson:1.43.3") { because("api-client와 구글서비스 호환때문에 강제로 1.x 버전 사용") }
+    }
 
     //==================================================== OPEN-AI ======================================================
     api("com.aallam.openai:openai-client:_") //open API (챗GPT) kotlin client.  커스텀 host를 로드하려면 implementation -> api 로 해야함
