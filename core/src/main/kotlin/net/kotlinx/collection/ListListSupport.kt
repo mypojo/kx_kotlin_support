@@ -12,3 +12,19 @@ fun <T> List<List<T>>.buildMatrix(): List<List<T>> {
         data.map { v -> sum.map { it + v } }.reduce { a, b -> a + b }
     }
 }
+
+/**
+ * List<List<String>>의 모든 내부 리스트를 가장 큰 크기에 맞춰서 빈 문자열로 채운다.
+ * Google Sheet에서 읽은 데이터처럼 각 행의 크기가 다를 때 유용하다.
+ */
+fun List<List<String>>.normalize(defaultValue: String = ""): List<List<String>> {
+    if (this.isEmpty()) return this
+    val maxSize = this.maxOfOrNull { it.size } ?: 0
+    return this.map { row ->
+        if (row.size < maxSize) {
+            row + List(maxSize - row.size) { defaultValue }
+        } else {
+            row
+        }
+    }
+}
