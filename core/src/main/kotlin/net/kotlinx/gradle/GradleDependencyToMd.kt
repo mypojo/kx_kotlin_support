@@ -293,7 +293,7 @@ class GradleDependencyToMd {
      * @param sections 섹션 정의 리스트 (필터가 null인 섹션은 최대 1개, 마지막에 처리)
      * @param globalFilter 전역 필터 (모든 섹션에 공통 적용)
      */
-    fun convertToMarkdownWithSections(
+    fun convertToMd(
         consoleLogFile: File,
         rootDir: File,
         sections: List<DependencySection>,

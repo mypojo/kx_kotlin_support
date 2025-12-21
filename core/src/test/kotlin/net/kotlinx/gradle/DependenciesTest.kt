@@ -1,6 +1,7 @@
 package net.kotlinx.gradle
 
 import net.kotlinx.file.slash
+import net.kotlinx.gradle.GradleDependencyToMd.DependencySection
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -18,30 +19,27 @@ class DependenciesTest : BeSpecLog() {
                 val root = File("C:\\Users\\mypoj\\IdeaProjects\\kx_kotlin_support\\light\\dependencies")
                 val consoleLogFile = root.slash("console.txt")
 
-                // GradleDependencyToMd 사용
-                val converter = GradleDependencyToMd()
-
                 // 섹션 정의 (파일별로 분리)
                 val sections = listOf(
                     //==================================================== AWS ======================================================
-                    GradleDependencyToMd.DependencySection(
+                    DependencySection(
                         title = "AWS",
                         fileName = "dependencies_aws.md",
                         filter = { dep -> dep.groupId.startsWith("com.amazonaws") }
                     ),
-                    GradleDependencyToMd.DependencySection(
+                    DependencySection(
                         title = "AWS SDK",
                         fileName = "dependencies_aws.md",
                         filter = { dep -> dep.groupId.startsWith("aws.") }
                     ),
-                    GradleDependencyToMd.DependencySection(
+                    DependencySection(
                         title = "AWS SDK (old)",
                         fileName = "dependencies_aws.md",
                         filter = { dep -> dep.groupId.startsWith("software.amazon.") }
                     ),
 
                     //==================================================== 구글 ======================================================
-                    GradleDependencyToMd.DependencySection(
+                    DependencySection(
                         title = "구글",
                         fileName = "dependencies_google.md",
                         filter = { dep ->
@@ -55,19 +53,19 @@ class DependenciesTest : BeSpecLog() {
                     ),
 
                     //==================================================== 젯브레인 ======================================================
-                    GradleDependencyToMd.DependencySection(
+                    DependencySection(
                         title = "젯브레인 ktor",
                         fileName = "dependencies_jetbrains.md",
                         filter = { dep -> dep.groupId.startsWith("io.ktor") }
                     ),
-                    GradleDependencyToMd.DependencySection(
+                    DependencySection(
                         title = "젯브레인 기타",
                         fileName = "dependencies_jetbrains.md",
                         filter = { dep -> dep.groupId.startsWith("org.jetbrains") }
                     ),
 
                     //==================================================== standard ======================================================
-                    GradleDependencyToMd.DependencySection(
+                    DependencySection(
                         title = "JVM 표준",
                         fileName = "dependencies_standard.md",
                         filter = { dep ->
@@ -79,7 +77,7 @@ class DependenciesTest : BeSpecLog() {
                             )
                         }
                     ),
-                    GradleDependencyToMd.DependencySection(
+                    DependencySection(
                         title = "사실상 표준",
                         fileName = "dependencies_standard.md",
                         filter = { dep ->
@@ -99,7 +97,7 @@ class DependenciesTest : BeSpecLog() {
                             )
                         }
                     ),
-                    GradleDependencyToMd.DependencySection(
+                    DependencySection(
                         title = "사실상 표준의 의존성",
                         fileName = "dependencies_standard.md",
                         filter = { dep ->
@@ -111,7 +109,7 @@ class DependenciesTest : BeSpecLog() {
                             )
                         }
                     ),
-                    GradleDependencyToMd.DependencySection(
+                    DependencySection(
                         title = "아파치 시리즈",
                         fileName = "dependencies_standard.md",
                         filter = { dep ->
@@ -124,7 +122,7 @@ class DependenciesTest : BeSpecLog() {
                     ),
 
                     //==================================================== 기타 ======================================================
-                    GradleDependencyToMd.DependencySection(
+                    DependencySection(
                         title = "AI 관련",
                         fileName = "dependencies_etc.md",
                         filter = { dep ->
@@ -136,7 +134,7 @@ class DependenciesTest : BeSpecLog() {
                             )
                         }
                     ),
-                    GradleDependencyToMd.DependencySection(
+                    DependencySection(
                         title = "기타",
                         fileName = "dependencies_etc.md",
                         filter = null  // null 필터: 다른 섹션에서 선택되지 않은 모든 데이터
@@ -149,7 +147,9 @@ class DependenciesTest : BeSpecLog() {
                     !dep.groupId.startsWithAny(ignores)
                 }
 
-                converter.convertToMarkdownWithSections(
+                // GradleDependencyToMd 사용
+                val converter = GradleDependencyToMd()
+                converter.convertToMd(
                     consoleLogFile = consoleLogFile,
                     rootDir = root,
                     sections = sections,
