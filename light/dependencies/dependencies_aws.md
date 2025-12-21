@@ -1,0 +1,119 @@
+## AWS
+
+| scope | 그룹 | 이름 | 버전 | 출처 |
+|-------|------|------|------|------|
+| 컴파일 | com.amazonaws | aws-lambda-java-core | {require 1.2.3; reject _} -> 1.2.3 |  |
+| 컴파일 | com.amazonaws | aws-lambda-java-events | {require 3.15.0; reject _} -> 3.15.0 |  |
+| 컴파일 | com.amazonaws | dynamodb-lock-client | {require 1.4.0; reject _} -> 1.4.0 |  |
+
+## AWS SDK
+
+| scope | 그룹 | 이름 | 버전 | 출처 |
+|-------|------|------|------|------|
+| 컴파일 | aws.sdk.kotlin | athena | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | athena-jvm | 1.5.93 | aws.sdk.kotlin:athena |
+| 컴파일 | aws.sdk.kotlin | aws-config | 1.5.93 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm<br>aws.sdk.kotlin:dynamodb -> aws.sdk.kotlin:dynamodb-jvm<br>aws.sdk.kotlin:kinesis -> aws.sdk.kotlin:kinesis-jvm<br>aws.sdk.kotlin:firehose -> aws.sdk.kotlin:firehose-jvm<br>aws.sdk.kotlin:sqs -> aws.sdk.kotlin:sqs-jvm<br>aws.sdk.kotlin:lambda -> aws.sdk.kotlin:lambda-jvm<br>aws.sdk.kotlin:sfn -> aws.sdk.kotlin:sfn-jvm<br>aws.sdk.kotlin:athena -> aws.sdk.kotlin:athena-jvm<br>aws.sdk.kotlin:ssm -> aws.sdk.kotlin:ssm-jvm<br>aws.sdk.kotlin:batch -> aws.sdk.kotlin:batch-jvm<br>aws.sdk.kotlin:ecs -> aws.sdk.kotlin:ecs-jvm<br>aws.sdk.kotlin:cloudwatchlogs -> aws.sdk.kotlin:cloudwatchlogs-jvm<br>aws.sdk.kotlin:sts -> aws.sdk.kotlin:sts-jvm<br>aws.sdk.kotlin:eventbridge -> aws.sdk.kotlin:eventbridge-jvm<br>aws.sdk.kotlin:ses -> aws.sdk.kotlin:ses-jvm<br>aws.sdk.kotlin:codecommit -> aws.sdk.kotlin:codecommit-jvm<br>aws.sdk.kotlin:scheduler -> aws.sdk.kotlin:scheduler-jvm<br>aws.sdk.kotlin:rdsdata -> aws.sdk.kotlin:rdsdata-jvm<br>aws.sdk.kotlin:cognitoidentityprovider -> aws.sdk.kotlin:cognitoidentityprovider-jvm<br>aws.sdk.kotlin:bedrock -> aws.sdk.kotlin:bedrock-jvm<br>aws.sdk.kotlin:bedrockruntime -> aws.sdk.kotlin:bedrockruntime-jvm<br>aws.sdk.kotlin:bedrockagent -> aws.sdk.kotlin:bedrockagent-jvm<br>aws.sdk.kotlin:bedrockagentruntime -> aws.sdk.kotlin:bedrockagentruntime-jvm |
+| 컴파일 | aws.sdk.kotlin | aws-config-jvm | 1.5.93 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.sdk.kotlin | aws-core | 1.5.93 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ...<br>aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm<br>aws.sdk.kotlin:dynamodb -> aws.sdk.kotlin:dynamodb-jvm<br>aws.sdk.kotlin:kinesis -> aws.sdk.kotlin:kinesis-jvm<br>aws.sdk.kotlin:firehose -> aws.sdk.kotlin:firehose-jvm<br>aws.sdk.kotlin:sqs -> aws.sdk.kotlin:sqs-jvm<br>aws.sdk.kotlin:lambda -> aws.sdk.kotlin:lambda-jvm<br>aws.sdk.kotlin:sfn -> aws.sdk.kotlin:sfn-jvm<br>aws.sdk.kotlin:athena -> aws.sdk.kotlin:athena-jvm<br>aws.sdk.kotlin:ssm -> aws.sdk.kotlin:ssm-jvm<br>aws.sdk.kotlin:batch -> aws.sdk.kotlin:batch-jvm<br>aws.sdk.kotlin:ecs -> aws.sdk.kotlin:ecs-jvm<br>aws.sdk.kotlin:cloudwatchlogs -> aws.sdk.kotlin:cloudwatchlogs-jvm<br>aws.sdk.kotlin:sts -> aws.sdk.kotlin:sts-jvm<br>aws.sdk.kotlin:eventbridge -> aws.sdk.kotlin:eventbridge-jvm<br>aws.sdk.kotlin:ses -> aws.sdk.kotlin:ses-jvm<br>aws.sdk.kotlin:codecommit -> aws.sdk.kotlin:codecommit-jvm<br>aws.sdk.kotlin:scheduler -> aws.sdk.kotlin:scheduler-jvm<br>aws.sdk.kotlin:rdsdata -> aws.sdk.kotlin:rdsdata-jvm<br>aws.sdk.kotlin:cognitoidentityprovider -> aws.sdk.kotlin:cognitoidentityprovider-jvm<br>aws.sdk.kotlin:bedrock -> aws.sdk.kotlin:bedrock-jvm<br>aws.sdk.kotlin:bedrockruntime -> aws.sdk.kotlin:bedrockruntime-jvm<br>aws.sdk.kotlin:bedrockagent -> aws.sdk.kotlin:bedrockagent-jvm<br>aws.sdk.kotlin:bedrockagentruntime -> aws.sdk.kotlin:bedrockagentruntime-jvm |
+| 컴파일 | aws.sdk.kotlin | aws-core-jvm | 1.5.93 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.sdk.kotlin | aws-endpoint | 1.5.93 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm<br>aws.sdk.kotlin:dynamodb -> aws.sdk.kotlin:dynamodb-jvm<br>aws.sdk.kotlin:kinesis -> aws.sdk.kotlin:kinesis-jvm<br>aws.sdk.kotlin:firehose -> aws.sdk.kotlin:firehose-jvm<br>aws.sdk.kotlin:sqs -> aws.sdk.kotlin:sqs-jvm<br>aws.sdk.kotlin:lambda -> aws.sdk.kotlin:lambda-jvm<br>aws.sdk.kotlin:sfn -> aws.sdk.kotlin:sfn-jvm<br>aws.sdk.kotlin:athena -> aws.sdk.kotlin:athena-jvm<br>aws.sdk.kotlin:ssm -> aws.sdk.kotlin:ssm-jvm<br>aws.sdk.kotlin:batch -> aws.sdk.kotlin:batch-jvm<br>aws.sdk.kotlin:ecs -> aws.sdk.kotlin:ecs-jvm<br>aws.sdk.kotlin:cloudwatchlogs -> aws.sdk.kotlin:cloudwatchlogs-jvm<br>aws.sdk.kotlin:sts -> aws.sdk.kotlin:sts-jvm<br>aws.sdk.kotlin:eventbridge -> aws.sdk.kotlin:eventbridge-jvm<br>aws.sdk.kotlin:ses -> aws.sdk.kotlin:ses-jvm<br>aws.sdk.kotlin:codecommit -> aws.sdk.kotlin:codecommit-jvm<br>aws.sdk.kotlin:scheduler -> aws.sdk.kotlin:scheduler-jvm<br>aws.sdk.kotlin:rdsdata -> aws.sdk.kotlin:rdsdata-jvm<br>aws.sdk.kotlin:cognitoidentityprovider -> aws.sdk.kotlin:cognitoidentityprovider-jvm<br>aws.sdk.kotlin:bedrock -> aws.sdk.kotlin:bedrock-jvm<br>aws.sdk.kotlin:bedrockruntime -> aws.sdk.kotlin:bedrockruntime-jvm<br>aws.sdk.kotlin:bedrockagent -> aws.sdk.kotlin:bedrockagent-jvm<br>aws.sdk.kotlin:bedrockagentruntime -> aws.sdk.kotlin:bedrockagentruntime-jvm |
+| 컴파일 | aws.sdk.kotlin | aws-endpoint-jvm | 1.5.93 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.sdk.kotlin | batch | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | batch-jvm | 1.5.93 | aws.sdk.kotlin:batch |
+| 컴파일 | aws.sdk.kotlin | bedrock | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | bedrock-jvm | 1.5.93 | aws.sdk.kotlin:bedrock |
+| 컴파일 | aws.sdk.kotlin | bedrockagent | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | bedrockagent-jvm | 1.5.93 | aws.sdk.kotlin:bedrockagent |
+| 컴파일 | aws.sdk.kotlin | bedrockagentruntime | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | bedrockagentruntime-jvm | 1.5.93 | aws.sdk.kotlin:bedrockagentruntime |
+| 컴파일 | aws.sdk.kotlin | bedrockruntime | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | bedrockruntime-jvm | 1.5.93 | aws.sdk.kotlin:bedrockruntime |
+| 컴파일 | aws.sdk.kotlin | cloudwatchlogs | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | cloudwatchlogs-jvm | 1.5.93 | aws.sdk.kotlin:cloudwatchlogs |
+| 컴파일 | aws.sdk.kotlin | codecommit | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | codecommit-jvm | 1.5.93 | aws.sdk.kotlin:codecommit |
+| 컴파일 | aws.sdk.kotlin | cognitoidentityprovider | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | cognitoidentityprovider-jvm | 1.5.93 | aws.sdk.kotlin:cognitoidentityprovider |
+| 컴파일 | aws.sdk.kotlin | dynamodb | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | dynamodb-jvm | 1.5.93 | aws.sdk.kotlin:dynamodb |
+| 컴파일 | aws.sdk.kotlin | ecs | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | ecs-jvm | 1.5.93 | aws.sdk.kotlin:ecs |
+| 컴파일 | aws.sdk.kotlin | eventbridge | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | eventbridge-jvm | 1.5.93 | aws.sdk.kotlin:eventbridge |
+| 컴파일 | aws.sdk.kotlin | firehose | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | firehose-jvm | 1.5.93 | aws.sdk.kotlin:firehose |
+| 컴파일 | aws.sdk.kotlin | kinesis | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | kinesis-jvm | 1.5.93 | aws.sdk.kotlin:kinesis |
+| 컴파일 | aws.sdk.kotlin | lambda | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | lambda-jvm | 1.5.93 | aws.sdk.kotlin:lambda |
+| 컴파일 | aws.sdk.kotlin | rdsdata | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | rdsdata-jvm | 1.5.93 | aws.sdk.kotlin:rdsdata |
+| 컴파일 | aws.sdk.kotlin | s3 | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | s3-jvm | 1.5.93 | aws.sdk.kotlin:s3 |
+| 컴파일 | aws.sdk.kotlin | scheduler | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | scheduler-jvm | 1.5.93 | aws.sdk.kotlin:scheduler |
+| 컴파일 | aws.sdk.kotlin | ses | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | ses-jvm | 1.5.93 | aws.sdk.kotlin:ses |
+| 컴파일 | aws.sdk.kotlin | sfn | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | sfn-jvm | 1.5.93 | aws.sdk.kotlin:sfn |
+| 컴파일 | aws.sdk.kotlin | sqs | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | sqs-jvm | 1.5.93 | aws.sdk.kotlin:sqs |
+| 컴파일 | aws.sdk.kotlin | ssm | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | ssm-jvm | 1.5.93 | aws.sdk.kotlin:ssm |
+| 컴파일 | aws.sdk.kotlin | sts | 1.5.93 |  |
+| 컴파일 | aws.sdk.kotlin | sts-jvm | 1.5.93 | aws.sdk.kotlin:sts |
+| 컴파일 | aws.smithy.kotlin | aws-credentials | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.smithy.kotlin | aws-credentials-jvm | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.smithy.kotlin | aws-signing-common | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.smithy.kotlin | aws-signing-common-jvm | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.smithy.kotlin | http | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.smithy.kotlin | http-auth | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.smithy.kotlin | http-auth-api | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.smithy.kotlin | http-auth-api-jvm | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.smithy.kotlin | http-auth-jvm | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.smithy.kotlin | http-client | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ...<br>aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm<br>aws.sdk.kotlin:dynamodb -> aws.sdk.kotlin:dynamodb-jvm<br>aws.sdk.kotlin:kinesis -> aws.sdk.kotlin:kinesis-jvm<br>aws.sdk.kotlin:firehose -> aws.sdk.kotlin:firehose-jvm<br>aws.sdk.kotlin:sqs -> aws.sdk.kotlin:sqs-jvm<br>aws.sdk.kotlin:lambda -> aws.sdk.kotlin:lambda-jvm<br>aws.sdk.kotlin:sfn -> aws.sdk.kotlin:sfn-jvm<br>aws.sdk.kotlin:athena -> aws.sdk.kotlin:athena-jvm<br>aws.sdk.kotlin:ssm -> aws.sdk.kotlin:ssm-jvm<br>aws.sdk.kotlin:batch -> aws.sdk.kotlin:batch-jvm<br>aws.sdk.kotlin:ecs -> aws.sdk.kotlin:ecs-jvm<br>aws.sdk.kotlin:cloudwatchlogs -> aws.sdk.kotlin:cloudwatchlogs-jvm<br>aws.sdk.kotlin:sts -> aws.sdk.kotlin:sts-jvm<br>aws.sdk.kotlin:eventbridge -> aws.sdk.kotlin:eventbridge-jvm<br>aws.sdk.kotlin:ses -> aws.sdk.kotlin:ses-jvm<br>aws.sdk.kotlin:codecommit -> aws.sdk.kotlin:codecommit-jvm<br>aws.sdk.kotlin:scheduler -> aws.sdk.kotlin:scheduler-jvm<br>aws.sdk.kotlin:rdsdata -> aws.sdk.kotlin:rdsdata-jvm<br>aws.sdk.kotlin:cognitoidentityprovider -> aws.sdk.kotlin:cognitoidentityprovider-jvm<br>aws.sdk.kotlin:bedrock -> aws.sdk.kotlin:bedrock-jvm<br>aws.sdk.kotlin:bedrockruntime -> aws.sdk.kotlin:bedrockruntime-jvm<br>aws.sdk.kotlin:bedrockagent -> aws.sdk.kotlin:bedrockagent-jvm<br>aws.sdk.kotlin:bedrockagentruntime -> aws.sdk.kotlin:bedrockagentruntime-jvm<br>aws.smithy.kotlin:http-client-engine-okhttp-jvm |
+| 컴파일 | aws.smithy.kotlin | http-client-engine-okhttp-jvm | {require 1.5.20; reject _} -> 1.5.20 |  |
+| 컴파일 | aws.smithy.kotlin | http-client-jvm | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.smithy.kotlin | http-jvm | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.smithy.kotlin | identity-api | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.smithy.kotlin | identity-api-jvm | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.smithy.kotlin | runtime-core | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ...<br>aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm<br>aws.sdk.kotlin:dynamodb -> aws.sdk.kotlin:dynamodb-jvm<br>aws.sdk.kotlin:kinesis -> aws.sdk.kotlin:kinesis-jvm<br>aws.sdk.kotlin:firehose -> aws.sdk.kotlin:firehose-jvm<br>aws.sdk.kotlin:sqs -> aws.sdk.kotlin:sqs-jvm<br>aws.sdk.kotlin:lambda -> aws.sdk.kotlin:lambda-jvm<br>aws.sdk.kotlin:sfn -> aws.sdk.kotlin:sfn-jvm<br>aws.sdk.kotlin:athena -> aws.sdk.kotlin:athena-jvm<br>aws.sdk.kotlin:ssm -> aws.sdk.kotlin:ssm-jvm<br>aws.sdk.kotlin:batch -> aws.sdk.kotlin:batch-jvm<br>aws.sdk.kotlin:ecs -> aws.sdk.kotlin:ecs-jvm<br>aws.sdk.kotlin:cloudwatchlogs -> aws.sdk.kotlin:cloudwatchlogs-jvm<br>aws.sdk.kotlin:sts -> aws.sdk.kotlin:sts-jvm<br>aws.sdk.kotlin:eventbridge -> aws.sdk.kotlin:eventbridge-jvm<br>aws.sdk.kotlin:ses -> aws.sdk.kotlin:ses-jvm<br>aws.sdk.kotlin:codecommit -> aws.sdk.kotlin:codecommit-jvm<br>aws.sdk.kotlin:scheduler -> aws.sdk.kotlin:scheduler-jvm<br>aws.sdk.kotlin:rdsdata -> aws.sdk.kotlin:rdsdata-jvm<br>aws.sdk.kotlin:cognitoidentityprovider -> aws.sdk.kotlin:cognitoidentityprovider-jvm<br>aws.sdk.kotlin:bedrock -> aws.sdk.kotlin:bedrock-jvm<br>aws.sdk.kotlin:bedrockruntime -> aws.sdk.kotlin:bedrockruntime-jvm<br>aws.sdk.kotlin:bedrockagent -> aws.sdk.kotlin:bedrockagent-jvm<br>aws.sdk.kotlin:bedrockagentruntime -> aws.sdk.kotlin:bedrockagentruntime-jvm |
+| 컴파일 | aws.smithy.kotlin | runtime-core-jvm | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.smithy.kotlin | smithy-client | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ...<br>aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm<br>aws.sdk.kotlin:dynamodb -> aws.sdk.kotlin:dynamodb-jvm<br>aws.sdk.kotlin:kinesis -> aws.sdk.kotlin:kinesis-jvm<br>aws.sdk.kotlin:firehose -> aws.sdk.kotlin:firehose-jvm<br>aws.sdk.kotlin:sqs -> aws.sdk.kotlin:sqs-jvm<br>aws.sdk.kotlin:lambda -> aws.sdk.kotlin:lambda-jvm<br>aws.sdk.kotlin:sfn -> aws.sdk.kotlin:sfn-jvm<br>aws.sdk.kotlin:athena -> aws.sdk.kotlin:athena-jvm<br>aws.sdk.kotlin:ssm -> aws.sdk.kotlin:ssm-jvm<br>aws.sdk.kotlin:batch -> aws.sdk.kotlin:batch-jvm<br>aws.sdk.kotlin:ecs -> aws.sdk.kotlin:ecs-jvm<br>aws.sdk.kotlin:cloudwatchlogs -> aws.sdk.kotlin:cloudwatchlogs-jvm<br>aws.sdk.kotlin:sts -> aws.sdk.kotlin:sts-jvm<br>aws.sdk.kotlin:eventbridge -> aws.sdk.kotlin:eventbridge-jvm<br>aws.sdk.kotlin:ses -> aws.sdk.kotlin:ses-jvm<br>aws.sdk.kotlin:codecommit -> aws.sdk.kotlin:codecommit-jvm<br>aws.sdk.kotlin:scheduler -> aws.sdk.kotlin:scheduler-jvm<br>aws.sdk.kotlin:rdsdata -> aws.sdk.kotlin:rdsdata-jvm<br>aws.sdk.kotlin:cognitoidentityprovider -> aws.sdk.kotlin:cognitoidentityprovider-jvm<br>aws.sdk.kotlin:bedrock -> aws.sdk.kotlin:bedrock-jvm<br>aws.sdk.kotlin:bedrockruntime -> aws.sdk.kotlin:bedrockruntime-jvm<br>aws.sdk.kotlin:bedrockagent -> aws.sdk.kotlin:bedrockagent-jvm<br>aws.sdk.kotlin:bedrockagentruntime -> aws.sdk.kotlin:bedrockagentruntime-jvm |
+| 컴파일 | aws.smithy.kotlin | smithy-client-jvm | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+| 컴파일 | aws.smithy.kotlin | telemetry-api | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ...<br>aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm<br>aws.sdk.kotlin:dynamodb -> aws.sdk.kotlin:dynamodb-jvm<br>aws.sdk.kotlin:kinesis -> aws.sdk.kotlin:kinesis-jvm<br>aws.sdk.kotlin:firehose -> aws.sdk.kotlin:firehose-jvm<br>aws.sdk.kotlin:sqs -> aws.sdk.kotlin:sqs-jvm<br>aws.sdk.kotlin:lambda -> aws.sdk.kotlin:lambda-jvm<br>aws.sdk.kotlin:sfn -> aws.sdk.kotlin:sfn-jvm<br>aws.sdk.kotlin:athena -> aws.sdk.kotlin:athena-jvm<br>aws.sdk.kotlin:ssm -> aws.sdk.kotlin:ssm-jvm<br>aws.sdk.kotlin:batch -> aws.sdk.kotlin:batch-jvm<br>aws.sdk.kotlin:ecs -> aws.sdk.kotlin:ecs-jvm<br>aws.sdk.kotlin:cloudwatchlogs -> aws.sdk.kotlin:cloudwatchlogs-jvm<br>aws.sdk.kotlin:sts -> aws.sdk.kotlin:sts-jvm<br>aws.sdk.kotlin:eventbridge -> aws.sdk.kotlin:eventbridge-jvm<br>aws.sdk.kotlin:ses -> aws.sdk.kotlin:ses-jvm<br>aws.sdk.kotlin:codecommit -> aws.sdk.kotlin:codecommit-jvm<br>aws.sdk.kotlin:scheduler -> aws.sdk.kotlin:scheduler-jvm<br>aws.sdk.kotlin:rdsdata -> aws.sdk.kotlin:rdsdata-jvm<br>aws.sdk.kotlin:cognitoidentityprovider -> aws.sdk.kotlin:cognitoidentityprovider-jvm<br>aws.sdk.kotlin:bedrock -> aws.sdk.kotlin:bedrock-jvm<br>aws.sdk.kotlin:bedrockruntime -> aws.sdk.kotlin:bedrockruntime-jvm<br>aws.sdk.kotlin:bedrockagent -> aws.sdk.kotlin:bedrockagent-jvm<br>aws.sdk.kotlin:bedrockagentruntime -> aws.sdk.kotlin:bedrockagentruntime-jvm |
+| 컴파일 | aws.smithy.kotlin | telemetry-api-jvm | 1.5.20 | aws.sdk.kotlin:s3 -> aws.sdk.kotlin:s3-jvm -> ... |
+
+## AWS SDK (old)
+
+| scope | 그룹 | 이름 | 버전 | 출처 |
+|-------|------|------|------|------|
+| 컴파일 | software.amazon.awssdk | annotations | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>com.amazonaws:dynamodb-lock-client<br>software.amazon.awssdk:apache-client<br>software.amazon.awssdk:sts -> software.amazon.awssdk:aws-query-protocol<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | apache-client | 2.32.10 |  |
+| 컴파일 | software.amazon.awssdk | auth | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>com.amazonaws:dynamodb-lock-client<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | aws-core | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>com.amazonaws:dynamodb-lock-client<br>software.amazon.awssdk:sts -> software.amazon.awssdk:aws-query-protocol<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | aws-json-protocol | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb |
+| 컴파일 | software.amazon.awssdk | aws-query-protocol | 2.32.10 | software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | checksums | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ... |
+| 컴파일 | software.amazon.awssdk | checksums-spi | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ... |
+| 컴파일 | software.amazon.awssdk | dynamodb | 2.32.10 | com.amazonaws:dynamodb-lock-client |
+| 컴파일 | software.amazon.awssdk | endpoints-spi | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | http-auth | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | http-auth-aws | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | http-auth-aws-eventstream | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ... |
+| 컴파일 | software.amazon.awssdk | http-auth-spi | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | http-client-spi | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>com.amazonaws:dynamodb-lock-client<br>software.amazon.awssdk:apache-client<br>software.amazon.awssdk:sts -> software.amazon.awssdk:aws-query-protocol<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | identity-spi | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | json-utils | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | metrics-spi | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>software.amazon.awssdk:apache-client<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | profiles | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | protocol-core | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>software.amazon.awssdk:sts -> software.amazon.awssdk:aws-query-protocol<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | regions | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>com.amazonaws:dynamodb-lock-client<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | retries | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ... |
+| 컴파일 | software.amazon.awssdk | retries-spi | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | sdk-core | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>com.amazonaws:dynamodb-lock-client<br>software.amazon.awssdk:sts -> software.amazon.awssdk:aws-query-protocol<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.awssdk | sts | 2.32.10 |  |
+| 컴파일 | software.amazon.awssdk | third-party-jackson-core | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ... |
+| 컴파일 | software.amazon.awssdk | utils | 2.32.10 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ...<br>com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb<br>software.amazon.awssdk:apache-client<br>software.amazon.awssdk:sts -> software.amazon.awssdk:aws-query-protocol<br>software.amazon.awssdk:sts |
+| 컴파일 | software.amazon.eventstream | eventstream | 1.0.1 | com.amazonaws:dynamodb-lock-client -> software.amazon.awssdk:dynamodb -> ... |
+
