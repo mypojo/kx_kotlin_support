@@ -46,9 +46,9 @@ internal class NotionDatabaseClient_개별테스트 : BeSpecHeavy() {
 
             Then("전체로더 테스트") {
                 val loader = NotionPageLoader(key)
-                val list = loader.list(pageId)
+                val list = loader.load(pageId)
                 list.forEach {
-                    println(it.viewText)
+                    println(it.markdown)
                 }
             }
 

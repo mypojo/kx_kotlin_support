@@ -27,38 +27,52 @@ suspend fun QuickSightClient.createDataSet(dataSet: QuicksightDataSetCreation): 
         }
     }
 
+    val physicalTableId = "AthenaTable"
     when (dataSet.type) {
 
-        QuicksightDataSetConfigType.QUERY -> physicalTableMap = mapOf(
-            "AthenaTable" to PhysicalTable.CustomSql(
-                CustomSql {
-                    dataSourceArn = "arn:aws:quicksight:${awsConfig.region}:${awsConfig.awsId}:datasource/${dataSet.dataSourceId}"
-                    name = dataSet.dataSetId //일단 동일하게
-                    sqlQuery = dataSet.query
-                    columns = dataSet.columns.entries.map { e ->
-                        InputColumn {
-                            name = e.key
-                            type = e.value
+        QuicksightDataSetConfigType.QUERY -> {
+            physicalTableMap = mapOf(
+                physicalTableId to PhysicalTable.CustomSql(
+                    CustomSql {
+                        dataSourceArn = "arn:aws:quicksight:${awsConfig.region}:${awsConfig.awsId}:datasource/${dataSet.dataSourceId}"
+                        name = dataSet.dataSetId //일단 동일하게
+                        sqlQuery = dataSet.query
+                        columns = dataSet.columns.entries.map { e ->
+                            InputColumn {
+                                name = e.key
+                                type = e.value
+                            }
                         }
                     }
-                }
+                )
             )
-        )
+        }
 
-        QuicksightDataSetConfigType.TABLE -> physicalTableMap = mapOf(
-            "AthenaTable" to PhysicalTable.RelationalTable(
-                RelationalTable {
-                    dataSourceArn = "arn:aws:quicksight:${awsConfig.region}:${awsConfig.awsId}:datasource/${dataSet.dataSourceId}"
-                    schema = dataSet.schema
-                    name = dataSet.tableName
-                    inputColumns = dataSet.columns.entries.map { e ->
-                        InputColumn {
-                            name = e.key
-                            type = e.value
+        QuicksightDataSetConfigType.TABLE -> {
+            physicalTableMap = mapOf(
+                physicalTableId to PhysicalTable.RelationalTable(
+                    RelationalTable {
+                        dataSourceArn = "arn:aws:quicksight:${awsConfig.region}:${awsConfig.awsId}:datasource/${dataSet.dataSourceId}"
+                        schema = dataSet.schema
+                        name = dataSet.tableName
+                        inputColumns = dataSet.columns.entries.map { e ->
+                            InputColumn {
+                                name = e.key
+                                type = e.value
+                            }
                         }
                     }
-                }
+                )
             )
-        )
+        }
     }
+
+    logicalTableMap = mapOf(
+        "LogicalTable-01" to LogicalTable {
+            alias = dataSet.dataSetName
+            source = LogicalTableSource {
+                this.physicalTableId = physicalTableId
+            }
+        }
+    )
 }

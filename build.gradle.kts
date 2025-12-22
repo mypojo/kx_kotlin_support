@@ -1,5 +1,6 @@
 import ch.qos.logback.classic.Level
 import net.kotlinx.aws.AwsConfig
+import net.kotlinx.file.slash
 import net.kotlinx.gradle.get
 import net.kotlinx.koin.Koins
 import net.kotlinx.logback.TempLogger
@@ -14,6 +15,7 @@ plugins {
     //코어 플러그인
     kotlin("jvm") //항상 최신버전 사용. 멀티플랫폼 버전과 동일함
     `maven-publish` //메이븐 플러그인 배포
+    `project-report` //의존성 출력
 }
 
 //==================================================== 공통 ======================================================
@@ -180,24 +182,6 @@ Koins.startupReset {
     single { get<AwsConfig>().client }
 }
 
-tasks.named("publish") {
-    doLast {
-        //슬렉 메세지 일단 보류함.. gralde 자체 버전하고 안맞는게 있는듯. NoSuchMethodError 발생
-//        val token by lazyLoadStringSsm("/slack/token")
-//        val slackApp = SlackApp(token)
-//        val alert = SlackSimpleAlert {
-//            channel = "#kx_alert"
-//            source = "kotlin_support"
-//            workDiv = "gradle 빌드"
-//            workLocation = "local"
-//            descriptions = listOf(
-//                "빌드 (${pubType()}) 처리완료",
-//            )
-//        }
-//        slackApp.send(alert)
-    }
-}
-
 /**
  * org.gradle.configuration-cache=true 가 있어야 doLast가 병렬 실행됨
  * 일반적인 빌드는 --parallel 만 있어도 병렬 처리됨
@@ -235,5 +219,20 @@ tasks.register("t3") {
         log.debug { "작업3!! ${LocalDateTime.now().toKr01()}" }
         Thread.sleep(1000 * 3)
         log.info { "작업3!! ${LocalDateTime.now().toKr01()}" }
+    }
+}
+
+
+/**
+ * 의존성 결과를 파일로 출력함
+ * 이는 md 파일로 사람이 보기 좋게 변환됨
+ * @see GradleDependencyToMd
+ * DependencySections.getDefaultSections() 이부분 수정 & 반영 때문에 gradle로 합치지는 않음
+ *  */
+allprojects {
+    tasks.register<DependencyReportTask>("exportDependenciesToFile") {
+        group = "aws"
+        val resultFile = layout.buildDirectory.get().asFile
+        outputFile = resultFile.parentFile.slash("dependencies").slash("console.txt")
     }
 }

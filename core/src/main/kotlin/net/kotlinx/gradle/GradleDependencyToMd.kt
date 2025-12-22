@@ -76,6 +76,16 @@ class GradleDependencyToMd {
     }
 
     /**
+     * runtimeClasspath 섹션을 콘솔 로그에서 추출
+     */
+    fun extractRuntimeClasspathLines(consoleLog: List<String>): List<String> {
+        return consoleLog
+            .dropWhile { !it.startsWith("runtimeClasspath") }  // runtimeClasspath 줄까지 건너뛰기
+            .drop(1)  // runtimeClasspath 줄 자체는 제외
+            .takeWhile { it.isNotBlank() }  // 빈 줄이 나올 때까지 가져오기
+    }
+
+    /**
      * 트리 depth 계산
      */
     private fun calculateDepth(line: String): Int {
@@ -155,6 +165,44 @@ class GradleDependencyToMd {
     }
 
     /**
+     * 의존성의 전체 경로를 생성 (root부터 현재까지)
+     * parent 관계를 고려한 고유 식별자로 사용
+     */
+    private fun DependencyInfo.getFullPath(): String {
+        val parentPath = parent?.getFullPath() ?: ""
+        val currentNode = "$groupId:$artifactId:$version"
+        return if (parentPath.isEmpty()) currentNode else "$parentPath -> $currentNode"
+    }
+
+    /**
+     * 두 의존성 리스트를 병합하고 scope을 통합
+     * - 둘 다 있으면: "컴파일/런타임"
+     * - 하나만 있으면: "컴파일" 또는 "런타임"
+     */
+    fun mergeDependencies(
+        compileDependencies: List<DependencyInfo>,
+        runtimeDependencies: List<DependencyInfo>
+    ): List<DependencyInfo> {
+        // 모든 의존성을 합친 후 전체 경로로 그룹핑
+        val allDependencies = compileDependencies + runtimeDependencies
+
+        return allDependencies
+            .groupBy { it.getFullPath() }
+            .map { (_, deps) ->
+                // 같은 경로의 의존성들에서 scope 결정
+                val scopes = deps.map { it.scope }.toSet()
+                val mergedScope = when {
+                    scopes.contains("컴파일") && scopes.contains("런타임") -> "컴파일/런타임"
+                    scopes.contains("컴파일") -> "컴파일"
+                    else -> "런타임"
+                }
+
+                // 첫 번째 항목을 기준으로 새 DependencyInfo 생성 (scope만 변경)
+                deps.first().copy(scope = mergedScope)
+            }
+    }
+
+    /**
      * 의존성 리스트를 마크다운 테이블 형태로 변환 (단일 섹션)
      * @param dependencies 의존성 리스트
      * @param filter 필터 함수 (null이면 모두 포함)
@@ -184,14 +232,20 @@ class GradleDependencyToMd {
                 val (groupId, artifactId, version) = key
                 val scope = deps.first().scope
 
-                // 출처를 <br>로 연결 (빈 문자열 제외)
+                // 출처 추출 (빈 문자열 제외)
                 val sourcePaths = deps
                     .map { it.getSourcePath() }
                     .filter { it.isNotEmpty() }
                     .distinct()
-                    .joinToString("<br>")
 
-                appendLine("| $scope | $groupId | $artifactId | $version | $sourcePaths |")
+                // project로 시작하지 않는 출처만 필터링
+                val nonProjectSources = sourcePaths.filter { !it.startsWith("project:") }
+
+                // 원래 출처가 없거나(root 의존성), 필터링 후에도 남은 출처가 있으면 표시
+                if (sourcePaths.isEmpty() || nonProjectSources.isNotEmpty()) {
+                    val sourcePathsStr = nonProjectSources.joinToString("<br>")
+                    appendLine("| $scope | $groupId | $artifactId | $version | $sourcePathsStr |")
+                }
             }
         }
     }
@@ -207,47 +261,63 @@ class GradleDependencyToMd {
         sections: List<DependencySection>,
         globalFilter: ((DependencyInfo) -> Boolean)? = null,
     ): String {
-        return buildString {
-            sections.forEach { section ->
-                // 섹션 제목
-                appendLine("## ${section.title}")
-                appendLine()
+        val sectionMarkdowns = sections.mapNotNull { section ->
+            // 필터링된 의존성 추출
+            val filteredDeps = dependencies.filter { dep ->
+                val passGlobal = globalFilter?.invoke(dep) ?: true
+                val passSection = section.filter?.invoke(dep) ?: true
+                passGlobal && passSection
+            }
 
-                // 헤더
-                appendLine("| scope | 그룹 | 이름 | 버전 | 출처 |")
-                appendLine("|-------|------|------|------|------|")
+            // groupId, artifactId, version으로 그룹핑 후 정렬
+            val groupedDeps = filteredDeps
+                .groupBy { dep -> Triple(dep.groupId, dep.artifactId, dep.version) }
+                .toList()
+                .sortedWith(compareBy({ it.first.first }, { it.first.second }))  // groupId -> artifactId 순 정렬
 
-                // 필터링된 의존성 추출
-                val filteredDeps = dependencies.filter { dep ->
-                    val passGlobal = globalFilter?.invoke(dep) ?: true
-                    val passSection = section.filter?.invoke(dep) ?: true
-                    passGlobal && passSection
-                }
-
-                // groupId, artifactId, version으로 그룹핑 후 정렬
-                val groupedDeps = filteredDeps
-                    .groupBy { dep -> Triple(dep.groupId, dep.artifactId, dep.version) }
-                    .toList()
-                    .sortedWith(compareBy({ it.first.first }, { it.first.second }))  // groupId -> artifactId 순 정렬
-
-                // 데이터 행 생성
+            // 필터링된 데이터 행 생성
+            val dataRows = buildList {
                 groupedDeps.forEach { (key, deps) ->
                     val (groupId, artifactId, version) = key
                     val scope = deps.first().scope
 
-                    // 출처를 <br>로 연결 (빈 문자열 제외)
+                    // 출처 추출 (빈 문자열 제외)
                     val sourcePaths = deps
                         .map { it.getSourcePath() }
                         .filter { it.isNotEmpty() }
                         .distinct()
-                        .joinToString("<br>")
 
-                    appendLine("| $scope | $groupId | $artifactId | $version | $sourcePaths |")
+                    // project로 시작하지 않는 출처만 필터링
+                    val nonProjectSources = sourcePaths.filter { !it.startsWith("project:") }
+
+                    // 원래 출처가 없거나(root 의존성), 필터링 후에도 남은 출처가 있으면 표시
+                    if (sourcePaths.isEmpty() || nonProjectSources.isNotEmpty()) {
+                        val sourcePathsStr = nonProjectSources.joinToString("<br>")
+                        add("| $scope | $groupId | $artifactId | $version | $sourcePathsStr |")
+                    }
                 }
+            }
 
-                appendLine() // 섹션 사이 빈 줄
+            // 데이터가 없으면 null 반환
+            if (dataRows.isEmpty()) {
+                null
+            } else {
+                buildString {
+                    // 섹션 제목
+                    appendLine("## ${section.title}")
+                    appendLine()
+
+                    // 헤더
+                    appendLine("| scope | 그룹 | 이름 | 버전 | 출처 |")
+                    appendLine("|-------|------|------|------|------|")
+
+                    // 데이터 행 추가
+                    dataRows.forEach { appendLine(it) }
+                }
             }
         }
+
+        return sectionMarkdowns.joinToString("\n")
     }
 
     /**
@@ -304,13 +374,19 @@ class GradleDependencyToMd {
         // 콘솔 로그 읽기
         val consoleLog = consoleLogFile.readLines()
 
-        // compileClasspath 섹션 추출
+        // compileClasspath 섹션 추출 및 파싱
         val compileClasspathLines = extractCompileClasspathLines(consoleLog)
         log.info { "compileClasspath 의존성 라인 수: ${compileClasspathLines.size}" }
+        val compileDependencies = parseDependencies(compileClasspathLines, scope = "컴파일")
 
-        // 의존성 파싱
-        val dependencies = parseDependencies(compileClasspathLines)
-        log.info { "파싱된 의존성 개수: ${dependencies.size}" }
+        // runtimeClasspath 섹션 추출 및 파싱
+        val runtimeClasspathLines = extractRuntimeClasspathLines(consoleLog)
+        log.info { "runtimeClasspath 의존성 라인 수: ${runtimeClasspathLines.size}" }
+        val runtimeDependencies = parseDependencies(runtimeClasspathLines, scope = "런타임")
+
+        // 두 리스트 병합 및 scope 통합
+        val dependencies = mergeDependencies(compileDependencies, runtimeDependencies)
+        log.info { "병합된 의존성 개수: ${dependencies.size}" }
 
         // 전역 필터 적용
         val globalFilteredDeps = dependencies.filter { dep ->
@@ -339,9 +415,7 @@ class GradleDependencyToMd {
             sectionDepsMap[section] = sectionDeps
 
             // 선택된 의존성을 그룹핑 키로 추적
-            val uniqueKeys = sectionDeps
-                .map { dep -> Triple(dep.groupId, dep.artifactId, dep.version) }
-                .toSet()
+            val uniqueKeys = sectionDeps.map { dep -> Triple(dep.groupId, dep.artifactId, dep.version) }.toSet()
             globalSelectedDeps.addAll(uniqueKeys)
 
             log.debug { "섹션 '${section.title}': ${uniqueKeys.size}개 고유 의존성 선택됨" }
@@ -368,15 +442,19 @@ class GradleDependencyToMd {
             val sectionFile = File(rootDir, fileName)
 
             // 파일에 포함될 모든 섹션의 마크다운 생성
-            val mdContent = buildString {
-                fileSections.forEach { section ->
-                    val sectionDeps = sectionDepsMap[section] ?: emptyList()
-
-                    // 섹션 마크다운 추가
-                    append(generateSectionMarkdown(section.title, sectionDeps))
-                    appendLine() // 섹션 사이 빈 줄
-                }
+            val sectionMarkdowns = fileSections.mapNotNull { section ->
+                val sectionDeps = sectionDepsMap[section] ?: emptyList()
+                val sectionMd = generateSectionMarkdown(section.title, sectionDeps)
+                if (sectionMd.isNotEmpty()) sectionMd else null
             }
+
+            // 모든 섹션이 비어있으면 파일 생성하지 않음
+            if (sectionMarkdowns.isEmpty()) {
+                log.info { "파일 생성 생략 (모든 섹션이 비어있음): $fileName" }
+                return@forEach
+            }
+
+            val mdContent = sectionMarkdowns.joinToString("\n\n")
 
             // 파일 저장
             sectionFile.writeText(mdContent, Charsets.UTF_8)
@@ -385,7 +463,7 @@ class GradleDependencyToMd {
                 sectionDepsMap[section]?.size ?: 0
             }
 
-            log.info { "파일 생성: ${sectionFile.absolutePath} (${fileSections.size}개 섹션, 총 ${totalItems}개 항목)" }
+            log.info { "파일 생성: ${sectionFile.absolutePath} (${sectionMarkdowns.size}개 섹션, 총 ${totalItems}개 항목)" }
         }
 
         log.info { "모든 섹션 파일 생성 완료" }
@@ -395,6 +473,40 @@ class GradleDependencyToMd {
      * 단일 섹션의 마크다운 생성
      */
     private fun generateSectionMarkdown(title: String, dependencies: List<DependencyInfo>): String {
+        // groupId, artifactId, version으로 그룹핑 후 정렬
+        val groupedDeps = dependencies
+            .groupBy { dep -> Triple(dep.groupId, dep.artifactId, dep.version) }
+            .toList()
+            .sortedWith(compareBy({ it.first.first }, { it.first.second }))  // groupId -> artifactId 순 정렬
+
+        // 필터링된 데이터 행 먼저 생성
+        val dataRows = buildList {
+            groupedDeps.forEach { (key, deps) ->
+                val (groupId, artifactId, version) = key
+                val scope = deps.first().scope
+
+                // 출처 추출 (빈 문자열 제외)
+                val sourcePaths = deps
+                    .map { it.getSourcePath() }
+                    .filter { it.isNotEmpty() }
+                    .distinct()
+
+                // project로 시작하지 않는 출처만 필터링
+                val nonProjectSources = sourcePaths.filter { !it.startsWith("project:") }
+
+                // 원래 출처가 없거나(root 의존성), 필터링 후에도 남은 출처가 있으면 표시
+                if (sourcePaths.isEmpty() || nonProjectSources.isNotEmpty()) {
+                    val sourcePathsStr = nonProjectSources.joinToString("<br>")
+                    add("| $scope | $groupId | $artifactId | $version | $sourcePathsStr |")
+                }
+            }
+        }
+
+        // 데이터가 없으면 빈 문자열 반환
+        if (dataRows.isEmpty()) {
+            return ""
+        }
+
         return buildString {
             // 섹션 제목
             appendLine("## $title")
@@ -404,26 +516,8 @@ class GradleDependencyToMd {
             appendLine("| scope | 그룹 | 이름 | 버전 | 출처 |")
             appendLine("|-------|------|------|------|------|")
 
-            // groupId, artifactId, version으로 그룹핑 후 정렬
-            val groupedDeps = dependencies
-                .groupBy { dep -> Triple(dep.groupId, dep.artifactId, dep.version) }
-                .toList()
-                .sortedWith(compareBy({ it.first.first }, { it.first.second }))  // groupId -> artifactId 순 정렬
-
-            // 데이터 행 생성
-            groupedDeps.forEach { (key, deps) ->
-                val (groupId, artifactId, version) = key
-                val scope = deps.first().scope
-
-                // 출처를 <br>로 연결 (빈 문자열 제외)
-                val sourcePaths = deps
-                    .map { it.getSourcePath() }
-                    .filter { it.isNotEmpty() }
-                    .distinct()
-                    .joinToString("<br>")
-
-                appendLine("| $scope | $groupId | $artifactId | $version | $sourcePaths |")
-            }
+            // 데이터 행 추가
+            dataRows.forEach { appendLine(it) }
         }
     }
 }
