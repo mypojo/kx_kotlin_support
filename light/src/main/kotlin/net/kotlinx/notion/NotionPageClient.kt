@@ -2,6 +2,7 @@ package net.kotlinx.notion
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.gson.toGsonData
 import net.kotlinx.okhttp.await
 import okhttp3.OkHttpClient
@@ -48,6 +49,24 @@ class NotionPageClient(
             nextToken = result["next_cursor"].str
             if (nextToken == null) return@flow
         }
+    }
+
+    /**
+     * 해당 페이지의 상세 정보를 조회한다.
+     * - Notion API: GET /v1/pages/{page_id}
+     */
+    suspend fun retrievePage(pageId: String): GsonData {
+        val resp = client.await {
+            url = "https://api.notion.com/v1/pages/${pageId}"
+            method = "GET"
+            header = mapOf(
+                "Authorization" to "Bearer $secretValue",
+                "Notion-Version" to "2022-06-28",
+                "Content-Type" to "application/json",
+            )
+        }
+        check(resp.response.code == 200) { "${resp.response.code} ${resp.respText}" }
+        return resp.respText.toGsonData()
     }
 
     /**

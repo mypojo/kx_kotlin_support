@@ -19,8 +19,15 @@ class CdkCloudFront : CdkInterface {
     }
 
     lateinit var domain: String
+
+    /**
+     * ex) S3호스팅 -> CdkCloudFront.forWebsite(origon.iBucket)
+     * ex) ALB -> LoadBalancerV2Origin(alb, LoadBalancerV2OriginProps.builder().protocolPolicy(OriginProtocolPolicy.HTTPS_ONLY).build()
+     * */
     lateinit var origin: IOrigin
+
     lateinit var iCertificate: ICertificate
+
 
     /** 외부에서 생성된 WAF WebACL ARN. 설정되면 CloudFront에 연결됨 */
     var webAclArn: String? = null
@@ -40,6 +47,8 @@ class CdkCloudFront : CdkInterface {
     lateinit var distribution: Distribution
 
     fun create(stack: Stack, block: DistributionProps.Builder.() -> Unit = {}) {
+
+
         val builder = DistributionProps.builder()
             .defaultBehavior(
                 BehaviorOptions.builder()

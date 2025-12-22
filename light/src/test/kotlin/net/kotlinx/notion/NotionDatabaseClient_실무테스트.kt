@@ -49,6 +49,9 @@ internal class NotionDatabaseClient_실무테스트 : BeSpecHeavy() {
         Given("사전작업") {
 
             Then("노션데이터 변경분 S3올리고 날리지베이스 동기화") {
+
+                //디렉토리 구조   {root}/{dbId}/index.md   (사실 page 전체가 인덱싱 되기 때문에 불필요)
+                //디렉토리 구조   {root}/{dbId}/page_{pageId}.md
                 val now = LocalDateTime.now()
                 val lastUpdateTime = tempDataRepository.findLastUpdate() //변경시점은 DDB에 저장
                 val filter = NotionFilterSet.lastEditAfter(lastUpdateTime.minusMinutes(10)) //10분의 버퍼를 줘서 필터링
@@ -62,8 +65,8 @@ internal class NotionDatabaseClient_실무테스트 : BeSpecHeavy() {
                 database.query(DB_ID, filter).collect { list ->
                     list.forEach { row ->
                         val file = localRoot.slash("${row.id}.txt")
-                        val allBlocks = pageLoader.list(row.id)
-                        val allText = listOf(row.body.toString()) + allBlocks.map { it.viewText }
+                        val allBlocks = pageLoader.load(row.id)
+                        val allText = listOf(row.body.toString()) + allBlocks.map { it.markdown }
                         file.writeText(allText.joinToString("\n"))
 
                         val upload = uploadPath.slash(file.name)

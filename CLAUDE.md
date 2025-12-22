@@ -1,1 +1,0 @@
-C:/Users/mypoj/IdeaProjects/kx_kotlin_support/.junie/guidelines.md

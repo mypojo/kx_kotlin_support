@@ -107,6 +107,13 @@ class CdkEcsWeb : CdkInterface {
      *  */
     var containerInsights: ContainerInsights = ContainerInsights.ENABLED
 
+    /**
+     * 온라인으로 만들지.
+     * 소규모 작업이면 true
+     * WAF 연결할거면 fasle
+     * */
+    var internetFacing: Boolean = true
+
     //==================================================== 대부분 고정하는값 ======================================================
 
     /** 로그 그룹 이름 */
@@ -197,13 +204,16 @@ class CdkEcsWeb : CdkInterface {
         /** 내부 서버의 타임아웃은 이거보다 짧게 설정해야 한다. */
         val duration = (60).seconds.toCdk()  // 2분에서 5분으로 늘림 (전체 리스트 조회시 2분 넘게걸림)
 
+        val albSubnets = if (internetFacing) vpc.publicSubnets else vpc.privateSubnets
+
         alb = ApplicationLoadBalancer(
             stack, albName, ApplicationLoadBalancerProps.builder()
                 .vpc(vpc)
-                .internetFacing(true) //true는 버블릭용.
+                .internetFacing(internetFacing)
                 .loadBalancerName(albName)
                 .idleTimeout(duration)
-                .vpcSubnets(SubnetSelection.builder().subnets(vpc.publicSubnets).build()) //ALB는 public에 있어야함
+                .internetFacing(true)
+                .vpcSubnets(SubnetSelection.builder().subnets(albSubnets).build()) //ALB는 public에 있어야함
                 .securityGroup(sgAlb)
                 .build()
         )
