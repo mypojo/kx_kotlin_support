@@ -23,7 +23,7 @@ class GradleBuilderTest : BeSpecHeavy() {
             }
 
             xThen("람다 함수 배포") {
-                val jarFile = File("C:\\WORKSPACE\\11H11M\\${projectName}\\${projectName}_fun_ui\\build\\libs\\${projectName}_fun_ui-0.1.jar")
+                val jarFile = File("C:\\WORKSPACE\\xxx\\${projectName}\\${projectName}_fun_ui\\build\\libs\\${projectName}_fun_ui-0.1.jar")
                 build.lambdaUpdateFunction("${projectName}-fn_ui-${build.suff}", jarFile)
             }
         }

@@ -84,7 +84,7 @@ class DataSourceSetup_mysqlTest : BeSpecHeavy() {
                     username = "${projectName}"
                     password = pwd
                     jdbcUrl = JdbcUrl {
-                        host = "mysql.dev.11h11m.net"
+                        host = "mysql.dev.xx.net"
                         database = username
                         jdbcDriver = JdbcDriver.MYSQL
                     }
