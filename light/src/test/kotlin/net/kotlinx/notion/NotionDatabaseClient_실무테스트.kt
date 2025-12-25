@@ -82,7 +82,7 @@ internal class NotionDatabaseClient_실무테스트 : BeSpecHeavy() {
 
         Given("step01") {
 
-            Then("생성된 PRD를 노션DB에 추가") {
+            Then("생성된 PRD를 노션DB에  추가") {
                 val data = obj {
                     "업무명" to NotionCell.Title.toNotion("신규프로젝트01")
                     "프로젝트" to NotionCell.Select.toNotion("기타")
