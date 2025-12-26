@@ -104,7 +104,7 @@ class CdkBatchJobDefinition(
                         )
                     )
                     .jobRoleArn(jobRole.roleArn)
-                    .executionRoleArn(jobRole.roleArn)
+                    .executionRoleArn(executionRole.roleArn)
                     .logConfiguration(
                         CfnJobDefinition.LogConfigurationProperty.builder()
                             .logDriver("awslogs")

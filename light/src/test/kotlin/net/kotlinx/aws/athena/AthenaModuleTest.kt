@@ -2,6 +2,7 @@ package net.kotlinx.aws.athena
 
 import io.kotest.matchers.shouldBe
 import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.s3.S3Data
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
@@ -15,6 +16,13 @@ internal class AthenaModuleTest : BeSpecHeavy() {
 
     init {
         initTest(KotestUtil.PROJECT)
+
+        Given("초기화") {
+            Then("updateWorkGroupPrimary") {
+                val path = S3Data("${findProfile97}-work-prod", "athena_primary/outputLocation")
+                aws49.athena.updateWorkGroupPrimary(path.toFullPath())
+            }
+        }
 
         Given("AthenaModule") {
 

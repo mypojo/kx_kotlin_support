@@ -99,4 +99,16 @@ class CdkSecurityGroup(val sgName: String) : CdkEnum {
         throw UnsupportedOperationException()
     }
 
+    companion object {
+
+        /**
+         * 아마존에서 관리하는 글로벌 PL
+         * 클라우드 프론트 사용시 이걸로 SG 설정
+         * com.amazonaws.global.cloudfront.origin-facing
+         * */
+        const val GLOBAL_CLOUDFRONT_ORIGIN_FACING = "pl-22a6434b"
+
+
+    }
+
 }

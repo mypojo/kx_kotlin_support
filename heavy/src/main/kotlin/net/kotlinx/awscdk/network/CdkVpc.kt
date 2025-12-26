@@ -25,7 +25,10 @@ class CdkVpc : CdkInterface {
         apply(block)
     }
 
-    /** 이거 전체 회사내에서 안겹치게 잘 해야함!! (겹치면 피어링 안됨) */
+    /**
+     * 이거 전체 회사내에서 안겹치게 잘 해야함!! (겹치면 피어링 안됨)
+     * 17x대 영역 쓰지말것. 도커와 충돌남
+     *  */
     var vpcCidr: String = "10.1.0.0/16"
 
     /** 최초  */
@@ -75,6 +78,7 @@ class CdkVpc : CdkInterface {
             .vpcName(logicalName)
             .maxAzs(maxAzs)
             .subnetConfiguration(subnetTypes.map { subnetConfiguration(awsConfig.profileName!!, it) })
+            .restrictDefaultSecurityGroup(false) //디폴트 보안그룹을 막지않고 그냥둔다. 이거 on 하면 람다가 강제 생성되서 보기흉함. 향후 수기삭제 하자.
             .apply(block)
             .build()
         iVpc = Vpc(stack, logicalName, vpcProps)

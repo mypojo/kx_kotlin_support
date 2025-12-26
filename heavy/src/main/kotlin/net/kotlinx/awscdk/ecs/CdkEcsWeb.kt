@@ -114,6 +114,12 @@ class CdkEcsWeb : CdkInterface {
      * */
     var internetFacing: Boolean = true
 
+    /**
+     * ALB 커스텀 해더 인증 여부
+     * 보통 internetFacing 이면 설정함
+     *  */
+    var customHeader: Pair<String, String>? = null
+
     //==================================================== 대부분 고정하는값 ======================================================
 
     /** 로그 그룹 이름 */
@@ -212,14 +218,18 @@ class CdkEcsWeb : CdkInterface {
                 .internetFacing(internetFacing)
                 .loadBalancerName(albName)
                 .idleTimeout(duration)
-                .internetFacing(true)
                 .vpcSubnets(SubnetSelection.builder().subnets(albSubnets).build()) //ALB는 public에 있어야함
                 .securityGroup(sgAlb)
                 .build()
         )
+        TagUtil.tagDefault(alb)
+    }
 
-        /** 기본 리다이렉트 설정 */
-        alb.addListener(
+    /**
+     * 기본  http -> https 리다이렉트 설정
+     *  */
+    fun addDefaultRedirectListener(): ApplicationListener {
+        return alb.addListener(
             "${projectName}-${name}_alb_listner_http-${suff}", BaseApplicationListenerProps.builder()
                 .port(PortUtil.WEB_80) //80은 디폴트라서 빼도 되긴 함
                 .protocol(ApplicationProtocol.HTTP)
@@ -234,7 +244,6 @@ class CdkEcsWeb : CdkInterface {
                 )
                 .build()
         )
-        TagUtil.tagDefault(alb)
     }
 
     /**
@@ -247,7 +256,6 @@ class CdkEcsWeb : CdkInterface {
         createAlb(stack)
 
         val service = createFargateService(stack)
-
         val targetGroupName = "${projectName}-${name}-target-${suff}" //언더바 사용 금지
         this.targetGroup = ApplicationTargetGroup(
             stack, targetGroupName, ApplicationTargetGroupProps.builder()
@@ -264,39 +272,46 @@ class CdkEcsWeb : CdkInterface {
         )
         TagUtil.tagDefault(targetGroup)
 
-        alb.addListener(
-            "${projectName}-${name}_alb_listner_https-${suff}",
-            BaseApplicationListenerProps.builder()
-                .port(PortUtil.WEB_443)
-                .protocol(ApplicationProtocol.HTTPS) //443 하면 디폴트라서 빼도됨
-                .open(false) //오픈 옵션 주면, 자동으로 SG에 전체 오픈이 추가됨. 실제운영시에는 별도 SG를 사용함
-                .sslPolicy(SslPolicy.RECOMMENDED) //최신버전 쓰자
-                .certificates(certs.map { ListenerCertificate.fromArn(it) })
-                .defaultAction(ListenerAction.forward(listOf(targetGroup))) // 타겟그룹 연결
-                .build()
-        )
-        service.attachToApplicationTargetGroup(targetGroup)
+        if (customHeader == null) {
+            //커스텀 헤더 설정이 안된경우 (보통 오픈) 그냥 쓰면됨
+            alb.addListener(
+                "${projectName}-${name}_alb_listner_https-${suff}",
+                BaseApplicationListenerProps.builder()
+                    .port(PortUtil.WEB_443)
+                    .protocol(ApplicationProtocol.HTTPS) //443 하면 디폴트라서 빼도됨
+                    .open(false) //오픈 옵션 주면, 자동으로 SG에 전체 오픈이 추가됨. 실제운영시에는 별도 SG를 사용함
+                    .sslPolicy(SslPolicy.RECOMMENDED) //최신버전 쓰자
+                    .certificates(certs.map { ListenerCertificate.fromArn(it) })
+                    .defaultAction(ListenerAction.forward(listOf(targetGroup))) // 타겟그룹 연결
+                    .build()
+            )
+        } else {
+            val listener = alb.addListener(
+                "${projectName}-${name}_alb_listner_https-${suff}",
+                BaseApplicationListenerProps.builder()
+                    .port(PortUtil.WEB_443)
+                    .protocol(ApplicationProtocol.HTTPS) //443 하면 디폴트라서 빼도됨
+                    .open(false) //오픈 옵션 주면, 자동으로 SG에 전체 오픈이 추가됨. 실제운영시에는 별도 SG를 사용함
+                    .sslPolicy(SslPolicy.RECOMMENDED) //최신버전 쓰자
+                    .certificates(certs.map { ListenerCertificate.fromArn(it) })
+                    .defaultAction(ListenerAction.fixedResponse(403, ACCESS_DENIED)) //디폴투로 다 막음
+                    .build()
+            )
+            listener.addTargetGroups(
+                "AllowOriginHeader",
+                AddApplicationTargetGroupsProps.builder()
+                    .priority(1)
+                    .conditions(
+                        listOf(
+                            ListenerCondition.httpHeader(customHeader!!.first, listOf(customHeader!!.second))
+                        )
+                    )
+                    .build()
+            )
 
-        // 기존 EcsTarget 방식을 ,직접 타겟그룹을 생성하는 방식으로 변경 (확장때문)
-//        val ecsTarget = EcsTarget.builder()
-//            .containerName(container.containerName)
-//            .containerPort(PortUtil.WEB_8080)
-//            .newTargetGroupId(targetGroupName)
-//            .listener(
-//                ListenerConfig.applicationListener(
-//                    httpsListner, AddApplicationTargetsProps.builder()
-//                        .protocol(ApplicationProtocol.HTTP)
-//                        .port(PortUtil.WEB_8080)
-//                        .healthCheck(healthCheck)
-//                        .targetGroupName(targetGroupName)
-//                        .apply {
-//                            stickinessCookieDuration?.let { stickinessCookieDuration(it.toCdk()) }
-//                        }
-//                        .build()
-//                )
-//            )
-//            .build()
-//        service.registerLoadBalancerTargets(ecsTarget)
+        }
+
+        service.attachToApplicationTargetGroup(targetGroup) //이게 마지막에 와야하나? 잘 모르겠음
 
     }
 
@@ -450,5 +465,11 @@ class CdkEcsWeb : CdkInterface {
                 .action(ListenerAction.forward(listOf(targetGroup)))
                 .build()
         )
+    }
+
+    companion object {
+
+        /** 알아볼 수 있게 ! 마킹 추가 */
+        val ACCESS_DENIED = FixedResponseOptions.builder().contentType("text/plain").messageBody("Access Denied!").build()!!
     }
 }

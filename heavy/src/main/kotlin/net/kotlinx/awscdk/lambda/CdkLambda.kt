@@ -10,6 +10,7 @@ import software.amazon.awscdk.Stack
 import software.amazon.awscdk.services.iam.IRole
 import software.amazon.awscdk.services.lambda.*
 import software.amazon.awscdk.services.lambda.Function
+import software.amazon.awscdk.services.logs.LogGroup
 import software.amazon.awscdk.services.logs.RetentionDays
 import software.amazon.awscdk.services.sqs.IQueue
 import kotlin.time.Duration.Companion.minutes
@@ -131,6 +132,11 @@ class CdkLambda : CdkEnum {
 
     fun create(stack: Stack, block: FunctionProps.Builder.() -> Unit = {}) {
 
+        val logGroup = LogGroup.Builder.create(stack, "log-group-${logicalName}")
+            .logGroupName("/aws/lambda/$logicalName")
+            .retention(logRetention)
+            .build()
+
         defaultFun = Function(
             stack, logicalName, FunctionProps.builder()
                 .functionName(logicalName)
@@ -140,7 +146,7 @@ class CdkLambda : CdkEnum {
                 .ephemeralStorageSize(Size.mebibytes(ephemeralStorageSize))
                 .timeout(Duration.seconds(timeout.inWholeSeconds)) //초단위로 입력
                 .handler(handlerName)
-                .logRetention(logRetention)
+                .logGroup(logGroup)
                 .code(code)
                 .environment(environment)
                 .retryAttempts(retryCnt)

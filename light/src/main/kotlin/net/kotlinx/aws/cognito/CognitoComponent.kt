@@ -11,7 +11,7 @@ import net.kotlinx.aws.LazyAwsClientProperty
 /**
  * 코그니토 백엔드용 컴포넌트
  * */
-class CognitoComponent(private val cognitoId: String, private val cognitoClientId: String) {
+class CognitoComponent(private val cognitoId: String) {
 
     /** AwsClient 지연 주입 */
     var aws: AwsClient by LazyAwsClientProperty()
@@ -87,13 +87,7 @@ class CognitoComponent(private val cognitoId: String, private val cognitoClientI
      *
      * 임시 비번발급 & 변경 로직은 시간관계상 백오피스에서는 생략
      */
-    suspend fun adminCreateUserDefault(
-        username: String,
-        email: String,
-        permanentPassword: String,
-        phoneNumber: String? = null,
-        groupName: String? = null,
-    ) {
+    suspend fun adminCreateUserDefault(username: String, email: String, permanentPassword: String, phoneNumber: String? = null, groupName: String? = null) {
         // 1️⃣ 사용자 생성 (메일 발송 없음)
         try {
             aws.cognito.adminCreateUser {
@@ -151,8 +145,8 @@ class CognitoComponent(private val cognitoId: String, private val cognitoClientI
      * 관리자가 특정 사용자의 비밀번호를 강제로 변경
      * 오픈 서비스에서는 이렇게 하면 위험!
      *  */
-    suspend fun adminSetUserPasswordDefault(username: String, newPassword: String) {
-        aws.cognito.adminSetUserPassword {
+    suspend fun adminSetUserPasswordDefault(username: String, newPassword: String): AdminSetUserPasswordResponse {
+        return aws.cognito.adminSetUserPassword {
             userPoolId = cognitoId
             this.username = username
             password = newPassword
@@ -166,8 +160,8 @@ class CognitoComponent(private val cognitoId: String, private val cognitoClientI
      * 관리자가 사용자를 영구 삭제합니다.
      * 복구 불가. 주의해서 사용할 것.
      */
-    suspend fun adminDeleteUser(username: String) {
-        aws.cognito.adminDeleteUser {
+    suspend fun adminDeleteUser(username: String): AdminDeleteUserResponse {
+        return aws.cognito.adminDeleteUser {
             userPoolId = cognitoId
             this.username = username
         }

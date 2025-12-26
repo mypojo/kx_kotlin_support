@@ -48,7 +48,6 @@ class CdkCloudFront : CdkInterface {
 
     fun create(stack: Stack, block: DistributionProps.Builder.() -> Unit = {}) {
 
-
         val builder = DistributionProps.builder()
             .defaultBehavior(
                 BehaviorOptions.builder()

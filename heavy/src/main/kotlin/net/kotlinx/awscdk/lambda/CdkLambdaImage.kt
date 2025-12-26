@@ -15,6 +15,7 @@ import software.amazon.awscdk.services.ec2.SubnetType.PRIVATE_WITH_EGRESS
 import software.amazon.awscdk.services.ecr.IRepository
 import software.amazon.awscdk.services.iam.IRole
 import software.amazon.awscdk.services.lambda.*
+import software.amazon.awscdk.services.logs.LogGroup
 import software.amazon.awscdk.services.logs.RetentionDays
 import software.amazon.awscdk.services.sqs.IQueue
 import kotlin.time.Duration.Companion.minutes
@@ -108,10 +109,15 @@ class CdkLambdaImage : CdkEnum {
 
     fun create(stack: Stack) {
 
+        val logGroup = LogGroup.Builder.create(stack, "log-group-${logicalName}")
+            .logGroupName("/aws/lambda/$logicalName")
+            .retention(logRetention)
+            .build()
+
         defaultFun = DockerImageFunction(
-            stack, lambdaName, DockerImageFunctionProps.builder()
-                .functionName(lambdaName)
-                .description("$lambdaName with docker")
+            stack, logicalName, DockerImageFunctionProps.builder()
+                .functionName(logicalName)
+                .description("$logicalName with docker")
                 .memorySize(memorySize)
                 .ephemeralStorageSize(ephemeralStorageSize)
                 .timeout(timeout.toCdk())
@@ -126,7 +132,7 @@ class CdkLambdaImage : CdkEnum {
                             .build()
                     )
                 )
-                .logRetention(logRetention)
+                .logGroup(logGroup)
                 .environment(environment)
                 .maxEventAge(Duration.hours(6)) //디폴트가 최대치임. 정확히 뭔지?
                 .retryAttempts(retryCnt) //로직의 혼란을 막기 위해 리트라이 안함!!!

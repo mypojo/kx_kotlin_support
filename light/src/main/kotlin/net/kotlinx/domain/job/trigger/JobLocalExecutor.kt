@@ -15,7 +15,7 @@ import java.time.LocalDateTime
  * 실제 실행서버의 로컬 머신 기준으로 job을 실행한다.
  * 여기에서는 개발 환경을 구분하지 않는다.
  */
-class JobLocalExecutor() {
+class JobLocalExecutor {
 
     private val log = KotlinLogging.logger {}
 
@@ -91,6 +91,7 @@ class JobLocalExecutor() {
 
     /**
      * 외부 이벤트 등으로 잡을 완료시킴
+     * 경고!! 간단한 로직 처리 전용임. 10분 이상 걸릴 수 있으면 잡 체인을 사용해야함
      * @param block job에 대한 전처리
      *  */
     suspend fun resume(jobPk: String, jobSk: String, block: suspend (Job) -> Unit = {}) {
@@ -99,7 +100,7 @@ class JobLocalExecutor() {
         val jobService = JobDefinitionRepository.findById(job.pk).jobClass.newInstance()
         try {
             jobService.onProcessComplete(job)
-            this.resumeSuccess(job)
+            resumeSuccess(job)
         } catch (e: KnownException.ItemSkipException) {
             log.warn { "onProcessComplete 처리중 스킵! -> ${e.toSimpleString()}" }
         } catch (e: Exception) {

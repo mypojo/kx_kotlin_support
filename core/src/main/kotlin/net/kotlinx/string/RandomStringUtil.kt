@@ -12,6 +12,9 @@ object RandomStringUtil {
     fun getRandomSring(len: Int, randomStr: String = "abcdefghijklmnopqrstuvwxyz123456789"): String {
         return (0 until len).map { Random.nextInt(randomStr.length) }.map { randomStr[it] }.joinToString()
     }
+    fun getRandomNumber(len: Int, randomStr: String = "123456789"): String {
+        return (0 until len).map { Random.nextInt(randomStr.length) }.map { randomStr[it] }.joinToString()
+    }
 
     /** 랜덤 비번 생성 */
     fun generateRandomPassword(length: Int = 12): String {

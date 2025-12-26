@@ -8,40 +8,44 @@ import kotlinx.coroutines.flow.toList
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest
 import net.kotlinx.kotest.modules.BeSpecLight
+import net.kotlinx.string.RandomStringUtil
 import net.kotlinx.string.StringHpUtil
-import net.kotlinx.string.print
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
+import java.util.*
+import kotlin.random.Random
+
 
 class CognitoComponentTest : BeSpecLight() {
 
+    companion object {
+        private const val POOL_ID = "ap-northeast-2_PeLL1FobS"
+    }
+
     val comp by lazy {
-        //demo
-        CognitoComponent("ap-northeast-2_PeLL1FobS", "7lqsshvhpstcbsgdgt5hg0as9i").apply {
-            this.aws = aws49
-        }
+        CognitoComponent(POOL_ID).apply { this.aws = aws49 }
     }
 
     val compSession by lazy {
-        //demo
-        CognitoSessionComponent("ap-northeast-2_PeLL1FobS", "7lqsshvhpstcbsgdgt5hg0as9i").apply {
-            this.aws = aws49
-        }
+        CognitoSessionComponent(POOL_ID, "7lqsshvhpstcbsgdgt5hg0as9i").apply { this.aws = aws49 }
     }
+
+    val tokenSigningKey = "https://cognito-idp.ap-northeast-2.amazonaws.com/ap-northeast-2_PeLL1FobS/.well-known/jwks.json"
+    val decoder: NimbusJwtDecoder = NimbusJwtDecoder.withJwkSetUri(tokenSigningKey).build()!!
 
     init {
         initTest(KotestUtil.IGNORE)
 
         Given("CognitoComponent") {
-            val username = "006250de-c524-45b1-86c0-26a573bf8c59"
-            val pwd = "]}9&&r@Xmt7a"
-            val pwd2 = "]}9&&r@Xmt7a22"
-            val hp = StringHpUtil.toE164Kr("010-1111-2222")
-            val email = "seunghan.shin@ad.com"
-
-            val tokenSigningKey = "https://cognito-idp.ap-northeast-2.amazonaws.com/ap-northeast-2_PeLL1FobS/.well-known/jwks.json"
-            val decoder = NimbusJwtDecoder.withJwkSetUri(tokenSigningKey).build()
+            printName()
+            val username = UUID.randomUUID().toString()
+            log.info { "username : ${username}" }
+            val pwd = RandomStringUtil.generateRandomPassword(16)
+            val pwd2 = RandomStringUtil.generateRandomPassword(16)
+            val hp = StringHpUtil.toE164Kr("010-${RandomStringUtil.getRandomNumber(4)}-${RandomStringUtil.getRandomNumber(4)}")
+            val email = "seunghan.shin${Random.nextInt(100)}@ad.com"
 
             When("사용자") {
+                printName()
                 Then("사용자 생성") {
                     comp.adminCreateUserDefault(username, email, pwd, null, "api")
                 }
@@ -50,11 +54,11 @@ class CognitoComponentTest : BeSpecLight() {
                 }
                 Then("사용자 리스팅") {
                     val allUsers = comp.listAllUsers().toList().flatMap { it.users!! }
-                    allUsers.print()
+                    log.info { allUsers.joinToString("\n") }
                 }
                 Then("사용자 상세정보") {
                     val user = comp.adminGetUser(username)
-                    println(user)
+                    log.info { "user detail: $user" }
                 }
                 Then("사용자 비밀번호 수정") {
                     comp.adminSetUserPasswordDefault(username, pwd2)
@@ -62,14 +66,15 @@ class CognitoComponentTest : BeSpecLight() {
             }
 
             When("로그인 3종") {
+                printName()
                 Then("로그인1") {
-                    val response = compSession.initiateAuth(username, pwd)
-                    println(response.authenticationResult!!.accessToken)
-                    println(response.authenticationResult!!.refreshToken)
+                    val response = compSession.initiateAuth(username, pwd2)
+                    log.info { "accessToken: ${response.authenticationResult!!.accessToken}" }
+                    log.info { "refreshToken: ${response.authenticationResult!!.refreshToken}" }
                 }
                 Then("로그인2 & 토큰검증") {
                     val response = compSession.initiateAuth(hp, pwd2)
-                    println(response)
+                    log.info { "login response: $response" }
 
                     val decoded = decoder.decode(response.authenticationResult!!.accessToken)!!
                     // 파싱된 토큰 정보 검증
@@ -95,12 +100,15 @@ class CognitoComponentTest : BeSpecLight() {
                 }
                 Then("로그인3 & 리프레시") {
                     val response = compSession.initiateAuth(email, pwd2)
-                    println(response)
+                    log.info { "login response for refresh: $response" }
                     val newResp = compSession.refreshTokens(response.authenticationResult!!.refreshToken!!)
-                    println(newResp)
-
-
+                    log.info { "refreshed response: $newResp" }
                 }
+            }
+
+            When("정리") {
+                printName()
+                comp.adminDeleteUser(username)
             }
         }
     }

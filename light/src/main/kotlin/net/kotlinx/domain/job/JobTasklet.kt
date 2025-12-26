@@ -5,6 +5,7 @@ import com.lectra.koson.obj
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.exception.KnownException
 import net.kotlinx.reflect.name
+import kotlin.reflect.full.declaredMemberFunctions
 
 
 /**
@@ -40,4 +41,7 @@ interface JobTasklet {
             }.toString()
         }
     }
+
+    /** onProcessComplete 가 구현되어서, resume 을 호출 해야하는지? */
+    fun onProcessCompleteOverridden(): Boolean = this::class.declaredMemberFunctions.any { it.name == this::onProcessComplete.name }
 }
