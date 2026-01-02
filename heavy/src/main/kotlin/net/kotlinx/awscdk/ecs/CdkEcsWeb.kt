@@ -120,6 +120,12 @@ class CdkEcsWeb : CdkInterface {
      *  */
     var customHeader: Pair<String, String>? = null
 
+
+    /**
+     * 그린환경으로 전송할 포트
+     * */
+    var greenPort: Int = PortUtil.WEB_8080
+
     //==================================================== 대부분 고정하는값 ======================================================
 
     /** 로그 그룹 이름 */
@@ -135,7 +141,7 @@ class CdkEcsWeb : CdkInterface {
     lateinit var cdkLogGroup: CdkLogGroup
 
     /** ECS - CLUSTER */
-    fun createCluster(stack: Stack) {
+    fun createCluster(stack: Stack, block: ClusterProps.Builder.() -> Unit = {}) {
         val clusterName = "${projectName}-${name}_cluster-${suff}"
         cluster = Cluster(
             stack, clusterName, ClusterProps.builder()
@@ -143,6 +149,7 @@ class CdkEcsWeb : CdkInterface {
                 .clusterName(clusterName)
                 .containerInsightsV2(containerInsights)
                 .enableFargateCapacityProviders(true) //파게이트 용량공급 설정 가능하게 온
+                .apply(block)
                 .build()
         )
         TagUtil.tagDefault(cluster)
@@ -156,7 +163,7 @@ class CdkEcsWeb : CdkInterface {
 
 
     /** ECS - TASK DEFINITION */
-    private fun createTaskDefinition(stack: Stack) {
+    fun createTaskDefinition(stack: Stack, block: TaskDefinitionProps.Builder.() -> Unit = {}) {
         val taskDefName = "${projectName}-${name}_task_def-${suff}"
         taskDef = TaskDefinition(
             stack, taskDefName, TaskDefinitionProps.builder()
@@ -172,6 +179,7 @@ class CdkEcsWeb : CdkInterface {
                 )
                 .taskRole(taskRole)
                 .executionRole(executionRole)
+                .apply(block)
                 .build()
         )
         TagUtil.tagDefault(taskDef)
@@ -204,7 +212,7 @@ class CdkEcsWeb : CdkInterface {
 
     lateinit var alb: ApplicationLoadBalancer
 
-    private fun createAlb(stack: Stack) {
+    fun createAlb(stack: Stack, block: ApplicationLoadBalancerProps.Builder.() -> Unit = {}) {
         val albName = "${projectName}-${name}-alb-${suff}"
 
         /** 내부 서버의 타임아웃은 이거보다 짧게 설정해야 한다. */
@@ -220,6 +228,7 @@ class CdkEcsWeb : CdkInterface {
                 .idleTimeout(duration)
                 .vpcSubnets(SubnetSelection.builder().subnets(albSubnets).build()) //ALB는 public에 있어야함
                 .securityGroup(sgAlb)
+                .apply(block)
                 .build()
         )
         TagUtil.tagDefault(alb)
@@ -246,16 +255,47 @@ class CdkEcsWeb : CdkInterface {
         )
     }
 
+    /** 기본 리스너 설정 */
+    private fun applicationListenerProps(action: ListenerAction): BaseApplicationListenerProps = BaseApplicationListenerProps.builder()
+        .port(PortUtil.WEB_443)
+        .protocol(ApplicationProtocol.HTTPS) //443 하면 디폴트라서 빼도됨
+        .open(false) //오픈 옵션 주면, 자동으로 SG에 전체 오픈이 추가됨. 실제운영시에는 별도 SG를 사용함
+        .sslPolicy(SslPolicy.RECOMMENDED) //최신버전 쓰자
+        .certificates(certs.map { ListenerCertificate.fromArn(it) })
+        .defaultAction(action)
+        .build()
+
+    /** 기본 리스너 생성 */
+    private fun addDefaultListener(): ApplicationListener {
+        if (customHeader == null) {
+            //커스텀 헤더 설정이 안된경우 (보통 오픈) 그냥 쓰면됨
+            val action = ListenerAction.forward(listOf(targetGroup)) //기본으로 정해진 대상 전달
+            return alb.addListener("${projectName}-${name}_alb_listner_https-${suff}", applicationListenerProps(action))
+        } else {
+            val action = ListenerAction.fixedResponse(403, ACCESS_DENIED) //기본으로 다 막음
+            val listener = alb.addListener("${projectName}-${name}_alb_listner_https-${suff}", applicationListenerProps(action))
+            listener.addTargetGroups(
+                "AllowOriginHeader_${customHeader!!.first}-${suff}",
+                AddApplicationTargetGroupsProps.builder()
+                    .priority(1)
+                    .conditions(
+                        listOf(
+                            ListenerCondition.httpHeader(customHeader!!.first, listOf(customHeader!!.second))
+                        )
+                    )
+                    .targetGroups(listOf(targetGroup))
+                    .build()
+            )
+            return listener
+        }
+    }
+
     /**
      * 롤링 서비스 생성
      * 보통 개발서버로 사용됨
      *  */
-    fun createServiceRolling(stack: Stack) {
-        createCluster(stack)
-        createTaskDefinition(stack)
-        createAlb(stack)
-
-        val service = createFargateService(stack)
+    fun createServiceRolling(stack: Stack, block: FargateServiceProps.Builder.() -> Unit = {}) {
+        val service = createFargateService(stack, block)
         val targetGroupName = "${projectName}-${name}-target-${suff}" //언더바 사용 금지
         this.targetGroup = ApplicationTargetGroup(
             stack, targetGroupName, ApplicationTargetGroupProps.builder()
@@ -271,46 +311,7 @@ class CdkEcsWeb : CdkInterface {
                 .build()
         )
         TagUtil.tagDefault(targetGroup)
-
-        if (customHeader == null) {
-            //커스텀 헤더 설정이 안된경우 (보통 오픈) 그냥 쓰면됨
-            alb.addListener(
-                "${projectName}-${name}_alb_listner_https-${suff}",
-                BaseApplicationListenerProps.builder()
-                    .port(PortUtil.WEB_443)
-                    .protocol(ApplicationProtocol.HTTPS) //443 하면 디폴트라서 빼도됨
-                    .open(false) //오픈 옵션 주면, 자동으로 SG에 전체 오픈이 추가됨. 실제운영시에는 별도 SG를 사용함
-                    .sslPolicy(SslPolicy.RECOMMENDED) //최신버전 쓰자
-                    .certificates(certs.map { ListenerCertificate.fromArn(it) })
-                    .defaultAction(ListenerAction.forward(listOf(targetGroup))) // 타겟그룹 연결
-                    .build()
-            )
-        } else {
-            val listener = alb.addListener(
-                "${projectName}-${name}_alb_listner_https-${suff}",
-                BaseApplicationListenerProps.builder()
-                    .port(PortUtil.WEB_443)
-                    .protocol(ApplicationProtocol.HTTPS) //443 하면 디폴트라서 빼도됨
-                    .open(false) //오픈 옵션 주면, 자동으로 SG에 전체 오픈이 추가됨. 실제운영시에는 별도 SG를 사용함
-                    .sslPolicy(SslPolicy.RECOMMENDED) //최신버전 쓰자
-                    .certificates(certs.map { ListenerCertificate.fromArn(it) })
-                    .defaultAction(ListenerAction.fixedResponse(403, ACCESS_DENIED)) //디폴투로 다 막음
-                    .build()
-            )
-            listener.addTargetGroups(
-                "AllowOriginHeader",
-                AddApplicationTargetGroupsProps.builder()
-                    .priority(1)
-                    .conditions(
-                        listOf(
-                            ListenerCondition.httpHeader(customHeader!!.first, listOf(customHeader!!.second))
-                        )
-                    )
-                    .build()
-            )
-
-        }
-
+        addDefaultListener()
         service.attachToApplicationTargetGroup(targetGroup) //이게 마지막에 와야하나? 잘 모르겠음
 
     }
@@ -354,10 +355,7 @@ class CdkEcsWeb : CdkInterface {
     /**
      * 보통 라이브 서버로 이용
      * */
-    fun createServiceBlueGreen(stack: Stack) {
-        createCluster(stack)
-        createTaskDefinition(stack)
-        createAlb(stack)
+    fun createServiceBlueGreen(stack: Stack, block: EcsDeploymentGroup.Builder.() -> Unit = {}) {
 
         /** 타겟그룹 2개 있어야함 -> 생셩기 별도로 분리 */
         fun makeTargetGroup(targetGroupType: String): ApplicationTargetGroup {
@@ -375,29 +373,20 @@ class CdkEcsWeb : CdkInterface {
             return targetGroup
         }
 
-
         val blue = "blue".let { targetGroupType ->
             val targetGroup = makeTargetGroup(targetGroupType)
-            val listener = alb.addListener(
-                "${projectName}-${name}_albl-${targetGroupType}-${suff}",
-                BaseApplicationListenerProps.builder()
-                    .port(PortUtil.WEB_443)
-                    .protocol(ApplicationProtocol.HTTPS) //443 하면 디폴트라서 빼도됨
-                    .defaultAction(ListenerAction.forward(listOf(targetGroup)))
-                    .open(false) //오픈 옵션 주면, 자동으로 SG에 전체 오픈이 추가됨. 실제운영시에는 별도 SG를 사용함
-                    .sslPolicy(SslPolicy.RECOMMENDED) //최신버전 쓰자
-                    .certificates(certs.map { ListenerCertificate.fromArn(it) })
-                    .build()
-            )
+            val listener = addDefaultListener() //블루는 일반 리스너와 동일
             targetGroup to listener
         }
 
         val green = "green".let { targetGroupType ->
+            //주의!! 블루그린 스위칭은 포트로만 구분된다 (헤더로 구분 XX)
+            //사용하던 안하던 일단 연결은 해둠
             val targetGroup = makeTargetGroup(targetGroupType)
             val listener = alb.addListener(
                 "${projectName}-${name}_albl-${targetGroupType}-${suff}",
                 BaseApplicationListenerProps.builder()
-                    .port(PortUtil.WEB_8080)
+                    .port(greenPort)
                     .protocol(ApplicationProtocol.HTTP)
                     .defaultAction(ListenerAction.forward(listOf(targetGroup)))
                     .open(false) //오픈 옵션 주면, 자동으로 SG에 전체 오픈이 추가됨. 실제운영시에는 별도 SG를 사용함
@@ -432,6 +421,7 @@ class CdkEcsWeb : CdkInterface {
                     .build()
             )
             .deploymentConfig(EcsDeploymentConfig.ALL_AT_ONCE) //한방에 전부
+            .apply(block)
             .build()
     }
 

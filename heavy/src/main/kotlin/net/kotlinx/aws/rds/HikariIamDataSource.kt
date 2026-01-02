@@ -17,6 +17,7 @@ import net.kotlinx.koin.Koins.koinLazy
  * AWS 에서 IAM 지원하는 공식 드라이버를 오픈했으니 이거 써도됨
  * https://aws.amazon.com/ko/blogs/tech/introducing-the-advanced-jdbc-wrapper-driver-for-amazon-aurora/
  */
+@Deprecated("버전업 되면서 이 방법 사용되지 않음")
 class HikariIamDataSource(@Kdsl block: HikariIamDataSource.() -> Unit = {}) : HikariDataSource() {
 
     /**

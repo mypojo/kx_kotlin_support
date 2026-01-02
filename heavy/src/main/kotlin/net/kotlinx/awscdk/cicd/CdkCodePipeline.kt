@@ -17,6 +17,7 @@ import software.amazon.awscdk.services.codestarnotifications.DetailType
 import software.amazon.awscdk.services.codestarnotifications.NotificationRule
 import software.amazon.awscdk.services.codestarnotifications.NotificationRuleProps
 import software.amazon.awscdk.services.iam.IRole
+import software.amazon.awscdk.services.s3.IBucket
 import software.amazon.awscdk.services.sns.ITopic
 
 /**
@@ -57,6 +58,12 @@ class CdkCodePipeline : CdkInterface {
 
     /** 결과 */
     lateinit var pipeline: Pipeline
+
+    /**
+     * 이 버킷으로 임시 파일이 생성됨
+     * ex) s3://stack41cicd-dev-dmpcodepipelinedevartifactsbucketc-37qkxac0yine/dmp-codepipeline-dev/src-art-dm/FFzXoXg
+     *  */
+    lateinit var artifactBucket: IBucket
 
     /**
      * SNS 알림을 받을 이벤트
@@ -134,7 +141,7 @@ class CdkCodePipeline : CdkInterface {
                 .pipelineName(logicalName)
                 /** 파이프라인 V2  https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-types.html */
                 .pipelineType(PipelineType.V2)
-                //.artifactBucket()  ECR에서 가져옴으로 artifactBucket은 필요없음
+                .artifactBucket(artifactBucket) //ECR에서 가져오더라도 이걸 설정해야 쓰레기 버킷이 생기지 않음
                 .stages(
                     listOf(
                         StageProps.builder().stageName("load-source").actions(actions).build(),

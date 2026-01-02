@@ -18,7 +18,7 @@ import net.kotlinx.time.toTimeString
 import java.time.Duration
 
 /**
- * 일반적인 보안규정상 영구키값은 주기적으로(약3개월) 교체 해야한다. 이것을 자동으로 해주는 도구
+ * 일반적인 보안규정상 영구키값은 주기적으로(약x개월) 교체 해야한다. 이것을 자동으로 해주는 도구
  * 윈도우 전용임!
  * 로컬에서 사용하며, 프로파일 없이 빈 client를 만들어서 호출하면됨
  *  */
@@ -38,12 +38,11 @@ class IamSecretUpdateModule {
     }
 
     val client = AwsLocal.CLIENT
-    val awsUserName = AwsLocal.AWS_USER_NAME
 
     /**
      * @param limit Active key age 가 limit 이내가 아니라면 교체
      * */
-    fun checkAndUpdate(limit: Duration) = runBlocking {
+    fun checkAndUpdate(limit: Duration,awsUserName:String = AwsLocal.AWS_USER_NAME) = runBlocking {
 
         val allKeys = client.iam.listAccessKeys { this.userName = awsUserName }.accessKeyMetadata.map { AwsIamKey(it, limit) }
         log.info { "현재 local awsUserName(${awsUserName}) 키값 정보를 출력합니다" }

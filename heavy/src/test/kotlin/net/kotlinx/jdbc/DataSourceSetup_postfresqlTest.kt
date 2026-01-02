@@ -30,7 +30,7 @@ class DataSourceSetup_postfresqlTest : BeSpecHeavy() {
 
             fun doTest(dataSource: HikariDataSource) {
                 using(session(dataSource)) { session ->
-                    val query = sqlQuery("select member_id,member_name,last_login_time from member limit ?", 3000)
+                    val query = sqlQuery("select member_id,member_name,last_login_time from dmp.member limit ?", 3000)
                     val queryResult = session.listAny(query)
                     queryResult.header.toTextGrid(queryResult.results.map { it.toTypedArray() }).print()
                 }

@@ -14,7 +14,7 @@ import net.kotlinx.kotest.modules.BeSpecHeavy
 
 class SesSupportKtTest : BeSpecHeavy() {
 
-    private val profileName by lazy { findProfile97 }
+    private val profileName by lazy { findProfile49 }
     private val aws by lazy { koin<AwsClient>(profileName) }
 
     init {
@@ -49,11 +49,11 @@ class SesSupportKtTest : BeSpecHeavy() {
                 val emailRequest = SendEmailRequest {
                     destination = Destination {
                         toAddresses = listOf(
-                            "xx@nnnad.com",
+                            "seunghan.shin@nhnad.com",
                         )
                     }
                     message = emailBody
-                    source = "my.pojo@gmail.com"
+                    source = "seunghan.shin@nhnad.com"
                 }
 
                 aws.ses.sendEmail(emailRequest)

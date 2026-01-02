@@ -74,10 +74,15 @@ dependencies {
     //api("software.constructs:constructs:10.1.278") //CDK 추가 빌딩블럭 -> 쓸만한게 없음
 
     //==================================================== RDB ======================================================
-    //implementation("software.amazon.jdbc:aws-advanced-jdbc-wrapper:_") //https://github.com/aws/aws-advanced-jdbc-wrapper/  공식 드라이버 래퍼. (토큰관리 등등 내장)
-    implementation("com.mysql:mysql-connector-j:_") //이걸로 해야 IAM JDBC 연결됨.. 마리아로 하면 안됨. 뭐 추가옵션이 있는듯. (왜??)
-    implementation("org.postgresql:postgresql:_") //IAM 잘됨. 향후 필요시 AWS 래퍼로 변경해조기
-    api("com.zaxxer:HikariCP:_")  //최신버전(6.3.x) 쓰면 IAM 로그인시 Access denied 발생함.  5.1.0 으로 고정
+    implementation("software.amazon.jdbc:aws-advanced-jdbc-wrapper:_")  //https://github.com/aws/aws-advanced-jdbc-wrapper/  공식 드라이버 래퍼. (토큰관리 등등 내장)
+    implementation("org.postgresql:postgresql:_")
+    //implementation("com.mysql:mysql-connector-j:_") //이걸로 해야 IAM JDBC 연결됨.. 마리아로 하면 안됨.. -> 이제안씀. postgresql 쓰세요
+    implementation("com.zaxxer:HikariCP:_")  //최신버전쓰면 IAM 로그인시 Access denied 발생함.  5.1.0 으로 고정 -> 래퍼 변경으로 다시 최신버전
+
+    // 2. IAM 플러그인 작동을 위한 필수 Java SDK v2 모듈 (최소 단위) => wrapper 에 자바가 내장이라서 코틀린 사용불가. 어쩔 수 없음
+    implementation("software.amazon.awssdk:rds:_")
+    implementation("software.amazon.awssdk:auth:_")
+
 
     //==================================================== RDB 도구 ======================================================
     //implementation("io.zeko:zeko-sql-builder:1.4.0") //스키마 정의 없는 SQL 빌더 (비정형 쿼리용 or 간단 람다 API 쿼리)

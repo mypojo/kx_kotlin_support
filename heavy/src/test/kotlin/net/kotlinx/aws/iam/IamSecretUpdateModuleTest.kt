@@ -1,6 +1,7 @@
 package net.kotlinx.aws.iam
 
 import net.kotlinx.aws.AwsClient
+import net.kotlinx.aws.AwsLocal
 import net.kotlinx.koin.Koins.koin
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
@@ -23,6 +24,7 @@ class IamSecretUpdateModuleTest : BeSpecHeavy() {
             }
 
             Then("시크릿키 갱신") {
+                println(AwsLocal.AWS_USER_NAME)
                 IamSecretUpdateModule().checkAndUpdate(Duration.ofDays(30))
             }
         }

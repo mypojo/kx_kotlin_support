@@ -4,6 +4,7 @@ import aws.sdk.kotlin.services.cognitoidentityprovider.*
 import aws.sdk.kotlin.services.cognitoidentityprovider.model.*
 import aws.sdk.kotlin.services.cognitoidentityprovider.paginators.listUsersPaginated
 import kotlinx.coroutines.flow.Flow
+import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.LazyAwsClientProperty
 
@@ -15,6 +16,9 @@ class CognitoComponent(private val cognitoId: String) {
 
     /** AwsClient 지연 주입 */
     var aws: AwsClient by LazyAwsClientProperty()
+
+    /** 토큰 사인 키 주소. 다운로드 받아서 쓰면됨 */
+    val tokenSigningKey = "https://cognito-idp.ap-northeast-2.amazonaws.com/${cognitoId}/.well-known/jwks.json"
 
     //==================================================== 조회 ======================================================
 
@@ -132,10 +136,23 @@ class CognitoComponent(private val cognitoId: String) {
 
         // 3️⃣ 그룹 추가 (요청시)
         if (groupName != null) {
-            aws.cognito.adminAddUserToGroup {
-                userPoolId = cognitoId
-                this.username = username
-                this.groupName = groupName
+            try {
+                aws.cognito.adminAddUserToGroup {
+                    userPoolId = cognitoId
+                    this.username = username
+                    this.groupName = groupName
+                }
+            } catch (_: ResourceNotFoundException) {
+                log.warn { "User 생성시 그룹이 존재하지 않아 생성합니다: $groupName" }
+                aws.cognito.createGroup {
+                    userPoolId = cognitoId
+                    this.groupName = groupName
+                }
+                aws.cognito.adminAddUserToGroup {
+                    userPoolId = cognitoId
+                    this.username = username
+                    this.groupName = groupName
+                }
             }
         }
 
@@ -167,6 +184,9 @@ class CognitoComponent(private val cognitoId: String) {
         }
     }
 
+    companion object {
+        private val log = KotlinLogging.logger {}
+    }
 
 }
 

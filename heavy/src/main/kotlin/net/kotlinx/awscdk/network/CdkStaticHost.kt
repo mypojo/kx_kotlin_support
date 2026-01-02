@@ -62,13 +62,13 @@ class CdkStaticHost {
 
     //==================================================== 결과 ======================================================
 
-    lateinit var origon: CdkS3
+    lateinit var origin: CdkS3
 
     lateinit var cloudFront: CdkCloudFront
 
-    fun create(stack: Stack,block: CdkCloudFront.() -> Unit = {}) {
+    fun create(stack: Stack, block: CdkCloudFront.() -> Unit = {}) {
         val s3Name = hostS3Name ?: hostDomain
-        origon = CdkS3(s3Name).apply {
+        origin = CdkS3(s3Name).apply {
             domain = true
             removalPolicy = RemovalPolicy.DESTROY
             publicReadAccess = true
@@ -79,7 +79,8 @@ class CdkStaticHost {
 
         cloudFront = CdkCloudFront {
             domain = hostDomain
-            origin = CdkCloudFront.forWebsite(origon.iBucket)
+            val origin = CdkCloudFront.forWebsite(origin.iBucket)
+            defaultBehavior = CdkCloudFront.behaviorForFrontend(origin)
             iCertificate = Certificate.fromCertificateArn(stack, "hosting-${hostDomain}", certArn)
             webAclArn = this@CdkStaticHost.webAclArn
             block()

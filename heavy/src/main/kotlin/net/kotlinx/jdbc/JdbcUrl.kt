@@ -28,7 +28,7 @@ class JdbcUrl {
     var connectPort: Int = PortUtil.POSTGRESQL
 
     /** 드라이버 */
-    var jdbcDriver: JdbcDriver = JdbcDriver.POSTGRESQL
+    var jdbcDriver: JdbcDriver = JdbcDriver.POSTGRESQL_AWS
 
     /**
      * 옵션
@@ -40,7 +40,7 @@ class JdbcUrl {
     val url: String
         get() {
             val connectHost = if (direct) host else "localhost"
-            return "jdbc:${jdbcDriver.name.lowercase()}://${connectHost}:${connectPort}/${database}?${option.toQueryString()}"
+            return "jdbc:${jdbcDriver.jdbcName}://${connectHost}:${connectPort}/${database}?${option.toQueryString()}"
         }
 
     companion object {

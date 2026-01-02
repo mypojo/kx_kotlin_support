@@ -19,6 +19,11 @@ enum class JdbcDriver(
     //==================================================== POSTGRESQL ======================================================
 
     POSTGRESQL("postgresql", PortUtil.POSTGRESQL), //바닐라버전
+
+    //==================================================== AWS ======================================================
+
+    POSTGRESQL_AWS("aws-wrapper:postgresql", PortUtil.POSTGRESQL),
+
     ;
 }
 
