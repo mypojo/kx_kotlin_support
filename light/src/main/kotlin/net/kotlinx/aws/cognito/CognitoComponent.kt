@@ -4,34 +4,55 @@ import aws.sdk.kotlin.services.cognitoidentityprovider.*
 import aws.sdk.kotlin.services.cognitoidentityprovider.model.*
 import aws.sdk.kotlin.services.cognitoidentityprovider.paginators.listUsersPaginated
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.LazyAwsClientProperty
 
 
 /**
- * 코그니토 백엔드용 컴포넌트
+ * 코그니토 백엔드용 컴포넌트.
  * */
-class CognitoComponent(private val cognitoId: String) {
+class CognitoComponent(val cognitoId: String) {
 
     /** AwsClient 지연 주입 */
     var aws: AwsClient by LazyAwsClientProperty()
-
-    /** 토큰 사인 키 주소. 다운로드 받아서 쓰면됨 */
-    val tokenSigningKey = "https://cognito-idp.ap-northeast-2.amazonaws.com/${cognitoId}/.well-known/jwks.json"
 
     //==================================================== 조회 ======================================================
 
     /** 모든 사용자 목록을 가져옵니다. */
     fun listAllUsers(): Flow<ListUsersResponse> = aws.cognito.listUsersPaginated { this.userPoolId = cognitoId }
 
-    /** 간단한 유저 정보 조회 */
-    suspend fun adminGetUser(username: String): AdminGetUserResponse {
+    /**
+     * username 접두어로 사용자 목록을 가져옵니다.
+     * 소스코드 참고용
+     *  */
+    fun listUsersByUsernamePrefix(usernamePrefix: String): Flow<ListUsersResponse> = aws.cognito.listUsersPaginated {
+        this.userPoolId = cognitoId
+        this.filter = "username ^= \"$usernamePrefix\""
+    }
+
+    /**
+     * 간단한 유저 정보 조회
+     * username 버전은 거의 쓰지 않음
+     *  */
+    suspend fun findUserByUsername(username: String): AdminGetUserResponse {
         return aws.cognito.adminGetUser {
             this.userPoolId = cognitoId
             this.username = username
         }
     }
+
+    /**
+     * sub으로 사용자 정보를 가져옵니다.
+     * 가장 많이 사용함!
+     *  */
+    suspend fun findUserBySub(sub: String): UserType? = aws.cognito.listUsersPaginated {
+        this.userPoolId = cognitoId
+        this.filter = "sub = \"$sub\""
+        this.limit = 1
+    }.map { it.users?.firstOrNull() }.firstOrNull()
 
     /**
      * 백오피스용 사용자 속성 업데이트
@@ -91,9 +112,9 @@ class CognitoComponent(private val cognitoId: String) {
      *
      * 임시 비번발급 & 변경 로직은 시간관계상 백오피스에서는 생략
      */
-    suspend fun adminCreateUserDefault(username: String, email: String, permanentPassword: String, phoneNumber: String? = null, groupName: String? = null) {
+    suspend fun adminCreateUserDefault(username: String, email: String, permanentPassword: String, phoneNumber: String? = null, groupName: String? = null): UserType {
         // 1️⃣ 사용자 생성 (메일 발송 없음)
-        try {
+        val user = try {
             aws.cognito.adminCreateUser {
                 userPoolId = cognitoId
                 this.username = username
@@ -126,9 +147,20 @@ class CognitoComponent(private val cognitoId: String) {
                     }
                 }
                 messageAction = MessageActionType.Suppress  //Cognito가 이메일/임시 비밀번호 발송하지 않음.
-            }
+            }.user!!
         } catch (_: UsernameExistsException) {
-            //무시한다. 트랜잭션이 없어서 뒤에꺼만 호출할수도 있음
+            log.info { "사용자가 이미 존재하여 기존 사용자를 조회합니다. username: $username" }
+            findUserByUsername(username).let {
+                //변환해준다..
+                UserType {
+                    this.username = it.username
+                    this.attributes = it.userAttributes
+                    this.userCreateDate = it.userCreateDate
+                    this.userLastModifiedDate = it.userLastModifiedDate
+                    this.enabled = it.enabled
+                    this.userStatus = it.userStatus
+                }
+            }
         }
 
         // 2️⃣ 영구 비밀번호 설정
@@ -155,7 +187,7 @@ class CognitoComponent(private val cognitoId: String) {
                 }
             }
         }
-
+        return user
     }
 
     /**

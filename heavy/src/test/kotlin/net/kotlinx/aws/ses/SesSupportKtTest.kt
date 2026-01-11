@@ -49,11 +49,11 @@ class SesSupportKtTest : BeSpecHeavy() {
                 val emailRequest = SendEmailRequest {
                     destination = Destination {
                         toAddresses = listOf(
-                            "seunghan.shin@nhnad.com",
+                            "seunghan.shin@ccc.com",
                         )
                     }
                     message = emailBody
-                    source = "seunghan.shin@nhnad.com"
+                    source = "dl_november@ccc.com"
                 }
 
                 aws.ses.sendEmail(emailRequest)

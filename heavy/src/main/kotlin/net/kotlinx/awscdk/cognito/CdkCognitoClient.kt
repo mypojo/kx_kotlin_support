@@ -51,10 +51,15 @@ class CdkCognitoClient : CdkInterface {
     /** 인증시 받는 정보 -> 이메일하고 기본 프로파일 요구 */
     var oAuthScopes: List<OAuthScope> = listOf(OAuthScope.OPENID, OAuthScope.EMAIL, OAuthScope.PROFILE)
 
-    /** 로그인 */
+    /**
+     * 로그인 이후 code 받을 콜백 화이트리스트
+     *  */
     lateinit var oAuthCallbackUrls: List<String>
 
-    /** 로그아웃 */
+    /**
+     * auth 도메인이 로그아웃시 리다이렉트 시켜줄 주소 화이트리스트
+     * ex) http://localhost:3000
+     *  */
     lateinit var oAuthLogoutUrls: List<String>
 
     /** 지원 IdP (기본: COGNITO) */

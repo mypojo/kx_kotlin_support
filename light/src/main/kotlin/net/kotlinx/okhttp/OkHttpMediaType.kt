@@ -27,6 +27,7 @@ object OkHttpMediaType {
     /** octet-stream */
     val STREAM: MediaType = "application/octet-stream".toMediaType()
 
-
+    /** FORM */
+    val FORM_URLENCODED: MediaType = "application/x-www-form-urlencoded".toMediaType()
 
 }
