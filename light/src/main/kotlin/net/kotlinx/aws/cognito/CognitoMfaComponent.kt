@@ -29,7 +29,7 @@ class CognitoMfaComponent(
      * MFA 소프트웨어 토큰 연결 시작 (Secret Code 생성) 후 OTP URI 반환
      * otpauth://totp/{Issuer}:{User}?secret={SecretCode}&issuer={Issuer}
      *
-     * 주의!
+     * 주의!!
      * 내부적으로는 MFA를 1개만 등록가능
      * 신규로 secretCode 발급 후 verifySoftwareToken 로 첫 인증하는순간 오버라이드됨
      *

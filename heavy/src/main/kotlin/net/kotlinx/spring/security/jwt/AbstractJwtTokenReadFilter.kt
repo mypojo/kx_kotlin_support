@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.filter.GenericFilterBean
 
+@Deprecated("코그니토 쓰세요")
 abstract class AbstractJwtTokenReadFilter() : GenericFilterBean() {
 
     /** 로그인 없을때 사용한 디폴트(익명) 사용자 */

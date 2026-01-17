@@ -46,6 +46,7 @@ class JwtTokenReadFilter(
     companion object {
         private val log = KotlinLogging.logger {}
 
+        @Deprecated("사용안함")
         const val AUTHORIZATION_HEADER = "Authorization"
     }
 }

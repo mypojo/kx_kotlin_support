@@ -30,11 +30,6 @@ val HttpServletRequest.headerMap: Map<String, String>
 val HttpServletRequest.isTextHtmlReq: Boolean
     get() = this.getHeader("Accept")?.contains("text/html") == true
 
-
-/** 인증 문구가 없으면 null 리턴함 */
-val HttpServletRequest.authorization: Pair<String, String>?
-    get() = HttpAuthUtil.validate(getHeader("authorization"))
-
 /**
  * 스키마가 달린 패스를 구한다.
  * ALB를 타고 오면 원본 소스가 http 임으로, 서버일경우 무조건 https를 강제 입력해서 링크 걸어줘야 한다.

@@ -16,6 +16,12 @@ object OkHttpUtil : KoinComponent {
     const val HRADER_LAST_MODIFIED = "Last-Modified"
     const val HRADER_IF_MODIFIED = "If-Modified-Since"
 
+    /** 인증 헤더 키 */
+    const val AUTHORIZATION = "Authorization"
+
+    /** 인증 토큰  */
+    const val BEARER = "Bearer"
+
     /** 크롤링 기본 헤더 */
     val CRW = mapOf(
         "accept" to "*/*",

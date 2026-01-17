@@ -121,7 +121,10 @@ class CognitoJwtComponent(private val cognitoId: String) {
         )
     }
 
-    /** Access Token 파싱 */
+    /**
+     * Access Token 파싱
+     * @throws JwtValidationException
+     *  */
     fun parseAccessToken(accessToken: String): CognitoAccessTokenInfo {
         val jwt = decoder.decode(accessToken)!!
         val claims = jwt.claims

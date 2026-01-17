@@ -14,7 +14,7 @@ import org.hibernate.event.spi.PostUpdateEvent
 /**
  * 모든 이벤트는 예외 발생하지 않게 래핑
  */
-@Deprecated("logData 사용하세요")
+@Deprecated("LogDataJpaListener")
 class EventDataJpaListener : AbstractJpaPostListener() {
 
     /**

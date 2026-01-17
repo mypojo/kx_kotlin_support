@@ -15,7 +15,7 @@ class HttpAuthUtilTest : BeSpecLog() {
 
             Then("인증테스트-일반 ID/비번") {
                 val auth = "Basic bmhuOjEyMzQ="
-                val pair = HttpAuthUtil.validate(auth)
+                val pair = HttpAuthUtil.idpass(auth)
                 pair shouldNotBe null
                 pair!!.first shouldBe "nnn"
                 pair!!.second shouldBe "1234"

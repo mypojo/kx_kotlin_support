@@ -55,8 +55,24 @@ class CdkDynamoDb : CdkInterface {
     /** 기본적으로  라이브서버에는 true */
     var deletionProtection: Boolean = deploymentType == DeploymentType.PROD
 
+    /**
+     * 스트림 설정 (필요한 경우)
+     * ex) StreamViewType.NEW_AND_OLD_IMAGES
+     *  */
+    var stream: StreamViewType? = null
+
     /** 결과 */
-    lateinit var iTable: Table
+    lateinit var iTable: ITable
+
+    /** 일반 로드 */
+    fun load(stack: Stack): CdkDynamoDb {
+        try {
+            iTable = Table.fromTableName(stack, "ddb-load-$logicalName", logicalName)
+        } catch (_: Exception) {
+            println(" -> [${stack.stackName}] object already loaded -> $logicalName")
+        }
+        return this
+    }
 
     /** 아직 삭제 보호 모드 설정이 안된다. */
     fun create(stack: Stack, block: TableProps.Builder.() -> Unit = {}): CdkDynamoDb {
@@ -64,12 +80,13 @@ class CdkDynamoDb : CdkInterface {
             stack, "ddb-$logicalName", TableProps.builder()
                 .tableName(logicalName)
                 .billingMode(billingMode)
-                .removalPolicy(RemovalPolicy.RETAIN)
+                .removalPolicy(removalPolicy)
                 .partitionKey(pk)
                 .sortKey(sk)
                 .timeToLiveAttribute(ttl)
                 .pointInTimeRecoverySpecification(PointInTimeRecoverySpecification.builder().pointInTimeRecoveryEnabled(pointInTimeRecovery).build())
                 .deletionProtection(deletionProtection)
+                .stream(stream)
                 .apply(block)
                 .build()
         )
@@ -81,7 +98,7 @@ class CdkDynamoDb : CdkInterface {
 
     /** 로컬 기본은 키값만 */
     fun addLocalSecondaryIndex(sk: Attribute, projectionType: ProjectionType = ProjectionType.KEYS_ONLY) {
-        iTable.addLocalSecondaryIndex(
+        (iTable as Table).addLocalSecondaryIndex(
             LocalSecondaryIndexProps.builder()
                 .indexName("lidx-${sk.name}")
                 .projectionType(projectionType)
@@ -99,7 +116,7 @@ class CdkDynamoDb : CdkInterface {
      * 운영중인 테이블에 인덱스를 달경우 시간이 걸릴 수 있으니, 다수 인덱스 달때는 하나씩 할것
      * */
     fun addGlobalSecondaryIndex(pk: Attribute, sk: Attribute, projectionType: ProjectionType = ProjectionType.KEYS_ONLY) {
-        iTable.addGlobalSecondaryIndex(
+        (iTable as Table).addGlobalSecondaryIndex(
             GlobalSecondaryIndexProps.builder()
                 .indexName("gidx-${pk.name}-${sk.name}")
                 .projectionType(projectionType)

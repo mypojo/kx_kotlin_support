@@ -7,7 +7,8 @@ import net.kotlinx.string.decodeBase64
 object HttpAuthUtil {
 
 
-    fun validate(authorization: String?): Pair<String, String>? {
+    /** ID / 비번 인경우 */
+    fun idpass(authorization: String?): Pair<String, String>? {
 
         if (authorization == null) return null
 

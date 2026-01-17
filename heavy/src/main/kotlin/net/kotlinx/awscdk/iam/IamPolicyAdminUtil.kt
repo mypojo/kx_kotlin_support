@@ -34,6 +34,7 @@ object IamPolicyAdminUtil {
         "codecommit:*",
         "codedeploy:*",
         "codebuild:*",
+        "cognito-idp:*",
         "sts:*",
         "ecr:*",
         "firehose:*",
