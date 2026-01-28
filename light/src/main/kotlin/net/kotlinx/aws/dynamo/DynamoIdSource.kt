@@ -45,7 +45,7 @@ class DynamoIdSource(
     override fun invoke(): Long = runBlocking {
         return@runBlocking try {
             increaseAndGet()
-        } catch (e: DynamoDbException) {
+        } catch (_: DynamoDbException) {
             create()
             log.warn { "테이블 [${seqTableName}] : 신규 seq 아이템 생성됨 (pk=${pkValue}, sk=${skValue})" }
             increaseAndGet()

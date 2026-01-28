@@ -173,12 +173,13 @@ class Job(override val pk: String, override val sk: String) : DbItem {
         get() {
 
             if (jobStatus.finished()) return null
+            if (startTime == null) return null
 
             val context = jobContextAll
             val totalCnt = context[JobContextNaming.TOTAL_CNT].long ?: 0
             val successCnt = context[JobContextNaming.SUCCESS_CNT].long ?: 0
             val failCnt = context[JobContextNaming.FAIL_CNT].long ?: 0
-            return ProgressData(totalCnt, successCnt + failCnt, startTime)
+            return ProgressData(totalCnt, successCnt + failCnt, startTime!!)
         }
 
     /**

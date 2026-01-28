@@ -10,6 +10,7 @@ import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProviderConfig
 import aws.smithy.kotlin.runtime.http.config.HttpEngineConfig
 import aws.smithy.kotlin.runtime.http.engine.HttpClientEngine
 import aws.smithy.kotlin.runtime.http.engine.okhttp.OkHttpEngine
+import aws.smithy.kotlin.runtime.http.interceptors.HttpInterceptor
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.aws.sfn.SfnConfig
@@ -63,7 +64,10 @@ data class AwsConfig(
      *  */
     val staticCredentials: Pair<String, String>? = null,
 
-    ) {
+    /** DDB 인터셉터 추가 */
+    val ddbInterceptors: List<HttpInterceptor> = emptyList()
+
+) {
 
     /** SDK 기본 클라이언트는 버려진듯. 근데 이러면 클라이언트가 어려개 생기지 않는지? */
     val httpClientEngine: HttpClientEngine = OkHttpEngine {
@@ -130,22 +134,6 @@ data class AwsConfig(
             )
         }
     }
-//    val credentialsProvider: CredentialsProvider = if (patent == null) {
-//        log.trace { "기본 환경에서 프로바이더 생성" }
-//        DefaultChainCredentialsProvider(
-//            profileName = profileName,
-//            region = region,
-//            httpClient = httpClientEngine,
-//        )
-//    } else {
-//        log.trace { "기본 환경의 데이터에서 STS로 프로바이더 생성" }
-//        StsAssumeRoleCredentialsProvider(
-//            bootstrapCredentialsProvider = patent.credentialsProvider,
-//            roleArn = "arn:aws:iam::${awsId}:role/${profileName}",
-//            roleSessionName = "sts", //공백문자 허용안함
-//            region = region
-//        )
-//    }
 
     /**
      * STS를 사용해서 새로운 연결은 만든다

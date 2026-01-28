@@ -1,5 +1,6 @@
 package net.kotlinx.aws.dynamo
 
+
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import aws.sdk.kotlin.services.dynamodb.executeStatement
 import aws.sdk.kotlin.services.dynamodb.model.AttributeValue
@@ -9,8 +10,16 @@ import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.regist
 import net.kotlinx.collection.doUntilTokenNull
 
+
 val AwsClient.dynamo: DynamoDbClient
-    get() = getOrCreateClient { DynamoDbClient { awsConfig.build(this) }.regist(awsConfig) }
+    get() = getOrCreateClient {
+        DynamoDbClient {
+            awsConfig.build(this)
+            interceptors += awsConfig.ddbInterceptors
+        }.regist(awsConfig)
+    }
+
+
 
 
 /** 자주 사용되는 값 */
@@ -28,3 +37,4 @@ fun DynamoDbClient.executeStatementAll(query: String): Flow<Map<String, Attribut
         items to resp.nextToken
     }
 }
+

@@ -3,10 +3,7 @@ package net.kotlinx.aws.s3
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.getObjectAttributes
 import aws.sdk.kotlin.services.s3.headObject
-import aws.sdk.kotlin.services.s3.model.GetObjectRequest
-import aws.sdk.kotlin.services.s3.model.NoSuchKey
-import aws.sdk.kotlin.services.s3.model.NotFound
-import aws.sdk.kotlin.services.s3.model.ObjectAttributes
+import aws.sdk.kotlin.services.s3.model.*
 import aws.smithy.kotlin.runtime.content.decodeToString
 import aws.smithy.kotlin.runtime.content.toByteArray
 import aws.smithy.kotlin.runtime.content.toInputStream
@@ -68,9 +65,45 @@ suspend fun S3Client.getObjectCsvMs949Download(bucket: String, key: String, file
 
 //==================================================== 속성만 읽기 ======================================================
 
+/**
+ * headObject 기반의 상세 정보 조회
+ * @see getObjectMetadata  - 간소화된 버전
+ *  */
+suspend fun S3Client.getObjectHead(bucket: String, key: String): HeadObjectResponse? {
+    return try {
+        this.headObject {
+            this.bucket = bucket
+            this.key = key
+        }
+    } catch (_: NoSuchKey) {
+        null
+    } catch (_: NotFound) {
+        null
+    }
+}
+
+/** [getObjectHead] 래퍼 */
+suspend fun S3Client.getObjectHead(data: S3Data): HeadObjectResponse? = getObjectHead(data.bucket, data.key)
+
+/**
+ * [HeadObjectResponse] 를 [S3Data] 로 변환해서 리턴
+ * 기존 S3Data.obj 가 Object 타입이라서 HeadObjectResponse 와 호환되지 않으므로, 필요한 정보만 수동 매핑
+ *  */
+suspend fun S3Client.getS3DataWithExistInfo(bucket: String, key: String): S3Data? {
+    val head = getObjectHead(bucket, key) ?: return null
+    return S3Data(bucket, key).apply {
+        this.obj = Object {
+            this.key = key
+            this.size = head.contentLength
+            this.lastModified = head.lastModified
+            this.eTag = head.eTag
+        }
+    }
+}
+
 /** 파일 크기만 읽고싶을때 */
-suspend fun S3Client.getObjectSize(data: S3Data) {
-    this.getObjectAttributes {
+suspend fun S3Client.getObjectSize(data: S3Data): Long? {
+    return this.getObjectAttributes {
         this.bucket = data.bucket
         this.key = data.key
         this.objectAttributes = listOf(
@@ -160,15 +193,6 @@ suspend fun S3Client.getObjectText(bucket: String, key: String): String? {
  * getObject 를 사용해서 body를 읽지 않는거하고 동일한 로직인듯
  * */
 suspend fun S3Client.getObjectMetadata(bucket: String, key: String): Map<String, String>? {
-    return try {
-        val resp = this.headObject {
-            this.bucket = bucket
-            this.key = key
-        }
-        resp.metadata?.map { it.key to it.value.decodeBase64() }?.toMap() ?: emptyMap()
-    } catch (_: NoSuchKey) {
-        null
-    } catch (_: NotFound) {
-        null
-    }
+    val resp = getObjectHead(bucket, key) ?: return null
+    return resp.metadata?.map { it.key to it.value.decodeBase64() }?.toMap() ?: emptyMap()
 }

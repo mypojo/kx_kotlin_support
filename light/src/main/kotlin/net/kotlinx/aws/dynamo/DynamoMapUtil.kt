@@ -44,7 +44,7 @@ object DynamoMapUtil {
         }
     }
 
-    private fun fromAttributeMapValue(av: AttributeValue): Any = when {
+    fun fromAttributeMapValue(av: AttributeValue): Any = when {
         av.asSOrNull() != null -> av.asS()
         av.asBoolOrNull() != null -> av.asBool()
         av.asNOrNull() != null -> parseNumber(av.asN()) //숫자는 다 Long 으로 간주

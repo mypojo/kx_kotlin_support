@@ -16,7 +16,7 @@ class ProgressData(
     /** 완료된 수 */
     completedInput: Number = 0L,
     /** 작업 시작시간 */
-    val startTime: LocalDateTime? = null,
+    val startTime: LocalDateTime,
     /** 이미 완료되서 스킵된 카운트 */
     skipedInput: Number = 0L,
     /** 비율 스케일 */
@@ -43,7 +43,7 @@ class ProgressData(
     }
 
     /** 진행 시간 */
-    val progressTime: Long = ChronoUnit.MILLIS.between(startTime!!, now)
+    val progressTime: Long = ChronoUnit.MILLIS.between(startTime, now)
 
     /** 전체 예상 시간 */
     val totalTime: Long = if (completed == 0L) 0L else progressTime * total / completed

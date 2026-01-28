@@ -49,4 +49,4 @@ buildSrc/build
 #### 클로드 코드 ####
 .claude/settings.local.json
 CLAUDE.md
-
+CLAUDE.local.md

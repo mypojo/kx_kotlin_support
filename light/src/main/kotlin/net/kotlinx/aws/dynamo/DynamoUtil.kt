@@ -2,6 +2,9 @@ package net.kotlinx.aws.dynamo
 
 import net.kotlinx.aws.AwsConfig
 import net.kotlinx.string.encodeUrl
+import net.kotlinx.time.TimeUtil
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 
@@ -21,6 +24,9 @@ object DynamoUtil {
 
     /** 지금 기준 X일 이후 지정. TTL은 초단위 이다.  */
     fun ttlFromNow(duration: Duration): Long = System.currentTimeMillis() / 1000 + duration.inWholeSeconds
+
+    /** 지정된 시간 기준 TTL. TTL은 초단위 이다.  */
+    fun ttl(localDateTime: LocalDateTime, zoneId: ZoneId = TimeUtil.SEOUL): Long = localDateTime.atZone(zoneId).toEpochSecond()
 
     /** item 바로가기 링크 */
     fun toItemLink(tableName: String, pk: String, sk: String, region: String = AwsConfig.REGION_KR): String {
