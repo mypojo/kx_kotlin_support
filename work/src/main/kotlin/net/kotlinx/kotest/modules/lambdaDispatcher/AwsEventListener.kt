@@ -3,8 +3,8 @@ package net.kotlinx.kotest.modules.lambdaDispatcher
 import com.google.common.eventbus.Subscribe
 import mu.KotlinLogging
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatcherDeadEvent
-import net.kotlinx.aws.lambda.dispatch.asynch.AwsCodeDeployHookEvent
-import net.kotlinx.aws.lambda.dispatch.asynch.AwsSqsEvent
+import net.kotlinx.aws.lambda.dispatch.async.AwsCodeDeployHookEvent
+import net.kotlinx.aws.lambda.dispatch.async.AwsSqsEvent
 import net.kotlinx.reflect.name
 import net.kotlinx.slack.SlackMessageSenders
 

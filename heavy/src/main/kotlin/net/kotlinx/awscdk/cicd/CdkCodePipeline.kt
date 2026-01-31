@@ -69,7 +69,7 @@ class CdkCodePipeline : CdkInterface {
      * SNS 알림을 받을 이벤트
      * 라이브 서버의 경우 성공도 받을 수 있게 하면 됨
      *  */
-    var events: List<String> = listOf(EventSets.CodekPipeline.FAILED)
+    var events: List<String> = listOf(EventSets.CodePipeline.FAILED)
 
     /** 실행할 액션 */
     var actions: List<IAction> = emptyList()

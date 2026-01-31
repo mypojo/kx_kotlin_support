@@ -17,7 +17,7 @@ val AwsClient.schedule: SchedulerClient
     get() = getOrCreateClient { SchedulerClient { awsConfig.build(this) }.regist(awsConfig) }
 
 /**
- * 전체 스케쥴 리턴
+ * 전체 스케줄 리턴
  * 편의상 내부적으로 flow 전체를 사용함.
  *  */
 suspend fun SchedulerClient.listAllScheduleDetails(groupName: String? = null): List<GetScheduleResponse> {
@@ -25,7 +25,7 @@ suspend fun SchedulerClient.listAllScheduleDetails(groupName: String? = null): L
     return summaryList.coroutine { getSchedule(it.groupName!!, it.name!!) }
 }
 
-/** 단일 스케쥴 리턴 */
+/** 단일 스케줄 리턴 */
 @Throws(ResourceNotFoundException::class)
 suspend fun SchedulerClient.getSchedule(groupName: String, name: String): GetScheduleResponse = this.getSchedule {
     this.groupName = groupName
@@ -41,13 +41,13 @@ fun List<GetScheduleResponse>.printSimple() {
     }
 }
 
-/** 스케쥴 삭제 */
+/** 스케줄 삭제 */
 suspend fun SchedulerClient.deleteSchedule(groupName: String, name: String) = this.deleteSchedule {
     this.groupName = groupName
     this.name = name
 }
 
-/** 스케쥴 수정 or 생성 */
+/** 스케줄 수정 or 생성 */
 suspend fun SchedulerClient.updateOrCreateSchedule(schedule: SchedulerForLambda) {
     try {
         this.updateSchedule(schedule)

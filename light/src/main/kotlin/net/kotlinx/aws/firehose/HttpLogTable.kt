@@ -6,8 +6,8 @@ import net.kotlinx.aws.athena.table.AthenaTable
 object HttpLogTable {
 
     /** 결과 파일 저장 샘플 - 아이스버그v2 */
-    val HTTP_ICEBUG = AthenaTable {
-        icebugTable()
+    val HTTP_ICEBERG = AthenaTable {
+        icebergTable()
         tableName = "http_log"
         schema = mapOf(
             "basic_date" PARTITION string,

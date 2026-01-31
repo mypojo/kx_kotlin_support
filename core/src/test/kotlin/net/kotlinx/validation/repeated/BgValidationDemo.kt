@@ -13,7 +13,7 @@ object BgValidationDemo {
 
     val VALIDATION_LIST = RepeatedValidationRepository {
 
-        regist {
+        register {
             group = GROUP
             code = "demo01"
             desc = listOf("샘플 실행 테스트 - 성공")
@@ -25,7 +25,7 @@ object BgValidationDemo {
             }
         }
 
-        regist {
+        register {
             group = GROUP
             code = "demo02"
             desc = listOf("샘플 실행 테스트 - 실패")

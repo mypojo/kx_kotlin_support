@@ -4,7 +4,7 @@ import com.google.common.eventbus.Subscribe
 import mu.KotlinLogging
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatcherDeadEvent
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatcherFailEvent
-import net.kotlinx.aws.lambda.dispatch.synch.CommandDispatcherEvent
+import net.kotlinx.aws.lambda.dispatch.sync.CommandDispatcherEvent
 import net.kotlinx.reflect.name
 import net.kotlinx.slack.SlackMessageSenders
 import net.kotlinx.string.abbr

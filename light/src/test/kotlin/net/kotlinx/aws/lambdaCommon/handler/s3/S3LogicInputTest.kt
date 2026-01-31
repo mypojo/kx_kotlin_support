@@ -1,6 +1,6 @@
 package net.kotlinx.aws.lambdaCommon.handler.s3
 
-import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.S3LogicInput
+import net.kotlinx.aws.lambda.dispatch.sync.s3Logic.S3LogicInput
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil

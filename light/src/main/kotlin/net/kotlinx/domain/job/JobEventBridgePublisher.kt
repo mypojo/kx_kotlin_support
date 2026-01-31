@@ -6,7 +6,7 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.lambda.dispatch.AwsLambdaEvent
 import net.kotlinx.aws.lambda.dispatch.LambdaDispatch
-import net.kotlinx.aws.lambda.dispatch.asynch.EventBridgeJson
+import net.kotlinx.aws.lambda.dispatch.async.EventBridgeJson
 import net.kotlinx.guava.postEvent
 import net.kotlinx.json.gson.GsonData
 import net.kotlinx.koin.Koins.koinLazy

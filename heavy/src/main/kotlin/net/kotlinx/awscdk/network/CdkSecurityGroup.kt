@@ -64,7 +64,7 @@ class CdkSecurityGroup(val sgName: String) : CdkEnum {
 //    @Deprecated("사용안함")
 //    fun load(stack: Stack, vpc: IVpc): CdkSecurityGroup {
 //        if (!this::iSecurityGroup.isInitialized) {
-//            val queryString = "*${logicalName}**".retainFrom(RegexSet.ALPAH_NUMERIC.HAN).lowercase() //이거 이름으로 캐싱되니 주의! 삭제된게 자꾸 나온다면 검색어를 수정해야함
+//            val queryString = "*${logicalName}**".retainFrom(RegexSet.ALPHA_NUMERIC.HAN).lowercase() //이거 이름으로 캐싱되니 주의! 삭제된게 자꾸 나온다면 검색어를 수정해야함
 //            iSecurityGroup = SecurityGroup.fromLookupByName(stack, sgName, queryString, vpc)
 //        }
 //        return this

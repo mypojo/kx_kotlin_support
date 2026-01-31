@@ -4,7 +4,7 @@ import com.lectra.koson.Koson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
-import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.S3LogicInput
+import net.kotlinx.aws.lambda.dispatch.sync.s3Logic.S3LogicInput
 import net.kotlinx.domain.batchTask.BatchTaskExecutor
 import net.kotlinx.domain.batchTask.BatchTaskOptionUtil
 import net.kotlinx.reflect.name

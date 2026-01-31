@@ -24,7 +24,7 @@ object AwsNaming {
     const val OPTION: String = "option"
 
     /**
-     * 스케쥴된 시간
+     * 스케줄된 시간
      * ex) SFN 예약시간
      * */
     const val SCHEDULE_TIME: String = "scheduleTime"

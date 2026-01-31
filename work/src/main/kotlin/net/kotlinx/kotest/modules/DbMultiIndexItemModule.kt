@@ -2,9 +2,9 @@ package net.kotlinx.kotest.modules
 
 import mu.KotlinLogging
 import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndexItem
+import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndexItemGenericRepository
 import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndexItemRepository
 import net.kotlinx.aws.dynamo.multiIndex.DbMultiIndexItemUtil
-import net.kotlinx.aws.dynamo.multiIndex.DbMultiindexItemGenericRepository
 import net.kotlinx.domain.item.repeatTask.RepeatTask
 import net.kotlinx.domain.item.repeatTask.RepeatTaskConverter
 import net.kotlinx.koin.KoinModule
@@ -35,7 +35,7 @@ object DbMultiIndexItemModule : KoinModule {
         //==================================================== 개별 객체 ======================================================
 
         single(named(RepeatTask::class.name())) {
-            DbMultiindexItemGenericRepository(
+            DbMultiIndexItemGenericRepository(
                 koin<DbMultiIndexItemRepository>(),
                 RepeatTaskConverter(),
             )

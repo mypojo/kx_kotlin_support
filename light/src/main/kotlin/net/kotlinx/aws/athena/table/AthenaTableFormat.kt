@@ -2,7 +2,7 @@ package net.kotlinx.aws.athena.table
 
 import kotlin.time.Duration.Companion.days
 
-sealed interface AthenaTableFormatIcebug {
+sealed interface AthenaTableFormatIceberg {
     val defaultOption: Map<String, String>
 }
 
@@ -102,9 +102,9 @@ sealed interface AthenaTableFormat {
      * https://docs.aws.amazon.com/ko_kr/athena/latest/ug/querying-iceberg-creating-tables.html
      * athena 는 기본적으로 v2 버전의 아이스버그 테이블을 생성한다 (따로 명시 x)
      * */
-    data object Iceberg : AthenaTableFormat, AthenaTableFormatIcebug {
-        override fun toRowFormat(table: AthenaTable): List<String> = emptyList() /*별도 필요 없으음*/
-        override val defaultOption = ICEBUG_DEFAULT_FORMAT
+    data object Iceberg : AthenaTableFormat, AthenaTableFormatIceberg {
+        override fun toRowFormat(table: AthenaTable): List<String> = emptyList() /*별도 필요 없음*/
+        override val defaultOption = ICEBERG_DEFAULT_FORMAT
     }
 
     //==================================================== 벤더 지정 ======================================================
@@ -124,7 +124,7 @@ sealed interface AthenaTableFormat {
     }
 
     companion object {
-        private val ICEBUG_DEFAULT_FORMAT = mapOf(
+        private val ICEBERG_DEFAULT_FORMAT = mapOf(
             //https://docs.aws.amazon.com/ko_kr/athena/latest/ug/querying-iceberg-creating-tables.html
             "table_type" to "ICEBERG",
             "optimize_rewrite_delete_file_threshold" to "5", //임계값보다 적으면 파일이 재작성되지 않음

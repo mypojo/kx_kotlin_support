@@ -6,7 +6,7 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsInstanceTypeUtil
 import net.kotlinx.aws.AwsNaming
-import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.S3LogicInput
+import net.kotlinx.aws.lambda.dispatch.sync.s3Logic.S3LogicInput
 import net.kotlinx.aws.s3.putObject
 import net.kotlinx.aws.s3.s3
 import net.kotlinx.aws.sfn.sfn

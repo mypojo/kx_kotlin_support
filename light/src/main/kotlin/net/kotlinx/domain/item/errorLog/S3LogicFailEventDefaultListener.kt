@@ -4,7 +4,7 @@ import com.google.common.eventbus.Subscribe
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.kotlinx.aws.dynamo.DynamoUtil
-import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.S3LogicFailEvent
+import net.kotlinx.aws.lambda.dispatch.sync.s3Logic.S3LogicFailEvent
 import net.kotlinx.core.Kdsl
 import net.kotlinx.exception.toSimpleString
 import net.kotlinx.koin.Koins.koinLazy

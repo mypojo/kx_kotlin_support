@@ -51,7 +51,7 @@ class Job(override val pk: String, override val sk: String) : DbItem {
     /** JOB 상태.   (인덱싱)  */
     lateinit var jobStatus: JobStatus
 
-    /** 잡 실행 경로. (RMI 실행, 스케쥴링 실행..) */
+    /** 잡 실행 경로. (RMI 실행, 스케줄링 실행..) */
     lateinit var jobExeFrom: JobExeFrom
 
     /** 작업 환경 확인용 이름  ex) vcpu2,4G..  */

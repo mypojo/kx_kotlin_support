@@ -21,7 +21,7 @@ class TrieTest : BeSpecLight() {
             Then("접두어 매핑1") {
                 // 접두어로 검색
                 val prefix = "aa/bb"
-                val results = trie.findPrefixeMatchs(prefix)
+                val results = trie.findPrefixMatches(prefix)
                 log.info { "Matching words for prefix '$prefix' -> $results" }
                 results.size shouldBe 4
             }
@@ -29,7 +29,7 @@ class TrieTest : BeSpecLight() {
             Then("접두어 매핑2") {
                 // 접두어로 검색
                 val prefix = "aa/bb/c"
-                val results = trie.findPrefixeMatchs(prefix)
+                val results = trie.findPrefixMatches(prefix)
                 log.info { "Matching words for prefix '$prefix' -> $results" }
                 results.size shouldBe 2
             }

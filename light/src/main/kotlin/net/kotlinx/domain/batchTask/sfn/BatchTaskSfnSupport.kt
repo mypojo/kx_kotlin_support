@@ -2,7 +2,7 @@ package net.kotlinx.domain.batchTask.sfn
 
 import kotlinx.coroutines.flow.collectIndexed
 import mu.KotlinLogging
-import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.S3LogicInput
+import net.kotlinx.aws.lambda.dispatch.sync.s3Logic.S3LogicInput
 import net.kotlinx.domain.batchStep.BatchStepExecutor
 import net.kotlinx.domain.batchTask.BatchTaskExecutor
 import net.kotlinx.domain.batchTask.BatchTaskOptionUtil

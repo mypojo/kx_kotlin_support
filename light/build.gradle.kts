@@ -51,7 +51,7 @@ dependencies {
     api("aws.sdk.kotlin:eventbridge:$awsVersion") //2m 밖에 안함
     api("aws.sdk.kotlin:ses:$awsVersion") //2m 밖에 안함
     api("aws.sdk.kotlin:codecommit:$awsVersion") //3m.. 그래도 넣자
-    api("aws.sdk.kotlin:scheduler:${awsVersion}")  //새로운 이벤트브릿지 스케쥴 0.8mb
+    api("aws.sdk.kotlin:scheduler:${awsVersion}")  //새로운 이벤트브릿지 스케줄 0.8mb
     api("aws.sdk.kotlin:rdsdata:${awsVersion}")  // 오로라 서버리스 v2 API 호출  https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/kotlin/usecases/serverless_rds
     api("aws.sdk.kotlin:cognitoidentityprovider:$awsVersion") //코그니토  4 mbyt
 

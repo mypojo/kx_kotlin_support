@@ -11,7 +11,7 @@ object BgValidationLogic {
 }
 
 fun RepeatedValidationRepository.configDemo01() {
-    regist {
+    register {
         group = BgValidationLogic.GROUP
         code = "rpt01"
         desc = listOf("합계 검증", "D-4 아테나 & kinesis")
@@ -25,7 +25,7 @@ fun RepeatedValidationRepository.configDemo01() {
         }
     }
 
-    regist {
+    register {
         group = BgValidationLogic.GROUP
         code = "rpt_system"
         desc = listOf("전체 시스템 모니터링 & 이상감지", "API & RDS 비교")

@@ -27,7 +27,7 @@ class CdkAthena : CdkInterface {
     /** 결과 쿼리가 저장될 work 버킷 */
     lateinit var bucketName: String
 
-    /** 쿼리 스켄 리미트 설정. 기본 10기가 */
+    /** 쿼리 스캔 리미트 설정. 기본 10기가 */
     var bytesScannedCutoffPerQueryGb: Int = 10
 
     /** 결과1 */

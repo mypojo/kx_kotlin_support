@@ -24,6 +24,6 @@ class RepeatedValidationRepository {
         get() = _allValidations
 
     /** 등록 */
-    fun regist(block: RepeatedValidation.() -> Unit = {}): RepeatedValidation = _allValidations.addAndGet { RepeatedValidation(block) }
+    fun register(block: RepeatedValidation.() -> Unit = {}): RepeatedValidation = _allValidations.addAndGet { RepeatedValidation(block) }
 
 }

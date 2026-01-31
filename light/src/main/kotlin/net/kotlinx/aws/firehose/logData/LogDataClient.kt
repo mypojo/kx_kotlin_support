@@ -35,7 +35,7 @@ class LogDataClient {
     /** json 변환기 */
     lateinit var jsonBuilder: IcebergJsonBuilder
 
-    /** 스트리림 명 */
+    /** 스트림 명 */
     lateinit var streamName: String
 
     /** 플젝명 */
@@ -45,7 +45,7 @@ class LogDataClient {
     lateinit var eventDiv: String
 
     /**
-     * 디폴드 생성 로직.
+     * 디폴트 생성 로직.
      * */
     var detail1Factory: () -> LogDataDetail1 = {
         LogDataDetail1(

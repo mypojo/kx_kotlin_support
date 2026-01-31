@@ -46,7 +46,7 @@ class XlsHyperlink(override val value: String, block: XlsHyperlink.() -> Unit = 
             }
         }
         cell.setCellValue(XSSFRichTextString(value))
-        sheet.excel.lazyCallback.add { cell.cellStyle = sheet.excel.style.buleRight }
+        sheet.excel.lazyCallback.add { cell.cellStyle = sheet.excel.style.blueRight }
 
     }
 }

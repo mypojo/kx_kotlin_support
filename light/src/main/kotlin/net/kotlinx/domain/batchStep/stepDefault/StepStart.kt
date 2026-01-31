@@ -3,7 +3,7 @@ package net.kotlinx.domain.batchStep.stepDefault
 import com.lectra.koson.obj
 import mu.KotlinLogging
 import net.kotlinx.aws.AwsInstanceMetadata
-import net.kotlinx.aws.lambda.dispatch.synch.S3LogicDispatcher
+import net.kotlinx.aws.lambda.dispatch.sync.S3LogicDispatcher
 import net.kotlinx.domain.batchStep.BatchStepConfig
 import net.kotlinx.domain.batchStep.BatchStepLogic
 import net.kotlinx.domain.batchStep.BatchStepMode

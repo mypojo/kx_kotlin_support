@@ -1,9 +1,9 @@
 package net.kotlinx.domain.batchTask
 
 import mu.KotlinLogging
-import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.S3LogicInput
-import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.S3LogicOutput
-import net.kotlinx.aws.lambda.dispatch.synch.s3Logic.S3LogicRuntime
+import net.kotlinx.aws.lambda.dispatch.sync.s3Logic.S3LogicInput
+import net.kotlinx.aws.lambda.dispatch.sync.s3Logic.S3LogicOutput
+import net.kotlinx.aws.lambda.dispatch.sync.s3Logic.S3LogicRuntime
 import net.kotlinx.collection.flatten
 import net.kotlinx.concurrent.coroutineExecute
 import net.kotlinx.json.gson.GsonData

@@ -50,7 +50,7 @@ class CsvSplitCollector : FlowCollector<List<List<String>>>, AutoCloseable {
     /** 분할 수. 디폴트로 엑셀 최대 크기 */
     var counter = EventCountChecker(1000000)
 
-    /** 인코딩 등 변경에 사요 */
+    /** 인코딩 등 변경에 사용 */
     var writerFactory: () -> CsvWriter = { csvWriter() }
 
     /** CSV 파일의 헤더. null이면 헤더를 쓰지 않음 */

@@ -7,7 +7,7 @@ import mu.KotlinLogging
 import net.kotlinx.aws.AwsClient
 import net.kotlinx.aws.AwsNaming
 import net.kotlinx.aws.lambda.LambdaUtil
-import net.kotlinx.aws.lambda.dispatch.synch.S3LogicDispatcher
+import net.kotlinx.aws.lambda.dispatch.sync.S3LogicDispatcher
 import net.kotlinx.aws.lambda.invokeAsynch
 import net.kotlinx.aws.lambda.lambda
 import net.kotlinx.aws.s3.s3

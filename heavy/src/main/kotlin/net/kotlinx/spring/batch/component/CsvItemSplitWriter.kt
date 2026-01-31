@@ -69,8 +69,8 @@ class CsvItemSplitWriter(
             }
             //리밋에 도달했다면 하나 지움
             if (writerMap.size >= splitLimit) {
-                val firstKet = writerMap.keys.stream().findFirst().get()
-                val deleted: CsvItemWriter = writerMap.remove(firstKet)!!
+                val firstKey = writerMap.keys.stream().findFirst().get()
+                val deleted: CsvItemWriter = writerMap.remove(firstKey)!!
                 deleted.close()
                 closeFileCnt++
             }

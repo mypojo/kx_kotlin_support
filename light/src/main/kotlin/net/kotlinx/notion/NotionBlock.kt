@@ -90,27 +90,27 @@ data class NotionBlock(
      * 배열로 들어오는 경우가 있음
      * ex) list.forEach { v -> println(v.mdText) }
      *  */
-    val cells: List<NotionBlockPropertie> by lazy {
+    val cells: List<NotionBlockProperty> by lazy {
         when (type) {
-            "heading_1" -> body["heading_1"]["rich_text"].map { NotionBlockPropertie(it) }
-            "heading_2" -> body["heading_2"]["rich_text"].map { NotionBlockPropertie(it) }
-            "heading_3" -> body["heading_3"]["rich_text"].map { NotionBlockPropertie(it) }
+            "heading_1" -> body["heading_1"]["rich_text"].map { NotionBlockProperty(it) }
+            "heading_2" -> body["heading_2"]["rich_text"].map { NotionBlockProperty(it) }
+            "heading_3" -> body["heading_3"]["rich_text"].map { NotionBlockProperty(it) }
 
-            "paragraph" -> body["paragraph"]["rich_text"].map { NotionBlockPropertie(it) }
+            "paragraph" -> body["paragraph"]["rich_text"].map { NotionBlockProperty(it) }
 
-            "numbered_list_item" -> body["numbered_list_item"]["rich_text"].map { NotionBlockPropertie(it) }
-            "bulleted_list_item" -> body["bulleted_list_item"]["rich_text"].map { NotionBlockPropertie(it) }
-            "to_do" -> body["to_do"]["rich_text"].map { NotionBlockPropertie(it) }
-            "quote" -> body["quote"]["rich_text"].map { NotionBlockPropertie(it) }
+            "numbered_list_item" -> body["numbered_list_item"]["rich_text"].map { NotionBlockProperty(it) }
+            "bulleted_list_item" -> body["bulleted_list_item"]["rich_text"].map { NotionBlockProperty(it) }
+            "to_do" -> body["to_do"]["rich_text"].map { NotionBlockProperty(it) }
+            "quote" -> body["quote"]["rich_text"].map { NotionBlockProperty(it) }
 
-            "file" -> listOf(NotionBlockPropertie(body["file"]))
+            "file" -> listOf(NotionBlockProperty(body["file"]))
             "child_database" -> {
                 //강제로 맞춰준다.
                 val json = obj {
                     "type" to "child_database"
                     "title" to body["child_database"]["title"].str
                 }
-                listOf(NotionBlockPropertie(json.toGsonData()))
+                listOf(NotionBlockProperty(json.toGsonData()))
             }
 
             "table_row" -> {
@@ -120,7 +120,7 @@ data class NotionBlock(
                         "type" to "rich_text"
                         "plain_text" to text
                     }.toGsonData()
-                    NotionBlockPropertie(fakeBody)
+                    NotionBlockProperty(fakeBody)
                 }
             }
 
@@ -132,7 +132,7 @@ data class NotionBlock(
         }
     }
 
-    val cell: NotionBlockPropertie? by lazy { cells.firstOrNull() }
+    val cell: NotionBlockProperty? by lazy { cells.firstOrNull() }
 
 
 }

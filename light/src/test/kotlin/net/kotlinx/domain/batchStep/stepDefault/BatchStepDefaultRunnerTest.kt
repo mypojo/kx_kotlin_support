@@ -1,6 +1,6 @@
 package net.kotlinx.domain.batchStep.stepDefault
 
-import net.kotlinx.aws.lambda.dispatch.synch.BatchStepDispatcher
+import net.kotlinx.aws.lambda.dispatch.sync.BatchStepDispatcher
 import net.kotlinx.domain.batchStep.BatchStepMode
 import net.kotlinx.domain.batchStep.BatchStepOption
 import net.kotlinx.domain.batchStep.BatchStepParameter

@@ -44,7 +44,7 @@ class ErrorLogRepositoryTest : BeSpecLight() {
                     id = UUID.randomUUID().toString(),
                     time = LocalDateTime.now().truncatedMills(),
                     cause = "테스트 예외 발생",
-                    stackTrace = RandomStringUtil.getRandomSring(10),
+                    stackTrace = RandomStringUtil.getRandomString(10),
                     ttl = DynamoUtil.ttlFromNow(10.minutes),
                 )
 

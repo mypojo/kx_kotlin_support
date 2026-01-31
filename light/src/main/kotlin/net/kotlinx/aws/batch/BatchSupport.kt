@@ -41,6 +41,7 @@ suspend fun BatchClient.submitJob(jobQueueName: String, jobDefinition: String, j
         //배치는  args 로 단순 문자열만 받는다. 주의!! 무조건 1뎁스로 문자열로 입력해야함
         this.parameters = mapOf(
             BatchUtil.BATCH_ARGS01 to jobParam.toString(), //여기에 디폴트 입력
+            BatchUtil.BATCH_ARGS02 to "-",  //일반 서브밋에는 예약어 입력 (공백문자 안됨)
         )
         batchOverride?.let {
             containerOverrides = ContainerOverrides {

@@ -77,7 +77,7 @@ class AthenaTable {
 
     /**
      * 파티션 정보
-     * 일반적으로 boolean 을 사용하지만 ice버그의 경우 함수형을 입력할 수 있음
+     * 일반적으로 boolean 을 사용하지만 iceberg의 경우 함수형을 입력할 수 있음
      *  -> https://docs.aws.amazon.com/ko_kr/athena/latest/ug/querying-iceberg-creating-tables.html 참고
      *  */
     private val partitions: MutableList<String> = mutableListOf()
@@ -221,7 +221,7 @@ class AthenaTable {
              * 아이스버그의 경우 일반 컬럼에 파티션 데이터가 있어야 한다.
              * https://docs.aws.amazon.com/ko_kr/athena/latest/ug/querying-iceberg-creating-tables.html
              * */
-            is AthenaTableFormatIcebug -> if (partitions.isEmpty()) "" else "PARTITIONED BY (${partitions.joinToString(",")})"
+            is AthenaTableFormatIceberg -> if (partitions.isEmpty()) "" else "PARTITIONED BY (${partitions.joinToString(",")})"
 
             else -> if (partitions.isEmpty()) "" else "PARTITIONED BY (${partitions.joinToString(",") { "$it ${schema[it]!!.type}" }})"
         }
@@ -230,7 +230,7 @@ class AthenaTable {
         val tableFormat = athenaTableFormat //스마트 캐스팅을 위해서 변경
         val formatText = athenaTableFormat.toRowFormat(this).joinToString("\n")
         when (tableFormat) {
-            is AthenaTableFormatIcebug -> props = props + tableFormat.defaultOption
+            is AthenaTableFormatIceberg -> props = props + tableFormat.defaultOption
 
             else -> {} //아무것도 안함
         }
@@ -253,13 +253,13 @@ class AthenaTable {
         ).joinToString("\n")
     }
 
-    /** NK 벨리데이션 쿼리 */
+    /** NK 밸리데이션 쿼리 */
     fun validateNkDetail(block: () -> String = { "" }): String = """
             ${validateNkQuery(block)} 
             LIMIT 100
             """.trimIndent()
 
-    /** 내부 벨리데이션 쿼리 */
+    /** 내부 밸리데이션 쿼리 */
     private fun validateNkQuery(block: () -> String): String {
         val nkText = nks.joinToString(",")
         return """SELECT ${nkText},COUNT(*) CNT 
@@ -270,7 +270,7 @@ class AthenaTable {
     }
 
 
-    /** NK 벨리데이션 상세 조회 */
+    /** NK 밸리데이션 상세 조회 */
     fun validateNk(block: () -> String = { "" }): String {
         val partitionText = partitions.joinToString(",")
         return """
@@ -319,7 +319,7 @@ class AthenaTable {
 
 
     //==================================================== 간단설정 ======================================================
-    fun icebugTable() {
+    fun icebergTable() {
         athenaTableFormat = AthenaTableFormat.Iceberg
         athenaTableType = AthenaTableType.INTERNAL
         athenaTablePartitionType = AthenaTablePartitionType.INDEX
@@ -334,7 +334,7 @@ class AthenaTable {
     /** YYYY-MM-DD HH:MM:SS.SSS */
     val timestamp = AthenaType("timestamp")
 
-    /** icebug는 지원안함!! 주의!!  */
+    /** iceberg는 지원안함!! 주의!!  */
     val tinyint = AthenaType("tinyint")
     val int = AthenaType("int")
     val bigint = AthenaType("bigint")

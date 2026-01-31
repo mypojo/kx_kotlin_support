@@ -3,7 +3,7 @@ package net.kotlinx.aws.lambda
 import com.lectra.koson.obj
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.contain
-import net.kotlinx.aws.lambda.dispatch.synch.S3LogicDispatcher
+import net.kotlinx.aws.lambda.dispatch.sync.S3LogicDispatcher
 import net.kotlinx.domain.batchStep.stepDefault.StepStartContext
 import net.kotlinx.kotest.BeSpecLog
 import net.kotlinx.kotest.KotestUtil

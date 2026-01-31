@@ -32,7 +32,7 @@ object RegexSet {
 
 
     /** 알바벳+숫자 */
-    object ALPAH_NUMERIC {
+    object ALPHA_NUMERIC {
 
         /** 알파벳 온리  */
         val ALPA = "[a-zA-Z]*".toRegex()

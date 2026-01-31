@@ -6,8 +6,8 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.serialization.Serializable
-import net.kotlinx.aws.lambda.dispatch.asynch.EventBridgeJson
-import net.kotlinx.aws.lambda.dispatch.asynch.EventBridgeS3
+import net.kotlinx.aws.lambda.dispatch.async.EventBridgeJson
+import net.kotlinx.aws.lambda.dispatch.async.EventBridgeS3
 import net.kotlinx.collection.mapOf
 import net.kotlinx.guava.fromJsonList
 import net.kotlinx.json.koson.KosonTest.Companion.DEMO_KOSON

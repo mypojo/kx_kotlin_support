@@ -2,9 +2,9 @@ package net.kotlinx.kotest.modules.lambdaDispatcher
 
 import com.google.common.eventbus.Subscribe
 import mu.KotlinLogging
-import net.kotlinx.aws.lambda.dispatch.asynch.AwsSnsAlarm
-import net.kotlinx.aws.lambda.dispatch.asynch.AwsSnsNotification
-import net.kotlinx.aws.lambda.dispatch.asynch.AwsSnsUnknown
+import net.kotlinx.aws.lambda.dispatch.async.AwsSnsAlarm
+import net.kotlinx.aws.lambda.dispatch.async.AwsSnsNotification
+import net.kotlinx.aws.lambda.dispatch.async.AwsSnsUnknown
 import net.kotlinx.reflect.name
 import net.kotlinx.slack.SlackMessageSenders
 import net.kotlinx.string.abbr

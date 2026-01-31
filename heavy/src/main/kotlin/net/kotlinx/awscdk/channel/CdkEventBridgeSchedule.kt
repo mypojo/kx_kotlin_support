@@ -21,7 +21,7 @@ class CdkEventBridgeSchedule(
     val project: AwsConfig,
     val deploymentType: DeploymentType,
     val stack: Stack,
-    /** 해당 시케줄에 트리거 할 대상 (람다 등..) */
+    /** 해당 스케줄에 트리거 할 대상 (람다 등..) */
     val ruleTarget: IRuleTarget,
     block: CdkEventBridgeSchedule.() -> Unit = {}
 ) {

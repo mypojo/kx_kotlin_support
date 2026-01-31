@@ -27,6 +27,6 @@ class MapNum<T>(
         )
     }
 
-    /** 간단 합꼐 */
+    /** 간단 합계 */
     fun sum(): Long = delegate.values.sum()
 }

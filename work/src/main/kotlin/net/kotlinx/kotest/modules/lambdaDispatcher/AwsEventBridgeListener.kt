@@ -3,7 +3,7 @@ package net.kotlinx.kotest.modules.lambdaDispatcher
 import com.google.common.eventbus.Subscribe
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
-import net.kotlinx.aws.lambda.dispatch.asynch.*
+import net.kotlinx.aws.lambda.dispatch.async.*
 import net.kotlinx.domain.job.EventBridgeJobStatus
 import net.kotlinx.domain.job.define.JobDefinitionRepository
 import net.kotlinx.reflect.name

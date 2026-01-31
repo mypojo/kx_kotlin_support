@@ -9,11 +9,11 @@ class ThreadSingleExecutor {
 
     private val runs = mutableListOf<() -> Unit>()
 
-    fun regist(run: () -> Unit) {
+    fun register(run: () -> Unit) {
         runs.add(run)
     }
 
-    fun exe() {
+    fun execute() {
 
         val failCnt = runs.map {
             try {

@@ -8,7 +8,7 @@ import kotlin.math.abs
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
- * Number 로 계산 금지!
+ * Number 로 계산 금지!!
  * */
 class ProgressData(
     /** 전체 수  */
@@ -18,7 +18,7 @@ class ProgressData(
     /** 작업 시작시간 */
     val startTime: LocalDateTime,
     /** 이미 완료되서 스킵된 카운트 */
-    skipedInput: Number = 0L,
+    skippedInput: Number = 0L,
     /** 비율 스케일 */
     private val rateScale: Int = 1,
 ) {
@@ -30,7 +30,7 @@ class ProgressData(
     val completed: Long = completedInput.toLong()
 
     /** 이미 완료되서 스킵된 카운트 */
-    val skiped: Long = skipedInput.toLong()
+    val skipped: Long = skippedInput.toLong()
 
     /** 지금시간 */
     val now: LocalDateTime by lazy { LocalDateTime.now() }

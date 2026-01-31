@@ -1,7 +1,7 @@
 package net.kotlinx.domain.job
 
-import net.kotlinx.aws.lambda.dispatch.asynch.EventBridge
-import net.kotlinx.aws.lambda.dispatch.asynch.EventBridgeJson
+import net.kotlinx.aws.lambda.dispatch.async.EventBridge
+import net.kotlinx.aws.lambda.dispatch.async.EventBridgeJson
 
 /**
  * 잡 이벤트브릿지 - 상태변경

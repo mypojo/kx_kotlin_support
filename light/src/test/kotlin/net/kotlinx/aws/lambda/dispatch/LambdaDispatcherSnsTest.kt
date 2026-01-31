@@ -2,7 +2,7 @@ package net.kotlinx.aws.lambda.dispatch
 
 import com.lectra.koson.obj
 import net.kotlinx.aws.AwsNaming
-import net.kotlinx.aws.lambda.dispatch.asynch.AwsSnsPublisher
+import net.kotlinx.aws.lambda.dispatch.async.AwsSnsPublisher
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest

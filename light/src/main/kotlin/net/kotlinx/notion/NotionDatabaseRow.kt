@@ -23,5 +23,5 @@ data class NotionDatabaseRow(val body: GsonData) {
     val lastEditedTime: LocalDateTime = body["last_edited_time"].str!!.toLocalDateTime().plusHours(9)
 
     /** 데이터베이스의 각 컬럼들 */
-    val properties: Map<String, NotionDatabasePropertie> = body["properties"].entryMap().map { it.key to NotionDatabasePropertie(it.value) }.toMap()
+    val properties: Map<String, NotionDatabaseProperty> = body["properties"].entryMap().map { it.key to NotionDatabaseProperty(it.value) }.toMap()
 }

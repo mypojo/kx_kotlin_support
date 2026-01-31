@@ -30,7 +30,7 @@ class Trie(words: Collection<String>) {
      * 부분 문자를 입력해서 여기에 prefix로 매칭되는 완성된 결과를 가져오기
      * ex) 청바지 -> 청바지반바지, 청바지싼곳
      * */
-    fun findPrefixeMatchs(prefix: String): List<String> {
+    fun findPrefixMatches(prefix: String): List<String> {
         val result = mutableListOf<String>()
         var current = root
         for (char in prefix) {

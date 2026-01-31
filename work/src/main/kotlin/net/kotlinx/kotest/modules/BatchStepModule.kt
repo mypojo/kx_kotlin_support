@@ -1,7 +1,7 @@
 package net.kotlinx.kotest.modules
 
 import net.kotlinx.aws.AwsConfig
-import net.kotlinx.aws.lambda.dispatch.synch.BatchStepDispatcher
+import net.kotlinx.aws.lambda.dispatch.sync.BatchStepDispatcher
 import net.kotlinx.domain.batchStep.BatchStepConfig
 import net.kotlinx.domain.batchStep.BatchStepExecutor
 import net.kotlinx.koin.KoinModule

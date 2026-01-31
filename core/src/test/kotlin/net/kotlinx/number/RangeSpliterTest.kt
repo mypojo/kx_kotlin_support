@@ -11,7 +11,7 @@ class RangeSpliterTest : BeSpecLog() {
     init {
         initTest(KotestUtil.FAST)
 
-        Given("RangeSpliter") {
+        Given("RangeSplitter") {
 
             val limit = 620000
             val step = 15L
@@ -19,11 +19,11 @@ class RangeSpliterTest : BeSpecLog() {
             Then("데이터수 $limit / $step 개로 데이터세트 분리 -> 비교출력") {
 
                 val spliters = listOf(
-                    RangeSpliter {
+                    RangeSplitter {
                         minmax = 0L until limit
                         stepCnt = step
                     },
-                    RangeSpliter {
+                    RangeSplitter {
                         minmax = 0L until limit
                         stepCnt = step
                         cycleCnt = 3

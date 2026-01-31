@@ -37,7 +37,7 @@ fun String.toBigDecimal2(): BigDecimal {
             return base.multiply(BigDecimal.TEN.pow(exponent, MathContext.DECIMAL128))
         }
     } catch (e: Exception) {
-        //변환을 무시한다ㅣ
+        //변환을 무시한다
     }
     return this.retainFrom(RegexSet.NUMERIC_DOT).toBigDecimal()
 }

@@ -40,11 +40,11 @@ suspend fun CodeDeployClient.createDeployment(
 
 /** 블루그린배포 간단버전 */
 suspend fun CodeDeployClient.createDeployment(deployData: EcsDeployData): CreateDeploymentResponse {
-    val appSepc = CodedeployAppSpecBuilder(deployData).build()
+    val appSpec = CodedeployAppSpecBuilder(deployData).build()
     return createDeployment(
         deployData.codedeployApplicationName,
         deployData.codedeployDeploymentGroupName,
-        appSepc,
+        appSpec,
         deployData.codedeployConfig
     )
 }

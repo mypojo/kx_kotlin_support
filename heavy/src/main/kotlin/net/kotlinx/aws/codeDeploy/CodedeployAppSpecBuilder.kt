@@ -6,7 +6,7 @@ import net.kotlinx.json.gson.GsonData
 import net.kotlinx.json.koson.toGsonData
 
 /**
- * appSepc 만들기 매우 짜증남.. 왜 이렇게 했을까..
+ * AppSpec 빌더 - AWS CodeDeploy 배포 스펙 생성
  */
 class CodedeployAppSpecBuilder(val ecsDeployData: EcsDeployData) {
 

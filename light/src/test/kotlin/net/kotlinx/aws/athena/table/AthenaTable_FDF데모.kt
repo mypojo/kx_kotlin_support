@@ -13,7 +13,7 @@ class AthenaTable_FDF데모 : BeSpecLight() {
 
             Then("demo") {
                 val table = AthenaTable {
-                    icebugTable()
+                    icebergTable()
                     database = "d"
                     bucket = "xx-work-dev"
                     tableName = "demo"

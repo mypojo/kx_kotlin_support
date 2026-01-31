@@ -20,7 +20,7 @@ val LongRange.size: Int
  *  */
 fun LongRange.split(total: Number, index: Number): LongRange {
     val range = this
-    val subSpoliter = RangeSpliter {
+    val subSpoliter = RangeSplitter {
         minmax = range
         stepCnt = total.toLong()
     }

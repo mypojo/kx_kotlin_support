@@ -36,7 +36,7 @@ class HtmxButtonGet {
     /** 버튼명 */
     lateinit var btnName: String
 
-    /**  데이터 URL ex) "/crw/exe?aa=bb" */
+    /**  데이터 URL ex) "/crw/execute?aa=bb" */
     lateinit var dataUrl: String
 
     /** 대상 ID */

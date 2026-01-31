@@ -22,7 +22,7 @@ class LambdaDispatcherAsynchTest : BeSpecHeavy() {
                 ]
             }
 
-            Then("설정된 스케쥴링으로 이벤트 수신") {
+            Then("설정된 스케줄링으로 이벤트 수신") {
                 dispatcher.handleRequest(input)
             }
         }
@@ -42,7 +42,7 @@ class LambdaDispatcherAsynchTest : BeSpecHeavy() {
                 }
             }
 
-            Then("설정된 스케쥴링으로 이벤트 수신") {
+            Then("설정된 스케줄링으로 이벤트 수신") {
                 dispatcher.handleRequest(input)
             }
         }
@@ -77,7 +77,7 @@ class LambdaDispatcherAsynchTest : BeSpecHeavy() {
                 }
             }
 
-            Then("설정된 스케쥴링으로 이벤트 수신") {
+            Then("설정된 스케줄링으로 이벤트 수신") {
                 dispatcher.handleRequest(event)
             }
         }

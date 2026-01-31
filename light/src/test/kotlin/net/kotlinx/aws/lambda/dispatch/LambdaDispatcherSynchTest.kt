@@ -4,7 +4,7 @@ import com.lectra.koson.obj
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.contain
 import net.kotlinx.aws.lambda.LambdaUrlMap
-import net.kotlinx.aws.lambda.dispatch.synch.CommandDispatcher
+import net.kotlinx.aws.lambda.dispatch.sync.CommandDispatcher
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
 import net.kotlinx.kotest.initTest

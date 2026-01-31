@@ -43,7 +43,7 @@ class MenuList {
      * 스프링 컨트롤러 정보를 가져와서 매핑 -> 스프링에서 제공하지 않는 편의 유틸
      * 메뉴의 path (짧은 URL) 를 사용해서 실제 매핑 URL(긴 URL)을 매핑해준다.
      *  */
-    fun regisg(methods: Collection<MenuMethod>) {
+    fun register(methods: Collection<MenuMethod>) {
         allChildren().forEach { eachMenu ->
             val methods = methods.filter { it.url.startsWith(eachMenu.path) }
             methods.onEach { it.menu = eachMenu }

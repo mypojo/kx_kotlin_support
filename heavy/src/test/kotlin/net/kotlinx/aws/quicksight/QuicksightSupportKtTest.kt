@@ -47,7 +47,7 @@ class QuicksightSupportKtTest : BeSpecHeavy() {
                     this.dataSetName = "리포트_네이버_검색광고_키워드-${suff}-demo"
                     this.users = listOf("DEV/sin")
                     this.folderIds = listOf("rpt_naver")
-                    this.columns = QuicksightUtil.toColumnMap(columns.drop(1).map { it[1] to it[2].retainFrom(RegexSet.ALPAH_NUMERIC.ALPA) })
+                    this.columns = QuicksightUtil.toColumnMap(columns.drop(1).map { it[1] to it[2].retainFrom(RegexSet.ALPHA_NUMERIC.ALPA) })
                     this.schema = dbName
                     this.tableName = tableName
                     this.rowLevelPermissionDataSet = "role_user_adv-dev"

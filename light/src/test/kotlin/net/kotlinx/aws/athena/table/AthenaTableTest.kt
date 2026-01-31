@@ -17,13 +17,13 @@ class AthenaTableTest : BeSpecLight() {
                 val table = BatchStepTable.BATCH_STEP.apply {
                     database = "dc"
                     bucket = "${findProfile49}-work-dev"
-                    icebugTable()
+                    icebergTable()
                 }
                 println(table.create())
             }
 
             Then("스키마 확인") {
-                val table = HttpLogTable.HTTP_ICEBUG.apply {
+                val table = HttpLogTable.HTTP_ICEBERG.apply {
                     database = "d1"
                     bucket = "ap-work-dev"
                     s3Key = "data/level1/${tableName}/"
@@ -33,7 +33,7 @@ class AthenaTableTest : BeSpecLight() {
 
             Then("demo") {
                 val table = AthenaTable {
-                    icebugTable()
+                    icebergTable()
                     database = "d"
                     bucket = "xx-work-dev"
                     tableName = "demo"

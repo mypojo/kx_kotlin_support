@@ -57,7 +57,7 @@ interface JobTriggerMethod {
 
                 /**
                  * 람다는 메인스래드를 중지하지 않은 상태에서 백그라운드 스래드 작동이 불가능하다
-                 * ex) 이벤트 스케쥴러에서 트리거된 작업을 그대로 실행하는 경우
+                 * ex) 이벤트 스케줄러에서 트리거된 작업을 그대로 실행하는 경우
                  * */
                 AwsInstanceType.LAMBDA -> {
                     log.debug { "JobTriggerMethod LOCAL (${job.toKeyString()}) -> 동기화(${AwsInstanceTypeUtil.INSTANCE_TYPE}) 실행" }

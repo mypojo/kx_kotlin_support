@@ -74,7 +74,7 @@ class ExcelSheet(val excel: Excel, val sheet: XSSFSheet) {
      * 모든 셀에 커스텀 스타일을 적용한다
      *  */
     fun wrap(autoSizeColumn: Boolean = true, useMergedCells: Boolean = false) {
-        val styles: ExcellStyle = excel.style
+        val styles: ExcelStyle = excel.style
         val rows: Iterator<Row> = sheet.rowIterator()
         while (rows.hasNext()) {
             val thisRow = rows.next()

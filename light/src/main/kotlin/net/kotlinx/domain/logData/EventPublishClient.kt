@@ -48,7 +48,7 @@ class EventPublishClient {
     var entryLimit: Int = 50
 
     /**
-     * 디폴드 생성 로직.
+     * 디폴트 생성 로직.
      * */
     var defaultFactory: () -> Event = {
         Event {

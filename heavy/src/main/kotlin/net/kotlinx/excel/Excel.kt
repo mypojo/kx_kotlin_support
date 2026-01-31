@@ -11,10 +11,10 @@ import java.io.*
 class Excel(val wb: XSSFWorkbook = XSSFWorkbook()) {
 
     /** 기본 폰트 */
-    val font = ExcellFont(this)
+    val font = ExcelFont(this)
 
     /** 기본 스타일 */
-    val style: ExcellStyle = ExcellStyle(this, font)
+    val style: ExcelStyle = ExcelStyle(this, font)
 
     /**
      * 스타일은 래핑할때 일괄 디폴트값으로 셑팅하기때문에

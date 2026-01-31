@@ -1,7 +1,7 @@
 package net.kotlinx.slack
 
 import aws.sdk.kotlin.services.codedeploy.model.LifecycleEventStatus
-import net.kotlinx.aws.lambda.dispatch.asynch.AwsCodeDeployHookEvent
+import net.kotlinx.aws.lambda.dispatch.async.AwsCodeDeployHookEvent
 import net.kotlinx.domain.developer.DeveloperData
 import net.kotlinx.koin.Koins.koinLazy
 import net.kotlinx.kotest.KotestUtil
