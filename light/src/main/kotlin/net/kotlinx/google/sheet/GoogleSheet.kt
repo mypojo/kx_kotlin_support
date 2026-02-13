@@ -1,8 +1,8 @@
 package net.kotlinx.google.sheet
 
 import com.google.api.services.sheets.v4.Sheets
-import com.google.api.services.sheets.v4.model.Spreadsheet
-import com.google.api.services.sheets.v4.model.ValueRange
+import com.google.api.services.sheets.v4.model.*
+import mu.KotlinLogging
 import net.kotlinx.google.GoogleService
 import net.kotlinx.number.StringIntUtil
 
@@ -27,6 +27,7 @@ class GoogleSheet(service: GoogleService, val sheetId: String, val tabName: Stri
      * 참고 https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
      */
     fun readAll(): List<List<Any>> {
+        log.debug { "[$tabName] readAll.." }
         val sheet = sheets.spreadsheets().values().get(sheetId, tabName)
         val response: ValueRange = sheet.setValueRenderOption("UNFORMATTED_VALUE").execute()
         return response.getValues()
@@ -37,6 +38,7 @@ class GoogleSheet(service: GoogleService, val sheetId: String, val tabName: Stri
      * 해당 구간에 value만 오버라이드 한다. (컬러같은건 안바뀜)
      */
     fun write(values: List<List<Any>>, startAt: Pair<Int, Int> = 1 to 1) {
+        log.debug { "[$tabName] write.. size: ${values.size}" }
         val range = GoogleSheetRange {
             this.tabName = this@GoogleSheet.tabName
             this.startAt = startAt
@@ -45,6 +47,38 @@ class GoogleSheet(service: GoogleService, val sheetId: String, val tabName: Stri
         val sheet: Sheets.Spreadsheets.Values = sheets.spreadsheets().values()
         val body = ValueRange().setValues(values)
         sheet.update(sheetId, range.toRangeString(), body).setValueInputOption("USER_ENTERED").execute()
+    }
+
+    /**
+     * 해당 탭의 마지막 행 다음에 데이터를 추가한다.
+     * 방법 A: spreadsheets.values.append 사용
+     */
+    fun writeAppend(values: List<List<Any>>) {
+        log.debug { "[$tabName] writeAppend.. size: ${values.size}" }
+        val sheet: Sheets.Spreadsheets.Values = sheets.spreadsheets().values()
+        val body = ValueRange().setValues(values)
+        // range는 시트 이름만 지정하면 알아서 마지막 행을 찾아서 추가함
+        sheet.append(sheetId, tabName, body)
+            .setValueInputOption("USER_ENTERED")
+            .setInsertDataOption("INSERT_ROWS")
+            .execute()
+    }
+
+    /**
+     * 시트(탭)를 생성한다.
+     * 이미 존재하면 무시한다.
+     */
+    fun createTab() {
+        val existingTabs = allTabNames(sheets, sheetId)
+        if (existingTabs.contains(tabName)) {
+            log.warn { "[$tabName] 이미 존재하는 탭입니다. 생성을 건너뜁니다." }
+            return
+        }
+
+        log.info { "[$tabName] 탭을 생성합니다." }
+        val addSheetRequest = AddSheetRequest().setProperties(SheetProperties().setTitle(tabName))
+        val batchUpdateSpreadsheetRequest = BatchUpdateSpreadsheetRequest().setRequests(listOf(Request().setAddSheet(addSheetRequest)))
+        sheets.spreadsheets().batchUpdate(sheetId, batchUpdateSpreadsheetRequest).execute()
     }
 
     /**
@@ -59,6 +93,8 @@ class GoogleSheet(service: GoogleService, val sheetId: String, val tabName: Stri
 
 
     companion object {
+
+        private val log = KotlinLogging.logger {}
 
         /** 모든 시트 이름 리턴 */
         fun allTabNames(sheets: Sheets, sheetId: String): List<String> {
