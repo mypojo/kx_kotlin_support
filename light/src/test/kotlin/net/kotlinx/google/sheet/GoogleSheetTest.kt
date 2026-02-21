@@ -9,7 +9,7 @@ class GoogleSheetTest : BeSpecHeavy() {
     init {
 
 
-        given("GoogleSheet") {
+        given("GoogleSheet test") {
 
             val googleService = koin<GoogleService>()
             val testSheetId = "13U-VKClgbbwhic6Jb6nsf9ITeESn7nZiEXNN6M5fsNY" // Google's example spreadsheet ID
